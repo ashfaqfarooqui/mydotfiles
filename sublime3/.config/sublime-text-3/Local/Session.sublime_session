@@ -1,0 +1,2704 @@
+{
+	"folder_history":
+	[
+		"/home/ashfaqf/chome/restart-survey",
+		"/home/ashfaqf/Projects/virtcom.github.io",
+		"/home/ashfaqf/Projects/javascripting",
+		"/home/ashfaqf/Projects/bibGen",
+		"/home/ashfaqf/Projects/OpenDaVINCI",
+		"/home/ashfaqf/restart-survey",
+		"/run/user/1000/gvfs/sftp:host=remote11.chalmers.se,user=ashfaqf/chalmers/users/ashfaqf/restart-survey",
+		"/home/ashfaqf/Projects/SP"
+	],
+	"last_version": 3103,
+	"last_window_id": 18,
+	"log_indexing": false,
+	"settings":
+	{
+		"new_window_height": 0.0,
+		"new_window_settings":
+		{
+			"auto_complete":
+			{
+				"selected_items":
+				[
+					[
+						"safe",
+						"safetyPrep"
+					],
+					[
+						"rest",
+						"restartPrep"
+					],
+					[
+						"list",
+						"listoftodos[caption]	todonotes"
+					],
+					[
+						"tod",
+						"todo[options]{text}	todonotes"
+					],
+					[
+						"to",
+						"todo{text}	todonotes"
+					],
+					[
+						"spell",
+						"spell_check	(Preferences.sublime-settings)"
+					],
+					[
+						"print",
+						"println	(MultiRelationFinder.scala)"
+					],
+					[
+						"flat",
+						"flatMap(_	(RelationIdentification.scala)"
+					],
+					[
+						"shouldEua",
+						"shouldEqual	(Spread[Any]): Unit"
+					],
+					[
+						"EQU",
+						"equal	(Spread[T]): Matcher[T]"
+					],
+					[
+						"Rea",
+						"RelationIdentification	(RelationIdentification.scala)"
+					],
+					[
+						"service",
+						"services"
+					],
+					[
+						"acti",
+						"activeOps"
+					],
+					[
+						"this",
+						"thisOp"
+					],
+					[
+						"that",
+						"thatOp"
+					],
+					[
+						"rel",
+						"relations"
+					],
+					[
+						"item",
+						"itemRelations"
+					],
+					[
+						"no",
+						"nonEmpty	(RelationService.scala)"
+					],
+					[
+						"oper",
+						"operations"
+					],
+					[
+						"Oper",
+						"OperationRelation"
+					],
+					[
+						"ite",
+						"itemRelMap"
+					],
+					[
+						"fold",
+						"foldLeft"
+					],
+					[
+						"tai",
+						"tailrec	(RelationFinder.scala)"
+					],
+					[
+						"op",
+						"operation	(SOP.scala)"
+					],
+					[
+						"eval",
+						"evalualteProp2"
+					],
+					[
+						"goal",
+						"goalCondition"
+					],
+					[
+						"enabled",
+						"enabledOps"
+					],
+					[
+						"Op",
+						"Operation	: java.rmi.server.Operation"
+					],
+					[
+						"find",
+						"findStraightSeq"
+					],
+					[
+						"crea",
+						"createItemRelationsfrom"
+					],
+					[
+						"OP",
+						"OperationRelation"
+					],
+					[
+						"selec",
+						"selectedOp"
+					],
+					[
+						"s",
+						"state"
+					],
+					[
+						"OpS",
+						"OpState"
+					],
+					[
+						"Ope",
+						"OperationRelation"
+					],
+					[
+						"ena",
+						"enabledOps"
+					],
+					[
+						"get",
+						"getEnabledOperations"
+					],
+					[
+						"iter",
+						"iterate	(MultiRelationFinder.scala)"
+					],
+					[
+						"eva",
+						"evalualteProp2"
+					],
+					[
+						"init",
+						"initstate	(RelationService.scala)"
+					],
+					[
+						"Thin",
+						"Thing	: Thing"
+					],
+					[
+						"OperationS",
+						"OperationState	: OperationState$"
+					],
+					[
+						"rema",
+						"remapAttr"
+					],
+					[
+						"remapp",
+						"remappedAttributes"
+					],
+					[
+						"complete",
+						"completeList"
+					],
+					[
+						"Exte",
+						"ExtendIDablesBasedOnTheirAttributes	(ExtendIDablesBasedOnTheirAttributes.scala)"
+					],
+					[
+						"att",
+						"attribCond"
+					],
+					[
+						"SP",
+						"SPAttributes"
+					],
+					[
+						"req",
+						"reqAttrib"
+					],
+					[
+						"extrac",
+						"extractRequiredAttributes"
+					],
+					[
+						"attri",
+						"attribCond"
+					],
+					[
+						"ID",
+						"IDAble	(Operation.scala)"
+					],
+					[
+						"SPA",
+						"SPAttributes"
+					],
+					[
+						"res",
+						"resourceTrans	(SynthesizeModelBasedOnAttributesService.scala)"
+					],
+					[
+						"for",
+						"for	(SynthesizeModelBasedOnAttributesService.scala)"
+					],
+					[
+						"mode",
+						"modelHandler"
+					],
+					[
+						"model",
+						"modelHandler	(HelloWorldSopService.scala)"
+					],
+					[
+						"a",
+						"attributes"
+					],
+					[
+						"Po",
+						"poseData	globalstmt"
+					],
+					[
+						"dra",
+						"drawBox"
+					],
+					[
+						"eli",
+						"elif	keyword"
+					],
+					[
+						"move",
+						"moveFoward	function"
+					],
+					[
+						"pose",
+						"poseData"
+					],
+					[
+						"Pos",
+						"Pose	class"
+					],
+					[
+						"po",
+						"Pose	class"
+					],
+					[
+						"tur",
+						"turtlesim	module"
+					],
+					[
+						"log",
+						"loginfo"
+					],
+					[
+						"loginf",
+						"loginfo	import"
+					],
+					[
+						"sleep",
+						"sleep	function"
+					],
+					[
+						"publ",
+						"publish	(simulate_lift.py)"
+					],
+					[
+						"tw",
+						"twistPublisher	statement"
+					],
+					[
+						"an",
+						"angular	statement"
+					],
+					[
+						"line",
+						"linear	statement"
+					],
+					[
+						"Tw",
+						"Twist	class"
+					],
+					[
+						"im",
+						"import"
+					],
+					[
+						"msg",
+						"msg	module"
+					],
+					[
+						"geom",
+						"geometry_msgs	module"
+					],
+					[
+						"q",
+						"queue_size	(simulate_lift.py)"
+					],
+					[
+						"tram",
+						"transformation"
+					],
+					[
+						"He",
+						"HelloWorldSopService"
+					],
+					[
+						"Re",
+						"Register	(SP.scala)"
+					],
+					[
+						"Hello",
+						"HelloWorld"
+					],
+					[
+						"object",
+						"object	object"
+					],
+					[
+						"H",
+						"HelloWorldSopService	(initSpLearning.scala)"
+					],
+					[
+						"Dummy",
+						"DummySopService"
+					],
+					[
+						"Dumm",
+						"DummySopService"
+					],
+					[
+						"sen",
+						"send_goal	function"
+					],
+					[
+						"LiftM",
+						"LiftMovementGoal	class"
+					],
+					[
+						"liftmoveme",
+						"LiftMovementAction"
+					],
+					[
+						"type",
+						"typeArray"
+					],
+					[
+						"bin",
+						"binArray	statement"
+					],
+					[
+						"robot",
+						"robotArray	statement"
+					],
+					[
+						"nam",
+						"robotName"
+					],
+					[
+						"ev",
+						"evtList	statement"
+					],
+					[
+						"get_tim",
+						"get_rostime	function"
+					],
+					[
+						"marker",
+						"markerArray	statement"
+					],
+					[
+						"ro",
+						"robotArray	statement"
+					],
+					[
+						"Line",
+						"LINE_STRIP	statement"
+					],
+					[
+						"de",
+						"dettachBin	function"
+					],
+					[
+						"con",
+						"connectedRobot	statement"
+					],
+					[
+						"conn",
+						"setConnectedRobot	function"
+					],
+					[
+						"thre",
+						"__thread"
+					],
+					[
+						"u",
+						"__update_lock"
+					],
+					[
+						"d",
+						"Duration	class"
+					],
+					[
+						"lg",
+						"loginfo	import"
+					],
+					[
+						"pub",
+						"publisher	statement"
+					],
+					[
+						"publis",
+						"Publisher	class"
+					],
+					[
+						"jointS",
+						"jointStatePub	statement"
+					],
+					[
+						"Joint",
+						"JointState	import"
+					],
+					[
+						"sensor",
+						"sensor_msgs	module"
+					],
+					[
+						"imp",
+						"import	keyword"
+					],
+					[
+						"chec",
+						"checkOperationalNode	function"
+					],
+					[
+						"ET",
+						"ET_client	(et_comm.py)"
+					],
+					[
+						"nodeL",
+						"nodeList	statement"
+					],
+					[
+						"ana",
+						"analogSenorValue"
+					],
+					[
+						"rosno",
+						"rosnode	module"
+					],
+					[
+						"seq",
+						"sequenceList"
+					],
+					[
+						"time",
+						"timeout"
+					],
+					[
+						"send_",
+						"send_feedback"
+					],
+					[
+						"setF",
+						"setFeedbackString	function"
+					],
+					[
+						"rec",
+						"recFeedback	param"
+					],
+					[
+						"socke",
+						"socket_read_binary_integer"
+					],
+					[
+						"per",
+						"perform_requested_sequence"
+					],
+					[
+						"Dr",
+						"Drop_Coolant	function"
+					],
+					[
+						"params_se",
+						"params_seq	statement"
+					],
+					[
+						"soc",
+						"socket_read_binary_integer"
+					],
+					[
+						"params",
+						"params	statement"
+					],
+					[
+						"dr",
+						"drop_coolantt"
+					]
+				]
+			},
+			"build_system_choices":
+			[
+				[
+					[
+						[
+							"Packages/LaTeXing/LaTeX.sublime-build",
+							""
+						],
+						[
+							"Packages/LaTeXing/LaTeX.sublime-build",
+							"Clean up Files"
+						]
+					],
+					[
+						"Packages/LaTeXing/LaTeX.sublime-build",
+						""
+					]
+				]
+			],
+			"build_varint": "",
+			"command_palette":
+			{
+				"height": 180.0,
+				"last_filter": "git status",
+				"selected_items":
+				[
+					[
+						"git status",
+						"Git: Status"
+					],
+					[
+						"git push",
+						"Git: Push"
+					],
+					[
+						"git ",
+						"Git: Checkout Commit"
+					],
+					[
+						"git checkout ",
+						"Git: Checkout Commit"
+					],
+					[
+						"git stats",
+						"Git: Status"
+					],
+					[
+						"git stash",
+						"Git: Stash"
+					],
+					[
+						"git chec",
+						"Git: Checkout Commit"
+					],
+					[
+						"set",
+						"Set Syntax: Markdown"
+					],
+					[
+						"upda",
+						"Package Control: Upgrade Package"
+					],
+					[
+						"PANDOC",
+						"Pandoc"
+					],
+					[
+						"install",
+						"Package Control: Install Package"
+					],
+					[
+						"markd",
+						"Markdown Preview: Preview in Browser"
+					],
+					[
+						"markdown",
+						"Markdown Preview: Preview in Browser"
+					],
+					[
+						"insta",
+						"Package Control: Install Package"
+					],
+					[
+						"remove",
+						"Package Control: Remove Package"
+					],
+					[
+						"markdonw",
+						"Markdown Preview: Preview in Browser"
+					],
+					[
+						"git ta",
+						"Git: Add Tag"
+					],
+					[
+						"build",
+						"Build With: LaTeX"
+					],
+					[
+						"te",
+						"LaTeXing: Texcount"
+					],
+					[
+						"texco",
+						"LaTeXing: Texcount"
+					],
+					[
+						"jump",
+						"LaTeXing: Jump To PDF"
+					],
+					[
+						"remo",
+						"Package Control: Remove Package"
+					],
+					[
+						"bui",
+						"Build: Primary Quick Build"
+					],
+					[
+						"latexing au",
+						"Preferences: LaTeXing Settings - Default"
+					],
+					[
+						"stat",
+						"Git: Status"
+					],
+					[
+						"stats",
+						"Git: Status"
+					],
+					[
+						"comm",
+						"Git: Commit"
+					],
+					[
+						"git s",
+						"Git: Status"
+					],
+					[
+						"commit",
+						"Git: Commit history"
+					],
+					[
+						"status",
+						"Git: Status"
+					],
+					[
+						"orgmode",
+						"Set Syntax: orgmode"
+					],
+					[
+						"packagecontrol",
+						"Package Control: Upgrade Package"
+					],
+					[
+						"latexsym",
+						"LaTeXing: Insert TeX Symbol"
+					],
+					[
+						"late",
+						"LaTeXTools: View PDF"
+					],
+					[
+						"latex",
+						"LaTeXTools: Build cache for LaTeX packages"
+					],
+					[
+						"ins",
+						"Package Control: Install Package"
+					],
+					[
+						"ens",
+						"Ensime: Startup"
+					],
+					[
+						"ensime",
+						"Ensime: Startup"
+					],
+					[
+						"",
+						"Ensime: Build"
+					],
+					[
+						"stop",
+						"SBT: Stop SBT"
+					],
+					[
+						"starts",
+						"SBT: Start Continuous Compiling"
+					],
+					[
+						"ever",
+						"Evernote: Open Evernote Note"
+					],
+					[
+						"everno",
+						"Evernote Settings: Default"
+					],
+					[
+						"rem",
+						"Package Control: Remove Package"
+					],
+					[
+						"git check",
+						"Git: Checkout Current File"
+					],
+					[
+						"evernote",
+						"Evernote: Open Evernote Note"
+					],
+					[
+						"sbt",
+						"SBT: Start SBT"
+					],
+					[
+						"sb",
+						"SBT: Start SBT"
+					],
+					[
+						"scala",
+						"Show Scala Worksheet"
+					],
+					[
+						"Snippet: ",
+						"Snippet: #!/usr/bin/env"
+					],
+					[
+						"show",
+						"Show Scala Worksheet"
+					],
+					[
+						"wor",
+						"Show Scala Worksheet"
+					],
+					[
+						"work",
+						"Show Scala Worksheet"
+					],
+					[
+						"kshee",
+						"Show Scala Worksheet"
+					],
+					[
+						"w",
+						"Show Scala Worksheet"
+					],
+					[
+						"wok",
+						"Show Scala Worksheet"
+					],
+					[
+						"Package Control: ",
+						"Package Control: Install Package"
+					],
+					[
+						"Package Control: ins",
+						"Package Control: Install Package"
+					],
+					[
+						"Package Control: inst",
+						"Package Control: Install Package"
+					]
+				],
+				"width": 934.0
+			},
+			"console":
+			{
+				"height": 288.0,
+				"history":
+				[
+					"'run_scala',{cmd:'scala'}",
+					"'run_scala'",
+					"window.run_command('run_scala',{ 'cmd':'scala','output_file_name': 'hello'})",
+					"window.run_command('run_scala',{ 'cmd':scala,'output_file_name': 'hello'})",
+					"window.run_command ('run_scala', {\\",
+					"window.run_command ('run_scala', {",
+					"        window.run_command ('run_scala', {",
+					"window.run_command ('run_scala')",
+					"'run_scala'",
+					"'run_scala\"",
+					"run_scala",
+					"ls",
+					"show_scala_worksheet",
+					"scala",
+					"sublime.",
+					"sublime.path()",
+					"path",
+					"sublime.",
+					"sublime",
+					"sublime.path()",
+					"echo $PATH",
+					"$PATH",
+					"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+				]
+			},
+			"distraction_free":
+			{
+				"menu_visible": true,
+				"show_minimap": false,
+				"show_open_files": false,
+				"show_tabs": false,
+				"side_bar_visible": false,
+				"status_bar_visible": false
+			},
+			"file_history":
+			[
+				"/home/ashfaqf/Projects/virtcom.github.io/assets/js/plugins/jquery.magnific-popup.js",
+				"/home/ashfaqf/Projects/virtcom.github.io/_config.yml",
+				"/home/ashfaqf/Projects/virtcom.github.io/_posts/News/2016-01-01-test.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/index.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_site/sitemap.xml",
+				"/home/ashfaqf/Projects/virtcom.github.io/_layouts/archive.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_restartPrep/2015-12-06-timeline.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_safetyPrep/2016-03-05-testsafety.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_virtPrep/2016-01-05-vptest.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_studentProjects/2016-04-30-testpost.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/studentProj-archive.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/restartPrep-archive.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_includes/archive-single.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_data/navigation.yml",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/about.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/publications.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/news.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_studentWork/2016-04-30-testpost.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/virtPrep-archive.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/safetyPrep-archive.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/people.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/contact.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/home.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_site/index.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_site/index.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/partners.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/Gemfile",
+				"/home/ashfaqf/Projects/virtcom.github.io/index.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_rem_index.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_data/authors.yml",
+				"/home/ashfaqf/Projects/bibGen/src/main/java/me/ashfaqfarooqui/bibGen/App.java",
+				"/home/ashfaqf/Dropbox/Notes/Writing Workshop.md",
+				"/home/ashfaqf/Dropbox/Notes/SA1.md",
+				"/home/ashfaqf/Dropbox/Notes/A great teacher.md",
+				"/home/ashfaqf/Dropbox/Notes/Paper.md",
+				"/home/ashfaqf/Dropbox/Notes/teaching.md",
+				"/home/ashfaqf/Projects/bibGen/src/main/java/me/ashfaqfarooqui/bibGen/grobid.java",
+				"/home/ashfaqf/Dropbox/Notes/sublimesettings.md",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Anaconda.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/AcademicMarkdown/AcademicMarkdown.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/LaTeXing.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Notes.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+				"/home/ashfaqf/Projects/bibGen/config.properties",
+				"/home/ashfaqf/Projects/bibGen/src/main/java/me/ashfaqfarooqui/bibGen/genproperties.java",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/PlainNotes/Notes.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+				"/run/user/1000/gvfs/dav:host=dav.box.com,ssl=true,prefix=%2Fdav/rosplanning.txt",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/LaTeXing/LaTeXing.sublime-settings",
+				"/home/ashfaqf/restart-survey/SurveyPaper.bib",
+				"/home/ashfaqf/.config/sublime-text-3/Cache/LaTeXing/bin/sftp",
+				"/home/ashfaqf/Downloads/Mosaik.RPP",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/KeyboardSpellCheck.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Git/Git.sublime-settings",
+				"/run/user/1000/gvfs/sftp:host=remote11.chalmers.se,user=ashfaqf/chalmers/users/ashfaqf/restart-survey/.gitignore",
+				"/run/user/1000/gvfs/sftp:host=remote11.chalmers.se,user=ashfaqf/chalmers/users/ashfaqf/restart-survey/restartsurvey.sublime-workspace",
+				"/run/user/1000/gvfs/sftp:host=remote11.chalmers.se,user=ashfaqf/chalmers/users/ashfaqf/restart-survey/restartsurvey.sublime-project",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/orgmode.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/MarkdownEditing/Markdown.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/orgmode/orgmode.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Markdown.sublime-settings",
+				"/home/ashfaqf/restart-survey/restartsurvey.aux",
+				"/home/ashfaqf/restart-survey/figures/fiveStateOpModel.tex",
+				"/home/ashfaqf/restart-survey/figures/threeStateOpModel.tex",
+				"/home/ashfaqf/restart-survey/threeStateOpModel.tex",
+				"/mnt/ashfaqfChalmers/Survey/SurveyPaper.bib",
+				"/mnt/ashfaqfChalmers/Survey/restartsurvey.tex",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/LaTeXTools.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/LaTeXTools/README.markdown",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROAR_physicalSystem/controller/src/controller/controller_main.py",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROAR_physicalSystem/controller/src/controller/controller_bridge.py",
+				"/home/ashfaqf/Projects/SP/core/src/test/scala/sp/services/relations/RelationFinderTest.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/services/relations/RelationService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/Relation.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/SOP.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Ensime/Default.sublime-mousemap",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Default.sublime-mousemap",
+				"/home/ashfaqf/Projects/SP/core/src/test/scala/sp/services/relations/RelationIdentificationTest.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Ensime/Default (Linux).sublime-keymap",
+				"/home/ashfaqf/Projects/SP/.ensime_cache/dep-src/source-jars/scala/Option.scala",
+				"/home/ashfaqf/Projects/SP/.ensime_cache/dep-src/source-jars/scala/util/Either.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/services/relations/RelationFinder.scala_",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/ScalaFormat.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/ScalaFormat/ScalaFormat.sublime-settings",
+				"/home/ashfaqf/Projects/SP/.ensime_session",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/spLearning/HelloWorldSopService.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Ensime/Ensime.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Ensime.sublime-settings",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/IDAbleLogic.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/ServiceSupport.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/AttributeLogic.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/PropositionConditionLogic.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/virtcom/SynthesizeModelBasedOnAttributesService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/Conditions.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/virtcom/ExtendIDablesBasedOnTheirAttributes.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/spLearning/initSpLearning.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/DummySopService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/State.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/SOPLogic.scala",
+				"/home/ashfaqf/Projects/SP/gui/src/main/scala/sp/server/RestApi.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/OperationLogic.scala",
+				"/home/ashfaqf/Box/ROSTutorials/beginner_tutorials/src/ShapePublisher.py",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Evernote/Evernote.sublime-settings",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/services/sopmaker/SOPMaker.scala",
+				"/home/ashfaqf/Projects/SP/build.sbt",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Anaconda/Anaconda.sublime-settings",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROSTutorials/beginner_tutorials/setup.py",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROSTutorials/beginner_tutorials/src/__init__.py",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROAR/Lift_simulation/simulate_lift/setup.py",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/ServiceHandler.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/messages/ServiceMessages.scala",
+				"/home/ashfaqf/Projects/SP/launch/src/main/scala/sp/launch/SP.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/initDummySopService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/SPActorSystem.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/services/specificationconverters/ConditionsFromSpecsService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/messages/EventMessages.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/sp_learning/HelloWorldSopService.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/KeyboardSpellCheck/KeyboardSpellCheck.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/SublimeSBT/README.md",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/ServiceExample.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/virtcom/CreateOpsFromManualModelService.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/virtcom/modeledCases/VolvoWeldConveyerCase.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/SPAttributes.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Package Control/Package Control.sublime-settings",
+				"/home/ashfaq/catkin_ws/src/ROAR/Task2/README.md",
+				"/home/ashfaq/catkin_ws/src/ROAR/Task1/README.md",
+				"/media/misc/Dropbox/Calibre Library/Schneider, Susan/Science Fiction and Philosophy (170)/metadata.opf",
+				"/home/ashfaq/catkin_ws/src/ROAR/Task2/simulate_lift/src/simulate_lift/simulate_lift.py"
+			],
+			"find":
+			{
+				"height": 60.0
+			},
+			"find_in_files":
+			{
+				"height": 95.0,
+				"where_history":
+				[
+					"/home/ashfaqf/Projects/SP/core,/home/ashfaqf/Projects/SP/extensions",
+					"/home/ashfaqf/Projects/SP/core",
+					"<open folders>",
+					""
+				]
+			},
+			"find_state":
+			{
+				"case_sensitive": false,
+				"find_history":
+				[
+					"home",
+					"gsub",
+					"nil",
+					"defau",
+					"table",
+					"indicate",
+					"dot",
+					"dots",
+					"spaces",
+					"ModuleStatistic",
+					"unforeseen",
+					"DONE",
+					"WAIT",
+					"ERROR",
+					"RUN",
+					"build",
+					"todo",
+					"phys",
+					"resyn",
+					"requires",
+					"imph",
+					"bib",
+					"command",
+					"platf",
+					"sublime",
+					"init",
+					"ControllerBridge",
+					"getInstance",
+					"CreateSop",
+					"createItemRelationsfrom",
+					"opsUpd",
+					"sendResp",
+					"matchOps",
+					"ItemRelation",
+					"findStraightSeq",
+					"getEnabledOperations",
+					"findWhenOperationsEnabled",
+					"findOperationRelations",
+					"matchOps",
+					"es",
+					"findASeq",
+					"findWhenOperationsEnabled",
+					"defs",
+					"completed",
+					"arbitraryFinder",
+					"arbiMap",
+					"extract",
+					"sbt",
+					"proposition",
+					"++",
+					"atstart",
+					"state",
+					"case",
+					"Jvalues",
+					" values",
+					".values",
+					"values",
+					"obj",
+					"map",
+					"directAttrValues",
+					"addSynthesizedGuardsToAttributes",
+					"getAttr",
+					"?",
+					"modelHandler",
+					"extract",
+					"queryMessage",
+					"x ",
+					"x",
+					"formats",
+					"mf",
+					"SPAttributes",
+					"directAttrValues",
+					"addSPConditionFromAttributes",
+					"carrierTrans",
+					"SPValueDefinition",
+					"isa",
+					"ct",
+					"ParseToModuleWrapper",
+					"reply",
+					"addSPConditionFromAttributes",
+					"dig",
+					"vars",
+					"condition",
+					"run",
+					"version",
+					"attri",
+					"example",
+					"type",
+					"run",
+					"ServiceHandlerAttributes",
+					"Props",
+					"dummy",
+					"space",
+					"DummySopSetup",
+					"theme",
+					"import",
+					"sys",
+					"det",
+					"callbackupEventMsg",
+					"activeOperations",
+					"rose",
+					"setEmpty",
+					"robotName",
+					"uc_eventPublisher",
+					"Updating",
+					"update",
+					"move",
+					"disconnectRobot",
+					"        ",
+					"description",
+					"robot_description",
+					")\n",
+					"path",
+					"scala",
+					"op",
+					"send_feedback",
+					"itemize",
+					"bullet",
+					"font",
+					"fron",
+					"jvm",
+					"jdk",
+					"Truck",
+					"Filter",
+					"pub_robot_stateRT",
+					"publisher",
+					"robotstatert",
+					"robotsta"
+				],
+				"highlight": true,
+				"in_selection": false,
+				"preserve_case": false,
+				"regex": false,
+				"replace_history":
+				[
+					"done",
+					"wait",
+					"error",
+					"ERROR",
+					"run",
+					"emph",
+					"ItemRelations",
+					"Machine",
+					"Material",
+					""
+				],
+				"reverse": false,
+				"show_context": true,
+				"use_buffer2": true,
+				"whole_word": false,
+				"wrap": true
+			},
+			"incremental_find":
+			{
+				"height": 39.0
+			},
+			"input":
+			{
+				"height": 34.0
+			},
+			"menu_visible": true,
+			"output.exec":
+			{
+				"height": 204.0
+			},
+			"output.find_results":
+			{
+				"height": 0.0
+			},
+			"output.git":
+			{
+				"height": 112.0
+			},
+			"output.git-checkout":
+			{
+				"height": 198.0
+			},
+			"output.git-commit":
+			{
+				"height": 204.0
+			},
+			"output.git-push":
+			{
+				"height": 198.0
+			},
+			"output.sbt":
+			{
+				"height": 122.0
+			},
+			"output.sbt_error":
+			{
+				"height": 0.0
+			},
+			"pinned_build_system": "Packages/LaTeXing/LaTeX.sublime-build",
+			"replace":
+			{
+				"height": 74.0
+			},
+			"save_all_on_build": true,
+			"select_file":
+			{
+				"height": 0.0,
+				"last_filter": "",
+				"selected_items":
+				[
+					[
+						"processs",
+						"extensions/src/main/scala/sp/processSimulateImporter/ProcessSimulateService.scala"
+					],
+					[
+						"supremicatest",
+						"extensions/src/test/scala/sp/virtcom/SPSupremicaTest.scala"
+					],
+					[
+						"searchop",
+						"extensions/src/main/scala/sp/areus/SearchOpSeqTimeService.scala"
+					],
+					[
+						"dumm",
+						"extensions/src/main/scala/sp/DummySopService.scala"
+					],
+					[
+						"servicehandlera",
+						"core/src/main/scala/sp/system/ServiceHandler.scala"
+					],
+					[
+						"synthes",
+						"extensions/src/main/scala/sp/virtcom/SynthesizeModelBasedOnAttributesService.scala"
+					],
+					[
+						"volvo",
+						"extensions/src/main/scala/sp/virtcom/modeledCases/VolvoWeldConveyerCase.scala"
+					],
+					[
+						"creatops",
+						"extensions/src/main/scala/sp/virtcom/CreateOpsFromManualModelService.scala"
+					],
+					[
+						"sp.sc",
+						"launch/src/main/scala/sp/launch/SP.scala"
+					]
+				],
+				"width": 0.0
+			},
+			"select_project":
+			{
+				"height": 0.0,
+				"last_filter": "",
+				"selected_items":
+				[
+				],
+				"width": 0.0
+			},
+			"select_symbol":
+			{
+				"height": 784.0,
+				"last_filter": "",
+				"selected_items":
+				[
+					[
+						"",
+						"updateItemHTML"
+					]
+				],
+				"width": 2104.0
+			},
+			"show_minimap": true,
+			"show_open_files": false,
+			"show_tabs": true,
+			"side_bar_visible": true,
+			"side_bar_width": 549.0,
+			"status_bar_visible": true,
+			"template_settings":
+			{
+			}
+		},
+		"new_window_width": 0.0
+	},
+	"windows":
+	[
+		{
+			"auto_complete":
+			{
+				"selected_items":
+				[
+					[
+						"safe",
+						"safetyPrep"
+					],
+					[
+						"rest",
+						"restartPrep"
+					],
+					[
+						"list",
+						"listoftodos[caption]	todonotes"
+					],
+					[
+						"tod",
+						"todo[options]{text}	todonotes"
+					],
+					[
+						"to",
+						"todo{text}	todonotes"
+					],
+					[
+						"spell",
+						"spell_check	(Preferences.sublime-settings)"
+					],
+					[
+						"print",
+						"println	(MultiRelationFinder.scala)"
+					],
+					[
+						"flat",
+						"flatMap(_	(RelationIdentification.scala)"
+					],
+					[
+						"shouldEua",
+						"shouldEqual	(Spread[Any]): Unit"
+					],
+					[
+						"EQU",
+						"equal	(Spread[T]): Matcher[T]"
+					],
+					[
+						"Rea",
+						"RelationIdentification	(RelationIdentification.scala)"
+					],
+					[
+						"service",
+						"services"
+					],
+					[
+						"acti",
+						"activeOps"
+					],
+					[
+						"this",
+						"thisOp"
+					],
+					[
+						"that",
+						"thatOp"
+					],
+					[
+						"rel",
+						"relations"
+					],
+					[
+						"item",
+						"itemRelations"
+					],
+					[
+						"no",
+						"nonEmpty	(RelationService.scala)"
+					],
+					[
+						"oper",
+						"operations"
+					],
+					[
+						"Oper",
+						"OperationRelation"
+					],
+					[
+						"ite",
+						"itemRelMap"
+					],
+					[
+						"fold",
+						"foldLeft"
+					],
+					[
+						"tai",
+						"tailrec	(RelationFinder.scala)"
+					],
+					[
+						"op",
+						"operation	(SOP.scala)"
+					],
+					[
+						"eval",
+						"evalualteProp2"
+					],
+					[
+						"goal",
+						"goalCondition"
+					],
+					[
+						"enabled",
+						"enabledOps"
+					],
+					[
+						"Op",
+						"Operation	: java.rmi.server.Operation"
+					],
+					[
+						"find",
+						"findStraightSeq"
+					],
+					[
+						"crea",
+						"createItemRelationsfrom"
+					],
+					[
+						"OP",
+						"OperationRelation"
+					],
+					[
+						"selec",
+						"selectedOp"
+					],
+					[
+						"s",
+						"state"
+					],
+					[
+						"OpS",
+						"OpState"
+					],
+					[
+						"Ope",
+						"OperationRelation"
+					],
+					[
+						"ena",
+						"enabledOps"
+					],
+					[
+						"get",
+						"getEnabledOperations"
+					],
+					[
+						"iter",
+						"iterate	(MultiRelationFinder.scala)"
+					],
+					[
+						"eva",
+						"evalualteProp2"
+					],
+					[
+						"init",
+						"initstate	(RelationService.scala)"
+					],
+					[
+						"Thin",
+						"Thing	: Thing"
+					],
+					[
+						"OperationS",
+						"OperationState	: OperationState$"
+					],
+					[
+						"rema",
+						"remapAttr"
+					],
+					[
+						"remapp",
+						"remappedAttributes"
+					],
+					[
+						"complete",
+						"completeList"
+					],
+					[
+						"Exte",
+						"ExtendIDablesBasedOnTheirAttributes	(ExtendIDablesBasedOnTheirAttributes.scala)"
+					],
+					[
+						"att",
+						"attribCond"
+					],
+					[
+						"SP",
+						"SPAttributes"
+					],
+					[
+						"req",
+						"reqAttrib"
+					],
+					[
+						"extrac",
+						"extractRequiredAttributes"
+					],
+					[
+						"attri",
+						"attribCond"
+					],
+					[
+						"ID",
+						"IDAble	(Operation.scala)"
+					],
+					[
+						"SPA",
+						"SPAttributes"
+					],
+					[
+						"res",
+						"resourceTrans	(SynthesizeModelBasedOnAttributesService.scala)"
+					],
+					[
+						"for",
+						"for	(SynthesizeModelBasedOnAttributesService.scala)"
+					],
+					[
+						"mode",
+						"modelHandler"
+					],
+					[
+						"model",
+						"modelHandler	(HelloWorldSopService.scala)"
+					],
+					[
+						"a",
+						"attributes"
+					],
+					[
+						"Po",
+						"poseData	globalstmt"
+					],
+					[
+						"dra",
+						"drawBox"
+					],
+					[
+						"eli",
+						"elif	keyword"
+					],
+					[
+						"move",
+						"moveFoward	function"
+					],
+					[
+						"pose",
+						"poseData"
+					],
+					[
+						"Pos",
+						"Pose	class"
+					],
+					[
+						"po",
+						"Pose	class"
+					],
+					[
+						"tur",
+						"turtlesim	module"
+					],
+					[
+						"log",
+						"loginfo"
+					],
+					[
+						"loginf",
+						"loginfo	import"
+					],
+					[
+						"sleep",
+						"sleep	function"
+					],
+					[
+						"publ",
+						"publish	(simulate_lift.py)"
+					],
+					[
+						"tw",
+						"twistPublisher	statement"
+					],
+					[
+						"an",
+						"angular	statement"
+					],
+					[
+						"line",
+						"linear	statement"
+					],
+					[
+						"Tw",
+						"Twist	class"
+					],
+					[
+						"im",
+						"import"
+					],
+					[
+						"msg",
+						"msg	module"
+					],
+					[
+						"geom",
+						"geometry_msgs	module"
+					],
+					[
+						"q",
+						"queue_size	(simulate_lift.py)"
+					],
+					[
+						"tram",
+						"transformation"
+					],
+					[
+						"He",
+						"HelloWorldSopService"
+					],
+					[
+						"Re",
+						"Register	(SP.scala)"
+					],
+					[
+						"Hello",
+						"HelloWorld"
+					],
+					[
+						"object",
+						"object	object"
+					],
+					[
+						"H",
+						"HelloWorldSopService	(initSpLearning.scala)"
+					],
+					[
+						"Dummy",
+						"DummySopService"
+					],
+					[
+						"Dumm",
+						"DummySopService"
+					],
+					[
+						"sen",
+						"send_goal	function"
+					],
+					[
+						"LiftM",
+						"LiftMovementGoal	class"
+					],
+					[
+						"liftmoveme",
+						"LiftMovementAction"
+					],
+					[
+						"type",
+						"typeArray"
+					],
+					[
+						"bin",
+						"binArray	statement"
+					],
+					[
+						"robot",
+						"robotArray	statement"
+					],
+					[
+						"nam",
+						"robotName"
+					],
+					[
+						"ev",
+						"evtList	statement"
+					],
+					[
+						"get_tim",
+						"get_rostime	function"
+					],
+					[
+						"marker",
+						"markerArray	statement"
+					],
+					[
+						"ro",
+						"robotArray	statement"
+					],
+					[
+						"Line",
+						"LINE_STRIP	statement"
+					],
+					[
+						"de",
+						"dettachBin	function"
+					],
+					[
+						"con",
+						"connectedRobot	statement"
+					],
+					[
+						"conn",
+						"setConnectedRobot	function"
+					],
+					[
+						"thre",
+						"__thread"
+					],
+					[
+						"u",
+						"__update_lock"
+					],
+					[
+						"d",
+						"Duration	class"
+					],
+					[
+						"lg",
+						"loginfo	import"
+					],
+					[
+						"pub",
+						"publisher	statement"
+					],
+					[
+						"publis",
+						"Publisher	class"
+					],
+					[
+						"jointS",
+						"jointStatePub	statement"
+					],
+					[
+						"Joint",
+						"JointState	import"
+					],
+					[
+						"sensor",
+						"sensor_msgs	module"
+					],
+					[
+						"imp",
+						"import	keyword"
+					],
+					[
+						"chec",
+						"checkOperationalNode	function"
+					],
+					[
+						"ET",
+						"ET_client	(et_comm.py)"
+					],
+					[
+						"nodeL",
+						"nodeList	statement"
+					],
+					[
+						"ana",
+						"analogSenorValue"
+					],
+					[
+						"rosno",
+						"rosnode	module"
+					],
+					[
+						"seq",
+						"sequenceList"
+					],
+					[
+						"time",
+						"timeout"
+					],
+					[
+						"send_",
+						"send_feedback"
+					],
+					[
+						"setF",
+						"setFeedbackString	function"
+					],
+					[
+						"rec",
+						"recFeedback	param"
+					],
+					[
+						"socke",
+						"socket_read_binary_integer"
+					],
+					[
+						"per",
+						"perform_requested_sequence"
+					],
+					[
+						"Dr",
+						"Drop_Coolant	function"
+					],
+					[
+						"params_se",
+						"params_seq	statement"
+					],
+					[
+						"soc",
+						"socket_read_binary_integer"
+					],
+					[
+						"params",
+						"params	statement"
+					],
+					[
+						"dr",
+						"drop_coolantt"
+					]
+				]
+			},
+			"buffers":
+			[
+				{
+					"file": "/home/ashfaqf/chome/restart-survey/restartsurvey.tex",
+					"settings":
+					{
+						"buffer_size": 15320,
+						"line_ending": "Unix"
+					}
+				},
+				{
+					"file": "/home/ashfaqf/Dropbox/Notes/Paper.md",
+					"settings":
+					{
+						"buffer_size": 3825,
+						"line_ending": "Unix"
+					}
+				},
+				{
+					"file": "/home/ashfaqf/Dropbox/Notes/Research questions.md",
+					"settings":
+					{
+						"buffer_size": 267,
+						"line_ending": "Unix"
+					}
+				}
+			],
+			"build_system": "",
+			"build_system_choices":
+			[
+				[
+					[
+						[
+							"Packages/LaTeXing/LaTeX.sublime-build",
+							""
+						],
+						[
+							"Packages/LaTeXing/LaTeX.sublime-build",
+							"Clean up Files"
+						]
+					],
+					[
+						"Packages/LaTeXing/LaTeX.sublime-build",
+						""
+					]
+				]
+			],
+			"build_varint": "",
+			"command_palette":
+			{
+				"height": 414.0,
+				"last_filter": "build",
+				"selected_items":
+				[
+					[
+						"build",
+						"Build With: LaTeX"
+					],
+					[
+						"git pull",
+						"Git: Pull"
+					],
+					[
+						"git status",
+						"Git: Status"
+					],
+					[
+						"git push",
+						"Git: Push"
+					],
+					[
+						"git ",
+						"Git: Checkout Commit"
+					],
+					[
+						"git checkout ",
+						"Git: Checkout Commit"
+					],
+					[
+						"git stats",
+						"Git: Status"
+					],
+					[
+						"git stash",
+						"Git: Stash"
+					],
+					[
+						"git chec",
+						"Git: Checkout Commit"
+					],
+					[
+						"set",
+						"Set Syntax: Markdown"
+					],
+					[
+						"upda",
+						"Package Control: Upgrade Package"
+					],
+					[
+						"PANDOC",
+						"Pandoc"
+					],
+					[
+						"install",
+						"Package Control: Install Package"
+					],
+					[
+						"markd",
+						"Markdown Preview: Preview in Browser"
+					],
+					[
+						"markdown",
+						"Markdown Preview: Preview in Browser"
+					],
+					[
+						"insta",
+						"Package Control: Install Package"
+					],
+					[
+						"remove",
+						"Package Control: Remove Package"
+					],
+					[
+						"markdonw",
+						"Markdown Preview: Preview in Browser"
+					],
+					[
+						"git ta",
+						"Git: Add Tag"
+					],
+					[
+						"te",
+						"LaTeXing: Texcount"
+					],
+					[
+						"texco",
+						"LaTeXing: Texcount"
+					],
+					[
+						"jump",
+						"LaTeXing: Jump To PDF"
+					],
+					[
+						"remo",
+						"Package Control: Remove Package"
+					],
+					[
+						"bui",
+						"Build: Primary Quick Build"
+					],
+					[
+						"latexing au",
+						"Preferences: LaTeXing Settings - Default"
+					],
+					[
+						"stat",
+						"Git: Status"
+					],
+					[
+						"stats",
+						"Git: Status"
+					],
+					[
+						"comm",
+						"Git: Commit"
+					],
+					[
+						"git s",
+						"Git: Status"
+					],
+					[
+						"commit",
+						"Git: Commit history"
+					],
+					[
+						"status",
+						"Git: Status"
+					],
+					[
+						"orgmode",
+						"Set Syntax: orgmode"
+					],
+					[
+						"packagecontrol",
+						"Package Control: Upgrade Package"
+					],
+					[
+						"latexsym",
+						"LaTeXing: Insert TeX Symbol"
+					],
+					[
+						"late",
+						"LaTeXTools: View PDF"
+					],
+					[
+						"latex",
+						"LaTeXTools: Build cache for LaTeX packages"
+					],
+					[
+						"ins",
+						"Package Control: Install Package"
+					],
+					[
+						"ens",
+						"Ensime: Startup"
+					],
+					[
+						"ensime",
+						"Ensime: Startup"
+					],
+					[
+						"",
+						"Ensime: Build"
+					],
+					[
+						"stop",
+						"SBT: Stop SBT"
+					],
+					[
+						"starts",
+						"SBT: Start Continuous Compiling"
+					],
+					[
+						"ever",
+						"Evernote: Open Evernote Note"
+					],
+					[
+						"everno",
+						"Evernote Settings: Default"
+					],
+					[
+						"rem",
+						"Package Control: Remove Package"
+					],
+					[
+						"git check",
+						"Git: Checkout Current File"
+					],
+					[
+						"evernote",
+						"Evernote: Open Evernote Note"
+					],
+					[
+						"sbt",
+						"SBT: Start SBT"
+					],
+					[
+						"sb",
+						"SBT: Start SBT"
+					],
+					[
+						"scala",
+						"Show Scala Worksheet"
+					],
+					[
+						"Snippet: ",
+						"Snippet: #!/usr/bin/env"
+					],
+					[
+						"show",
+						"Show Scala Worksheet"
+					],
+					[
+						"wor",
+						"Show Scala Worksheet"
+					],
+					[
+						"work",
+						"Show Scala Worksheet"
+					],
+					[
+						"kshee",
+						"Show Scala Worksheet"
+					],
+					[
+						"w",
+						"Show Scala Worksheet"
+					],
+					[
+						"wok",
+						"Show Scala Worksheet"
+					],
+					[
+						"Package Control: ",
+						"Package Control: Install Package"
+					],
+					[
+						"Package Control: ins",
+						"Package Control: Install Package"
+					],
+					[
+						"Package Control: inst",
+						"Package Control: Install Package"
+					]
+				],
+				"width": 934.0
+			},
+			"console":
+			{
+				"height": 288.0,
+				"history":
+				[
+					"'run_scala',{cmd:'scala'}",
+					"'run_scala'",
+					"window.run_command('run_scala',{ 'cmd':'scala','output_file_name': 'hello'})",
+					"window.run_command('run_scala',{ 'cmd':scala,'output_file_name': 'hello'})",
+					"window.run_command ('run_scala', {\\",
+					"window.run_command ('run_scala', {",
+					"        window.run_command ('run_scala', {",
+					"window.run_command ('run_scala')",
+					"'run_scala'",
+					"'run_scala\"",
+					"run_scala",
+					"ls",
+					"show_scala_worksheet",
+					"scala",
+					"sublime.",
+					"sublime.path()",
+					"path",
+					"sublime.",
+					"sublime",
+					"sublime.path()",
+					"echo $PATH",
+					"$PATH",
+					"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+				]
+			},
+			"distraction_free":
+			{
+				"menu_visible": true,
+				"show_minimap": false,
+				"show_open_files": false,
+				"show_tabs": false,
+				"side_bar_visible": false,
+				"status_bar_visible": false
+			},
+			"expanded_folders":
+			[
+				"/home/ashfaqf/chome/restart-survey"
+			],
+			"file_history":
+			[
+				"/home/ashfaqf/Projects/virtcom.github.io/assets/js/plugins/jquery.magnific-popup.js",
+				"/home/ashfaqf/Projects/virtcom.github.io/_config.yml",
+				"/home/ashfaqf/Projects/virtcom.github.io/_posts/News/2016-01-01-test.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/index.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_site/sitemap.xml",
+				"/home/ashfaqf/Projects/virtcom.github.io/_layouts/archive.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_restartPrep/2015-12-06-timeline.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_safetyPrep/2016-03-05-testsafety.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_virtPrep/2016-01-05-vptest.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_studentProjects/2016-04-30-testpost.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/studentProj-archive.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/restartPrep-archive.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_includes/archive-single.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_data/navigation.yml",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/about.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/publications.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/news.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_studentWork/2016-04-30-testpost.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/virtPrep-archive.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/safetyPrep-archive.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/people.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/contact.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/home.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_site/index.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_site/index.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_pages/partners.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/Gemfile",
+				"/home/ashfaqf/Projects/virtcom.github.io/index.md",
+				"/home/ashfaqf/Projects/virtcom.github.io/_rem_index.html",
+				"/home/ashfaqf/Projects/virtcom.github.io/_data/authors.yml",
+				"/home/ashfaqf/Projects/bibGen/src/main/java/me/ashfaqfarooqui/bibGen/App.java",
+				"/home/ashfaqf/Dropbox/Notes/Writing Workshop.md",
+				"/home/ashfaqf/Dropbox/Notes/SA1.md",
+				"/home/ashfaqf/Dropbox/Notes/A great teacher.md",
+				"/home/ashfaqf/Dropbox/Notes/Paper.md",
+				"/home/ashfaqf/Dropbox/Notes/teaching.md",
+				"/home/ashfaqf/Projects/bibGen/src/main/java/me/ashfaqfarooqui/bibGen/grobid.java",
+				"/home/ashfaqf/Dropbox/Notes/sublimesettings.md",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Anaconda.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/AcademicMarkdown/AcademicMarkdown.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/LaTeXing.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Notes.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+				"/home/ashfaqf/Projects/bibGen/config.properties",
+				"/home/ashfaqf/Projects/bibGen/src/main/java/me/ashfaqfarooqui/bibGen/genproperties.java",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/PlainNotes/Notes.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+				"/run/user/1000/gvfs/dav:host=dav.box.com,ssl=true,prefix=%2Fdav/rosplanning.txt",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/LaTeXing/LaTeXing.sublime-settings",
+				"/home/ashfaqf/restart-survey/SurveyPaper.bib",
+				"/home/ashfaqf/.config/sublime-text-3/Cache/LaTeXing/bin/sftp",
+				"/home/ashfaqf/Downloads/Mosaik.RPP",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/KeyboardSpellCheck.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Git/Git.sublime-settings",
+				"/run/user/1000/gvfs/sftp:host=remote11.chalmers.se,user=ashfaqf/chalmers/users/ashfaqf/restart-survey/.gitignore",
+				"/run/user/1000/gvfs/sftp:host=remote11.chalmers.se,user=ashfaqf/chalmers/users/ashfaqf/restart-survey/restartsurvey.sublime-workspace",
+				"/run/user/1000/gvfs/sftp:host=remote11.chalmers.se,user=ashfaqf/chalmers/users/ashfaqf/restart-survey/restartsurvey.sublime-project",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/orgmode.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/MarkdownEditing/Markdown.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/orgmode/orgmode.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Markdown.sublime-settings",
+				"/home/ashfaqf/restart-survey/restartsurvey.aux",
+				"/home/ashfaqf/restart-survey/figures/fiveStateOpModel.tex",
+				"/home/ashfaqf/restart-survey/figures/threeStateOpModel.tex",
+				"/home/ashfaqf/restart-survey/threeStateOpModel.tex",
+				"/mnt/ashfaqfChalmers/Survey/SurveyPaper.bib",
+				"/mnt/ashfaqfChalmers/Survey/restartsurvey.tex",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/LaTeXTools.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/LaTeXTools/README.markdown",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROAR_physicalSystem/controller/src/controller/controller_main.py",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROAR_physicalSystem/controller/src/controller/controller_bridge.py",
+				"/home/ashfaqf/Projects/SP/core/src/test/scala/sp/services/relations/RelationFinderTest.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/services/relations/RelationService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/Relation.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/SOP.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Ensime/Default.sublime-mousemap",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Default.sublime-mousemap",
+				"/home/ashfaqf/Projects/SP/core/src/test/scala/sp/services/relations/RelationIdentificationTest.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Ensime/Default (Linux).sublime-keymap",
+				"/home/ashfaqf/Projects/SP/.ensime_cache/dep-src/source-jars/scala/Option.scala",
+				"/home/ashfaqf/Projects/SP/.ensime_cache/dep-src/source-jars/scala/util/Either.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/services/relations/RelationFinder.scala_",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/ScalaFormat.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/ScalaFormat/ScalaFormat.sublime-settings",
+				"/home/ashfaqf/Projects/SP/.ensime_session",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/spLearning/HelloWorldSopService.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Ensime/Ensime.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/User/Ensime.sublime-settings",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/IDAbleLogic.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/ServiceSupport.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/AttributeLogic.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/PropositionConditionLogic.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/virtcom/SynthesizeModelBasedOnAttributesService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/Conditions.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/virtcom/ExtendIDablesBasedOnTheirAttributes.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/spLearning/initSpLearning.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/DummySopService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/State.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/SOPLogic.scala",
+				"/home/ashfaqf/Projects/SP/gui/src/main/scala/sp/server/RestApi.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/logic/OperationLogic.scala",
+				"/home/ashfaqf/Box/ROSTutorials/beginner_tutorials/src/ShapePublisher.py",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Evernote/Evernote.sublime-settings",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/services/sopmaker/SOPMaker.scala",
+				"/home/ashfaqf/Projects/SP/build.sbt",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Anaconda/Anaconda.sublime-settings",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROSTutorials/beginner_tutorials/setup.py",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROSTutorials/beginner_tutorials/src/__init__.py",
+				"/home/ashfaqf/Projects/catkin_ws/src/ROAR/Lift_simulation/simulate_lift/setup.py",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/ServiceHandler.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/messages/ServiceMessages.scala",
+				"/home/ashfaqf/Projects/SP/launch/src/main/scala/sp/launch/SP.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/initDummySopService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/SPActorSystem.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/services/specificationconverters/ConditionsFromSpecsService.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/messages/EventMessages.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/sp_learning/HelloWorldSopService.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/KeyboardSpellCheck/KeyboardSpellCheck.sublime-settings",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/SublimeSBT/README.md",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/system/ServiceExample.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/virtcom/CreateOpsFromManualModelService.scala",
+				"/home/ashfaqf/Projects/SP/extensions/src/main/scala/sp/virtcom/modeledCases/VolvoWeldConveyerCase.scala",
+				"/home/ashfaqf/Projects/SP/core/src/main/scala/sp/domain/SPAttributes.scala",
+				"/home/ashfaqf/.config/sublime-text-3/Packages/Package Control/Package Control.sublime-settings",
+				"/home/ashfaq/catkin_ws/src/ROAR/Task2/README.md",
+				"/home/ashfaq/catkin_ws/src/ROAR/Task1/README.md",
+				"/media/misc/Dropbox/Calibre Library/Schneider, Susan/Science Fiction and Philosophy (170)/metadata.opf",
+				"/home/ashfaq/catkin_ws/src/ROAR/Task2/simulate_lift/src/simulate_lift/simulate_lift.py"
+			],
+			"find":
+			{
+				"height": 60.0
+			},
+			"find_in_files":
+			{
+				"height": 95.0,
+				"where_history":
+				[
+					"/home/ashfaqf/Projects/SP/core,/home/ashfaqf/Projects/SP/extensions",
+					"/home/ashfaqf/Projects/SP/core",
+					"<open folders>",
+					""
+				]
+			},
+			"find_state":
+			{
+				"case_sensitive": false,
+				"find_history":
+				[
+					"lasi",
+					"todo",
+					"home",
+					"gsub",
+					"nil",
+					"defau",
+					"table",
+					"indicate",
+					"dot",
+					"dots",
+					"spaces",
+					"ModuleStatistic",
+					"unforeseen",
+					"DONE",
+					"WAIT",
+					"ERROR",
+					"RUN",
+					"build",
+					"todo",
+					"phys",
+					"resyn",
+					"requires",
+					"imph",
+					"bib",
+					"command",
+					"platf",
+					"sublime",
+					"init",
+					"ControllerBridge",
+					"getInstance",
+					"CreateSop",
+					"createItemRelationsfrom",
+					"opsUpd",
+					"sendResp",
+					"matchOps",
+					"ItemRelation",
+					"findStraightSeq",
+					"getEnabledOperations",
+					"findWhenOperationsEnabled",
+					"findOperationRelations",
+					"matchOps",
+					"es",
+					"findASeq",
+					"findWhenOperationsEnabled",
+					"defs",
+					"completed",
+					"arbitraryFinder",
+					"arbiMap",
+					"extract",
+					"sbt",
+					"proposition",
+					"++",
+					"atstart",
+					"state",
+					"case",
+					"Jvalues",
+					" values",
+					".values",
+					"values",
+					"obj",
+					"map",
+					"directAttrValues",
+					"addSynthesizedGuardsToAttributes",
+					"getAttr",
+					"?",
+					"modelHandler",
+					"extract",
+					"queryMessage",
+					"x ",
+					"x",
+					"formats",
+					"mf",
+					"SPAttributes",
+					"directAttrValues",
+					"addSPConditionFromAttributes",
+					"carrierTrans",
+					"SPValueDefinition",
+					"isa",
+					"ct",
+					"ParseToModuleWrapper",
+					"reply",
+					"addSPConditionFromAttributes",
+					"dig",
+					"vars",
+					"condition",
+					"run",
+					"version",
+					"attri",
+					"example",
+					"type",
+					"run",
+					"ServiceHandlerAttributes",
+					"Props",
+					"dummy",
+					"space",
+					"DummySopSetup",
+					"theme",
+					"import",
+					"sys",
+					"det",
+					"callbackupEventMsg",
+					"activeOperations",
+					"rose",
+					"setEmpty",
+					"robotName",
+					"uc_eventPublisher",
+					"Updating",
+					"update",
+					"move",
+					"disconnectRobot",
+					"        ",
+					"description",
+					"robot_description",
+					")\n",
+					"path",
+					"scala",
+					"op",
+					"send_feedback",
+					"itemize",
+					"bullet",
+					"font",
+					"fron",
+					"jvm",
+					"jdk",
+					"Truck",
+					"Filter",
+					"pub_robot_stateRT",
+					"publisher"
+				],
+				"highlight": true,
+				"in_selection": false,
+				"preserve_case": false,
+				"regex": false,
+				"replace_history":
+				[
+					"done",
+					"wait",
+					"error",
+					"ERROR",
+					"run",
+					"emph",
+					"ItemRelations",
+					"Machine",
+					"Material",
+					""
+				],
+				"reverse": false,
+				"show_context": true,
+				"use_buffer2": true,
+				"whole_word": false,
+				"wrap": true
+			},
+			"folders":
+			[
+				{
+					"path": "/home/ashfaqf/chome/restart-survey"
+				}
+			],
+			"groups":
+			[
+				{
+					"selected": 0,
+					"sheets":
+					[
+						{
+							"buffer": 0,
+							"file": "/home/ashfaqf/chome/restart-survey/restartsurvey.tex",
+							"semi_transient": false,
+							"settings":
+							{
+								"buffer_size": 15320,
+								"regions":
+								{
+								},
+								"selection":
+								[
+									[
+										15246,
+										15246
+									]
+								],
+								"settings":
+								{
+									"syntax": "Packages/LaTeXing/support/LaTeX.tmLanguage"
+								},
+								"translation.x": 0.0,
+								"translation.y": 5055.0,
+								"zoom_level": 1.0
+							},
+							"stack_index": 0,
+							"type": "text"
+						},
+						{
+							"buffer": 1,
+							"file": "/home/ashfaqf/Dropbox/Notes/Paper.md",
+							"semi_transient": false,
+							"settings":
+							{
+								"buffer_size": 3825,
+								"regions":
+								{
+								},
+								"selection":
+								[
+									[
+										3476,
+										3476
+									]
+								],
+								"settings":
+								{
+									"is_note": true,
+									"syntax": "Packages/MarkdownEditing/Markdown.tmLanguage"
+								},
+								"translation.x": -0.0,
+								"translation.y": 2944.0,
+								"zoom_level": 1.0
+							},
+							"stack_index": 1,
+							"type": "text"
+						},
+						{
+							"buffer": 2,
+							"file": "/home/ashfaqf/Dropbox/Notes/Research questions.md",
+							"semi_transient": false,
+							"settings":
+							{
+								"buffer_size": 267,
+								"regions":
+								{
+								},
+								"selection":
+								[
+									[
+										0,
+										0
+									]
+								],
+								"settings":
+								{
+									"is_note": true,
+									"syntax": "Packages/MarkdownEditing/Markdown.tmLanguage"
+								},
+								"translation.x": 0.0,
+								"translation.y": 0.0,
+								"zoom_level": 1.0
+							},
+							"stack_index": 2,
+							"type": "text"
+						}
+					]
+				}
+			],
+			"incremental_find":
+			{
+				"height": 36.0
+			},
+			"input":
+			{
+				"height": 34.0
+			},
+			"layout":
+			{
+				"cells":
+				[
+					[
+						0,
+						0,
+						1,
+						1
+					]
+				],
+				"cols":
+				[
+					0.0,
+					1.0
+				],
+				"rows":
+				[
+					0.0,
+					1.0
+				]
+			},
+			"menu_visible": true,
+			"output.exec":
+			{
+				"height": 204.0
+			},
+			"output.find_results":
+			{
+				"height": 0.0
+			},
+			"output.git":
+			{
+				"height": 112.0
+			},
+			"output.git-checkout":
+			{
+				"height": 198.0
+			},
+			"output.git-commit":
+			{
+				"height": 204.0
+			},
+			"output.git-pull":
+			{
+				"height": 180.0
+			},
+			"output.git-push":
+			{
+				"height": 198.0
+			},
+			"output.sbt":
+			{
+				"height": 122.0
+			},
+			"output.sbt_error":
+			{
+				"height": 0.0
+			},
+			"pinned_build_system": "Packages/LaTeXing/LaTeX.sublime-build",
+			"position": "0,1,0,0,0,0,0,0,0,3200,1800",
+			"project": "",
+			"replace":
+			{
+				"height": 68.0
+			},
+			"save_all_on_build": true,
+			"select_file":
+			{
+				"height": 0.0,
+				"last_filter": "",
+				"selected_items":
+				[
+					[
+						"processs",
+						"extensions/src/main/scala/sp/processSimulateImporter/ProcessSimulateService.scala"
+					],
+					[
+						"supremicatest",
+						"extensions/src/test/scala/sp/virtcom/SPSupremicaTest.scala"
+					],
+					[
+						"searchop",
+						"extensions/src/main/scala/sp/areus/SearchOpSeqTimeService.scala"
+					],
+					[
+						"dumm",
+						"extensions/src/main/scala/sp/DummySopService.scala"
+					],
+					[
+						"servicehandlera",
+						"core/src/main/scala/sp/system/ServiceHandler.scala"
+					],
+					[
+						"synthes",
+						"extensions/src/main/scala/sp/virtcom/SynthesizeModelBasedOnAttributesService.scala"
+					],
+					[
+						"volvo",
+						"extensions/src/main/scala/sp/virtcom/modeledCases/VolvoWeldConveyerCase.scala"
+					],
+					[
+						"creatops",
+						"extensions/src/main/scala/sp/virtcom/CreateOpsFromManualModelService.scala"
+					],
+					[
+						"sp.sc",
+						"launch/src/main/scala/sp/launch/SP.scala"
+					]
+				],
+				"width": 0.0
+			},
+			"select_project":
+			{
+				"height": 0.0,
+				"last_filter": "",
+				"selected_items":
+				[
+				],
+				"width": 0.0
+			},
+			"select_symbol":
+			{
+				"height": 784.0,
+				"last_filter": "",
+				"selected_items":
+				[
+					[
+						"",
+						"updateItemHTML"
+					]
+				],
+				"width": 2104.0
+			},
+			"selected_group": 0,
+			"settings":
+			{
+			},
+			"show_minimap": true,
+			"show_open_files": false,
+			"show_tabs": true,
+			"side_bar_visible": true,
+			"side_bar_width": 549.0,
+			"status_bar_visible": true,
+			"template_settings":
+			{
+			},
+			"window_id": 18,
+			"workspace_name": ""
+		}
+	],
+	"workspaces":
+	{
+		"recent_workspaces":
+		[
+			"/home/ashfaqf/chome/restart-survey/restartsurvey.sublime-workspace",
+			"/run/user/1000/gvfs/sftp:host=remote11.chalmers.se,user=ashfaqf/chalmers/users/ashfaqf/restart-survey/restartsurvey.sublime-workspace"
+		]
+	}
+}

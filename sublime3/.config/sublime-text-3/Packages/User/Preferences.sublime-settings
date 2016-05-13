@@ -1,0 +1,9 @@
+{
+	"font_size": 9,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"spell_check": true,
+	"translate_tabs_to_spaces": true
+}

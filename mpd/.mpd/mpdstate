@@ -1,0 +1,58 @@
+sw_volume: 1
+audio_device_state:1:whatever name you want
+state: play
+current: 15
+time: 120.093000
+random: 1
+repeat: 0
+single: 0
+consume: 0
+crossfade: 0
+mixrampdb: 0.000000
+mixrampdelay: -1.000000
+playlist_begin
+0:Indian Rock- Raghu Dixit - Antaragini - DASH.m4a
+1:silk route/Boondein.mp3
+2:silk route/Dooba Dooba[Gana.PK].mp3
+3:CokeStudio pk/01 - Sunn Ve Balori - S07E03.mp3
+4:1. ARR/Guru/Guru - 01 - Barso Re.mp3
+5:1. ARR/Guru/Guru - 01 - Barso Re.mp3
+6:1. ARR/Guru/Guru - 01 - Barso Re.mp3
+7:1. ARR/Guru/Guru - 02 - Tere Bina.mp3
+8:1. ARR/Guru/Guru - 03 - Ek Lo Ek Muft.mp3
+9:1. ARR/Guru/Guru - 04 - Mayya.mp3
+10:1. ARR/Guru/Guru - 05 - Ay Hairathe.mp3
+11:1. ARR/Guru/Guru - 06 - Baazi Laga.mp3
+12:CokeStudio pk/02 - Nadiya - S07E03.mp3
+13:CokeStudio pk/Aankhon kay sagar.mp3
+14:CokeStudio pk/Aisha.mp3
+15:CokeStudio pk/Anjane.mp3
+16:CokeStudio pk/Bibi Sanam Janem.mp3
+17:CokeStudio pk/Chal Diyay.mp3
+18:CokeStudio pk/Chup.mp3
+19:CokeStudio pk/Dasht-e-Tanhai.mp3
+20:CokeStudio pk/Dhaani.mp3
+21:CokeStudio pk/Duur.mp3
+22:CokeStudio pk/Ishq Kinara – Zoe Viccaji and Sumru Ağıryürüyen - S06E04.mp3
+23:CokeStudio pk/Jal Pari.mp3
+24:CokeStudio pk/Jo Meray.mp3
+25:CokeStudio pk/Jogi - Fariha Pervez featuring Muazzam Ali Khan - S06E01.mp3
+26:CokeStudio pk/KHAMAAJ.mp3
+27:CokeStudio pk/Khayaal - Umair Jaswal - S06E01.mp3
+28:CokeStudio pk/Laage Re Nain - Ayesha Omar - S06E02.mp3
+29:CokeStudio pk/Laila O Laila - Rostam Mirlashari - S06E04.mp3
+30:CokeStudio pk/Laili Jaan - Zeb and Haniya - S06S02.mp3
+31:CokeStudio pk/Miyan Ki Malhaar - S06E05.mp3
+32:CokeStudio pk/Moray Naina - S06E05.mp3
+33:CokeStudio pk/Neer Bharan - Zara Madani featuring Muazzam Ali Khan - S06E03.mp3
+34:CokeStudio pk/Nindiya Re.mp3
+35:CokeStudio pk/Paimona.mp3
+36:CokeStudio pk/Panchi.mp3
+37:CokeStudio pk/Raat Gaey - Zoe Viccaji - S06E03.mp3
+38:CokeStudio pk/Rona Chor Dia.mp3
+39:CokeStudio pk/sarkiye (1).mp3
+40:CokeStudio pk/sarkiye.mp3
+41:CokeStudio pk/Titiliyaan.mp3
+42:CokeStudio pk/Tori Chab and Kalenin Burcu Muyam - Rustam Fateh Ali Khan and Sumru Ağıryürüyen - S06E02.mp3
+43:CokeStudio pk/Zinda.mp3
+playlist_end

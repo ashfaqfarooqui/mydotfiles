@@ -1,0 +1,23 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"AcademicMarkdown",
+		"Anaconda",
+		"CMakeEditor",
+		"GitGutter",
+		"LaTeX-cwl",
+		"LaTeXing",
+		"Markdown Preview",
+		"MarkdownEditing",
+		"Package Control",
+		"Pandoc",
+		"PlainNotes",
+		"SublimeGit",
+		"SublimeSBT",
+		"Theme - Curiosity"
+	]
+}
