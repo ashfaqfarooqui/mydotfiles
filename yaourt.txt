@@ -1,0 +1,12 @@
+autorandr-git r211.6cd92b6-1
+blockify 3.6.2-1
+google-talkplugin 5.41.0.0-3
+gtk-theme-arc 20160331-1
+i3blocks 1.4-2
+jabref 3.3-1
+libgcrypt11 1.5.0-5
+n1 0.4.33-1
+playerctl 0.5.0-1
+referencer 1.2.2-4
+spotify-stable 0.9.17-6
+sublime-text-dev 3.3103-1
