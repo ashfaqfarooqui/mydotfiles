@@ -30,7 +30,7 @@ font pango:System San Franscisco  13
 #floating_modifier $mod
 
 ## Display ASUS laptop
-exec_always --no-startup-id xrandr --output HDMI2 --off --output HDMI1 --off --output DP1 --off --output eDP1 --mode 2560x1440 --pos 0x0 --rotate normal --output VIRTUAL1 --off
+exec_always --no-startup-id xrandr --output HDMI2 --off --output HDMI1 --off --output DP1 --off --output eDP1 --mode 3200x1800 --pos 0x0 --rotate normal --output VIRTUAL1 --off
 
 # thin borders
 hide_edge_borders both
@@ -43,6 +43,22 @@ bindsym $mod+Shift+q kill
 
 # i3Lock
 bindsym $mod+Shift+x exec ~/.config/i3/scripts/lock.sh ~/.config/i3/lock.png
+bindsym Print exec scrot '%Y-%m-%d-%T-screenshot.png' -e 'mv $f /home/ashfaqf/Pictures/'
+set $Locker ~/.config/i3/scripts/lock.sh ~/.config/i3/lock.png
+set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id $Locker, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym s exec --no-startup-id systemctl suspend, mode "default"
+    bindsym h exec --no-startup-id systemctl hibernate, mode "default"
+    bindsym Shift+s exec --no-startup-id systemctl poweroff -i, mode "default"
+
+    # back
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Insert mode "$mode_system"
 
 
 
@@ -208,6 +224,8 @@ client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color      
 # finds out, if available)
 bar {
         status_command i3blocks -c ~/.config/i3/i3blocks.conf
+	font pango:Monospace 17
+	tray_output primary
 	colors {
 		background $bg-color
 	    	separator #757575
@@ -235,6 +253,9 @@ bindsym XF86MonBrightnessUp exec --no-startup-id pactl set-sink-volume 1 +5% # x
 bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
 
 # keyboard brightness
+bindsym XF86KbdBrightnessUp exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -lt 3 ]; then echo `expr $val + 1` | sudo tee $file; fi"
+bindsym XF86KbdBrightnessDown exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -gt 0 ]; then echo `expr $val - 1` | sudo tee $file; fi"
+
 
 # Touchpad controls
 bindsym XF86TouchpadToggle exec ~/.config/i3/scripts/touchpad.sh # toggle touchpad
@@ -245,8 +266,9 @@ bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
-exec_always feh --bg-scale ~/.config/i3/wallpaper.jpg
-exec compton -f
-exec --no-startup-id dropbox start
 exec --no-startup-id nm-applet
+exec_always feh --bg-scale ~/.config/i3/wallpaper.jpg
+exec --no-startup-id compton -f
+exec --no-startup-id dropbox start
 exec nylas
+# exec /usr/libexec/gnome-settings-daemon
