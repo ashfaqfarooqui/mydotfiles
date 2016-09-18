@@ -9,6 +9,7 @@
   attempt to document/explain/share with the rest of the world, this
   is my attempt at configuration as a literate program. It also shows
   off the awesome power of org-mode, which makes all of this possible.
+  This configuration file is build by looking and drawing inspiration from different sources. HRS and AARON deserve a mention. 
 ** User details
    :PROPERTIES:
    :CUSTOM_ID: user-info
@@ -20,7 +21,7 @@
      (setq user-full-name "Ashfaq Farooqui")
      (setq user-mail-address "ashfaq.farooqui@gmail.com")
    #+end_src
-
+   
 ** Package Management
    :PROPERTIES:
    :CUSTOM_ID: package-management
@@ -49,42 +50,47 @@
 
     This is the list of packages used in this configuration.
     #+begin_src emacs-lisp
-      (defvar ashfaq/packages '(ac-slime
-                                auto-complete
-                                autopair
-                                ess
-                                f
-                                feature-mode
-                                flycheck
-                                graphviz-dot-mode
-                                haml-mode
-                                htmlize
-                                magit
-                                markdown-mode
-                                marmalade
-                                cl
-                                org
-                                powerline
-                                smex
-                                solarized-theme
-                                web-mode
-                                writegood-mode
-                                yaml-mode
-                                ensime
-                                multiple-cursors
-                                find-file-in-repository
-                                ace-jump-mode
-                                yasnippet
-                                window-numbering
-                                expand-region
-                                neotree
-                                monokai-theme
-                                rainbow-delimiters
-                                slime
-                                yafolding
-                                ido-grid-mode
-                                dumb-jump)
-      "Default packages")
+                        (defvar ashfaq/packages '(ac-slime
+                                                  auto-complete
+                                                  autopair
+                                                  ess
+                                                  f
+                                                  feature-mode
+                                                  engine-mode
+                                                  flycheck
+                                                  graphviz-dot-mode
+                                                  haml-mode
+                                                  htmlize
+                                                  magit
+                                                  markdown-mode
+                                                  marmalade
+                                                  cl
+                                                  org
+                                                  powerline
+                                                  smex
+                                                  solarized-theme
+                                                  web-mode
+                                                  writegood-mode
+                                                  yaml-mode
+                                                  ensime
+                                                  multiple-cursors
+                                                  find-file-in-repository
+                                                  ace-jump-mode
+                                                  yasnippet
+                                                  window-numbering
+                                                  expand-region
+                                                  neotree
+                                                  monokai-theme
+                                                  rainbow-delimiters
+                                                  slime
+                                                  yafolding
+                                                  ido-grid-mode
+                                                  dumb-jump
+                                                  projectile
+                                                  evil
+                                                  helm
+                                                  org-bullets)
+                        "Default packages")
     #+end_src
 *** Install default packages
     :PROPERTIES:
@@ -107,7 +113,7 @@
           (when (not (package-installed-p pkg))
             (package-install pkg))))
     #+end_src
-** Start-up options
+*** Start-up options
    :PROPERTIES:
    :CUSTOM_ID: start-up-options
    :END:
@@ -252,6 +258,14 @@
             use-dialog-box nil
             visible-bell t)
       (show-paren-mode t)
+    #+end_src
+*** Evil Mode
+    :PROPERTIES:
+    :CUSTOM_ID: evil-mode
+    :END:
+   
+    #+begin_src emacs-lisp
+     (evil-mode 1)
     #+end_src
 
 ** Org
@@ -666,15 +680,7 @@
 *** Idris Mode
     #+begin_src emacs-lisp
       (setq idris-interpreter-path "/usr/local/bin/idris")
-    #+end_src
-*** Themes
-    Load solarized-light if in a graphical environment. Load the
-    wombat theme if in a terminal.
-    #+begin_src emacs-lisp
-      (if window-system
-          (load-theme 'solarized-light t)
-        (load-theme 'wombat t))
-    #+end_src
+    #+end_src 
 *** Color Codes
     Running things like RSpec in compilation mode produces ansi color
     codes that aren't properly dealt with by default. This takes care
@@ -748,3 +754,391 @@
       (require 'neotree)
       (global-set-key (kbd "s-d") 'neotree-toggle)
     #+end_src
+** Look and feel
+:PROPERTIES:
+:CUSTOM_ID: Look and feel
+:END:
+
+*** Theme
+:PROPERTIES:
+:CUSTOM_ID: Theme
+:END:
+#+begin_src emacs-lisp
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
+ '(compilation-message-face (quote default))
+ '(cua-global-mark-cursor-color "#2aa198")
+ '(cua-normal-cursor-color "#839496")
+ '(cua-overwrite-cursor-color "#b58900")
+ '(cua-read-only-cursor-color "#859900")
+ '(custom-enabled-themes nil)
+ '(custom-safe-themes
+   (quote
+    ("a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(fci-rule-color "#073642")
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-symbol-colors
+   (--map
+    (solarized-color-blend it "#002b36" 0.25)
+    (quote
+     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
+ '(highlight-symbol-foreground-color "#93a1a1")
+ '(highlight-tail-colors
+   (quote
+    (("#073642" . 0)
+     ("#546E00" . 20)
+     ("#00736F" . 30)
+     ("#00629D" . 50)
+     ("#7B6000" . 60)
+     ("#8B2C02" . 70)
+     ("#93115C" . 85)
+     ("#073642" . 100))))
+ '(hl-bg-colors
+   (quote
+    ("#7B6000" "#8B2C02" "#990A1B" "#93115C" "#3F4D91" "#00629D" "#00736F" "#546E00")))
+ '(hl-fg-colors
+   (quote
+    ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
+ '(magit-diff-use-overlays nil)
+ '(nrepl-message-colors
+   (quote
+    ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
+ '(pos-tip-background-color "#073642")
+ '(pos-tip-foreground-color "#93a1a1")
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
+ '(term-default-bg-color "#002b36")
+ '(term-default-fg-color "#839496")
+ '(vc-annotate-background nil)
+ '(vc-annotate-background-mode nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#dc322f")
+     (40 . "#c85d17")
+     (60 . "#be730b")
+     (80 . "#b58900")
+     (100 . "#a58e00")
+     (120 . "#9d9100")
+     (140 . "#959300")
+     (160 . "#8d9600")
+     (180 . "#859900")
+     (200 . "#669b32")
+     (220 . "#579d4c")
+     (240 . "#489e65")
+     (260 . "#399f7e")
+     (280 . "#2aa198")
+     (300 . "#2898af")
+     (320 . "#2793ba")
+     (340 . "#268fc6")
+     (360 . "#268bd2"))))
+ '(vc-annotate-very-old-color nil)
+ '(weechat-color-list
+   (quote
+    (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83")))
+ '(xterm-color-names
+   ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"])
+ '(xterm-color-names-bright
+   ["#002b36" "#cb4b16" "#586e75" "#657b83" "#839496" "#6c71c4" "#93a1a1" "#fdf6e3"]))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+#+end_src
+   
+
+*** ORG Mode beautification
+:PROPERTIES:
+:CUSTOM_ID: Org mode looks
+:END:
+
+**** Display preferences
+
+I like to see an outline of pretty bullets instead of a list of asterisks.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (org-bullets-mode t)))
+#+END_SRC
+
+I like seeing a little downward-pointing arrow instead of the usual ellipsis
+(=...=) that org displays when there's stuff under a header.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-ellipsis "⤵")
+#+END_SRC
+
+Use syntax highlighting in source blocks while editing.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+#+END_SRC
+
+Make TAB act as if it were issued in a buffer of the language's major mode.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-tab-acts-natively t)
+#+END_SRC
+
+When editing a code snippet, use the current window rather than popping open a
+new one (which shows the same information).
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-window-setup 'current-window)
+#+END_SRC
+
+When I'm starting an org capture template I'd like to begin in insert mode. I'm
+opening it up in order to start typing something, so this skips a step.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+#+END_SRC
+
+** Exporting
+
+Allow export to markdown and beamer (for presentations).
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ox-md)
+  (require 'ox-beamer)
+#+END_SRC
+
+Allow =babel= to evaluate Emacs lisp, Ruby, dot, or Gnuplot code.
+
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (ruby . t)
+     (dot . t)
+     (gnuplot . t)))
+#+END_SRC
+
+Don't ask before evaluating code blocks.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+#+END_SRC
+
+Associate the "dot" language with the =graphviz-dot= major mode.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot))
+#+END_SRC
+
+Translate regular ol' straight quotes to typographically-correct curly quotes
+when exporting.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-export-with-smart-quotes t)
+#+END_SRC
+
+**** Exporting to HTML
+
+Don't include a footer with my contact and publishing information at the bottom
+of every exported HTML document.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-html-postamble nil)
+#+END_SRC
+
+**** Exporting to PDF
+
+I want to produce PDFs with syntax highlighting in the code. The best way to do
+that seems to be with the =minted= package, but that package shells out to
+=pygments= to do the actual work. =pdflatex= usually disallows shell commands;
+this enables that.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-latex-pdf-process
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+
+Include the =minted= package in all of my LaTeX exports.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+#+END_SRC
+
+**** Exporting projects
+
+I have a few Org project definitions that I maintain in a separate elisp file.
+
+#+BEGIN_SRC emacs-lisp
+  (load-file ".emacs.d/projects.el")
+#+END_SRC
+
+** TeX configuration
+
+I rarely write LaTeX directly any more, but I often export through it with
+org-mode, so I'm keeping them together.
+
+Automatically parse the file after loading it.
+
+#+BEGIN_SRC emacs-lisp
+  (setq TeX-parse-self t)
+#+END_SRC
+
+Always use =pdflatex= when compiling LaTeX documents. I don't really have any
+use for DVIs.
+
+#+BEGIN_SRC emacs-lisp
+  (setq TeX-PDF-mode t)
+#+END_SRC
+
+Enable a minor mode for dealing with math (it adds a few useful keybindings),
+and always treat the current file as the "main" file. That's intentional, since
+I'm usually actually in an org document.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (LaTeX-math-mode)
+              (setq TeX-master t)))
+#+END_SRC
+
+** Editing with Markdown
+
+Because I can't always use =org=.
+
+I'd like spell-checking running when editing Markdown.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'gfm-mode-hook 'flyspell-mode)
+#+END_SRC
+
+
+
+Use =pandoc= to render the results.
+
+#+BEGIN_SRC emacs-lisp
+  (setq markdown-command "pandoc --standalone --mathjax --from=markdown")
+#+END_SRC
+
+** Wrap paragraphs automatically
+
+=AutoFillMode= automatically wraps paragraphs, kinda like hitting =M-q=. I wrap
+a lot of paragraphs, so this automatically wraps 'em when I'm writing text,
+Markdown, or Org.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'gfm-mode-hook 'turn-on-auto-fill)
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+#+END_SRC
+
+Sometimes, though, I don't wanna wrap text. This toggles wrapping with =C-c q=:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c q") 'auto-fill-mode)
+#+END_SRC
+
+** Linting prose
+
+I use [[http://proselint.com/][proselint]] to check my prose for common errors. This creates a flycheck
+checker that runs proselint in texty buffers and displays my errors.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'flycheck)
+
+  (flycheck-define-checker proselint
+    "A linter for prose."
+    :command ("proselint" source-inplace)
+    :error-patterns
+    ((warning line-start (file-name) ":" line ":" column ": "
+              (id (one-or-more (not (any " "))))
+              (message (one-or-more not-newline)
+                       (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+              line-end))
+    :modes (text-mode markdown-mode gfm-mode org-mode))
+
+  (add-to-list 'flycheck-checkers 'proselint)
+#+END_SRC
+
+Use flycheck in the appropriate buffers:
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'markdown-mode-hook #'flycheck-mode)
+  (add-hook 'gfm-mode-hook #'flycheck-mode)
+  (add-hook 'text-mode-hook #'flycheck-mode)
+  (add-hook 'org-mode-hook #'flycheck-mode)
+#+END_SRC
+
+** Enable region case modification
+
+#+BEGIN_SRC emacs-lisp
+  (put 'downcase-region 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+#+END_SRC
+
+
+** Mass editing of =grep= results
+
+I like the idea of mass editing =grep= results the same way I can edit filenames
+in =dired=. These keybindings allow me to use =C-x C-q= to start editing =grep=
+results and =C-c C-c= to stop, just like in =dired=.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load 'grep
+    '(define-key grep-mode-map
+      (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode))
+
+  (eval-after-load 'wgrep
+    '(define-key grep-mode-map
+      (kbd "C-c C-c") 'wgrep-finish-edit))
+
+  (setq wgrep-auto-save-buffer t)
+#+END_SRC
+
+** Use projectile everywhere
+
+#+BEGIN_SRC emacs-lisp
+ (add-hook 'scala-mode-hook 'projectile-mode) 
+#+END_SRC
+
+** Add a bunch of engines for =engine-mode=
+
+Enable [[https://github.com/hrs/engine-mode][engine-mode]] and define a few useful engines.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'engine-mode)
+
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
+
+  (defengine github
+    "https://github.com/search?ref=simplesearch&q=%s"
+    :keybinding "g")
+
+  (defengine google
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s")
+
+  (defengine rfcs
+    "http://pretty-rfc.herokuapp.com/search?q=%s")
+
+  (defengine stack-overflow
+    "https://stackoverflow.com/search?q=%s"
+    :keybinding "s")
+
+  (defengine wikipedia
+    "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+    :keybinding "w")
+
+  (defengine wiktionary
+    "https://www.wikipedia.org/search-redirect.php?family=wiktionary&language=en&go=Go&search=%s")
+
+  (engine-mode t)
+#+END_SRC
+
