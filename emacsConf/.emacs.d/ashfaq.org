@@ -89,7 +89,8 @@
                                                   projectile
                                                   evil
                                                   helm
-                                                  org-bullets)
+                                                  org-bullets
+                                                  guide-key)
                         "Default packages")
     #+end_src
 *** Install default packages
@@ -307,36 +308,37 @@
     allows you to extract and execute code. It isn't aware of
     =Clojure= by default, so the following sets that up.
     #+begin_src emacs-lisp
-      (require 'ob)
+            (require 'ob)
 
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((sh . t)
-         (dot . t)
-         (ruby . t)
-         (js . t)
-         (C . t)))
+            (org-babel-do-load-languages
+             'org-babel-load-languages
+             '((sh . t)
+               (dot . t)
+               (ruby . t)
+               (js . t)
+               (C . t)
+               (scala . t)))
 
-      (add-to-list 'org-src-lang-modes (quote ("dot". graphviz-dot)))
-      (add-to-list 'org-babel-tangle-lang-exts '("clojure" . "clj"))
+            (add-to-list 'org-src-lang-modes (quote ("dot". graphviz-dot)))
+            (add-to-list 'org-babel-tangle-lang-exts '("clojure" . "clj"))
 
-      (defvar org-babel-default-header-args:clojure
-        '((:results . "silent") (:tangle . "yes")))
+            (defvar org-babel-default-header-args:clojure
+              '((:results . "silent") (:tangle . "yes")))
 
-      (defun org-babel-execute:clojure (body params)
-        (lisp-eval-string body)
-        "Done!")
+            (defun org-babel-execute:clojure (body params)
+              (lisp-eval-string body)
+              "Done!")
 
-      (provide 'ob-clojure)
+            (provide 'ob-clojure)
 
-      (setq org-src-fontify-natively t
-            org-confirm-babel-evaluate nil)
+            (setq org-src-fontify-natively t
+                  org-confirm-babel-evaluate nil)
 
-      (add-hook 'org-babel-after-execute-hook (lambda ()
-                                                (condition-case nil
-                                                    (org-display-inline-images)
-                                                  (error nil)))
-                'append)
+            (add-hook 'org-babel-after-execute-hook (lambda ()
+                                                      (condition-case nil
+                                                          (org-display-inline-images)
+                                                        (error nil)))
+                      'append)
     #+end_src
 *** org-abbrev
     :PROPERTIES:
@@ -760,100 +762,10 @@
 :END:
 
 *** Theme
-:PROPERTIES:
-:CUSTOM_ID: Theme
-:END:
 #+begin_src emacs-lisp
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
- '(compilation-message-face (quote default))
- '(cua-global-mark-cursor-color "#2aa198")
- '(cua-normal-cursor-color "#839496")
- '(cua-overwrite-cursor-color "#b58900")
- '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes nil)
- '(custom-safe-themes
-   (quote
-    ("a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(fci-rule-color "#073642")
- '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
- '(highlight-symbol-colors
-   (--map
-    (solarized-color-blend it "#002b36" 0.25)
-    (quote
-     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
- '(highlight-symbol-foreground-color "#93a1a1")
- '(highlight-tail-colors
-   (quote
-    (("#073642" . 0)
-     ("#546E00" . 20)
-     ("#00736F" . 30)
-     ("#00629D" . 50)
-     ("#7B6000" . 60)
-     ("#8B2C02" . 70)
-     ("#93115C" . 85)
-     ("#073642" . 100))))
- '(hl-bg-colors
-   (quote
-    ("#7B6000" "#8B2C02" "#990A1B" "#93115C" "#3F4D91" "#00629D" "#00736F" "#546E00")))
- '(hl-fg-colors
-   (quote
-    ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
- '(magit-diff-use-overlays nil)
- '(nrepl-message-colors
-   (quote
-    ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
- '(pos-tip-background-color "#073642")
- '(pos-tip-foreground-color "#93a1a1")
- '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
- '(term-default-bg-color "#002b36")
- '(term-default-fg-color "#839496")
- '(vc-annotate-background nil)
- '(vc-annotate-background-mode nil)
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#dc322f")
-     (40 . "#c85d17")
-     (60 . "#be730b")
-     (80 . "#b58900")
-     (100 . "#a58e00")
-     (120 . "#9d9100")
-     (140 . "#959300")
-     (160 . "#8d9600")
-     (180 . "#859900")
-     (200 . "#669b32")
-     (220 . "#579d4c")
-     (240 . "#489e65")
-     (260 . "#399f7e")
-     (280 . "#2aa198")
-     (300 . "#2898af")
-     (320 . "#2793ba")
-     (340 . "#268fc6")
-     (360 . "#268bd2"))))
- '(vc-annotate-very-old-color nil)
- '(weechat-color-list
-   (quote
-    (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83")))
- '(xterm-color-names
-   ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"])
- '(xterm-color-names-bright
-   ["#002b36" "#cb4b16" "#586e75" "#657b83" "#839496" "#6c71c4" "#93a1a1" "#fdf6e3"]))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-#+end_src
-   
-
+(require 'atom-one-dark-theme)
+(load-theme 'atom-one-dark t)
+#+END_src
 *** ORG Mode beautification
 :PROPERTIES:
 :CUSTOM_ID: Org mode looks
@@ -972,12 +884,6 @@ Include the =minted= package in all of my LaTeX exports.
 #+END_SRC
 
 **** Exporting projects
-
-I have a few Org project definitions that I maintain in a separate elisp file.
-
-#+BEGIN_SRC emacs-lisp
-  (load-file ".emacs.d/projects.el")
-#+END_SRC
 
 ** TeX configuration
 
@@ -1141,4 +1047,19 @@ Enable [[https://github.com/hrs/engine-mode][engine-mode]] and define a few usef
 
   (engine-mode t)
 #+END_SRC
+** Add guide key
 
+#+begin_src emacs-lisp
+  (setq guide-key/guide-key-sequence '("C-x"))
+  (guide-key-mode 1)  ; Enable guide-key-mode
+  (setq guide-key/highlight-command-regexp "rectangle")
+  (setq guide-key/highlight-command-regexp
+        '("rectangle"
+         ("register" . font-lock-type-face)
+          ("bookmark" . "hot pink")))
+  (defun guide-key/my-hook-function-for-org-mode ()
+  (guide-key/add-local-guide-key-sequence "C-c")
+  (guide-key/add-local-guide-key-sequence "C-c C-x")
+  (guide-key/add-local-highlight-command-regexp "org-"))
+(add-hook 'org-mode-hook 'guide-key/my-hook-function-for-org-mode)
+#+end_src
