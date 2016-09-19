@@ -15,4 +15,7 @@ sublime3/.config/sublime-text-3/Packages/requests-oauthlib
 sublime3/.config/sublime-text-3/Packages/requests
 sublime3/.config/sublime-text-3/Packages/ssl-linux
 sublime3/.config/sublime-text-3/Packages/tabulate
-
+*.dat
+abbrev_defs
+ashfaq.html
+.smex-items
