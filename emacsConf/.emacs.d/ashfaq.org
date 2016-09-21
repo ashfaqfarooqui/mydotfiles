@@ -50,48 +50,48 @@
 
     This is the list of packages used in this configuration.
     #+begin_src emacs-lisp
-                        (defvar ashfaq/packages '(ac-slime
-                                                  auto-complete
-                                                  autopair
-                                                  ess
-                                                  f
-                                                  feature-mode
-                                                  engine-mode
-                                                  flycheck
-                                                  graphviz-dot-mode
-                                                  haml-mode
-                                                  htmlize
-                                                  magit
-                                                  markdown-mode
-                                                  marmalade
-                                                  cl
-                                                  org
-                                                  powerline
-                                                  smex
-                                                  solarized-theme
-                                                  web-mode
-                                                  writegood-mode
-                                                  yaml-mode
-                                                  ensime
-                                                  multiple-cursors
-                                                  find-file-in-repository
-                                                  ace-jump-mode
-                                                  yasnippet
-                                                  window-numbering
-                                                  expand-region
-                                                  neotree
-                                                  monokai-theme
-                                                  rainbow-delimiters
-                                                  slime
-                                                  yafolding
-                                                  ido-grid-mode
-                                                  dumb-jump
-                                                  projectile
-                                                  evil
-                                                  helm
-                                                  org-bullets
-                                                  guide-key)
-                        "Default packages")
+                              (defvar ashfaq/packages '(ac-slime
+                                                        auto-complete
+                                                        autopair
+                                                        ess
+                                                        f
+                                                        feature-mode
+                                                        engine-mode
+                                                        flycheck
+                                                        graphviz-dot-mode
+                                                        haml-mode
+                                                        htmlize
+                                                        magit
+                                                        markdown-mode
+                                                        marmalade
+                                                        cl
+                                                        org
+                                                        powerline
+                                                        smex
+                                                        solarized-theme
+                                                        web-mode
+                                                        writegood-mode
+                                                        yaml-mode
+                                                        ensime
+                                                        multiple-cursors
+                                                        find-file-in-repository
+                                                        ace-jump-mode
+                                                        yasnippet
+                                                        window-numbering
+                                                        expand-region
+                                                        neotree
+                                                        monokai-theme
+                                                        rainbow-delimiters
+                                                        slime
+                                                        yafolding
+                                                        ido-grid-mode
+                                                        dumb-jump
+                                                        projectile
+                                                        evil
+                                                        helm
+                                                        org-bullets
+                                                        guide-key)
+                              "Default packages")
     #+end_src
 *** Install default packages
     :PROPERTIES:
@@ -118,7 +118,9 @@
    :PROPERTIES:
    :CUSTOM_ID: start-up-options
    :END:
-
+;;   #+begin_src emacs-lisp
+;;     (find-file "~/Dropbox/orgs/Phd Notebook.org")
+;;   #+end_src
 *** Splash Screen
     :PROPERTIES:
     :CUSTOM_ID: splash-screen
@@ -476,6 +478,24 @@
 
       (define-abbrev c-mode-abbrev-table "ngxhdr" "" 'skel-ngx-append-header)
     #+end_src
+*** exporting
+Make sure we use another folder to export files, we do not want orgs
+folder too cluttered.
+#+BEGIN_SRC emacs-lisp
+(setq org-publish-project-alist
+  '(("html"
+     :base-directory "./"
+     :base-extension "org"
+     :publishing-directory "./exports"
+     :publishing-function org-publish-org-to-html)
+    ("pdf"
+     :base-directory "./"
+     :base-extension "org"
+     :publishing-directory "./exports"
+     :publishing-function org-publish-org-to-pdf)
+    ("all" :components ("html" "pdf"))))
+
+#+END_SRC
 ** Utilities
 
 
@@ -762,10 +782,6 @@
 :END:
 
 *** Theme
-#+begin_src emacs-lisp
-(require 'atom-one-dark-theme)
-(load-theme 'atom-one-dark t)
-#+END_src
 *** ORG Mode beautification
 :PROPERTIES:
 :CUSTOM_ID: Org mode looks
