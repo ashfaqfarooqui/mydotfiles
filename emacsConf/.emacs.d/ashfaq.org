@@ -342,142 +342,6 @@
                                                         (error nil)))
                       'append)
     #+end_src
-*** org-abbrev
-    :PROPERTIES:
-    :CUSTOM_ID: org-abbrev
-    :END:
-    #+begin_src emacs-lisp
-      (add-hook 'org-mode-hook (lambda () (abbrev-mode 1)))
-
-      (define-skeleton skel-org-block-elisp
-        "Insert an emacs-lisp block"
-        ""
-        "#+begin_src emacs-lisp\n"
-        _ - \n
-        "#+end_src\n")
-
-      (define-abbrev org-mode-abbrev-table "elsrc" "" 'skel-org-block-elisp)
-
-      (define-skeleton skel-org-block-js
-        "Insert a JavaScript block"
-        ""
-        "#+begin_src js\n"
-        _ - \n
-        "#+end_src\n")
-
-      (define-abbrev org-mode-abbrev-table "jssrc" "" 'skel-org-block-js)
-
-      (define-skeleton skel-header-block
-        "Creates my default header"
-        ""
-        "#+TITLE: " str "\n"
-        "#+AUTHOR: Ashfaq Farooqui\n"
-        "#+EMAIL: ashfaq.farooqui@gmail.com\n"
-        "#+OPTIONS: toc:3 num:nil\n"
-        "#+STYLE: <link rel=\"stylesheet\" type=\"text/css\" href=\"http://thomasf.github.io/solarized-css/solarized-light.min.css\" />\n")
-
-      (define-abbrev org-mode-abbrev-table "sheader" "" 'skel-header-block)
-
-      (define-skeleton skel-org-html-file-name
-        "Insert an HTML snippet to reference the file by name"
-        ""
-        "#+HTML: <strong><i>"str"</i></strong>")
-
-      (define-abbrev org-mode-abbrev-table "fname" "" 'skel-org-html-file-name)
-
-      (define-skeleton skel-ngx-config
-        "Template for NGINX module config file"
-        ""
-        "ngx_addon_name=ngx_http_" str  "_module\n"
-        "HTTP_MODULES=\"$HTTP_MODULES ngx_http_" str "_module\"\n"
-        "NGX_ADDON_SRCS=\"$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_" str "_module.c\"")
-
-      (define-abbrev fundamental-mode-abbrev-table "ngxcnf" "" 'skel-ngx-config)
-
-      (define-skeleton skel-ngx-module
-        "Template for NGINX modules"
-        ""
-        "#include <nginx.h>\n"
-        "#include <ngx_config.h>\n"
-        "#include <ngx_core.h>\n"
-        "#include <ngx_http.h>\n\n"
-
-        "ngx_module_t ngx_http_" str "_module;\n\n"
-
-        "static ngx_int_t\n"
-        "ngx_http_" str "_handler(ngx_http_request_t *r)\n"
-        "{\n"
-        >"if (r->main->internal) {\n"
-        >"return NGX_DECLINED;\n"
-        "}" > \n
-        \n
-        >"ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, \"My new module\");\n\n"
-        > _ \n
-        >"return NGX_OK;\n"
-        "}" > "\n\n"
-
-        "static ngx_int_t\n"
-        "ngx_http_"str"_init(ngx_conf_t *cf)\n"
-        "{\n"
-        >"ngx_http_handler_pt *h;\n"
-        >"ngx_http_core_main_conf_t *cmcf;\n\n"
-
-        >"cmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_core_module);\n"
-        >"h = ngx_array_push(&cmcf->phases[NGX_HTTP_ACCESS_PHASE].handlers);\n\n"
-
-        >"if (h == NULL) {\n"
-        >"return NGX_ERROR;\n"
-        "}" > \n
-        \n
-        >"*h = ngx_http_"str"_handler;\n\n"
-
-        >"return NGX_OK;\n"
-        "}" > \n
-        \n
-        "static ngx_http_module_t ngx_http_"str"_module_ctx = {\n"
-        >"NULL,                 /* preconfiguration */\n"
-        >"ngx_http_"str"_init,  /* postconfiguration */\n"
-        >"NULL,                 /* create main configuration */\n"
-        >"NULL,                 /* init main configuration */\n"
-        >"NULL,                 /* create server configuration */\n"
-        >"NULL,                 /* merge server configuration */\n"
-        >"NULL,                 /* create location configuration */\n"
-        >"NULL                  /* merge location configuration */\n"
-        "};" > \n
-        \n
-
-        "ngx_module_t ngx_http_"str"_module = {\n"
-        >"NGX_MODULE_V1,\n"
-        >"&ngx_http_"str"_module_ctx,  /* module context */\n"
-        >"NULL,                        /* module directives */\n"
-        >"NGX_HTTP_MODULE,             /* module type */\n"
-        >"NULL,                        /* init master */\n"
-        >"NULL,                        /* init module */\n"
-        >"NULL,                        /* init process */\n"
-        >"NULL,                        /* init thread */\n"
-        >"NULL,                        /* exit thread */\n"
-        >"NULL,                        /* exit process */\n"
-        >"NULL,                        /* exit master */\n"
-        >"NGX_MODULE_V1_PADDING\n"
-        "};" >)
-
-      (require 'cc-mode)
-      (define-abbrev c-mode-abbrev-table "ngxmod" "" 'skel-ngx-module)
-
-      (define-skeleton skel-ngx-append-header
-        "Template for header appending function for NGINX modules"
-        ""
-        "static void append_header(ngx_http_request_t *r)\n"
-        "{\n"
-        > "ngx_table_elt_t *h;\n"
-        > "h = ngx_list_push(&r->headers_out.headers);\n"
-        > "h->hash = 1;\n"
-        > "ngx_str_set(&h->key, \"X-NGINX-Hello\");\n"
-        > "ngx_str_set(&h->value, \"Hello NGINX!\");\n"
-        "}\n")
-
-      (define-abbrev c-mode-abbrev-table "ngxhdr" "" 'skel-ngx-append-header)
-    #+end_src
 *** exporting
 Make sure we use another folder to export files, we do not want orgs
 folder too cluttered.
@@ -496,9 +360,91 @@ folder too cluttered.
     ("all" :components ("html" "pdf"))))
 
 #+END_SRC
+*** Directory setup
+    Store my org files in =~/Dropbox/orgs=, define an index file and an
+    archive of finished tasks in =archive.org=.
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory "~/Dropbox/orgs")
+
+  (defun org-file-path (filename)
+    "Return the absolute address of an org file, given its relative name."
+    (concat (file-name-as-directory org-directory) filename))
+
+  (setq org-inbox-file
+        (concat (org-file-path "inbox.org")))
+  (setq org-index-file (org-file-path "index.org"))
+  (setq org-archive-location
+        (concat (org-file-path "archive.org") "::* From %s"))
+
+#+END_SRC
+*** org-agenda
+Use all the files to derive agenda.
+#+BEGIN_SRC emacs-lisp
+(org-agenda-files org-directory)
+#+END_SRC
+*** Ending tasks
+Mark a =TODO= as done using =C-c C-x C-s= and send to archive.
+#+BEGIN_SRC emacs-lisp
+(defun mark-done-and-archive ()
+  "Mark the state of an org-mode item as DONE and archive it."
+  (interactive)
+  (org-todo 'done)
+  (org-archive-subtree))
+
+(define-key global-map "\C-c\C-x\C-s" 'mark-done-and-archive)
+(setq org-log-done 'time)
+#+END_SRC
+*** Capturing tasks
+
+Define a few common tasks as capture templates. Specifically, I frequently:
+
+- Record ideas for future blog posts in =blog-ideas.org=,
+- Keep a running grocery list in =~/Phd Notebook.org=, and
+- Maintain a todo list in =~index.org=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+        '(("b" "Blog idea"
+           entry
+           (file (org-file-path "blog-ideas.org"))
+           "* TODO %?\n")
+
+          ("p" "Phd Notes"
+           entry
+           (file (org-file-path "Phd Notebook.org")))
+           
+           ("P" "Phd todo stuff"
+            entry
+            (file (org-file-path "Phd NoteBook.org")))
+
+          ("t" "Todo tasks"
+           entry
+           (file (org-file-path "to-do.org"))
+           "* TODO %?\n")
+
+          ("r" "Reading"
+           checkitem
+           (file (org-file-path "to-read.org")))
+
+          ("R" "Random Notes"
+           entry
+           (file org-index-file)
+           "* %?\n")))
+#+END_SRC
+
+When I'm starting an org capture template I'd like to begin in insert mode. I'm
+opening it up in order to start typing something, so this skips a step.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+#+END_SRC
+*** Keybinds for org
+#+BEGIN_SRC emacs-lisp
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(define-key global-map "\C-cc" 'org-capture)
+#+END_SRC
 ** Utilities
-
-
 *** Smex
     =smex= is a necessity. It provides history and searching on top of =M-x=.
     #+begin_src emacs-lisp
@@ -540,6 +486,11 @@ folder too cluttered.
       (ac-config-default)
     #+end_src
 *** Indentation and buffer cleanup
+Setup org mode indentation
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-indented t)
+
+#+END_SRC
     This re-indents, untabifies, and cleans up whitespace. It is stolen
     directly from the emacs-starter-kit.
     #+begin_src emacs-lisp
@@ -569,6 +520,35 @@ folder too cluttered.
 
       (setq-default show-trailing-whitespace t)
     #+end_src
+
+    Indent stuff, copied from [[https://www.emacswiki.org/emacs/IndentingText]]
+    #+BEGIN_SRC lisp-emacs
+    
+(defun shift-region (distance)
+  (let ((mark (mark)))
+    (save-excursion
+      (indent-rigidly (region-beginning) (region-end) distance)
+      (push-mark mark t t)
+      ;; Tell the command loop not to deactivate the mark
+      ;; for transient mark mode
+      (setq deactivate-mark nil))))
+
+(defun shift-right ()
+  (interactive)
+  (shift-region 1))
+
+(defun shift-left ()
+  (interactive)
+  (shift-region -1))
+
+;; Bind (shift-right) and (shift-left) function to your favorite keys. I use
+;; the following so that Ctrl-Shift-Right Arrow moves selected text one 
+;; column to the right, Ctrl-Shift-Left Arrow moves selected text one
+;; column to the left:
+
+(global-set-key [C-S-right] 'shift-right)
+(global-set-key [C-S-left] 'shift-left)
+    #+END_SRC
 *** flyspell
     The built-in Emacs spell checker. Turn off the welcome flag because
     it is annoying and breaks on quite a few systems. Specify the
@@ -728,8 +708,7 @@ folder too cluttered.
       (autoload 'findr-query-replace "findr" "Replace text in files." t)
       (define-key global-map [(meta control r)] 'findr-query-replace)
     #+end_src
-*** Scala 
-    Setup configuration for scala mode and add hook to run ensime within scala-mode
+;; *** Scala x   Setup configuration for scala mode and add hook to run ensime within scala-mode
     #+begin_src emacs-lisp
       (require 'ensime)
       ;; Start ensime mode whenever we open scala mode, e.g. open a .scala file
@@ -812,9 +791,9 @@ Use syntax highlighting in source blocks while editing.
 
 Make TAB act as if it were issued in a buffer of the language's major mode.
 
-#+BEGIN_SRC emacs-lisp
-  (setq org-src-tab-acts-natively t)
-#+END_SRC
+;; #+BEGIN_SRC emacs-lisp
+;;  (setq org-src-tab-acts-natively t)
+;; #+END_SRC
 
 When editing a code snippet, use the current window rather than popping open a
 new one (which shows the same information).
@@ -898,8 +877,6 @@ Include the =minted= package in all of my LaTeX exports.
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   (setq org-latex-listings 'minted)
 #+END_SRC
-
-**** Exporting projects
 
 ** TeX configuration
 
@@ -1003,7 +980,6 @@ Use flycheck in the appropriate buffers:
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
 #+END_SRC
-
 
 ** Mass editing of =grep= results
 
