@@ -53,7 +53,7 @@ plugins=(git archlinux command-not-found git-extras python sbt scala sudo web-se
 
 # User configuration
 
-  export PATH="/home/ashfaqf/.npm-packages/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
+  export PATH="/home/ashfaqf/.npm-packages/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/activemq/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -86,6 +86,11 @@ export SSH_KEY_PATH="~/.ssh/id_rsa"
 NPM_PACKAGES="${HOME}/.npm-packages"
 
 PATH="$NPM_PACKAGES/bin:$PATH"
+
+
+##Cups config, replaces .cups/client.conf...
+
+CUPS_SERVER=print.chalmers.se
 
 # Unset manpath so we can inherit from /etc/manpath via the `manpath` command
 unset MANPATH # delete if you already modified MANPATH elsewhere in your config
