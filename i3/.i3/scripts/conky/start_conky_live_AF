@@ -1,0 +1,6 @@
+#!/bin/bash
+
+conky -c conky_shortcuts_live_AF &&
+conky -c conky_AF &&
+
+exit 0

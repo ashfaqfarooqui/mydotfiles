@@ -390,7 +390,7 @@ Mark a =TODO= as done using =C-c C-x C-s= and send to archive.
 (defun mark-done-and-archive ()
   "Mark the state of an org-mode item as DONE and archive it."
   (interactive)
-  (org-todo 'DONE)
+  (org-todo 'done)
   (org-archive-subtree))
 
 (define-key global-map "\C-c\C-x\C-s" 'mark-done-and-archive)
@@ -414,10 +414,11 @@ Define a few common tasks as capture templates. Specifically, I frequently:
           ("p" "Phd Notes"
            entry
            (file (org-file-path "Phd Notebook.org")))
-           
-           ("P" "Phd todo stuff"
+
+          ("P" "Phd todo stuff"
             entry
-            (file (org-file-path "Phd NoteBook.org")))
+            (file (org-file-path "Phd NoteBook.org"))
+            "* TODO %?\n")
 
           ("t" "Todo tasks"
            entry
