@@ -290,8 +290,11 @@
    =org-mode= is active.
    #+begin_src emacs-lisp
      (setq org-log-done t
-           org-todo-keywords '((sequence "TODO" "INPROGRESS" "DONE"))
-           org-todo-keyword-faces '(("INPROGRESS" . (:foreground "blue" :weight bold))))
+           org-todo-keywords '((sequence "TODO" "INPROGRESS" "DONE" "DEFFERED"))
+           org-todo-keyword-faces '(("INPROGRESS" . (:foreground "blue" :weight bold))
+                                    ("DEFFERED" . (:foreground "red" :weight book))
+                                    ("DONE" . (:foreground "green" :weight bold))))
+
      (add-hook 'org-mode-hook
                (lambda ()
                  (flyspell-mode)))
@@ -390,7 +393,7 @@ Mark a =TODO= as done using =C-c C-x C-s= and send to archive.
 (defun mark-done-and-archive ()
   "Mark the state of an org-mode item as DONE and archive it."
   (interactive)
-  (org-todo 'done)
+  (org-todo "DONE")
   (org-archive-subtree))
 
 (define-key global-map "\C-c\C-x\C-s" 'mark-done-and-archive)
