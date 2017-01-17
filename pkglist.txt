@@ -33,6 +33,7 @@ clipit
 cmake
 compton
 conky-i3
+copyq
 coreutils
 cpupower
 crda
@@ -52,6 +53,7 @@ dmraid
 dnsmasq
 dosfstools
 downgrade
+dpkg
 dropbox
 dunst
 e2fsprogs
@@ -71,6 +73,7 @@ feh
 ffmpeg
 ffmpegthumbnailer
 file
+filebin
 filesystem
 findutils
 firefox
@@ -95,6 +98,8 @@ glibc
 gnome-keyring
 gnome-shell
 gnome-vfs
+google-chrome
+google-talkplugin
 gparted
 grep
 grub
@@ -108,6 +113,7 @@ gstreamer0.10-base-plugins
 gstreamer0.10-good-plugins
 gstreamer0.10-ugly-plugins
 gtk-xfce-engine
+gtklp
 gufw
 gvfs
 gvfs-afc
@@ -134,7 +140,10 @@ ipw2200-fw
 isousb
 ispell
 iw
+jabref
+jdk
 jfsutils
+jre
 json-c
 less
 lib32-mesa
@@ -144,6 +153,7 @@ lib32-primus
 libdvdcss
 libgcrypt15
 libgpod
+libqglviewer-qt4
 libreoffice-fresh
 libtool
 licenses
@@ -195,6 +205,7 @@ mousepad
 mpd
 mpv
 mutt
+n1
 nano
 nautilus
 nbd
@@ -269,7 +280,9 @@ slop
 smartmontools
 speedtest-cli
 squashfs-tools
+sstp-client
 stow
+sublime-text-dev
 subversion
 sudo
 sysfsutils
@@ -277,6 +290,7 @@ syslinux
 syslog-ng
 systemd-sysvcompat
 tar
+telegram-cli-git
 terminus-font
 termite
 testdisk
@@ -320,6 +334,7 @@ viewnior
 vim
 vim-latexsuite
 virtualbox
+virtualbox-dkms-manjaro
 virtualbox-guest-dkms
 virtualbox-guest-iso
 virtualbox-guest-utils
@@ -356,6 +371,7 @@ xfburn
 xfce4-appfinder
 xfce4-mixer
 xfce4-panel
+xfce4-power-manager-dev
 xfce4-session
 xfce4-settings
 xfce4-terminal
@@ -363,6 +379,7 @@ xfdesktop
 xfsprogs
 xfwm4
 xfwm4-themes
+xininfo-git
 xorg-fonts-100dpi
 xorg-server
 xorg-server-utils

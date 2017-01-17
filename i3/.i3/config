@@ -63,7 +63,7 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 1 toggle # mute s
 #bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
 
 # Touchpad controls
-bindsym XF86TouchpadToggle exec ~/i3/scripts/touchpad.sh # toggle touchpad
+bindsym XF86TouchpadToggle exec ~/.i3/scripts/touchpad.sh # toggle touchpad
 # keyboard brightness
 #bindsym XF86KbdBrightnessUp exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -lt 3 ]; then echo `expr $val + 1` | sudo tee $file; fi"
 #bindsym XF86KbdBrightnessDown exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -gt 0 ]; then echo `expr $val - 1` | sudo tee $file; fi"
@@ -300,12 +300,11 @@ mode "resize" {
 
 # Lock screen
 bindsym $mod+Ctrl+l exec --no-startup-id blurlock
-
+exec --no-startup-id autorandr -c
 # Autostart applications
 ## adjustment of i3bar battery reading (only run at the very first login):
 #exec --no-startup-id /usr/bin/adjust_i3statusconf
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id nitrogen --restore; sleep 1; compton -b
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
@@ -315,7 +314,7 @@ exec --no-startup-id clipit
 #exec --no-startup-id start_conky_maia
 # exec --no-startup-id start_conky_green
 exec --no-startup-id xautolock -time 5 -locker blurlock
-exec --no-startup-id ./scripts/conky/start_conky_live_AF
+#exec --no-startup-id ~/.i3/scripts/conky/start_conky_live_AF
 
 
 #############################
@@ -441,6 +440,8 @@ mode "$mode_gaps_outer" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
+
+exec --no-startup-id nitrogen --restore; sleep 1; compton -b
 
 
 

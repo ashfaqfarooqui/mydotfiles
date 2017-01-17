@@ -290,9 +290,10 @@
    =org-mode= is active.
    #+begin_src emacs-lisp
      (setq org-log-done t
-           org-todo-keywords '((sequence "TODO" "INPROGRESS" "DONE" "DEFFERED"))
+           org-todo-keywords '((sequence "TODO" "INPROGRESS" "DONE" "DEFFERED" "WAITING"))
            org-todo-keyword-faces '(("INPROGRESS" . (:foreground "blue" :weight bold))
                                     ("DEFFERED" . (:foreground "red" :weight book))
+                                    ("WAITING" . (:background "red" :weight book))
                                     ("DONE" . (:foreground "green" :weight bold))))
 
      (add-hook 'org-mode-hook
