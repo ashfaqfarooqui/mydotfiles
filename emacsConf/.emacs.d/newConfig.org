@@ -24,6 +24,8 @@
     (add-to-list 'package-archives
                  '("melpa" . "http://melpa.milkbox.net/packages/") t)
     (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+    (add-to-list 'package-archives
+                '("elpy" . "http://jorgenschaefer.github.io/packages/"))
     (setq package-archive-enable-alist '(("melpa" magit f)))
     (require 'cl)
   #+end_src
@@ -49,6 +51,7 @@
  zenburn-theme
  writeroom-mode;;darkroom
  which-key
+ elpy
  ;tex-mik
  ) 
  "Default packages")
@@ -573,6 +576,24 @@ Setup org mode indentation
    Emacs. I mostly use it for task/day organization and generating
    code snippets in HTML. Just a few tweaks here to make the
    experience better.
+** Directory setup
+   Store my org files in =~/Dropbox/orgs=, define an index file and an
+   archive of finished tasks in =archive.org=.
+
+#+BEGIN_SRC emacs-lisp
+ (setq org-directory "~/Dropbox/orgs")
+
+ (defun org-file-path (filename)
+   "Return the absolute address of an org file, given its relative name."
+   (concat (file-name-as-directory org-directory) filename))
+
+ (setq org-inbox-file
+       (concat (org-file-path "inbox.org")))
+ (setq org-index-file (org-file-path "index.org"))
+ (setq org-archive-location
+       (concat (org-file-path "archive.org") "::* From %s"))
+
+#+END_SRC
 ** Settings
 Enable logging when tasks are complete. This puts a time-stamp on
    the completed task. Since I usually am doing quite a few things at
@@ -688,24 +709,6 @@ opening it up in order to start typing something, so this skips a step.
                                                        (error nil)))
                      'append)
    #+end_src
-** Directory setup
-   Store my org files in =~/Dropbox/orgs=, define an index file and an
-   archive of finished tasks in =archive.org=.
-
-+BEGIN_SRC emacs-lisp
- (setq org-directory "~/Dropbox/orgs")
-
- (defun org-file-path (filename)
-   "Return the absolute address of an org file, given its relative name."
-   (concat (file-name-as-directory org-directory) filename))
-
- (setq org-inbox-file
-       (concat (org-file-path "inbox.org")))
- (setq org-index-file (org-file-path "index.org"))
- (setq org-archive-location
-       (concat (org-file-path "archive.org") "::* From %s"))
-
-+END_SRC
 ** org-agenda
 Use all the files to derive agenda.
 #+BEGIN_SRC emacs-lisp
@@ -909,4 +912,9 @@ Markdown, or Org.
 #+BEGIN_SRC emacs-lisp
 (load-theme 'zenburn t)
 
+#+END_SRC
+* Python
+#+BEGIN_SRC emacs-lisp
+
+(elpy-enable)
 #+END_SRC
