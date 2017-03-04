@@ -37,7 +37,7 @@
  magit
  org
  powerline
- smex
+ helm
  ensime
  multiple-cursors
  find-file-in-repository
@@ -52,7 +52,11 @@
  writeroom-mode;;darkroom
  which-key
  elpy
- ;tex-mik
+ latex-preview-pane
+ org-ref
+ pdf-tools
+ auctex
+ auctex-latexmk
  ) 
  "Default packages")
 
@@ -190,14 +194,12 @@ don't share that discomfort with others.
     #+end_src
 
 * Utilities
-** Smex
-    =smex= is a necessity. It provides history and searching on top of =M-x=.
-    #+begin_src emacs-lisp
-      (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
-      (smex-initialize)
-      (global-set-key (kbd "M-x") 'smex)
-      (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-    #+end_src
+** Helm
+#+BEGIN_SRC emacs-lisp
+(require 'helm-config)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(helm-mode 1)
+#+END_SRC
 ** Ido
     =Ido= mode provides a nice way to navigate the filesystem. This is
     mostly just turning it on.
@@ -828,17 +830,20 @@ Markdown, or Org.
 #+END_SRC
 ** Latex Config
 #+BEGIN_SRC emacs-lisp
-;;    (require 'tex-mik)
-    (setq TeX-auto-save t)
-    (setq TeX-parse-self t)
-    (setq-default TeX-master nil) 
-    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    (setq reftex-plug-into-AUCTeX t)
-;    (require 'auto-complete-auctex)
-    (setq TeX-PDF-mode t)
+  ;;    (require 'tex-mik)
+      (setq TeX-auto-save t)
+      (setq TeX-parse-self t)
+      (setq-default TeX-master nil) 
+      (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+      (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+      (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+      (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+      (setq reftex-plug-into-AUCTeX t)
+ (require 'auctex-latexmk)
+    (auctex-latexmk-setup)
+     ; (require 'auto-complete-auctex)
+    (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+   ;   (setq TeX-PDF-mode t)
 #+END_SRC
 ** Syntex with evince
 #+BEGIN_SRC emacs-lisp
@@ -917,4 +922,45 @@ Markdown, or Org.
 #+BEGIN_SRC emacs-lisp
 
 (elpy-enable)
+#+END_SRC
+* Library -- org-ref
+** Basic config
+#+BEGIN_SRC emacs-lisp
+(require 'doi-utils)
+(require 'org-ref-wos)
+(require 'org-ref-scopus)
+(require 'org-ref-isbn)
+(require 'org-ref-arxiv)
+(require 'org-ref-sci-id)
+(require 'x2bib)
+(require 'org-ref-latex)
+(require 'org-ref-pdf)
+(require 'org-ref-url-utils)
+(setq reftex-default-bibliography '("~/Library/MasterReferences.bib"))
+
+;; see org-ref for use of these variables
+(setq org-ref-bibliography-notes "~/Library/notes.org"
+      org-ref-default-bibliography '("~/Library/MasterReferences.bib")
+      org-ref-pdf-directory "~/Library/bibtex-pdfs/")
+
+#+END_SRC
+** To open pdfs
+#+BEGIN_SRC emacs-lisp
+(defun my/org-ref-open-pdf-at-point ()
+  "Open the pdf for bibtex key under point if it exists."
+  (interactive)
+  (let* ((results (org-ref-get-bibtex-key-and-file))
+         (key (car results))
+	 (pdf-file (car (bibtex-completion-find-pdf key))))
+    (if (file-exists-p pdf-file)
+	(org-open-file pdf-file)
+      (message "No PDF found for %s" key))))
+
+(setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
+
+#+END_SRC
+* PDF tools
+** Pdf tool setup 
+#+BEGIN_SRC emacs-lisp 
+(require 'pdf-tools)
 #+END_SRC
