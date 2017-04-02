@@ -377,7 +377,7 @@ bar {
 bindsym $mod+m bar mode toggle
 exec --no-startup-id owncloud
 exec --no-startup-id caffeine
-
+exec --no-startup-id davmail
 ## Start personnal applications
 exec --no-startup-id dropbox start
 

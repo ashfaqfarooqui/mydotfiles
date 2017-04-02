@@ -36,8 +36,13 @@
  graphviz-dot-mode
  magit
  org
+ flycheck
+ flyspell
+ flyspell-correct
+ flyspell-correct-helm
  powerline
  helm
+ helm-projectile
  ensime
  multiple-cursors
  find-file-in-repository
@@ -303,9 +308,8 @@ Setup org mode indentation
     location of the spell check program so it loads properly.
     #+begin_src emacs-lisp
       (setq flyspell-issue-welcome-flag nil)
-      (if (eq system-type 'darwin)
           (setq-default ispell-program-name "/usr/local/bin/aspell")
-        (setq-default ispell-program-name "/usr/bin/aspell"))
+        (setq-default ispell-program-name "/usr/bin/aspell")
       (setq-default ispell-list-command "list")
     #+end_src
 ** eshell
@@ -597,6 +601,7 @@ Setup org mode indentation
 
 #+END_SRC
 ** Settings
+*** Sequences
 Enable logging when tasks are complete. This puts a time-stamp on
    the completed task. Since I usually am doing quite a few things at
    once, I added the =INPROGRESS= keyword and made the color
@@ -627,9 +632,9 @@ Enable logging when tasks are complete. This puts a time-stamp on
                   (add-hook 'org-mode-hook
                             (lambda ()
                               (writegood-mode)))
+(add-hook 'LaTeX-mode-hook (lambda () (writegood-mode)))
    #+end_src
-
-**** Display preferences
+*** Display preferences
 
 I like to see an outline of pretty bullets instead of a list of asterisks.
 
@@ -817,6 +822,10 @@ Use flycheck in the appropriate buffers:
 #+BEGIN_SRC emacs-lisp
   (add-hook 'text-mode-hook #'flycheck-mode)
   (add-hook 'org-mode-hook #'flycheck-mode)
+  (add-hook 'LaTeX-mode-hook #'flycheck-mode)
+  
+  (require 'flyspell-correct-helm)
+  (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)
 #+END_SRC
 ** Wrap paragraphs automatically
 
@@ -963,4 +972,7 @@ Markdown, or Org.
 ** Pdf tool setup 
 #+BEGIN_SRC emacs-lisp 
 (require 'pdf-tools)
+
+(add-hook 'pdf-tools-enabled-hook 'auto-revert-mode)
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-tools-install))
 #+END_SRC
