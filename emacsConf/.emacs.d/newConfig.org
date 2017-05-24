@@ -84,6 +84,11 @@
           (when (not (package-installed-p pkg))
             (package-install pkg))))
     #+end_src
+* Load secrets
+#+BEGIN_SRC emacs-lisp
+
+  (require 'secrets "~/.emacs.d/secrets.gpg")
+#+END_SRC
 * Some mandatory stuff
 ** Splash Screen
 
@@ -194,9 +199,25 @@ don't share that discomfort with others.
       (show-paren-mode t)
     #+end_src
 ** Evil Mode
-    #+begin_src emacs-lisp
-     (evil-mode 1)
-    #+end_src
+#+begin_src emacs-lisp
+     (use-package evil
+  :ensure t
+  :config
+  (evil-mode 1)
+
+  (use-package evil-leader
+    :ensure t
+    :config
+    (global-evil-leader-mode))
+
+  (use-package evil-surround
+    :ensure t
+    :config
+    (global-evil-surround-mode))
+
+  (use-package evil-indent-textobject
+    :ensure t)
+#+end_src
 * Utilities
 ** Helm
 #+BEGIN_SRC emacs-lisp
@@ -401,6 +422,27 @@ Setup org mode indentation
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 #+end_src
 
+** Peep files using dired
+#+BEGIN_SRC emacs-lisp
+  ;;preview files in dired
+  (use-package peep-dired
+    :ensure t
+    :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+    :bind (:map dired-mode-map
+                ("P" . peep-dired)))
+  (evil-define-key 'normal peep-dired-mode-map (kbd "<SPC>") 'peep-dired-scroll-page-down
+                                               (kbd "C-<SPC>") 'peep-dired-scroll-page-up
+                                               (kbd "<backspace>") 'peep-dired-scroll-page-up
+                                               (kbd "j") 'peep-dired-next-file
+                                               (kbd "k") 'peep-dired-prev-file)
+  (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+#+END_SRC
+** Volatile highlight
+#+BEGIN_SRC emacs-lisp
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode t))
+#+END_SRC
 * Setup scala and ensime
 ** Ensime
 #+BEGIN_SRC emacs-lisp
@@ -1074,5 +1116,57 @@ Markdown, or Org.
 
 #+BEGIN_SRC emacs-lisp :results output silent
 
+
+#+END_SRC
+* Windmove
+#+BEGIN_SRC emacs-lisp
+(use-package windmove
+  ;; :defer 4
+  :ensure t
+  :config
+ (global-set-key (kbd "C-c <left>")  'windmove-left)
+ (global-set-key (kbd "C-c <right>") 'windmove-right)
+ (global-set-key (kbd "C-c <up>")    'windmove-up) 
+ (global-set-key (kbd "C-c <down>")  'windmove-down)
+ 
+  ;; wrap around at edges
+  (setq windmove-wrap-around t))
+
+#+END_SRC
+* G-cal for orgs
+#+BEGIN_SRC emacs-lisp
+(use-package org-gcal
+  :ensure t
+  :config
+  (setq
+	org-gcal-file-alist '(("ashfaq.farooqui@gmail.com" .  "~/Dropbox/orgs/gcal.org"))))
+(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
+(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
+
+(use-package calfw
+  :ensure ;TODO: 
+  :config
+  (require 'calfw) 
+  (require 'calfw-org)
+  (setq cfw:org-overwrite-default-keybinding t)
+  (require 'calfw-ical)
+
+  (defun mycalendar ()
+    (interactive)
+    (cfw:open-calendar-buffer
+     :contents-sources
+     (list
+      ;; (cfw:org-create-source "Green")  ; orgmode source
+      (cfw:ical-create-source "gcal" "https://calendar.google.com/calendar/ical/ashfaq.farooqui%40gmail.com/public/basic.ics" "IndianRed") ; google calendar ICS
+      ))) 
+  (setq cfw:org-overwrite-default-keybinding t))
+
+(use-package calfw-gcal
+	:ensure t
+	:config
+	(require 'calfw-gcal))
+#+END_SRC
+* mail client
+#+BEGIN_SRC emacs-lisp
 
 #+END_SRC

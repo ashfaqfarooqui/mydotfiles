@@ -16,7 +16,7 @@
  '(latex-preview-pane-multifile-mode (quote auctex))
  '(package-selected-packages
    (quote
-    (flycheck-ledger zenburn-theme zenburn yaml-mode yafolding writegood-mode window-numbering which-key web-mode use-package solarized-theme smex smartparens rainbow-delimiters projectile powerline org-bullets neotree multiple-cursors monokai-theme marmalade markdown-mode magit ido-grid-mode htmlize helm haml-mode guide-key graphviz-dot-mode flycheck find-file-in-repository feature-mode expand-region evil ess ensime engine-mode dumb-jump doom-themes autopair ace-jump-mode ac-slime)))
+    (evil-indent-textobject evil-surround evil-jumper evil-leader org-gcal flycheck-ledger zenburn-theme zenburn yaml-mode yafolding writegood-mode window-numbering which-key web-mode use-package solarized-theme smex smartparens rainbow-delimiters projectile powerline org-bullets neotree multiple-cursors monokai-theme marmalade markdown-mode magit ido-grid-mode htmlize helm haml-mode guide-key graphviz-dot-mode flycheck find-file-in-repository feature-mode expand-region evil ess ensime engine-mode dumb-jump doom-themes autopair ace-jump-mode ac-slime)))
  '(pdf-latex-command "pdflatex"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
