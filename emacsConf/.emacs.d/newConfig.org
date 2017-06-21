@@ -90,6 +90,38 @@ it.
   (require 'secrets "~/.emacs.d/secrets.el.gpg")
 #+END_SRC
 * Some mandatory stuff
+** Adding default folders
+#+BEGIN_SRC emacs-lisp
+(defvar my/emacs-cache (concat user-emacs-directory ".cache/")
+  "Folder to store cache files in.
+
+Should end with a forward slash.")
+
+(setq custom-file (concat my/emacs-cache "customize.el"))
+(setq bookmark-default-file (concat my/emacs-cache "bookmarks"))
+(setq recentf-save-file (concat my/emacs-cache "recentf"))
+
+#+END_SRC
+
+** Enable system notification
+#+BEGIN_SRC emacs-lisp
+(use-package alert
+  :ensure t
+  :config
+  (if (executable-find "notify-send")
+      (setq alert-default-style 'libnotify)))
+
+#+END_SRC
+** Shell path
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :if (or (eq system-type 'darwin)
+          (eq system-type 'gnu/linux))
+  :config
+  (exec-path-from-shell-initialize))
+
+#+END_SRC
 ** Splash Screen
 
 I want to skip straight to the scratch buffer. This turns off the
@@ -193,10 +225,36 @@ for robots, and I am not a robot. Use a visual indicator instead
 of making horrible noises. Oh, and always highlight parentheses. A
 person could go insane without that.
 #+begin_src emacs-lisp
-      (setq echo-keystrokes 0.1
-            use-dialog-box nil
-            visible-bell t)
-      (show-paren-mode t)
+    (setq echo-keystrokes 0.1
+          use-dialog-box nil
+          visible-bell t)
+    (show-paren-mode t)
+  (global-hl-line-mode)
+(blink-cursor-mode -1)
+
+
+(defun dcaps-to-scaps ()
+  "Convert word in DOuble CApitals to Single Capitals."
+  (interactive)
+  (and (= ?w (char-syntax (char-before)))
+       (save-excursion
+         (and (if (called-interactively-p)
+                  (skip-syntax-backward "w")
+                (= -3 (skip-syntax-backward "w")))
+              (let (case-fold-search)
+                (looking-at "\\b[[:upper:]]\\{2\\}[[:lower:]]"))
+              (capitalize-word 1)))))
+
+(define-minor-mode dubcaps-mode
+  "Toggle `dubcaps-mode'.  Converts words in DOuble CApitals to
+Single Capitals as you type."
+  :init-value nil
+  :lighter (" DC")
+  (if dubcaps-mode
+      (add-hook 'post-self-insert-hook #'dcaps-to-scaps nil 'local)
+    (remove-hook 'post-self-insert-hook #'dcaps-to-scaps 'local)))
+
+(add-hook 'text-mode-hook #'dubcaps-mode)
 #+end_src
 ** Evil Mode
 #+begin_src emacs-lisp
@@ -262,23 +320,46 @@ as soon as the opening character is typed.
 #+BEGIN_SRC emacs-lisp
 
 (add-to-list 'exec-path "/usr/local/bin")
-
 (use-package company
   :ensure t
-  :diminish company-mode
-  :commands company-mode
+  :bind
+  (:map company-active-map
+        ("C-s" . company-search-candidates)
+        ("<tab>" . company-complete-common-or-cycle)
+        ("RET" . company-complete-selection)
+        ("C-n" . company-select-next)
+        ("C-p" . company-select-previous))
   :init
-  (setq
-   company-dabbrev-ignore-case nil
-   company-dabbrev-code-ignore-case nil
-   company-dabbrev-downcase nil
-   company-idle-delay 0
-   company-minimum-prefix-length 4)
+  (add-hook 'after-init-hook #'global-company-mode)
   :config
-  ;; disables TAB in company-mode, freeing it for yasnippet
-  (define-key company-active-map [tab] nil)
-  (define-key company-active-map (kbd "TAB") nil))
-
+  (setq company-minimum-prefix-length 2)
+  (setq company-idle-delay 0.5)
+  (setq company-require-match nil)
+  (use-package company-statistics
+    :ensure t
+    :config
+    (setq company-statistics-file
+          (concat my/emacs-cache "company-statistics-cache.el"))
+    (add-hook 'company-mode-hook #'company-statistics-mode))
+  (use-package company-math
+    :ensure t
+    :config
+    (add-to-list 'company-backends 'company-math-symbols-latex))
+  (use-package company-quickhelp
+    :ensure t
+    :config
+    (company-quickhelp-mode))
+  (use-package company-flx
+    :ensure t
+    :init
+    (with-eval-after-load 'company
+      (company-flx-mode +1)))
+  (use-package company-web-html
+    :ensure company-web)
+  (use-package company-shell
+    :ensure t
+    :config
+    (add-to-list 'company-backends 'company-shell)))
 
 (add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
@@ -286,7 +367,11 @@ as soon as the opening character is typed.
 Setup org mode indentation
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented t)
-
+(use-package aggressive-indent
+  :ensure t
+  :config
+  (global-aggressive-indent-mode)
+  )
 #+END_SRC
 This re-indents, untabifies, and cleans up whitespace. It is stolen
 directly from the emacs-starter-kit.
@@ -446,7 +531,8 @@ Customize eshell
 ** Volatile highlight
 #+BEGIN_SRC emacs-lisp
 (use-package volatile-highlights
-  :config
+:ensure t  
+:config
   (volatile-highlights-mode t))
 #+END_SRC
 ** Move text
@@ -463,6 +549,13 @@ Customize eshell
   :config
   (add-hook 'prog-mode-hook
             '(lambda () (linum-mode 1))))
+
+#+END_SRC
+** org-protocol
+#+BEGIN_SRC emacs-lisp
+
+(require 'org-protocol)
+
 
 #+END_SRC
 * Setup scala and ensime
@@ -682,7 +775,29 @@ opening it up in order to start typing something, so this skips a step.
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
 #+END_SRC
 
-*** org-babel
+some more misc settings
+#+BEGIN_SRC emacs-lisp
+(setq org-pretty-entities          t ; UTF8 all the things!
+      org-support-shift-select     t ; holding shift and moving point should select things
+      org-M-RET-may-split-line     nil ; M-RET may never split a line
+      org-enforce-todo-dependencies t ; can't finish parent before children
+      org-enforce-todo-checkbox-dependencies t ; can't finish parent before children
+      org-hide-emphasis-markers t ; make words italic or bold, hide / and *
+      org-catch-invisible-edits 'error ; don't let me edit things I can't see
+      org-startup-indented t) ; start with indentation setup
+(setq org-startup-with-inline-images t) ; show inline images
+(setq org-log-done t)
+(setq org-goto-interface (quote outline-path-completion))
+(use-package htmlize
+  :ensure t)
+(setq org-special-ctrl-a/e t)
+#+END_SRC
+** org-eew
+#+BEGIN_SRC emacs-lisp
+(use-package org-eww)
+
+#+END_SRC
+** org-babel
 =org-babel= is a feature inside of =org-mode= that makes this
 document possible. It allows for embedding languages inside of an
 =org-mode= document with all the proper font-locking. It also
@@ -752,7 +867,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 #+BEGIN_SRC emacs-lisp
        (setq org-capture-templates
-             '(("a" "Appointment" entry (file  (org-file-path "gcal.org"))
+             (quote ( ("a" "Appointment" entry (file  (org-file-path "gcal.org"))
           "* %?\n\n%^T\n\n:PROPERTIES:\n\n:END:\n\n")
 
   ("t" "todo work" entry (file+headline "Phd Notebook.org" "Tasks")
@@ -770,84 +885,84 @@ Define a few common tasks as capture templates. Specifically, I frequently:
                ("R" "Random Notes"
                 entry
                 (file org-index-file)
-                "* %?\n")))
+                "* %?\n"))))
 
-    (setq ledger-expense-completions
-          (list
-           "" ;; needed for first | for mapconcat
-           "Income:Salary"
-           "Assets:Savings" "Assets:Checking"
-           "Expenses:Dining" "Expenses:ToIndia" "Expenses:Additional" "Expenses:Groceries" "Expenses:Rent" "Expenses:Outfit:Apparel" "Expenses:Outfit:Accessories" "Expenses:Goods" "Expenses:Electronics:Gadgets" "Expenses:Phone" "Expenses:Tools" "Expenses:Transport" "Expenses:Entertainment"
-           "Liabilities:ChalmersCard"
-           ))
-
-
-       (setq capture-expense-template
-             "%%(org-read-date) * %%^{What}
-           %%^{Expenses%s}  %%^{Amount}
-           %%^{Assets%s}")
-
-       (setq capture-income-template
-             "%%(org-read-date) * Salary
-           Assets:Checking  %%^{Amount}
-           Income:Salary")
-
-       (setq capture-credit-template
-             "%%(org-read-date) * %%^{What}
-           %%^{Expense%s}  %%^{Amount}
-           Liabilities:ChalmersCard")
-
-       (setq capture-transfer-template
-             "%%(org-read-date) * %%^{What}
-           %%^{Assets%s}  %%^{Amount}
-           %%^{Assets%s}")
-
-   (defun return-capture-expense-template ()
-       (let ((compstring
-              (mapconcat 'identity ledger-expense-completions  "|" )))
-     (format capture-expense-template compstring compstring)))
-
-   (defun return-capture-credit-template ()
-       (let ((compstring
-              (mapconcat 'identity ledger-expense-completions  "|" )))
-     (format capture-credit-template compstring compstring))
-     )
-   (defun return-capture-income-template ()
-       (let ((compstring
-              (mapconcat 'identity ledger-expense-completions  "|" )))
-     (format capture-income-template compstring compstring))
-     )
-   (defun return-capture-transfer-template ()
-       (let ((compstring
-              (mapconcat 'identity ledger-expense-completions  "|" )))
-     (format capture-transfer-template compstring compstring))
-     )
-
-   (setq org-capture-templates
-           (append '(("l" "Ledger entries")
-                     ("ls" "Spending" plain
-                     (file "~/Dropbox/orgs/Accounts/finances.ledger")
-                     (function return-capture-expense-template)
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                     ("lc" "Credit" plain
-                     (file "~/Dropbox/orgs/Accounts/finances.ledger")
-                     (function return-capture-credit-template)
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                     ("li" "Income" plain
-                     (file "~/Dropbox/orgs/Accounts/finances.ledger")
-                     (function return-capture-income-template)
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                     ("lt" "Transfer" plain
-                     (file "~/Dropbox/orgs/Accounts/finances.ledger")
-                     (function return-capture-transfer-template)
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-   )
-   org-capture-templates))
-
+;; (setq ledger-expense-completions
+;;      (list
+;;       "" ;; needed for first | for mapconcat
+;;       "Income:Salary"
+;;       "Assets:Savings" "Assets:Checking"
+;;       "Expenses:Dining" "Expenses:ToIndia" "Expenses:Additional" "Expenses:Groceries" "Expenses:Rent" "Expenses:Outfit:Apparel" "Expenses:Outfit:Accessories" "Expenses:Goods" "Expenses:Electronics:Gadgets" "Expenses:Phone" "Expenses:Tools" "Expenses:Transport" "Expenses:Entertainment"
+;;       "Liabilities:ChalmersCard"
+;;       ))
+;;
+;;
+;;   (setq capture-expense-template
+;;         "%%(org-read-date) * %%^{What}
+;;       %%^{Expenses%s}  %%^{Amount}
+;;       %%^{Assets%s}")
+;;
+;;   (setq capture-income-template
+;;         "%%(org-read-date) * Salary
+;;       Assets:Checking  %%^{Amount}
+;;       Income:Salary")
+;;
+;;   (setq capture-credit-template
+;;         "%%(org-read-date) * %%^{What}
+;;       %%^{Expense%s}  %%^{Amount}
+;;       Liabilities:ChalmersCard")
+;;
+;;   (setq capture-transfer-template
+;;         "%%(org-read-date) * %%^{What}
+;;       %%^{Assets%s}  %%^{Amount}
+;;       %%^{Assets%s}")
+;;
+;;defun return-capture-expense-template ()
+;;   (let ((compstring
+;;          (mapconcat 'identity ledger-expense-completions  "|" )))
+;; (format capture-expense-template compstring compstring)))
+;;
+;;defun return-capture-credit-template ()
+;;   (let ((compstring
+;;          (mapconcat 'identity ledger-expense-completions  "|" )))
+;; (format capture-credit-template compstring compstring))
+;; )
+;;defun return-capture-income-template ()
+;;   (let ((compstring
+;;          (mapconcat 'identity ledger-expense-completions  "|" )))
+;; (format capture-income-template compstring compstring))
+;; )
+;;defun return-capture-transfer-template ()
+;;   (let ((compstring
+;;          (mapconcat 'identity ledger-expense-completions  "|" )))
+;; (format capture-transfer-template compstring compstring))
+;; )
+;;
+;;setq org-capture-templates
+;;       (append '(("l" "Ledger entries")
+;;                 ("ls" "Spending" plain
+;;                 (file "~/Dropbox/orgs/Accounts/finances.ledger")
+;;                 (function return-capture-expense-template)
+;;                 :empty-lines-before 1
+;;                 :empty-lines-after 1)
+;;                 ("lc" "Credit" plain
+;;                 (file "~/Dropbox/orgs/Accounts/finances.ledger")
+;;                 (function return-capture-credit-template)
+;;                 :empty-lines-before 1
+;;                 :empty-lines-after 1)
+;;                 ("li" "Income" plain
+;;                 (file "~/Dropbox/orgs/Accounts/finances.ledger")
+;;                 (function return-capture-income-template)
+;;                 :empty-lines-before 1
+;;                 :empty-lines-after 1)
+;;                 ("lt" "Transfer" plain
+;;                 (file "~/Dropbox/orgs/Accounts/finances.ledger")
+;;                 (function return-capture-transfer-template)
+;;                 :empty-lines-before 1
+;;                 :empty-lines-after 1)
+;;
+;;org-capture-templates))
+;;
 
 #+END_SRC
 
@@ -998,36 +1113,9 @@ Markdown, or Org.
 
 #+END_SRC
 * Theme
-###+BEGIN_SRC emacs-lisp
-##  (require 'doom-themes)
-##  (load-theme 'doom-one-light t) ;; or doom-dark, etc.
-##
-##  ;;; Settings (defaults)
-##  (setq doom-enable-bold t    ; if nil, bolding are universally disabled
-##        doom-enable-italic t  ; if nil, italics are universally disabled
-##
-##        ;; doom-one specific settings
-##      ;  doom-one-brighter-modeline nil
-##      ;  doom-one-brighter-comments nil
-##        )
-##
-##  ;;; OPTIONAL
-##  ;; brighter source buffers
-##  (add-hook 'find-file-hook 'doom-buffer-mode)
-##  ;; brighter minibuffer when active
-##  (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
-##  ;; Enable custom neotree theme
-##  (require 'doom-neotree)    ; all-the-icons fonts must be installed!
-##  ; Enable nlinum line highlighting
-##  (require 'doom-nlinum)     ; requires nlinum and hl-line-mode
-##
-##  (setq org-fontify-whole-heading-line t
-##        org-fontify-done-headline t
-##        org-fontify-quote-and-verse-blocks t)
-##
-###+END_SRC
-
 #+BEGIN_SRC emacs-lisp
+(use-package nubox
+:ensure t)
 (load-theme 'zenburn t)
 
 #+END_SRC
@@ -1082,18 +1170,59 @@ Markdown, or Org.
 #+END_SRC
 * Ledger mode
 #+BEGIN_SRC emacs-lisp
-  (use-package ledger-mode
-    :ensure t
+    (use-package ledger-mode
+      :ensure t
+      :init
+      (setq ledger-clear-whole-transactions 1)
+      :mode ("\\.ledger$" . ledger-mode)
     :init
-    (setq ledger-clear-whole-transactions 1)
+    (defvar my/ledger-file
+      (expand-file-name "~/Dropbox/orgs/Accounts/finances.ledger")
+      "Where the ledger journal is kept.")
+    (setq file-ledger "finances.ledger")
+      :config
+      (add-to-list 'evil-emacs-state-modes 'ledger-report-mode)
+    (setq ledger-post-amount-alignment-column 70)
+     (setq ledger-post-amount-alignment-at :decimal)
+     ;; There is a correct way to write dates:
+     ;; https://xkcd.com/1179/
+     (setq ledger-use-iso-dates t)
+   (setq ledger-reports '(("on-hand" "ledger -f %(ledger-file) --color bal \"(Assets:Checking|Savings|Liabilities)\"")
+                          ("bal" "ledger -f %(ledger-file) --color bal")
+                          ("reg" "ledger -f %(ledger-file) --color reg")
+                          ("payee" "ledger -f %(ledger-file) --color  reg @%(payee)")
+                          ("account" "ledger -f %(ledger-file) --color reg %(account)")
+                          ("budgeted" "ledger --unbudgeted --monthly register ^expenses -f %(ledger-file)")
+                          ("unbudgeted" "ledger --budgeted --monthly register ^expenses -f %(ledger-file)") )))
 
-    :config
-    (add-to-list 'evil-emacs-state-modes 'ledger-report-mode)
-    :mode "\\.ledger\\'")
-  (use-package flycheck-ledger
-    :ensure t
-    :init
-    :mode "\\.ledger\\'")
+      (setq org-capture-templates
+                 (append  '(("l" "Ledger entries")
+                     ("li" "income" plain (file my/ledger-file)
+                      "%(org-read-date) *  %^{From?}
+       Assets:Checking        SEK %^{Amount}
+       Income:Salary" :empty-lines 1 :immediate-finish t)
+                     ("lt" "transfer" plain (file my/ledger-file)
+                      "%(org-read-date) %^{Payee}
+       Assets:%^{account}        SEK %^{Amount}
+       Assets:%^{account}" :empty-lines 1 :immediate-finish t)
+                     ("lp" "Payment" plain (file my/ledger-file)
+                      "%(org-read-date) %^{Payee}
+       Expenses:%^{Expense category}        SEK %^{Amount}
+       Assets:Checking" :empty-lines 1 :immediate-finish t)
+                     ("ls" "pay from savings" plain (file my/ledger-file)
+                      "%(org-read-date) %^{Payee}
+       Expenses:%^{Expense category}        SEK %^{Amount}
+       Assets:Savings" :empty-lines 1 :immediate-finish t)
+                      ("lc" "pay with chalmers card" plain (file my/ledger-file)
+                       "%(org-read-date) %^{Payee}
+       Expenses:%^{Expense Category}       SEK %^{Amount}
+       Liabilities:ChalmersCard" :empty-lines 1 :immediate-finish t ))
+           org-capture-templates))
+
+    (use-package flycheck-ledger
+      :ensure t
+      :init
+      :mode "\\.ledger$'")
 #+END_SRC
 
 * Windmove
@@ -1192,7 +1321,7 @@ Need to move this to use-package later
 (require 'smtpmail)
 (setq message-send-mail-function 'smtpmail-send-it
     smtpmail-auth-credentials
-  (expand-file-name "~/.emacs.d/.authinfo")
+  (expand-file-name "~/.emacs.d/.authinfo.gpg")
     smtpmail-default-smtp-server "localhost"
     smtpmail-smtp-server "localhost"
     smtpmail-smtp-service 1025)
@@ -1220,5 +1349,99 @@ Need to move this to use-package later
 (add-to-list 'mu4e-view-actions
             '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
+
+#+END_SRC
+* Spotify
+#+BEGIN_SRC emacs-lisp
+(use-package helm-spotify-plus
+:ensure t)
+
+
+#+END_SRC
+* Google translate
+#+BEGIN_SRC emacs-lisp
+(use-package google-translate
+  :ensure t
+  :bind
+  (:map mu4e-view-mode-map
+        ("C-c t" . google-translate-at-point))
+  :config
+  (setq google-translate-default-target-language "English")
+  ;; It won't ask for the input language. If I need it to, call the
+  ;; translation command with a C-u prefix:
+  (setq google-translate-default-source-language "Swedish"))
+
+#+END_SRC
+* Diff Highlights
+#+BEGIN_SRC emacs-lisp
+(use-package git-gutter+
+  :ensure t
+  :init
+  (global-git-gutter+-mode)
+  :config
+  (setq git-gutter+-modified-sign "¤"))
+
+#+END_SRC
+* CSV files
+#+BEGIN_SRC emacs-lisp
+(use-package csv-mode
+  :ensure t
+  :mode (("\\.csv" . csv-mode)))
+
+#+END_SRC
+* Elfeed
+#+BEGIN_SRC emacs-lisp
+(use-package elfeed
+  :ensure t
+  :bind
+  (:map elfeed-search-mode-map
+        ("s" . bjm/elfeed-load-db-and-open)
+        ("q" . bjm/elfeed-save-db-and-bury))
+  :init
+  ;; thanks - http://pragmaticemacs.com/emacs/read-your-rss-feeds-in-emacs-with-elfeed/
+  ;; though slightly modified
+  ;; functions to support syncing .elfeed between machines
+  ;; makes sure elfeed reads index from disk before launching
+  (defun bjm/elfeed-load-db-and-open ()
+    "Load the elfeed db from disk before opening."
+    (interactive)
+    (elfeed-db-load)
+    (elfeed)
+    (elfeed-search-update--force)
+    (elfeed-update))
+  ;;write to disk when quiting
+  (defun bjm/elfeed-save-db-and-bury ()
+    "Wrapper to save the elfeed db to disk before burying buffer"
+    (interactive)
+    (elfeed-db-save)
+    (quit-window))
+  :config
+  (setq elfeed-db-directory "~/Dropbox/.elfeed")
+  ;; This lets me get the http links to entries with org-capture
+  ;; easily.
+  (defun elfeed-entry-as-html-link ()
+    "Store an http link to an elfeed entry"
+    (when (equal major-mode 'elfeed-show-mode)
+      (let ((description (elfeed-entry-title elfeed-show-entry))
+            (link (elfeed-entry-link elfeed-show-entry)))
+        (org-store-link-props
+         :type "http"
+         :link link
+         :description description))))
+  (org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link))
+
+(use-package elfeed-org
+  :ensure t
+  :config
+  (elfeed-org))
+
+#+END_SRC
+* END
+#+BEGIN_SRC emacs-lisp
+(if (daemonp)
+    (alert "Emacs has started!"
+           :title "Emacs"
+           :style 'libnotify
+           :severity 'trivial))
 
 #+END_SRC
