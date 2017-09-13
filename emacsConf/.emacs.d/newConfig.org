@@ -59,10 +59,12 @@ added.
    elpy
    latex-preview-pane
    helm-mu
-   org-ref
    pdf-tools
+   org-ref
    auctex
+   use-package
    auctex-latexmk
+   writegood-mode
    )
    "Default packages")
 
@@ -87,7 +89,7 @@ it.
 #+end_src
 * Load secrets
 #+BEGIN_SRC emacs-lisp
-  (require 'secrets "~/.emacs.d/secrets.el.gpg")
+;  (require 'secrets "~/.emacs.d/secrets.el.gpg")
 #+END_SRC
 * Some mandatory stuff
 ** Adding default folders
@@ -110,16 +112,6 @@ Should end with a forward slash.")
   :config
   (if (executable-find "notify-send")
       (setq alert-default-style 'libnotify)))
-
-#+END_SRC
-** Shell path
-#+BEGIN_SRC emacs-lisp
-(use-package exec-path-from-shell
-  :ensure t
-  :if (or (eq system-type 'darwin)
-          (eq system-type 'gnu/linux))
-  :config
-  (exec-path-from-shell-initialize))
 
 #+END_SRC
 ** Splash Screen
@@ -313,7 +305,9 @@ them go away.
 This makes sure that brace structures =(), [], {}=, etc. are closed
 as soon as the opening character is typed.
 #+begin_src emacs-lisp
-      (require 'autopair)
+      (use-package autopair
+           :ensure t)
+      ;(require 'autopair)
       (autopair-global-mode)
 #+end_src
 ** Company mode
@@ -706,31 +700,33 @@ archive of finished tasks in =archive.org=.
 ** Settings
 *** Sequences
 #+begin_src emacs-lisp
-             (setq org-todo-keywords '((sequence
-                 "TODO(t)"  ; next action
-                 "STARTED(s)"
-                 "WAITING(w@/!)"
-                 "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
-                (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")
-                 (sequence "IDEA"))
-     org-todo-keyword-faces '(("IDEA" . (:foreground "green" :weight bold))
-                                   ("STARTED" . (:foreground "blue" :weight bold))
-                                   ("CANCELLED" . (:foreground "red" :weight book))
-                                   ("SOMEDAY" . (:foreground "red" :weight book))
-                                   ("WAITING" . (:foreground "yellow" :weight book))
-                                   ("COMPLETE" . (:foreground "green" :weight bold))
-                                   ("DONE" . (:foreground "green" :weight bold))))
+               (setq org-todo-keywords '((sequence
+                   "TODO(t)"  ; next action
+                   "STARTED(s)"
+                   "WAITING(w@/!)"
+                   "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+                  (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")
+                   (sequence "IDEA"))
+       org-todo-keyword-faces '(("IDEA" . (:foreground "green" :weight bold))
+                                     ("STARTED" . (:foreground "blue" :weight bold))
+                                     ("CANCELLED" . (:foreground "red" :weight book))
+                                     ("SOMEDAY" . (:foreground "red" :weight book))
+                                     ("WAITING" . (:foreground "yellow" :weight book))
+                                     ("COMPLETE" . (:foreground "green" :weight bold))
+                                     ("DONE" . (:foreground "green" :weight bold))))
 
 
 
-               (setq org-log-done t)
-                  (add-hook 'org-mode-hook
-                            (lambda ()
-                              (flyspell-mode)))
-                  (add-hook 'org-mode-hook
-                            (lambda ()
-                              (writegood-mode)))
-(add-hook 'LaTeX-mode-hook (lambda () (writegood-mode)))
+                 (setq org-log-done t)
+                    (add-hook 'org-mode-hook
+                              (lambda ()
+                                (flyspell-mode)))
+                    (add-hook 'org-mode-hook
+                              (lambda ()
+                                (writegood-mode)))
+  (add-hook 'LaTeX-mode-hook (lambda () (writegood-mode)))
+(add-hook 'LaTeX-mode-hook (lambda () (flyspell-mode)))
+
 #+end_src
 *** Display preferences
 
@@ -791,11 +787,6 @@ some more misc settings
 (use-package htmlize
   :ensure t)
 (setq org-special-ctrl-a/e t)
-#+END_SRC
-** org-eew
-#+BEGIN_SRC emacs-lisp
-(use-package org-eww)
-
 #+END_SRC
 ** org-babel
 =org-babel= is a feature inside of =org-mode= that makes this
@@ -1112,6 +1103,15 @@ Markdown, or Org.
   :init (setq markdown-command "markdown"))
 
 #+END_SRC
+** lang tool
+#+BEGIN_SRC emacs-lisp
+(use-package langtool
+:ensure t
+:config 
+(setq langtool-language-tool-jar "~/.emacs.d/vendor/langtool/languagetool-commandline.jar")
+(setq langtool-default-language "en-US")
+(setq langtool-java-classpath nil))  
+#+END_SRC
 * Theme
 #+BEGIN_SRC emacs-lisp
 (use-package nubox
@@ -1242,36 +1242,35 @@ Markdown, or Org.
 #+END_SRC
 * G-cal for orgs
 #+BEGIN_SRC emacs-lisp
-(use-package org-gcal
-  :ensure t
-  :config
-  (setq
-        org-gcal-file-alist '(("ashfaq.farooqui@gmail.com" .  "~/Dropbox/orgs/gcal.org"))))
-(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
-(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
-
-(use-package calfw
-  :ensure ;TODO:
-  :config
-  (require 'calfw)
-  (require 'calfw-org)
-  (setq cfw:org-overwrite-default-keybinding t)
-  (require 'calfw-ical)
-
-  (defun mycalendar ()
-    (interactive)
-    (cfw:open-calendar-buffer
-     :contents-sources
-     (list
-      ;; (cfw:org-create-source "Green")  ; orgmode source
-      (cfw:ical-create-source "gcal" "https://calendar.google.com/calendar/ical/ashfaq.farooqui%40gmail.com/public/basic.ics" "IndianRed") ; google calendar ICS
-      )))
-  (setq cfw:org-overwrite-default-keybinding t))
-
-(use-package calfw-gcal
-        :ensure t
-        :config
-        (require 'calfw-gcal))
+;;use-package org-gcal
+;; :ensure t
+;; :config
+;; (setq
+;;       org-gcal-file-alist '(("ashfaq.farooqui@gmail.com" .  "~/Dropbox/orgs/gcal.org"))))
+;;add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
+;;add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
+;;use-package calfw
+;; :ensure  t;TODO:
+;; :config
+;; (require 'calfw)
+;; (require 'calfw-org)
+;; (setq cfw:org-overwrite-default-keybinding t)
+;; (require 'calfw-ical)
+;;
+;; (defun mycalendar ()
+;;   (interactive)
+;;   (cfw:open-calendar-buffer
+;;    :contents-sources
+;;    (list
+;;     ;; (cfw:org-create-source "Green")  ; orgmode source
+;;     (cfw:ical-create-source "gcal" "https://calendar.google.com/calendar/ical/ashfaq.farooqui%40gmail.com/public/basic.ics" "IndianRed") ; google calendar ICS
+;;     )))
+;; (setq cfw:org-overwrite-default-keybinding t))
+;;
+;;use-package calfw-gcal
+;;       :ensure t
+;;       :config
+;;       (require 'calfw-gcal))
 #+END_SRC
 * mail client
 Need to move this to use-package later
@@ -1286,7 +1285,7 @@ Need to move this to use-package later
 (setq mu4e-drafts-folder "/Drafts")
 (setq mu4e-sent-folder   "/Sent")
 (setq mu4e-trash-folder  "/Trash")
-
+(setq mu4e-compose-signature-auto-include t)
 ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
 ;(setq mu4e-sent-messages-behavior 'delete)
 
@@ -1372,16 +1371,6 @@ Need to move this to use-package later
   (setq google-translate-default-source-language "Swedish"))
 
 #+END_SRC
-* Diff Highlights
-#+BEGIN_SRC emacs-lisp
-(use-package git-gutter+
-  :ensure t
-  :init
-  (global-git-gutter+-mode)
-  :config
-  (setq git-gutter+-modified-sign "¤"))
-
-#+END_SRC
 * CSV files
 #+BEGIN_SRC emacs-lisp
 (use-package csv-mode
@@ -1430,18 +1419,47 @@ Need to move this to use-package later
          :description description))))
   (org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link))
 
+(use-package elfeed-goodies
+:ensure t)
+
+
 (use-package elfeed-org
   :ensure t
   :config
-  (elfeed-org))
+  (progn
+    (elfeed-org)
+    (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
+#+END_SRC
+* pocket
+#+BEGIN_SRC emacs-lisp
+(use-package pocket-api
+  :ensure t)
 
 #+END_SRC
-* END
+* Diff Highlights
 #+BEGIN_SRC emacs-lisp
-(if (daemonp)
-    (alert "Emacs has started!"
-           :title "Emacs"
-           :style 'libnotify
-           :severity 'trivial))
+(use-package git-gutter+
+  :ensure t
+  :init
+  (global-git-gutter+-mode)
+  :config
+  (setq git-gutter+-modified-sign "¤"))
+#+END_SRC
+* org-board
+#+BEGIN_SRC emacs-lisp
+(use-package org-board
+:ensure t
+)
+
+#+END_SRC
+* Restart emacs
+#+BEGIN_SRC emacs-lisp
+(use-package restart-emacs
+:ensure t)
+
+#+END_SRC
+* Alert
+#+BEGIN_SRC emacs-lisp
+(alert "Emacs has started")
 
 #+END_SRC
