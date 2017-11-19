@@ -1,381 +1,45 @@
-accountsservice
-acpid
-alsa-firmware
-alsa-plugins
-alsa-tools
-alsa-utils
-arandr
-arp-scan
-aspell-en
-audacious
-audacious-plugins
-autoconf
-automake
-avahi
-b43-fwcutter
-bash
-binutils
-bison
-blueberry
-bluedevil
-blueman
-bluez-hid2hci
-bluez-utils
-bmenu
-bower
-breeze-maia-icon-themes
-btrfs-progs
-bumblebee
-bzip2
-calibre
-chromium
-clipit
-cmake
-compton
-conky-i3
-coreutils
-cpupower
-crda
-cronie
-cryptsetup
-cuda
-cutegram
-darktable
-dcfldd
-device-mapper
-dfc
-dhclient
-dhcpcd
-diffutils
-dmidecode
-dmraid
-dnsmasq
-dosfstools
-downgrade
-dropbox
-dunst
-e2fsprogs
-eclipse-common
-eclipse-java
-ecryptfs-utils
-efitools
-emacs
-eog
-epdfview
-ethtool
-evince
-exfat-utils
-f2fs-tools
-fakeroot
-feh
-ffmpeg
-ffmpegthumbnailer
-file
-filesystem
-findutils
-firefox
-flac
-flashplugin
-flex
-fontforge
-freerdp
-garcon
-gawk
-gcc
-gcc-libs-multilib
-gcolor2
-gconf
-gdm3setup
-gettext
-gimp
-git
-git-annex
-gksu
-glibc
-gnome-keyring
-gnome-shell
-gnome-vfs
-gparted
-grep
-grub
-gst-libav
-gst-plugins-bad
-gst-plugins-base
-gst-plugins-good
-gst-plugins-ugly
-gstreamer0.10-bad-plugins
-gstreamer0.10-base-plugins
-gstreamer0.10-good-plugins
-gstreamer0.10-ugly-plugins
-gtk-xfce-engine
-gufw
-gvfs
-gvfs-afc
-gvfs-gphoto2
-gvfs-mtp
-gvfs-smb
-gzip
-haveged
-hdparm
-hexchat
-htop
-i3-scrot
-i7z
-inetutils
-inkscape
-intel-ucode
-intellij-idea-community-edition
-inxi
-iproute2
-iptables
-iputils
-ipw2100-fw
-ipw2200-fw
-isousb
-ispell
-iw
-jfsutils
-json-c
-less
-lib32-mesa
-lib32-mesa-demos
-lib32-nvidia-utils
-lib32-primus
-libdvdcss
-libgcrypt15
-libgpod
-libreoffice-fresh
-libtool
-licenses
-lightdm-gtk-greeter-settings
-linux-firmware
-linux44
-linux44-bbswitch
-linux44-headers
-linux44-ndiswrapper
-linux44-nvidia
-linux44-virtualbox-guest-modules
-linux44-virtualbox-host-modules
-logrotate
-lsb-release
-lsof
-lvm2
-lxappearance
-lzop
-m4
-maim
-make
-man-db
-man-pages
-manjaro-alsa
-manjaro-browser-settings
-manjaro-firmware
-manjaro-hotfixes
-manjaro-i3-settings
-manjaro-printer
-manjaro-release
-manjaro-settings-manager-notifier
-manjaro-system
-manjaro-welcome
-maven
-mdadm
-memtest86+
-mesa-demos
-mhwd
-mhwd-db
-mhwd-tui
-mkinitcpio-nfs-utils
-mlocate
-mobile-broadband-provider-info
-moc
-modemmanager
-monodevelop
-morc_menu
-mousepad
-mpd
-mpv
-mutt
-nano
-nautilus
-nbd
-ncdu
-ncmpcpp
-ndiswrapper-utils
-netctl
-network-manager-applet
-networkmanager
-networkmanager-dispatcher-ntpd
-networkmanager-openconnect
-networkmanager-openvpn
-networkmanager-pptp
-networkmanager-vpnc
-nfs-utils
-nilfs-utils
-nmap
-npm
-nss-mdns
-ntfs-3g
-ntp
-numlockx
-nvidia-utils
-okular
-open-fuse-iso
-openresolv
-openssh
-os-prober
-owncloud-client
-p7zip
-pa-applet
-pacman
-palemoon-bin
-pamac
-pandoc
-patch
-pciutils
-pcmanfm
-pcmciautils
-perl
-perl-file-mimeinfo
-pinta
-pkg-config
-playonlinux
-polkit-gnome
-poppler-data
-powertop
-procps-ng
-psmisc
-pulseaudio
-pulseaudio-alsa
-pulseaudio-bluetooth
-python-pip
-python2-requests
-qt5-3d
-ranger
-refind-efi
-reiserfsprogs
-remmina
-rofi
-rp-pppoe
-rsync
-s-nail
-sbt
-sbxkb
-scala
-screenfetch
-sdparm
-sed
-shadow
-slop
-smartmontools
-speedtest-cli
-squashfs-tools
-stow
-subversion
-sudo
-sysfsutils
-syslinux
-syslog-ng
-systemd-sysvcompat
-tar
-terminus-font
-termite
-testdisk
-texinfo
-texlive-bibtexextra
-texlive-bin
-texlive-core
-texlive-formatsextra
-texlive-latexextra
-texlive-plainextra
-texlive-pstricks
-texlive-publishers
-texlive-science
-thunar
-thunar-volman
-thunderbird
-tlp
-traceroute
-transmission-gtk
-tree
-ttf-bitstream-vera
-ttf-dejavu
-ttf-dejavu-sans-mono-powerline
-ttf-droid
-ttf-inconsolata
-ttf-indic-otf
-ttf-liberation
-tumbler
-unarj
-unetbootin
-unrar
-unzip
-upower
-urxvt-perls
-usb_modeswitch
-usbutils
-util-linux
-vertex-maia-themes
-vi
-viewnior
-vim
-vim-latexsuite
-virtualbox
-virtualbox-guest-dkms
-virtualbox-guest-iso
-virtualbox-guest-utils
-virtualbox-host-dkms
-vlc
-vncviewer-jar
-volumeicon
-w3m
-wget
-which
-whois
-wine
-wireless_tools
-wmname
-wmutils
-wpa_supplicant
-xarchiver-gtk2
-xautolock
-xdg-su
-xdg-user-dirs
-xdg-utils
-xdot
-xdotool
-xf86-input-acecad
-xf86-input-elographics
-xf86-input-evdev
-xf86-input-joystick
-xf86-input-keyboard
-xf86-input-libinput
-xf86-input-mouse
-xf86-input-void
-xf86-video-intel
-xfburn
-xfce4-appfinder
-xfce4-mixer
-xfce4-panel
-xfce4-session
-xfce4-settings
-xfce4-terminal
-xfdesktop
-xfsprogs
-xfwm4
-xfwm4-themes
-xorg-fonts-100dpi
-xorg-server
-xorg-server-utils
-xorg-twm
-xorg-utils
-xorg-xinit
-xorg-xkill
-xorg-xprop
-xterm
-xz
-yaourt
-youtube-dl
-zathura
-zd1211-firmware
-zip
-zsh
+artha 1.0.3-5
+caffeine-ng 3.4.0-1
+cockatrice-git 20161030-1
+copyq 3.0.1-1
+davmail 4.8.0-1
+dpkg 1.18.18-2
+filebin 0.9.18-1
+gnome-vfs 2.24.4-10
+google-chrome 59.0.3071.86-1
+google-talkplugin 5.41.3.0-1
+gstreamer0.10 0.10.36-16
+gstreamer0.10-bad 0.10.23-36
+gstreamer0.10-bad-plugins 0.10.23-36
+gstreamer0.10-base 0.10.36-10
+gstreamer0.10-base-plugins 0.10.36-10
+gstreamer0.10-ugly 0.10.19-27
+gstreamer0.10-ugly-plugins 0.10.19-27
+gtklp 1.3.3-1
+jabref 3.8.2-2
+jdk 8u131-1
+jre 8u131-1
+ledger 3.1.1-3
+libqglviewer-qt4 2.6.4-1
+libqzeitgeist 0.8.0-6
+nautilus-dropbox 2015.10.28-1
+neofetch 3.1.0-1
+polybar-git 3.0.5.r43.gb12aec1-1
+python-ewmh 0.1.6-1
+python-plotly 2.0.7-1
+python2-cherrypy 8.9.1-1
+slack-desktop 2.6.2-1
+sportstracker 7.3.0-1
+spotify 1.0.55.487-2
+sstp-client 1.0.11-1
+sublime-text-dev 3.3126-1
+telegram-cli-git r1128.6547c0b-1
+ttf-font-awesome 4.7.0-2
+virtualbox-dkms-manjaro 5.1.4-1
+webkitgtk 2.4.11-6
+wordnet 3.1-1
+xfce4-mixer 4.11.0-3
+xfce4-power-manager-dev 1.6.0-1.1
+xininfo-git 42.0bd94ad-1
+xorg-server-utils 7.6-4
+xorg-utils 7.6-9

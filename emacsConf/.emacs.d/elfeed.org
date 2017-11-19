@@ -1,0 +1,9 @@
+* Blog :elfeed:
+** Pocket :pocket:
+*** https://getpocket.com/users/ashfaq.farooqui/feed/all
+** comics :comics:
+*** http://phdcomics.com/gradfeed.php
+** emacs :emacs:
+*** http://planet.emacsen.org/atom.xml
+*** http://pragmaticemacs.com/feed/
+*** http://sachachua.com/blog/feed/

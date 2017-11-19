@@ -57,6 +57,7 @@ added.
    writeroom-mode;;darkroom
    which-key
    elpy
+   color-theme-sanityinc-tomorrow
    latex-preview-pane
    helm-mu
    pdf-tools
@@ -169,10 +170,15 @@ don't share that discomfort with others.
          indent-tabs-mode nil)
 #+end_src
 ** Backup files
-Some people like to have them. I don't. Rather than pushing them
-to a folder, never to be used, just turn the whole thing off.
+Save backups in another folder
 #+begin_src emacs-lisp
-      (setq make-backup-files nil)
+  (setq backup-by-copying t      ; don't clobber symlinks
+        backup-directory-alist
+        '(("." . "~/.emacs.d/backups/emacs-saves"))    ; don't litter my fs tree
+        delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)       ; use versioned backups
 #+end_src
 ** Yes and No
 Nobody likes to have to type out the full yes or no when Emacs
@@ -183,7 +189,7 @@ asks. Which it does often. Make it one character.
 ** Key bindings
 Miscellaneous key binding stuff that doesn't fit anywhere else.
 #+begin_src emacs-lisp
-(global-set-key (kbd "RET") 'newline-and-indent)
+;; (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -430,10 +436,11 @@ The built-in Emacs spell checker. Turn off the welcome flag because
 it is annoying and breaks on quite a few systems. Specify the
 location of the spell check program so it loads properly.
 #+begin_src emacs-lisp
-      (setq flyspell-issue-welcome-flag nil)
-          (setq-default ispell-program-name "/usr/local/bin/aspell")
-        (setq-default ispell-program-name "/usr/bin/aspell")
-      (setq-default ispell-list-command "list")
+  (setq flyspell-issue-welcome-flag nil)
+      (setq-default ispell-program-name "/usr/local/bin/aspell")
+    (setq-default ispell-program-name "/usr/bin/aspell")
+  (setq-default ispell-list-command "list")
+
 #+end_src
 ** eshell
 Customize eshell
@@ -700,32 +707,32 @@ archive of finished tasks in =archive.org=.
 ** Settings
 *** Sequences
 #+begin_src emacs-lisp
-               (setq org-todo-keywords '((sequence
-                   "TODO(t)"  ; next action
-                   "STARTED(s)"
-                   "WAITING(w@/!)"
-                   "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
-                  (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")
-                   (sequence "IDEA"))
-       org-todo-keyword-faces '(("IDEA" . (:foreground "green" :weight bold))
-                                     ("STARTED" . (:foreground "blue" :weight bold))
-                                     ("CANCELLED" . (:foreground "red" :weight book))
-                                     ("SOMEDAY" . (:foreground "red" :weight book))
-                                     ("WAITING" . (:foreground "yellow" :weight book))
-                                     ("COMPLETE" . (:foreground "green" :weight bold))
-                                     ("DONE" . (:foreground "green" :weight bold))))
+                 (setq org-todo-keywords '((sequence
+                     "TODO(t)"  ; next action
+                     "STARTED(s)"
+                     "WAITING(w@/!)"
+                     "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+                    (sequence "TODELEGATE(-)" "DELEGATED(d)" "|" "COMPLETE(x)")
+                     (sequence "IDEA"))
+         org-todo-keyword-faces '(("IDEA" . (:foreground "green" :weight bold))
+                                       ("STARTED" . (:foreground "blue" :weight bold))
+                                       ("CANCELLED" . (:foreground "red" :weight book))
+                                       ("SOMEDAY" . (:foreground "red" :weight book))
+                                       ("WAITING" . (:foreground "yellow" :weight book))
+                                       ("COMPLETE" . (:foreground "green" :weight bold))
+                                       ("DONE" . (:foreground "green" :weight bold))))
 
 
 
-                 (setq org-log-done t)
-                    (add-hook 'org-mode-hook
-                              (lambda ()
-                                (flyspell-mode)))
-                    (add-hook 'org-mode-hook
-                              (lambda ()
-                                (writegood-mode)))
-  (add-hook 'LaTeX-mode-hook (lambda () (writegood-mode)))
-(add-hook 'LaTeX-mode-hook (lambda () (flyspell-mode)))
+                   (setq org-log-done t)
+                      (add-hook 'org-mode-hook
+                                (lambda ()
+                                  (flyspell-mode)))
+                      (add-hook 'org-mode-hook
+                                (lambda ()
+                                  (writegood-mode)))
+    (add-hook 'LaTeX-mode-hook (lambda () (writegood-mode)))
+  (add-hook 'LaTeX-mode-hook (lambda () (flyspell-mode)))
 
 #+end_src
 *** Display preferences
@@ -1112,12 +1119,27 @@ Markdown, or Org.
 (setq langtool-default-language "en-US")
 (setq langtool-java-classpath nil))  
 #+END_SRC
+** Synonyms
+#+BEGIN_SRC emacs-lisp
+(use-package synosaurus
+:ensure t
+:config
+(setq synosaurus-choose-method 'popup))
+#+END_SRC
+** Dictionary
+#+BEGIN_SRC emacs-lisp
+(use-package helm-dictionary
+:ensure t)
+#+END_SRC
+** Babel to translate
+#+BEGIN_SRC emacs-lisp
+
+
+#+END_SRC
 * Theme
 #+BEGIN_SRC emacs-lisp
-(use-package nubox
-:ensure t)
-(load-theme 'zenburn t)
-
+(require 'color-theme-sanityinc-tomorrow)
+(load-theme 'sanityinc-tomorrow-night t)
 #+END_SRC
 * Python
 #+BEGIN_SRC emacs-lisp
@@ -1163,10 +1185,17 @@ Markdown, or Org.
 * PDF tools
 ** Pdf tool setup
 #+BEGIN_SRC emacs-lisp
-(require 'pdf-tools)
-
-(add-hook 'pdf-tools-enabled-hook 'auto-revert-mode)
-(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-tools-install))
+  (use-package pdf-tools
+   :pin manual ;; manually update
+   :config
+   ;; open pdfs scaled to fit page
+   (setq-default pdf-view-display-size 'fit-page)
+   ;; automatically annotate highlights
+   (setq pdf-annot-activate-created-annotations t)
+   ;; use normal isearch
+   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
+(add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+  (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-tools-install))
 #+END_SRC
 * Ledger mode
 #+BEGIN_SRC emacs-lisp
@@ -1275,79 +1304,82 @@ Markdown, or Org.
 * mail client
 Need to move this to use-package later
 #+BEGIN_SRC emacs-lisp
-;(add-to-list 'load-path "~/.emacs.d/dotEmacs/mu4e")
-(require 'mu4e)
-(require 'mu4e-contrib)
-(require 'helm-mu)
-(require 'org-mu4e)
-;; default
-(setq mu4e-maildir "~/mail")
-(setq mu4e-drafts-folder "/Drafts")
-(setq mu4e-sent-folder   "/Sent")
-(setq mu4e-trash-folder  "/Trash")
-(setq mu4e-compose-signature-auto-include t)
-;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-;(setq mu4e-sent-messages-behavior 'delete)
+  ;(add-to-list 'load-path "~/.emacs.d/dotEmacs/mu4e")
+  (require 'mu4e)
+  (require 'mu4e-contrib)
+  (require 'helm-mu)
+  (require 'org-mu4e)
+  ;; default
+  (setq mu4e-maildir "~/mail")
+  (setq mu4e-drafts-folder "/Drafts")
+  (setq mu4e-sent-folder   "/Sent")
+  (setq mu4e-trash-folder  "/Trash")
+    (setq mu4e-compose-signature-auto-include t)
+(setq mu4e-compose-format-flowed t)
+  ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+  ;(setq mu4e-sent-messages-behavior 'delete)
 
-;; setup some handy shortcuts
-;; you can quickly switch to your Inbox -- press ``ji''
-;; then, when you want archive some messages, move them to
-;; the 'All Mail' folder by pressing ``ma''.
+  ;; setup some handy shortcuts
+  ;; you can quickly switch to your Inbox -- press ``ji''
+  ;; then, when you want archive some messages, move them to
+  ;; the 'All Mail' folder by pressing ``ma''.
 
-(setq mu4e-maildir-shortcuts
-      '( ("/Inbox"               . ?i)
-         ("/Sent"   . ?s)
-         ("/Trash"       . ?t)
-         ("/All Mail"    . ?a)))
+  (setq mu4e-maildir-shortcuts
+        '( ("/Inbox"               . ?i)
+           ("/Sent"   . ?s)
+           ("/Trash"       . ?t)
+           ("/All Mail"    . ?a)))
 
-;; allow for updating mail using 'U' in the main view:
-(setq mu4e-update-interval 600)
-(setq mu4e-get-mail-command "mbsync chalmers")
+  ;; allow for updating mail using 'U' in the main view:
+  (setq mu4e-update-interval 600)
+  (setq mu4e-get-mail-command "mbsync chalmers")
 
-;; something about ourselves
-(setq
- user-mail-address "ashfaqf@chalmers.se"
- user-full-name  "Ashfaq Farooqui"
- message-signature
- (concat
-  "//Ashfaq"
-  "\n"))
-(setq mu4e-compose-signature t)
-;; sending mail -- replace USERNAME with your gmail username
-;; also, make sure the gnutls command line utils are installed
-;; package 'gnutls-bin' in Debian/Ubuntu
+  ;; something about ourselves
+  (setq
+   user-mail-address "ashfaqf@chalmers.se"
+   user-full-name  "Ashfaq Farooqui"
+   message-signature
+   (concat
+    "//Ashfaq"
+    "\n"))
+  (setq mu4e-compose-signature t)
+  ;; sending mail -- replace USERNAME with your gmail username
+  ;; also, make sure the gnutls command line utils are installed
+  ;; package 'gnutls-bin' in Debian/Ubuntu
 
-(require 'smtpmail)
-(setq message-send-mail-function 'smtpmail-send-it
-    smtpmail-auth-credentials
-  (expand-file-name "~/.emacs.d/.authinfo.gpg")
-    smtpmail-default-smtp-server "localhost"
-    smtpmail-smtp-server "localhost"
-    smtpmail-smtp-service 1025)
+  (require 'smtpmail)
+  (setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-auth-credentials
+    (expand-file-name "~/.emacs.d/.authinfo.gpg")
+      smtpmail-default-smtp-server "localhost"
+      smtpmail-smtp-server "localhost"
+      smtpmail-smtp-service 1025)
 
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
-;;store org-mode links to messages
-;;store link to message if in header view, not to header query
-(setq org-mu4e-link-query-in-headers-mode nil)
-
-
-
-;;; Html rendering
-(setq mu4e-view-prefer-html t)
-
-(setq mu4e-use-fancy-chars t)
-(setq mu4e-attachment-dir "~/Documents/mail")
+  ;; don't keep message buffers around
+  (setq message-kill-buffer-on-exit t)
+  ;;store org-mode links to messages
+  ;;store link to message if in header view, not to header query
+  (setq org-mu4e-link-query-in-headers-mode nil)
 
 
-;;; Attempt to show images when viewing messages
-(setq mu4e-view-show-images t
-      mu4e-view-image-max-width 800)
 
-;; View html message in firefox (type aV)
-(add-to-list 'mu4e-view-actions
-            '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+  ;;; Html rendering
+  (setq mu4e-view-prefer-html t)
 
+  (setq mu4e-use-fancy-chars t)
+  (setq mu4e-attachment-dir "~/Documents/mail")
+
+
+  ;;; Attempt to show images when viewing messages
+  (setq mu4e-view-show-images t
+        mu4e-view-image-max-width 800)
+
+  ;; View html message in firefox (type aV)
+  (add-to-list 'mu4e-view-actions
+              '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+;; PGP-Sign all e-mails
+(add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
 #+END_SRC
 * Spotify
@@ -1418,7 +1450,15 @@ Need to move this to use-package later
          :link link
          :description description))))
   (org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link))
+(evil-define-key* 'motion elfeed-search-mode-map
+                  "U" #'elfeed-search-update--force
+                  "u" #'elfeed-search-fetch)
 
+(evil-define-key* 'motion elfeed-show-mode-map
+                  "j" #'elfeed-show-next
+                  "k" #'elfeed-show-prev)
+(add-to-list 'evil-motion-state-modes 'elfeed-search-mode)
+(add-to-list 'evil-motion-state-modes 'elfeed-show-mode)
 (use-package elfeed-goodies
 :ensure t)
 
@@ -1432,7 +1472,7 @@ Need to move this to use-package later
 #+END_SRC
 * pocket
 #+BEGIN_SRC emacs-lisp
-(use-package pocket-api
+(use-package pocket-reader
   :ensure t)
 
 #+END_SRC
@@ -1456,6 +1496,46 @@ Need to move this to use-package later
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
 :ensure t)
+
+#+END_SRC
+* Dashboard
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (dashboard-setup-startup-hook)
+;; Set the title
+(setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+;; Set the banner
+(setq dashboard-startup-banner 'official)
+;; Value can be
+;; 'official which displays the official emacs logo
+;; 'logo which displays an alternative emacs logo
+;; 1, 2 or 3 which displays one of the text banners
+;; "path/to/your/image.png which displays whatever image you would prefer
+(setq dashboard-items '((recents  . 5)
+                        (bookmarks . 5)
+                        (projects . 5)
+                        (agenda . 2)
+                        (registers . 2)))
+)
+#+END_SRC
+* Perspectives
+#+BEGIN_SRC emacs-lisp
+(use-package perspective
+:ensure t)
+
+#+END_SRC
+* Org web tools
+#+BEGIN_SRC emacs-lisp
+(use-package org-web-tools
+:ensure t)
+#+END_SRC
+* Org-toc
+#+BEGIN_SRC emacs-lisp
+(use-package toc-org
+:ensure t)
+(add-hook 'org-mode-hook 'toc-org-enable)
 
 #+END_SRC
 * Alert

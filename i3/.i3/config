@@ -24,7 +24,7 @@ bindsym $mod+Shift+a move workspace to output right
 bindsym $mod+Shift+d move workspace to output left
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:System San Franscisco 13,
+font pango:Monospace 5,
 
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod
@@ -67,7 +67,9 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 1 toggle # mute s
 # keyboard brightness
 bindsym XF86KbdBrightnessUp exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -lt 3 ]; then echo `expr $val + 1` | sudo tee $file; fi"
 bindsym XF86KbdBrightnessDown exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -gt 0 ]; then echo `expr $val - 1` | sudo tee $file; fi"
-
+## Keyboard layouts
+exec --no-startup-id "setxkbmap -layout us,se"
+exec --no-startup-id "setxkbmap -option 'grp:alt_shift_toggle'"
 
 # Start Applications
 bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
@@ -352,7 +354,7 @@ client.urgent           $dectext $dectext $dectext $dectext
 bar {
 	position top
 	status_command i3status
-
+#	i3bar_command $HOME/.config/polybar/launch.sh
 ## please set your primary output first. Example: 'xrandr --output eDP1 --primary'
 #	tray_output primary
 #	tray_output eDP1
@@ -360,7 +362,7 @@ bar {
 
        bindsym button4 nop
 	bindsym button5 nop
-	font pango:Monospace,Icons 14
+	font pango:Monospace,Icons 10
 
 	colors {
          background $background
@@ -381,6 +383,7 @@ exec --no-startup-id caffeine
 exec --no-startup-id davmail
 ## Start personnal applications
 exec --no-startup-id dropbox start
+#exec --no-startup-id exec xrandr --output HDMI2 --mode 1680x1050 --scale 2x2 --pos 6560x0 --rotate normal --output DP1 --mode 1680x1050 --scale 2x2 --pos 3200x0 --rotate normal
 
 
 ## Run monitor script

@@ -3,7 +3,7 @@ IMAPAccount chalmers
 Host localhost
 Port 1143
 user chalmers.se\\ashfaqf
-PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.emacs.d/.authinfo.gpg | awk '/machine localhost login ashfaqf/ {print $NF}'"
+PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine localhost login ashfaqf/ {print $NF}'"
 # To store the password in an encrypted file use PassCmd instead of Pass
 # PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mailpass.gpg"
 #
@@ -17,6 +17,7 @@ MaildirStore chalmers-local
 # The trailing "/" is important
 Path ~/mail/
 Inbox ~/mail/Inbox
+SubFolders Legacy
 
 Channel chalmers
 Master :chalmers-remote:
