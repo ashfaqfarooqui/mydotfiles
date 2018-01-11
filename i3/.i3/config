@@ -59,8 +59,8 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 1 toggle # mute s
 ################################################################################################
 
 # Screen brightness controls
-#bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
-#bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
 
 # Touchpad controls
 #bindsym XF86TouchpadToggle exec ~/.i3/scripts/touchpad.sh # toggle touchpad
@@ -70,7 +70,7 @@ bindsym XF86KbdBrightnessDown exec "file=/sys/class/leds/asus::kbd_backlight/bri
 ## Keyboard layouts
 exec --no-startup-id "setxkbmap -layout us,se"
 exec --no-startup-id "setxkbmap -option 'grp:alt_shift_toggle'"
-
+exec --no-startup-id "xinput set-prop 16 298 1"
 # Start Applications
 bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
 bindsym $mod+F2 exec firefox
@@ -152,12 +152,12 @@ bindsym $mod+minus scratchpad show
 
 # Workspace names
 
-set $workspace1 "1:Mail"
-set $workspace2 "2:&#xf269;"
+set $workspace1 "1:"
+set $workspace2 "2:"
 set $workspace3 "3:Emacs"
 set $workspace4 "4:"
 set $workspace5 "5:File Browser"
-set $workspace6 "6:&#xf198;"
+set $workspace6 "6:"
 set $workspace7 "7:VirtBox"
 set $workspace8 "8:"
 set $workspace9 "9:"
@@ -384,7 +384,6 @@ exec --no-startup-id davmail
 ## Start personnal applications
 exec --no-startup-id dropbox start
 #exec --no-startup-id exec xrandr --output HDMI2 --mode 1680x1050 --scale 2x2 --pos 6560x0 --rotate normal --output DP1 --mode 1680x1050 --scale 2x2 --pos 3200x0 --rotate normal
-
 
 ## Run monitor script
 #exec --no-startup-id confMonitors.sh

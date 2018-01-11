@@ -1,7 +1,7 @@
 #+TITLE: Ashfaq Farooqui's Emacs Configuration
 #+AUTHOR: Ashfaq Farooqui
 #+EMAIL: ashfaq.farooqui@gmail.com
-#+OPTIONS: toc:3 num:nil
+e+OPTIONS: toc:3 num:nil
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://thomasf.github.io/solarized-css/solarized-light.min.css" />
 
 * User Details
@@ -286,7 +286,14 @@ Single Capitals as you type."
 (require 'helm-config)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (helm-mode 1)
+(use-package ibuffer-vc
+:ensure t)
+(defalias 'list-buffers 'ibuffer-other-window) 
 #+END_SRC
+
+#+RESULTS:
+: list-buffers
+
 ** Ido
 =Ido= mode provides a nice way to navigate the filesystem. This is
 mostly just turning it on.
@@ -514,6 +521,13 @@ Customize eshell
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 #+end_src
 
+** Dired
+#+BEGIN_SRC emacs-lisp
+(use-package dired+
+  :ensure t
+  :config (require 'dired+)
+  )
+#+END_SRC
 ** Peep files using dired
 #+BEGIN_SRC emacs-lisp
   ;;preview files in dired
@@ -1143,8 +1157,8 @@ Markdown, or Org.
 #+END_SRC
 * Python
 #+BEGIN_SRC emacs-lisp
-
 (elpy-enable)
+(elpy-use-ipython)
 #+END_SRC
 * Library -- org-ref
 ** Basic config
@@ -1269,6 +1283,10 @@ Markdown, or Org.
   (setq windmove-wrap-around t))
 
 #+END_SRC
+
+#+RESULTS:
+: t
+
 * G-cal for orgs
 #+BEGIN_SRC emacs-lisp
 ;;use-package org-gcal
@@ -1304,84 +1322,89 @@ Markdown, or Org.
 * mail client
 Need to move this to use-package later
 #+BEGIN_SRC emacs-lisp
-  ;(add-to-list 'load-path "~/.emacs.d/dotEmacs/mu4e")
-  (require 'mu4e)
-  (require 'mu4e-contrib)
-  (require 'helm-mu)
-  (require 'org-mu4e)
-  ;; default
-  (setq mu4e-maildir "~/mail")
-  (setq mu4e-drafts-folder "/Drafts")
-  (setq mu4e-sent-folder   "/Sent")
-  (setq mu4e-trash-folder  "/Trash")
-    (setq mu4e-compose-signature-auto-include t)
-(setq mu4e-compose-format-flowed t)
-  ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-  ;(setq mu4e-sent-messages-behavior 'delete)
+    ;(add-to-list 'load-path "~/.emacs.d/dotEmacs/mu4e")
+    (require 'mu4e)
+    (require 'mu4e-contrib)
+    (require 'helm-mu)
+    (require 'org-mu4e)
+    ;; default
+    (setq mu4e-maildir "~/mail")
+    (setq mu4e-drafts-folder "/Drafts")
+    (setq mu4e-sent-folder   "/Sent")
+    (setq mu4e-trash-folder  "/Trash")
+      (setq mu4e-compose-signature-auto-include t)
+  (setq mu4e-compose-format-flowed t)
+    ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+    (setq mu4e-sent-messages-behavior 'sent)
 
-  ;; setup some handy shortcuts
-  ;; you can quickly switch to your Inbox -- press ``ji''
-  ;; then, when you want archive some messages, move them to
-  ;; the 'All Mail' folder by pressing ``ma''.
+    ;; setup some handy shortcuts
+    ;; you can quickly switch to your Inbox -- press ``ji''
+    ;; then, when you want archive some messages, move them to
+    ;; the 'All Mail' folder by pressing ``ma''.
 
-  (setq mu4e-maildir-shortcuts
-        '( ("/Inbox"               . ?i)
-           ("/Sent"   . ?s)
-           ("/Trash"       . ?t)
-           ("/All Mail"    . ?a)))
+    (setq mu4e-maildir-shortcuts
+          '( ("/Inbox"               . ?i)
+             ("/Sent"   . ?s)
+             ("/Drafts" . ?d)
+             ("/Trash"       . ?t)
+             ("/All Mail"    . ?a)))
 
-  ;; allow for updating mail using 'U' in the main view:
-  (setq mu4e-update-interval 600)
-  (setq mu4e-get-mail-command "mbsync chalmers")
+    ;; allow for updating mail using 'U' in the main view:
+    (setq mu4e-update-interval 600)
+    (setq mu4e-get-mail-command "mbsync chalmers")
 
-  ;; something about ourselves
-  (setq
-   user-mail-address "ashfaqf@chalmers.se"
-   user-full-name  "Ashfaq Farooqui"
-   message-signature
-   (concat
-    "//Ashfaq"
-    "\n"))
-  (setq mu4e-compose-signature t)
-  ;; sending mail -- replace USERNAME with your gmail username
-  ;; also, make sure the gnutls command line utils are installed
-  ;; package 'gnutls-bin' in Debian/Ubuntu
+    ;; something about ourselves
+    (setq
+     user-mail-address "ashfaqf@chalmers.se"
+     user-full-name  "Ashfaq Farooqui"
+     message-signature
+     (concat
+      "//Ashfaq"
+      "\n"))
+    (setq mu4e-compose-signature t)
+    ;; sending mail -- replace USERNAME with your gmail username
+    ;; also, make sure the gnutls command line utils are installed
+    ;; package 'gnutls-bin' in Debian/Ubuntu
 
-  (require 'smtpmail)
-  (setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-auth-credentials
-    (expand-file-name "~/.emacs.d/.authinfo.gpg")
-      smtpmail-default-smtp-server "localhost"
-      smtpmail-smtp-server "localhost"
-      smtpmail-smtp-service 1025)
+    (require 'smtpmail)
+    (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-auth-credentials
+      (expand-file-name "~/.emacs.d/.authinfo.gpg")
+        smtpmail-default-smtp-server "localhost"
+        smtpmail-smtp-server "localhost"
+        smtpmail-smtp-service 1025)
 
-  ;; don't keep message buffers around
-  (setq message-kill-buffer-on-exit t)
-  ;;store org-mode links to messages
-  ;;store link to message if in header view, not to header query
-  (setq org-mu4e-link-query-in-headers-mode nil)
-
-
-
-  ;;; Html rendering
-  (setq mu4e-view-prefer-html t)
-
-  (setq mu4e-use-fancy-chars t)
-  (setq mu4e-attachment-dir "~/Documents/mail")
+    ;; don't keep message buffers around
+    (setq message-kill-buffer-on-exit t)
+    ;;store org-mode links to messages
+    ;;store link to message if in header view, not to header query
+    (setq org-mu4e-link-query-in-headers-mode nil)
 
 
-  ;;; Attempt to show images when viewing messages
-  (setq mu4e-view-show-images t
-        mu4e-view-image-max-width 800)
 
-  ;; View html message in firefox (type aV)
-  (add-to-list 'mu4e-view-actions
-              '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+    ;;; Html rendering
+    (setq mu4e-view-prefer-html t)
 
-;; PGP-Sign all e-mails
-(add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+    (setq mu4e-use-fancy-chars t)
+    (setq mu4e-attachment-dir "~/Documents/mail")
+
+
+    ;;; Attempt to show images when viewing messages
+    (setq mu4e-view-show-images t
+          mu4e-view-image-max-width 800)
+
+    ;; View html message in firefox (type aV)
+    (add-to-list 'mu4e-view-actions
+                '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+  ;; PGP-Sign all e-mails
+  (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
 #+END_SRC
+
+#+RESULTS:
+| mml-secure-message-sign-pgpmime |
+
 * Spotify
 #+BEGIN_SRC emacs-lisp
 (use-package helm-spotify-plus
@@ -1536,6 +1559,39 @@ Need to move this to use-package later
 (use-package toc-org
 :ensure t)
 (add-hook 'org-mode-hook 'toc-org-enable)
+
+#+END_SRC
+* Jedi
+#+BEGIN_SRC emacs-lisp
+(use-package jedi
+:ensure t
+:init
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:setup-keys t) ; optional
+(setq jedi:complete-on-dot t) ; optional
+)
+#+END_SRC
+* Jupyter
+#+BEGIN_SRC emacs-lisp
+(use-package ein
+:ensure t
+:config
+)
+
+(use-package ein
+:ensure t
+:init
+(require 'ein)
+(require 'ein-dev)
+(require 'auto-complete)
+(require 'jedi)
+(setq ein:completion-backend 'ein:use-ac-jedi-backend)
+(setq ein:complete-on-dot t)
+
+:config
+(highlight-indentation-mode t)
+)
+
 
 #+END_SRC
 * Alert
