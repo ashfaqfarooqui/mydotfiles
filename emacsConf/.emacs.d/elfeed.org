@@ -2,8 +2,11 @@
 ** Pocket :pocket:
 *** https://getpocket.com/users/ashfaq.farooqui/feed/all
 ** comics :comics:
+*** http://feeds.feedburner.com/satwcomic
 *** http://phdcomics.com/gradfeed.php
 ** emacs :emacs:
 *** http://planet.emacsen.org/atom.xml
 *** http://pragmaticemacs.com/feed/
 *** http://sachachua.com/blog/feed/
+*** http://cestlaz.github.io/rss.xml
+*** http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml
