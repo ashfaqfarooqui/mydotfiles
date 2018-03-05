@@ -1,4 +1,4 @@
-#+TITLE: Ashfaq Farooqui's Emacs Configuration
++TITLE: Ashfaq Farooqui's Emacs Configuration
 #+AUTHOR: Ashfaq Farooqui
 #+EMAIL: ashfaq.farooqui@gmail.com
 +OPTIONS: toc:3 num:nil
@@ -28,6 +28,13 @@ added.
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
     (setq package-archive-enable-alist '(("melpa" magit f)))
     (require 'cl)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
 #+end_src
 
 * Some mandatory stuff
@@ -100,13 +107,112 @@ don't share that discomfort with others.
 ** Backup files
 Save backups in another folder
 #+begin_src emacs-lisp
-  (setq backup-by-copying t      ; don't clobber symlinks
-        backup-directory-alist
-        '(("." . "~/.emacs.d/backups/emacs-saves"))    ; don't litter my fs tree
-        delete-old-versions t
-        kept-new-versions 6
-        kept-old-versions 2
-        version-control t)       ; use versioned backups
+(setq
+ backup-by-copying t     ; don't clobber symlinks
+ kept-new-versions 10    ; keep 10 latest versions
+ kept-old-versions 0     ; don't bother with old versions
+ delete-old-versions t   ; don't ask about deleting old versions
+ version-control t       ; number backups
+ vc-make-backup-files t ; backup version controlled files
+ backup-directory-alist
+        '(("." . "~/.emacs.d/backups/emacs-saves"))   ; don't litter my fs tree
+   auto-save-default t               ; auto-save every buffer that visits a file
+      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+
+)
+
+ (setq auto-mode-alist
+      (append
+       (list
+        '("\\.\\(vcf\\|gpg\\)$" . sensitive-minor-mode)
+        )
+       auto-mode-alist))
+;;http://pragmaticemacs.com/emacs/auto-save-and-backup-every-save/
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; backup every save                                                      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; http://stackoverflow.com/questions/151945/how-do-i-control-how-emacs-makes-backup-files
+;; https://www.emacswiki.org/emacs/backup-each-save.el
+(defvar bjm/backup-file-size-limit (* 10 1024 1024)
+  "Maximum size of a file (in bytes) that should be copied at each savepoint.
+
+If a file is greater than this size, don't make a backup of it.
+Default is 5 MB")
+
+(defvar bjm/backup-location (expand-file-name "~/.emacs.d/emacs-backups")
+  "Base directory for backup files.")
+
+(defvar bjm/backup-trash-dir (expand-file-name "~/.Trash")
+  "Directory for unwanted backups.")
+
+(defvar bjm/backup-exclude-regexp "\\[Gmail\\]"
+  "Don't back up files matching this regexp.
+
+Files whose full name matches this regexp are backed up to `bjm/backup-trash-dir'. Set to nil to disable this.")
+
+;; Default and per-save backups go here:
+;; N.B. backtick and comma allow evaluation of expression
+;; when forming list
+(setq backup-directory-alist
+      `(("" . ,(expand-file-name "per-save" bjm/backup-location))))
+
+;; add trash dir if needed
+(if bjm/backup-exclude-regexp
+    (add-to-list 'backup-directory-alist `(,bjm/backup-exclude-regexp . ,bjm/backup-trash-dir)))
+
+(defun bjm/backup-every-save ()
+  "Backup files every time they are saved.
+
+Files are backed up to `bjm/backup-location' in subdirectories \"per-session\" once per Emacs session, and \"per-save\" every time a file is saved.
+
+Files whose names match the REGEXP in `bjm/backup-exclude-regexp' are copied to `bjm/backup-trash-dir' instead of the normal backup directory.
+
+Files larger than `bjm/backup-file-size-limit' are not backed up."
+
+  ;; Make a special "per session" backup at the first save of each
+  ;; emacs session.
+  (when (not buffer-backed-up)
+    ;;
+    ;; Override the default parameters for per-session backups.
+    ;;
+    (let ((backup-directory-alist
+           `(("." . ,(expand-file-name "per-session" bjm/backup-location))))
+          (kept-new-versions 3))
+      ;;
+      ;; add trash dir if needed
+      ;;
+      (if bjm/backup-exclude-regexp
+          (add-to-list
+           'backup-directory-alist
+           `(,bjm/backup-exclude-regexp . ,bjm/backup-trash-dir)))
+      ;;
+      ;; is file too large?
+      ;;
+      (if (<= (buffer-size) bjm/backup-file-size-limit)
+          (progn
+            (message "Made per session backup of %s" (buffer-name))
+            (backup-buffer))
+        (message "WARNING: File %s too large to backup - increase value of bjm/backup-file-size-limit" (buffer-name)))))
+  ;;
+  ;; Make a "per save" backup on each save.  The first save results in
+  ;; both a per-session and a per-save backup, to keep the numbering
+  ;; of per-save backups consistent.
+  ;;
+  (let ((buffer-backed-up nil))
+    ;;
+    ;; is file too large?
+    ;;
+    (if (<= (buffer-size) bjm/backup-file-size-limit)
+        (progn
+          (message "Made per save backup of %s" (buffer-name))
+          (backup-buffer))
+      (message "WARNING: File %s too large to backup - increase value of bjm/backup-file-size-limit" (buffer-name)))))
+
+;; add to save hook
+(add-hook 'before-save-hook 'bjm/backup-every-save)
+
+
 #+end_src
 ** Yes and No
 Nobody likes to have to type out the full yes or no when Emacs
@@ -159,7 +265,7 @@ Single Capitals as you type."
   :ensure t)
 
 #+END_SRC
-** Indentation and buffer cleanup                                :toInclude:
+** Indentation and buffer cleanup
 Setup org mode indentation
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented t)
@@ -227,38 +333,160 @@ Indent stuff, copied from [[https://www.emacswiki.org/emacs/IndentingText]]
 (global-set-key [C-S-right] 'shift-right)
 (global-set-key [C-S-left] 'shift-left)
 #+END_SRC
-* Evil Mode
-#+begin_src emacs-lisp
-     (use-package evil
-  :ensure t
-  :config
-  (evil-mode 1)
-(use-package evil-collection
-  :after evil
-  :ensure t
-    :custom (evil-collection-setup-minibuffer t)
-  :config
-  (evil-collection-init))
-Some old bindings
+** Hungry delete
+#+BEGIN_SRC emacs-lisp
+(use-package hungry-delete
+:ensure t
+:config (global-hungry-delete-mode))
 
-  (use-package evil-leader
+#+END_SRC
+** Sudo edit
+#+BEGIN_SRC emacs-lisp
+(use-package sudo-edit
+:ensure t)
+
+#+END_SRC
+** Rainbow delimites
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+:ensure t
+:init (rainbow-mode 1))
+
+(use-package rainbow-delimiters
+:ensure t
+:init (rainbow-delimiters-mode 1))
+#+END_SRC
+** Some additions ones
+- Open in current window
+- Enable cycling camelcase
+#+BEGIN_SRC emacs-lisp
+(setq org-src-window-setup 'current-window)
+
+(global-subword-mode 1)
+#+END_SRC
+* Elfeed
+#+BEGIN_SRC emacs-lisp
+  (use-package elfeed
+    :ensure t
+    :bind
+    (:map elfeed-search-mode-map
+          ("s" . bjm/elfeed-load-db-and-open)
+          ("q" . bjm/elfeed-save-db-and-bury))
+    :init
+    ;; thanks - http://pragmaticemacs.com/emacs/read-your-rss-feeds-in-emacs-with-elfeed/
+    ;; though slightly modified
+    ;; functions to support syncing .elfeed between machines
+    ;; makes sure elfeed reads index from disk before launching
+    (defun bjm/elfeed-load-db-and-open ()
+      "Load the elfeed db from disk before opening."
+      (interactive)
+      (elfeed-db-load)
+      (elfeed)
+      (elfeed-search-update--force)
+      (elfeed-update))
+    ;;write to disk when quiting
+    (defun bjm/elfeed-save-db-and-bury ()
+      "Wrapper to save the elfeed db to disk before burying buffer"
+      (interactive)
+      (elfeed-db-save)
+      (quit-window))
+    :config
+    (setq elfeed-db-directory "~/Dropbox/.elfeed")
+    ;; This lets me get the http links to entries with org-capture
+    ;; easily.
+    (defun elfeed-entry-as-html-link ()
+      "Store an http link to an elfeed entry"
+      (when (equal major-mode 'elfeed-show-mode)
+        (let ((description (elfeed-entry-title elfeed-show-entry))
+              (link (elfeed-entry-link elfeed-show-entry)))
+          (org-store-link-props
+           :type "http"
+           :link link
+           :description description))))
+ ;(org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link)
+)
+ 
+  (use-package elfeed-goodies
+  :ensure t)
+
+
+  (use-package elfeed-org
     :ensure t
     :config
-    (global-evil-leader-mode))
+    (progn
+      (elfeed-org)
+      (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
+#+END_SRC
 
-  (use-package evil-surround
+* PDF tools 
+https://github.com/abo-abo/hydra/wiki/PDF-Tools
+#+BEGIN_SRC emacs-lisp
+ (use-package pdf-tools
     :ensure t
+    :magic ("%PDF" . pdf-view-mode)
+    :commands pdf-tools-install
     :config
-    (global-evil-surround-mode))
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-page))
+     (use-package org-pdfview
+       :ensure t)
+#+END_SRC
 
-  (use-package evil-indent-textobject
-    :ensure t)
-(progn
-    (evil-ex-define-cmd "e[dit]" 'helm-find-files)
-    (evil-ex-define-cmd "b[uffer]" 'helm-buffers-list)
-    (bind-key "[escape]" 'keyboard-escape-quit evil-normal-state-map)
-    (bind-key "[escape]" 'keyboard-escape-quit evil-visual-state-map)
-    (bind-key "<escape>" 'keyboard-escape-quit)))
+#+RESULTS:
+
+Hydra
+#+BEGIN_SRC emacs-lisp
+(defhydra hydra-pdftools (:color blue :hint nil)
+        "
+                                                                      ╭───────────┐
+       Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
+   ╭──────────────────────────────────────────────────────────────────┴───────────╯
+         ^^_g_^^      _B_    ^↧^    _+_    ^ ^     [_al_] list    [_s_] search    [_u_] revert buffer
+         ^^^↑^^^      ^↑^    _H_    ^↑^  ↦ _W_ ↤   [_am_] markup  [_o_] outline   [_i_] info
+         ^^_p_^^      ^ ^    ^↥^    _0_    ^ ^     [_at_] text    [_F_] link      [_d_] dark mode
+         ^^^↑^^^      ^↓^  ╭─^─^─┐  ^↓^  ╭─^ ^─┐   [_ad_] delete  [_f_] search link
+    _h_ ←pag_e_→ _l_  _N_  │ _P_ │  _-_    _b_     [_aa_] dired
+         ^^^↓^^^      ^ ^  ╰─^─^─╯  ^ ^  ╰─^ ^─╯   [_y_]  yank
+         ^^_n_^^      ^ ^  _r_eset slice box
+         ^^^↓^^^
+         ^^_G_^^
+   --------------------------------------------------------------------------------
+        "
+        ("\\" hydra-master/body "back")
+        ("<ESC>" nil "quit")
+        ("al" pdf-annot-list-annotations)
+        ("ad" pdf-annot-delete)
+        ("aa" pdf-annot-attachment-dired)
+        ("am" pdf-annot-add-markup-annotation)
+        ("at" pdf-annot-add-text-annotation)
+        ("y"  pdf-view-kill-ring-save)
+        ("+" pdf-view-enlarge :color red)
+        ("-" pdf-view-shrink :color red)
+        ("0" pdf-view-scale-reset)
+        ("H" pdf-view-fit-height-to-window)
+        ("W" pdf-view-fit-width-to-window)
+        ("P" pdf-view-fit-page-to-window)
+        ("n" pdf-view-next-page-command :color red)
+        ("p" pdf-view-previous-page-command :color red)
+        ("d" pdf-view-dark-minor-mode)
+        ("b" pdf-view-set-slice-from-bounding-box)
+        ("r" pdf-view-reset-slice)
+        ("g" pdf-view-first-page)
+        ("G" pdf-view-last-page)
+        ("e" pdf-view-goto-page)
+        ;;("o" pdf-outline)
+        ("s" pdf-occur)
+        ("i" pdf-misc-display-metadata)
+        ("u" pdf-view-revert-buffer)
+        ("F" pdf-links-action-perfom)
+        ("f" pdf-links-isearch-link)
+        ("B" pdf-history-backward :color red)
+        ("N" pdf-history-forward :color red)
+        ("l" image-forward-hscroll :color red)
+        ("h" image-backward-hscroll :color red))
+
+
+(global-set-key (kbd "C-c h d") 'hydra-pdftools/body)
 
 #+END_SRC
 * Ace-window
@@ -273,7 +501,7 @@ Some old bindings
        ((t (:inherit ace-jump-face-foreground :height 3.0))))) 
     ))
 
-(defhydra hydra-window ()
+(defhydra hydra-frame-window ()
    "
 Movement^^        ^Split^         ^Switch^		^Resize^
 ----------------------------------------------------------------
@@ -282,7 +510,7 @@ _j_ ↓        	_x_ horizontal	_f_ind files	_w_ X↓
 _k_ ↑        	_z_ undo      	_a_ce 1		_e_ X↑
 _l_ →        	_Z_ reset      	_s_wap		_r_ X→
 _F_ollow		_D_lt Other   	_S_ave		max_i_mize
-_SPC_ cancel	_o_nly this   	_d_elete	
+\n_SPC_ cancel	_o_nly this   	_d_elete	
 "
    ("h" windmove-left )
    ("j" windmove-down )
@@ -333,6 +561,9 @@ _SPC_ cancel	_o_nly this   	_d_elete
    ("Z" winner-redo)
    ("SPC" nil)
    )
+
+
+(global-set-key (kbd "C-c h w") 'hydra-frame-window/body)
 #+END_SRC
 
 #+RESULTS:
@@ -345,12 +576,16 @@ _SPC_ cancel	_o_nly this   	_d_elete
         helm-use-undecorated-frame-option t)
 
 
-(require 'helm-config)
+(use-package helm
+:ensure t
+:config
 (global-set-key (kbd "M-x") 'helm-M-x)
-(helm-mode 1)
+(global-set-key (kbd "C-x C-f") #'helm-find-files)
+(helm-mode 1))
+
 (use-package ibuffer-vc
 :ensure t)
-(defalias 'list-buffers 'ibuffer-other-window) 
+(defalias 'list-buffers 'ibuffer-other-window)
 #+END_SRC
 
 * hydra ibuf
@@ -462,8 +697,9 @@ _SPC_ cancel	_o_nly this   	_d_elete
   (use-package which-key
     :ensure t
     :config 
-((which-key-mode)
-(which-key-setup-side-window-bottom))
+(progn 
+(which-key-mode)
+(which-key-setup-side-window-bottom)))
 
 #+END_SRC
 * Graphviz
@@ -831,14 +1067,6 @@ opening it up in order to start typing something, so this skips a step.
 
 
 #+END_SRC
-* Powerline
-#+BEGIN_SRC emacs-lisp
-(use-package powerline
-:ensure t
-:config
-(powerline-center-evil-theme))
-
-#+END_SRC
 * Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
@@ -900,9 +1128,33 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 #+END_SRC
 * Theme
 #+BEGIN_SRC emacs-lisp
-(use-package zenburn-theme
-:ensure t)
+  (use-package zenburn-theme
+    :ensure t
+    :config
+    (load-theme 'zenburn t))
 
+  ;;  (use-package powerline
+  ;;  :ensure t
+  ;;  :config
+  ;;  (powerline-center-evil-theme))
+  ;;    (use-package spacemacs-common
+  ;;      :ensure spacemacs-theme
+  ;;      :init
+  ;;      (load-theme 'spacemacs-dark t)
+  ;;      (setq spacemacs-theme-org-agenda-height nil)
+  ;;      (setq spacemacs-theme-org-height nil))
+  ;;    (set-face-attribute 'org-level-1 nil :height 1.0)
+  ;;    (set-face-attribute 'org-level-2 nil :height 1.0)
+  ;;    (set-face-attribute 'org-level-3 nil :height 1.0)
+  ;;    (set-face-attribute 'org-scheduled-today nil :height 1.0)
+  ;;    (set-face-attribute 'org-agenda-date-today nil :height 1.1)
+  ;;    (set-face-attribute 'org-table nil :foreground "#008787")
+  ;;  (use-package spaceline
+  ;;    :ensure t
+  ;;    :config
+  ;;    (require 'spaceline-config)
+  ;;    (spaceline-emacs-theme)
+  ;;    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
 #+END_SRC
 * Multiple cursors
 #+BEGIN_SRC emacs-lisp
@@ -956,120 +1208,17 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 (use-package elpy
 :ensure t
 :config
-(elpy-enable)
-(elpy-use-ipython))
-
-#+END_SRC
-* Latex
-#+BEGIN_SRC emacs-lisp
-(use-package latex-preview-pane
-:ensure t)
-(use-package auctex 
-:ensure t)
-(use-package auctex-latexmk
-:ensure t)
-
-
-#+END_SRC
-* PDF tools 
-https://github.com/abo-abo/hydra/wiki/PDF-Tools
-#+BEGIN_SRC emacs-lisp
- (use-package pdf-tools
-    :ensure t
-    :config
-    (pdf-tools-install)
-    (setq-default pdf-view-display-size 'fit-page)
-    (bind-keys :map pdf-view-mode-map
-        ("\\" . hydra-pdftools/body)
-        ("<s-spc>" .  pdf-view-scroll-down-or-next-page)
-        ("g"  . pdf-view-first-page)
-        ("G"  . pdf-view-last-page)
-        ("l"  . image-forward-hscroll)
-        ("h"  . image-backward-hscroll)
-        ("j"  . pdf-view-next-page)
-        ("k"  . pdf-view-previous-page)
-        ("e"  . pdf-view-goto-page)
-        ("u"  . pdf-view-revert-buffer)
-        ("al" . pdf-annot-list-annotations)
-        ("ad" . pdf-annot-delete)
-        ("aa" . pdf-annot-attachment-dired)
-        ("am" . pdf-annot-add-markup-annotation)
-        ("at" . pdf-annot-add-text-annotation)
-        ("y"  . pdf-view-kill-ring-save)
-        ("i"  . pdf-misc-display-metadata)
-        ("s"  . pdf-occur)
-        ("b"  . pdf-view-set-slice-from-bounding-box)
-        ("r"  . pdf-view-reset-slice))
-     (use-package org-pdfview
-       :ensure t))
-#+END_SRC
-
-Hydra
-#+BEGIN_SRC emacs-lisp
-(defhydra hydra-pdftools (:color blue :hint nil)
-        "
-                                                                      ╭───────────┐
-       Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
-   ╭──────────────────────────────────────────────────────────────────┴───────────╯
-         ^^_g_^^      _B_    ^↧^    _+_    ^ ^     [_al_] list    [_s_] search    [_u_] revert buffer
-         ^^^↑^^^      ^↑^    _H_    ^↑^  ↦ _W_ ↤   [_am_] markup  [_o_] outline   [_i_] info
-         ^^_p_^^      ^ ^    ^↥^    _0_    ^ ^     [_at_] text    [_F_] link      [_d_] dark mode
-         ^^^↑^^^      ^↓^  ╭─^─^─┐  ^↓^  ╭─^ ^─┐   [_ad_] delete  [_f_] search link
-    _h_ ←pag_e_→ _l_  _N_  │ _P_ │  _-_    _b_     [_aa_] dired
-         ^^^↓^^^      ^ ^  ╰─^─^─╯  ^ ^  ╰─^ ^─╯   [_y_]  yank
-         ^^_n_^^      ^ ^  _r_eset slice box
-         ^^^↓^^^
-         ^^_G_^^
-   --------------------------------------------------------------------------------
-        "
-        ("\\" hydra-master/body "back")
-        ("<ESC>" nil "quit")
-        ("al" pdf-annot-list-annotations)
-        ("ad" pdf-annot-delete)
-        ("aa" pdf-annot-attachment-dired)
-        ("am" pdf-annot-add-markup-annotation)
-        ("at" pdf-annot-add-text-annotation)
-        ("y"  pdf-view-kill-ring-save)
-        ("+" pdf-view-enlarge :color red)
-        ("-" pdf-view-shrink :color red)
-        ("0" pdf-view-scale-reset)
-        ("H" pdf-view-fit-height-to-window)
-        ("W" pdf-view-fit-width-to-window)
-        ("P" pdf-view-fit-page-to-window)
-        ("n" pdf-view-next-page-command :color red)
-        ("p" pdf-view-previous-page-command :color red)
-        ("d" pdf-view-dark-minor-mode)
-        ("b" pdf-view-set-slice-from-bounding-box)
-        ("r" pdf-view-reset-slice)
-        ("g" pdf-view-first-page)
-        ("G" pdf-view-last-page)
-        ("e" pdf-view-goto-page)
-        ("o" pdf-outline)
-        ("s" pdf-occur)
-        ("i" pdf-misc-display-metadata)
-        ("u" pdf-view-revert-buffer)
-        ("F" pdf-links-action-perfom)
-        ("f" pdf-links-isearch-link)
-        ("B" pdf-history-backward :color red)
-        ("N" pdf-history-forward :color red)
-        ("l" image-forward-hscroll :color red)
-        ("h" image-backward-hscroll :color red))
-
-
-(global-set-key (kbd "C-c h d") 'hydra-pdftools/body)
-
+(elpy-enable))
 #+END_SRC
 * Writegood mode
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
 :ensure t)
-
 #+END_SRC
 * Mail 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-mu
 :ensure t)
-
 #+END_SRC
 * Alert
 #+BEGIN_SRC emacs-lisp
@@ -1088,7 +1237,6 @@ Hydra
   (progn
     (require 'smartparens-config)
 (smartparens-global-mode 1)))
-
 #+END_SRC
 * Treemacs
 #+BEGIN_SRC emacs-lisp
@@ -1122,8 +1270,8 @@ Hydra
           treemacs-sorting                    'alphabetic-desc
           treemacs-tag-follow-cleanup         t
           treemacs-tag-follow-delay           1.5
-          treemacs-width                      35)
-
+         ; treemacs-width                      35
+)
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
     (pcase (cons (not (null (executable-find "git")))
@@ -1135,23 +1283,50 @@ Hydra
   :bind
   (:map global-map
         ([f8]         . treemacs-toggle)
-        ("M-0"        . treemacs-select-window)
-        ("C-c 1"      . treemacs-delete-other-windows)
-        ("M-m ft"     . treemacs-toggle)
-        ("M-m fT"     . treemacs)
-        ("M-m fB"     . treemacs-bookmark)
-        ("M-m f C-t"  . treemacs-find-file)
-        ("M-m f M-t"  . treemacs-find-tag)))
-
+        ("M-0"        . treemacs-select-window)))
 (use-package treemacs-projectile
   :defer t
   :ensure t
   :config
   (setq treemacs-header-function #'treemacs-projectile-create-header)
   :bind (:map global-map
-              ("M-m fP" . treemacs-projectile)
-              ("M-m fp" . treemacs-projectile-toggle)))
+              ("C-c t P" . treemacs-projectile)
+              ))
+#+END_SRC
+#+RESULTS:
 
+* Evil Mode
+#+begin_src emacs-lisp
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration nil)
+  :config
+  (evil-mode 1))
+ (use-package evil-collection
+    :after evil
+    :ensure t
+    :custom (evil-collection-setup-minibuffer t)
+    :config
+    (setq evil-collection-mode-list nil)
+    (evil-collection-init))
+ (use-package evil-leader
+      :ensure t
+      :config
+      (global-evil-leader-mode))
+ (use-package evil-surround
+      :ensure t
+      :config
+      (global-evil-surround-mode))
+ (use-package evil-indent-textobject
+      :ensure t
+:config
+  (progn
+      (evil-ex-define-cmd "e[dit]" 'helm-find-files)
+      (evil-ex-define-cmd "b[uffer]" 'helm-buffers-list)
+      (bind-key "[escape]" 'keyboard-escape-quit evil-normal-state-map)
+      (bind-key "[escape]" 'keyboard-escape-quit evil-visual-state-map)
+      (bind-key "<escape>" 'keyboard-escape-quit)))
 #+END_SRC
 * Highlights
 #+BEGIN_SRC emacs-lisp
@@ -1159,18 +1334,15 @@ Hydra
   :ensure t
   :config
   (evil-goggles-mode)
-
   ;; optionally use diff-mode's faces; as a result, deleted text
   ;; will be highlighed with `diff-removed` face which is typically
   ;; some red color (as defined by the color theme)
   ;; other faces such as `diff-added` will be used for other actions
   (evil-goggles-use-diff-faces))
-
 (use-package volatile-highlights
 :ensure t  
 :config
   (volatile-highlights-mode t))
-
 #+END_SRC
 * Move text
 #+BEGIN_SRC emacs-lisp
@@ -1183,9 +1355,7 @@ Hydra
 * Line numbers
 #+BEGIN_SRC emacs-lisp
   (use-package linum
-    :config
-  (global-lineum-mode 1))
-
+    :ensure t)
 #+END_SRC
 * Undo tree
 #+BEGIN_SRC emacs-lisp
@@ -1193,7 +1363,6 @@ Hydra
 :ensure t
 :init
 (global-undo-tree-mode))
-
 #+END_SRC
 * Swiper
 #+BEGIN_SRC emacs-lisp
@@ -1205,8 +1374,6 @@ Hydra
     (setq ivy-use-virtual-buffers t)
     (global-set-key "\C-s" 'swiper)
 ))
-
-
 #+END_SRC
 * Ledger mode
 #+BEGIN_SRC emacs-lisp
@@ -1234,7 +1401,6 @@ Hydra
                           ("account" "ledger -f %(ledger-file) --color reg %(account)")
                           ("budgeted" "ledger --unbudgeted --monthly register ^expenses -f %(ledger-file)")
                           ("unbudgeted" "ledger --budgeted --monthly register ^expenses -f %(ledger-file)") )))
-
       (setq org-capture-templates
                  (append  '(("l" "Ledger entries")
                      ("li" "income" plain (file my/ledger-file)
@@ -1258,7 +1424,6 @@ Hydra
        Expenses:%^{Expense Category}       SEK %^{Amount}
        Liabilities:ChalmersCard" :empty-lines 1 :immediate-finish t ))
            org-capture-templates))
-
     (use-package flycheck-ledger
       :ensure t
       :init
@@ -1275,12 +1440,9 @@ Hydra
  (global-set-key (kbd "C-c <right>") 'windmove-right)
  (global-set-key (kbd "C-c <up>")    'windmove-up)
  (global-set-key (kbd "C-c <down>")  'windmove-down)
-
   ;; wrap around at edges
   (setq windmove-wrap-around t))
-
 #+END_SRC
-
 #+RESULTS:
 : t
 * Google translate
@@ -1295,7 +1457,6 @@ Hydra
   ;; It won't ask for the input language. If I need it to, call the
   ;; translation command with a C-u prefix:
   (setq google-translate-default-source-language "Swedish"))
-
 #+END_SRC
 
 * CSV files
@@ -1303,7 +1464,6 @@ Hydra
 (use-package csv-mode
   :ensure t
   :mode (("\\.csv" . csv-mode)))
-
 #+END_SRC
 * Gitgutter
 #+BEGIN_SRC emacs-lisp
@@ -1312,10 +1472,7 @@ Hydra
   :init
   (global-git-gutter-mode)
   :config
-  (setq git-gutter-modified-sign "¤")
-(git-gutter:linum-setup))
-
-
+  (setq git-gutter-modified-sign "¤"))
 (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
                             :hint nil)
   "
@@ -1344,44 +1501,32 @@ Git gutter:
               (git-gutter:clear))
        :color blue))
 (global-set-key (kbd "C-c h g") 'hydra-git-gutter/body)
-
-
-
-
 #+END_SRC
 
 * Restart emacs
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
 :ensure t)
-
 #+END_SRC
+#+RESULTS:
 
 * Org-toc
 #+BEGIN_SRC emacs-lisp
 (use-package toc-org
 :ensure t)
 (add-hook 'org-mode-hook 'toc-org-enable)
-
 #+END_SRC
-* I3 integration
-https://github.com/vava/i3-emacs
-#+BEGIN_SRC emacs-lisp
-(load-path "./i3-emacs/")
-(require 'i3-integration)
-(i3-one-window-per-frame-mode-on)
+#+RESULTS:
 
-#+END_SRC
 * Scala setup
 ** Ensime
 #+BEGIN_SRC emacs-lisp
 (use-package ensime
 :ensure t
-:bind (global-set-key (kbd "C-c C-c c") 'ensime)
-:progn
-( (setq ensime-sem-high-faces
-        '(
-           (implicitConversion nil)
+:bind ("C-c C-c c" . ensime)
+:config
+(progn (setq ensime-sem-high-faces
+        '( (implicitConversion nil)
            (var . (:foreground "#ff2222"))
            (val . (:foreground "#dddddd"))
            (varField . (:foreground "#ff3333"))
@@ -1403,11 +1548,11 @@ https://github.com/vava/i3-emacs
         ensime-sem-high-enabled-p nil ;; disable semantic highlighting
         ensime-tooltip-hints t ;; disable type-inspecting tooltips
         ensime-tooltip-type-hints t ;; disable typeinspecting tooltips
-    )
+)
+    (global-set-key (kbd "C-c C-c c") 'ensime)
 ))
-
 #+END_SRC
-
+#+RESULTS:
 ** Turn them on
 #+BEGIN_SRC emacs-lisp
 (add-hook 'scala-mode-hook
@@ -1419,9 +1564,6 @@ https://github.com/vava/i3-emacs
             (company-mode)
             (ensime-mode)
             (scala-mode:goto-start-of-code)))
-
-
-
 #+END_SRC
 ** New line in comments
 #+BEGIN_SRC emacs-lisp
@@ -1431,20 +1573,14 @@ https://github.com/vava/i3-emacs
   (interactive)
   (newline-and-indent)
   (scala-indent:insert-asterisk-on-multiline-comment))
-
 (bind-key "RET" 'scala-mode-newline-comments scala-mode-map)
-
 (setq comment-start "/* "
           comment-end " */"
           comment-style 'multi-line
           comment-empty-lines t)
-
-
-
 #+END_SRC
-* Company mode                                                  
+* Company mode
 #+BEGIN_SRC emacs-lisp
-
 (add-to-list 'exec-path "/usr/local/bin")
 (use-package company
   :ensure t
@@ -1486,70 +1622,8 @@ https://github.com/vava/i3-emacs
     :ensure t
     :config
     (add-to-list 'company-backends 'company-shell)))
-
 (add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
-* Elfeed                                                          
-#+BEGIN_SRC emacs-lisp
-  (use-package elfeed
-    :ensure t
-    :bind
-    (:map elfeed-search-mode-map
-          ("s" . bjm/elfeed-load-db-and-open)
-          ("q" . bjm/elfeed-save-db-and-bury))
-    :init
-    ;; thanks - http://pragmaticemacs.com/emacs/read-your-rss-feeds-in-emacs-with-elfeed/
-    ;; though slightly modified
-    ;; functions to support syncing .elfeed between machines
-    ;; makes sure elfeed reads index from disk before launching
-    (defun bjm/elfeed-load-db-and-open ()
-      "Load the elfeed db from disk before opening."
-      (interactive)
-      (elfeed-db-load)
-      (elfeed)
-      (elfeed-search-update--force)
-      (elfeed-update))
-    ;;write to disk when quiting
-    (defun bjm/elfeed-save-db-and-bury ()
-      "Wrapper to save the elfeed db to disk before burying buffer"
-      (interactive)
-      (elfeed-db-save)
-      (quit-window))
-    :config
-    (setq elfeed-db-directory "~/Dropbox/.elfeed")
-    ;; This lets me get the http links to entries with org-capture
-    ;; easily.
-    (defun elfeed-entry-as-html-link ()
-      "Store an http link to an elfeed entry"
-      (when (equal major-mode 'elfeed-show-mode)
-        (let ((description (elfeed-entry-title elfeed-show-entry))
-              (link (elfeed-entry-link elfeed-show-entry)))
-          (org-store-link-props
-           :type "http"
-           :link link
-           :description description))))
-    (org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link))
-  (evil-define-key* 'motion elfeed-search-mode-map
-                    "U" #'elfeed-search-update--force
-                    "u" #'elfeed-search-fetch)
-
-  (evil-define-key* 'motion elfeed-show-mode-map
-                    "j" #'elfeed-show-next
-                    "k" #'elfeed-show-prev)
-  (add-to-list 'evil-motion-state-modes 'elfeed-search-mode)
-  (add-to-list 'evil-motion-state-modes 'elfeed-show-mode)
-  (use-package elfeed-goodies
-  :ensure t)
-
-
-  (use-package elfeed-org
-    :ensure t
-    :config
-    (progn
-      (elfeed-org)
-      (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
-#+END_SRC
-
 * Jedi
 #+BEGIN_SRC emacs-lisp
 (use-package jedi
@@ -1560,10 +1634,15 @@ https://github.com/vava/i3-emacs
 (setq jedi:complete-on-dot t) ; optional
 )
 #+END_SRC
-
-* Writing
+#+RESULTS:
+* Writing 
 ** Latex
 #+BEGIN_SRC emacs-lisp
+    (use-package auctex-latexmk
+    :ensure t
+      :config 
+      (auctex-latexmk-setup)
+      (setq auctex-latexmk-inherit-TeX-PDF-mode t)
   (use-package tex-site
     :ensure auctex
     :mode ("\\.tex\\'" . latex-mode)
@@ -1584,57 +1663,43 @@ https://github.com/vava/i3-emacs
                 (setq TeX-PDF-mode t)
                 (setq TeX-source-correlate-method 'synctex)
                 (setq TeX-source-correlate-start-server t)))
-
   ;; Update PDF buffers after successful LaTeX runs
   (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
              #'TeX-revert-document-buffer)
-
   ;; to use pdfview with auctex
   (add-hook 'LaTeX-mode-hook 'pdf-tools-install)
-
   ;; to use pdfview with auctex
   (setq TeX-view-program-selection '((output-pdf "pdf-tools"))
          TeX-source-correlate-start-server t)
   (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view"))))
-
+)
     (use-package latex-preview-pane
     :ensure t)
-
-    (use-package auctex-latexmk
-    :ensure t
-      :config 
-      (auctex-latexmk-setup)
-      (setq auctex-latexmk-inherit-TeX-PDF-mode t)
-  )
 (use-package reftex
   :ensure t
   :defer t
   :config
   (setq reftex-cite-prompt-optional-args t)); Prompt for empty optional arguments in cite
-
 #+END_SRC
+#+RESULTS:
 ** Wrap paragraphs automatically
-
 =AutoFillMode= automatically wraps paragraphs, kinda like hitting =M-q=. I wrap
 a lot of paragraphs, so this automatically wraps 'em when I'm writing text,
 Markdown, or Org.
-
 #+BEGIN_SRC emacs-lisp
-
   (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+END_SRC
+#+RESULTS:
 ** Syntex with evince
 #+BEGIN_SRC emacs-lisp
 (require 'dbus)
-
 (defun un-urlify (fname-or-url)
   "A trivial function that replaces a prefix of file:/// with just /."
   (if (string= (substring fname-or-url 0 8) "file:///")
      (substring fname-or-url 7)
     fname-or-url))
-
 (defun th-evince-sync (file linecol &rest ignored)
   (let* ((fname (un-urlify file))
          (buf (find-buffer-visiting fname))
@@ -1646,9 +1711,7 @@ Markdown, or Org.
       (goto-line (car linecol))
       (unless (= col -1)
         (move-to-column col)))))
-
 (defvar *dbus-evince-signal* nil)
-
 (defun enable-evince-sync ()
   (require 'dbus)
   (when (and
@@ -1660,10 +1723,9 @@ Markdown, or Org.
              :session nil "/org/gnome/evince/Window/0"
              "org.gnome.evince.Window" "SyncSource"
              'th-evince-sync)))))
-
 (add-hook 'LaTeX-mode-hook 'enable-evince-sync)
-
 #+END_SRC
+#+RESULTS:
 ** Markdown
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
@@ -1673,8 +1735,8 @@ Markdown, or Org.
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "markdown"))
-
 #+END_SRC
+#+RESULTS:
 ** lang tool
 #+BEGIN_SRC emacs-lisp
 (use-package langtool
@@ -1684,6 +1746,8 @@ Markdown, or Org.
 (setq langtool-default-language "en-US")
 (setq langtool-java-classpath nil))  
 #+END_SRC
+#+RESULTS:
+: t
 ** Synonyms
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
@@ -1691,25 +1755,25 @@ Markdown, or Org.
 :config
 (setq synosaurus-choose-method 'popup))
 #+END_SRC
+#+RESULTS:
+: t
 ** Dictionary
 #+BEGIN_SRC emacs-lisp
 (use-package helm-dictionary
 :ensure t)
 #+END_SRC
+#+RESULTS:
 * Mail setup
 #+BEGIN_SRC emacs-lisp
-(use-package mu4e
-:ensure t
-:init
-(progn
- (global-set-key (kbd "<f2>") 'mu4e)
-(use-package mu4e-contrib
-:ensure t)
 (use-package helm-mu
-:ensure t)
-(use-package org-mu4e
-:ensure t)
- 
+:ensure t
+:config
+(progn
+  (require 'mu4e)
+  (require 'mu4e-contrib)
+  (require 'helm-mu)
+  (require 'org-mu4e)
+ (global-set-key (kbd "<f2>") 'mu4e)
  (setq mu4e-maildir "~/mail")
     (setq mu4e-drafts-folder "/Drafts")
     (setq mu4e-sent-folder   "/Sent")
@@ -1718,23 +1782,19 @@ Markdown, or Org.
   (setq mu4e-compose-format-flowed t)
     ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
     (setq mu4e-sent-messages-behavior 'sent)
-
     ;; setup some handy shortcuts
     ;; you can quickly switch to your Inbox -- press ``ji''
     ;; then, when you want archive some messages, move them to
     ;; the 'All Mail' folder by pressing ``ma''.
-
     (setq mu4e-maildir-shortcuts
           '( ("/Inbox"               . ?i)
              ("/Sent"   . ?s)
              ("/Drafts" . ?d)
              ("/Trash"       . ?t)
              ("/All Mail"    . ?a)))
-
     ;; allow for updating mail using 'U' in the main view:
     (setq mu4e-update-interval 600)
     (setq mu4e-get-mail-command "mbsync chalmers")
-
     ;; something about ourselves
     (setq
      user-mail-address "ashfaqf@chalmers.se"
@@ -1746,7 +1806,6 @@ Markdown, or Org.
     ;; sending mail -- replace USERNAME with your gmail username
     ;; also, make sure the gnutls command line utils are installed
     ;; package 'gnutls-bin' in Debian/Ubuntu
-
     (require 'smtpmail)
     (setq message-send-mail-function 'smtpmail-send-it
         smtpmail-auth-credentials
@@ -1754,14 +1813,11 @@ Markdown, or Org.
         smtpmail-default-smtp-server "localhost"
         smtpmail-smtp-server "localhost"
         smtpmail-smtp-service 1025)
-
     ;; don't keep message buffers around
     (setq message-kill-buffer-on-exit t)
     ;;store org-mode links to messages
     ;;store link to message if in header view, not to header query
     (setq org-mu4e-link-query-in-headers-mode nil)
-
-
 (setq
        ;; mu4e-use-fancy-chars t
        ;; mu4e-view-prefer-html t
@@ -1770,33 +1826,24 @@ Markdown, or Org.
        mu4e-headers-include-related nil
        mu4e-headers-skip-duplicates t
 mu4e-headers-visible-lines 18)
-
     ;;; Html rendering
     (setq mu4e-view-prefer-html t)
-
     (setq mu4e-use-fancy-chars t)
     (setq mu4e-attachment-dir "~/Documents/mail")
-
-
     ;;; Attempt to show images when viewing messages
     (setq mu4e-view-show-images t
           mu4e-view-image-max-width 800)
-
     ;; View html message in firefox (type aV)
     (add-to-list 'mu4e-view-actions
                 '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-
   ;; PGP-Sign all e-mails
   (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
-
-
-
-
 ))
-
 #+END_SRC
+#+RESULTS:
+
 * Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")
-
 #+END_SRC
+#+RESULTS:

@@ -93,7 +93,7 @@ PATH="$NPM_PACKAGES/bin:$PATH"
 
 
 ##Cups config, replaces .cups/client.conf...
-
+CUPS_GSSSERVICENAME=HTTP
 CUPS_SERVER=print.chalmers.se
 
 # Unset manpath so we can inherit from /etc/manpath via the `manpath` command
@@ -104,3 +104,4 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 # added by travis gem
 [ -f /home/ashfaqf/.travis/travis.sh ] && source /home/ashfaqf/.travis/travis.sh
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
