@@ -1,6 +1,0 @@
-{
-    "root": "~/Dropbox/Notes",
-    "enable_yaml": true,
-    "note_yaml" : ["NoteBook"],
-    "note_save_extension": "md",
-}

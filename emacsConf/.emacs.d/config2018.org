@@ -1,7 +1,7 @@
-+TITLE: Ashfaq Farooqui's Emacs Configuration
+#+TITLE: Ashfaq Farooqui's Emacs Configuration
 #+AUTHOR: Ashfaq Farooqui
 #+EMAIL: ashfaq.farooqui@gmail.com
-+OPTIONS: toc:3 num:nil
+#+OPTIONS: toc:3 num:nil
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://thomasf.github.io/solarized-css/solarized-light.min.css" />
 
 * User Details
@@ -68,7 +68,7 @@ Emacs starts up with way too much enabled. Configure the scroll bar,
 menu bar, and tool bar. There isn't really a reason to have them
 on.
 #+begin_src emacs-lisp
-      (scroll-bar-mode 1)
+      (scroll-bar-mode -1)
       (tool-bar-mode -1)
       (menu-bar-mode 1)
 #+end_src
@@ -258,6 +258,7 @@ Single Capitals as you type."
     (remove-hook 'post-self-insert-hook #'dcaps-to-scaps 'local)))
 
 (add-hook 'text-mode-hook #'dubcaps-mode)
+(add-hook 'LaTeX-mode-hook #'dubcaps-mode)
 #+end_src
 ** Hydra
 #+BEGIN_SRC emacs-lisp
@@ -350,11 +351,15 @@ Indent stuff, copied from [[https://www.emacswiki.org/emacs/IndentingText]]
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-mode
 :ensure t
-:init (rainbow-mode 1))
+:init (rainbow-mode))
 
 (use-package rainbow-delimiters
 :ensure t
-:init (rainbow-delimiters-mode 1))
+:config
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'text-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'org-mode-hook #'rainbow-delimiters-mode)
+)
 #+END_SRC
 ** Some additions ones
 - Open in current window
@@ -489,6 +494,7 @@ Hydra
 (global-set-key (kbd "C-c h d") 'hydra-pdftools/body)
 
 #+END_SRC
+
 * Ace-window
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window
@@ -582,13 +588,51 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-f") #'helm-find-files)
 (helm-mode 1))
+#+END_SRC
+* Ibuffer
+#+BEGIN_SRC emacs-lisp
 
-(use-package ibuffer-vc
-:ensure t)
-(defalias 'list-buffers 'ibuffer-other-window)
+  (use-package ibuffer
+    :ensure t
+    :config 
+  (progn (setq ibuffer-saved-filter-groups
+               (quote (("default"
+                        ("dired" (mode . dired-mode))
+                        ("org" (name . "^.*org$"))
+                        ("web" (or (mode . web-mode) (mode . js2-mode)))
+                        ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+                          ("latex" (or (mode . latex-mode) (name . "^.*tex$") (filename . "ShareLaTeX") ))
+                          ("mu4e" (or
+                                 (mode . mu4e-compose-mode)
+                                 (name . "\*mu4e\*")
+                                 ))
+                        ("programming" (or
+                                        (mode . python-mode)
+                                        (mode . c++-mode))
+                         (mode . scala-mode)
+                         (mode . haskell-mode))
+("Magit" (name . "\*magit"))
+("emacs-config" (or (filename . ".emacs.d")
+			     (filename . "emacs-config")))
+
+                        ("emacs" (or
+                                  (name . "^\\*scratch\\*$")
+                                  (name . "^\\*Messages\\*$")))
+                        ))))
+         (add-hook 'ibuffer-mode-hook
+                   (lambda ()
+                     (ibuffer-auto-mode 1)
+                     (ibuffer-switch-to-saved-filter-groups "default"))))
+(setq ibuffer-show-empty-filter-groups nil)
+
+)
+  (defalias 'list-buffers 'ibuffer-other-window)
+
+
+
 #+END_SRC
 
-* hydra ibuf
+** hydra ibuf
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-ibuffer-main (:color pink :hint nil)
     "
@@ -699,7 +743,9 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
     :config 
 (progn 
 (which-key-mode)
-(which-key-setup-side-window-bottom)))
+(which-key-setup-side-window-bottom)
+(setq which-key-allow-evil-operators t)
+(setq which-key-show-operator-state-maps t)))
 
 #+END_SRC
 * Graphviz
@@ -1056,12 +1102,19 @@ opening it up in order to start typing something, so this skips a step.
 #+END_SRC
 * Flycheck
 #+BEGIN_SRC emacs-lisp
+
 (use-package flycheck
-:ensure t)
+:ensure t
+:init (global-flycheck-mode))
 (use-package flyspell
-:ensure t)
+:ensure t
+)
+
 (use-package flyspell-correct-helm
-:ensure t)
+:ensure t
+:config 
+(progn 
+(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)))
 (use-package helm-flycheck
 :ensure t)
 
@@ -1128,11 +1181,15 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 #+END_SRC
 * Theme
 #+BEGIN_SRC emacs-lisp
-  (use-package zenburn-theme
+                                          ;(use-package zenburn-theme
+                                          ;:ensure t
+                                          ;:config
+                                          ;(load-theme 'zenburn t))
+  (use-package zerodark-theme
     :ensure t
     :config
-    (load-theme 'zenburn t))
-
+    (load-theme 'zerodark t)
+    (zerodark-setup-modeline-format))
   ;;  (use-package powerline
   ;;  :ensure t
   ;;  :config
@@ -1191,7 +1248,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 :ensure t)
 
 #+END_SRC
-* Tree
 * Bind key
 #+BEGIN_SRC emacs-lisp
 (use-package bind-key
@@ -1215,11 +1271,13 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 (use-package writegood-mode
 :ensure t)
 #+END_SRC
+
 * Mail 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-mu
 :ensure t)
 #+END_SRC
+
 * Alert
 #+BEGIN_SRC emacs-lisp
 (use-package alert
@@ -1228,6 +1286,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   (if (executable-find "notify-send")
       (setq alert-default-style 'libnotify)))
 #+END_SRC
+
 * Smart parens
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
@@ -1238,6 +1297,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
     (require 'smartparens-config)
 (smartparens-global-mode 1)))
 #+END_SRC
+
 * Treemacs
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
@@ -1297,36 +1357,136 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 
 * Evil Mode
 #+begin_src emacs-lisp
-(use-package evil
-  :ensure t
-  :init
-  (setq evil-want-integration nil)
-  :config
-  (evil-mode 1))
- (use-package evil-collection
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration nil)
+    :config
+    (evil-mode 1))
+  (use-package evil-collection
     :after evil
     :ensure t
     :custom (evil-collection-setup-minibuffer t)
     :config
-    (setq evil-collection-mode-list nil)
+    (setq evil-collection-mode-list 
+          `(ace-jump-mode
+            ag
+            alchemist
+            anaconda-mode
+            arc-mode
+            avy
+            bookmark
+            (buff-menu "buff-menu")
+            calc
+            calendar
+            cider
+            cmake-mode
+            comint
+            company
+            compile
+            custom
+            cus-theme
+            debbugs
+            debug
+            diff-mode
+            dired
+            doc-view
+            edebug
+            elfeed
+            elisp-mode
+            elisp-refs
+            emms
+            epa
+            eshell
+            eval-sexp-fu
+            etags-select
+            eww
+            flycheck
+            free-keys
+            geiser
+            ggtags
+            go-mode
+            help
+            helm
+            ibuffer
+            image
+            image+
+            indium
+            info
+            ivy
+            js2-mode
+            log-view
+            lua-mode
+            kotlin-mode
+            macrostep
+            man
+            ,@(when evil-collection-setup-minibuffer '(minibuffer))
+            neotree
+            notmuch
+            nov
+            ;; occur is in replace.el which was built-in before Emacs 26.
+            (occur ,(if (<= emacs-major-version 25) "replace" 'replace))
+            outline
+            p4
+            (package-menu package)
+            paren
+            pass
+            popup
+            proced
+            prodigy
+            profiler
+            python
+            quickrun
+            racer
+            realgud
+            reftex
+            rjsx-mode
+            robe
+            ruby-mode
+            rtags
+            simple
+            slime
+            (term term ansi-term multi-term)
+            tide
+            transmission
+            typescript-mode
+            vc-annotate
+            vdiff
+            view
+            vlf
+            which-key
+            woman
+            xref
+            (ztree ztree-diff))
+          )
     (evil-collection-init))
- (use-package evil-leader
-      :ensure t
-      :config
-      (global-evil-leader-mode))
- (use-package evil-surround
-      :ensure t
-      :config
-      (global-evil-surround-mode))
- (use-package evil-indent-textobject
-      :ensure t
-:config
-  (progn
-      (evil-ex-define-cmd "e[dit]" 'helm-find-files)
-      (evil-ex-define-cmd "b[uffer]" 'helm-buffers-list)
-      (bind-key "[escape]" 'keyboard-escape-quit evil-normal-state-map)
-      (bind-key "[escape]" 'keyboard-escape-quit evil-visual-state-map)
-      (bind-key "<escape>" 'keyboard-escape-quit)))
+  ;;  (use-package evil-leader
+  ;;       :ensure t
+  ;;       :config
+  ;;       (global-evil-leader-mode))
+  ;;  (use-package evil-surround
+  ;;       :ensure t
+  ;;       :config
+  ;;       (global-evil-surround-mode))
+  ;;  (use-package evil-indent-textobject
+  ;;       :ensure t
+  ;; :config
+  ;;   (progn
+  ;;       (evil-ex-define-cmd "e[dit]" 'helm-find-files)
+  ;;       (evil-ex-define-cmd "b[uffer]" 'helm-buffers-list)
+  ;;       (bind-key "[escape]" 'keyboard-escape-quit evil-normal-state-map)
+  ;;       (bind-key "[escape]" 'keyboard-escape-quit evil-visual-state-map)
+  ;; n      (bind-key "<escape>" 'keyboard-escape-quit)))
+
+
+  (use-package evil-mu4e
+    :ensure t)
+#+END_SRC
+* Ranger
+#+BEGIN_SRC emacs-lisp
+  (use-package ranger
+    :ensure t)
+
 #+END_SRC
 * Highlights
 #+BEGIN_SRC emacs-lisp
@@ -1344,6 +1504,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 :config
   (volatile-highlights-mode t))
 #+END_SRC
+
 * Move text
 #+BEGIN_SRC emacs-lisp
 (use-package move-text
@@ -1352,11 +1513,13 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   (([(meta shift up)] . move-text-up)
    ([(meta shift down)] . move-text-down)))
 #+END_SRC
+
 * Line numbers
 #+BEGIN_SRC emacs-lisp
   (use-package linum
     :ensure t)
 #+END_SRC
+
 * Undo tree
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
@@ -1364,6 +1527,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 :init
 (global-undo-tree-mode))
 #+END_SRC
+
 * Swiper
 #+BEGIN_SRC emacs-lisp
 (use-package swiper-helm
@@ -1375,6 +1539,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
     (global-set-key "\C-s" 'swiper)
 ))
 #+END_SRC
+
 * Ledger mode
 #+BEGIN_SRC emacs-lisp
     (use-package ledger-mode
@@ -1465,6 +1630,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   :ensure t
   :mode (("\\.csv" . csv-mode)))
 #+END_SRC
+
 * Gitgutter
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
@@ -1518,6 +1684,17 @@ Git gutter:
 #+END_SRC
 #+RESULTS:
 
+* Haskell
+#+BEGIN_SRC emacs-lisp
+(use-package dante
+  :ensure t
+  :after haskell-mode
+  :commands 'dante-mode
+  :init
+  (add-hook 'haskell-mode-hook 'dante-mode)
+  (add-hook 'haskell-mode-hook 'flycheck-mode))
+
+#+END_SRC
 * Scala setup
 ** Ensime
 #+BEGIN_SRC emacs-lisp
@@ -1624,17 +1801,39 @@ Git gutter:
     (add-to-list 'company-backends 'company-shell)))
 (add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
-* Jedi
+* Python
 #+BEGIN_SRC emacs-lisp
-(use-package jedi
-:ensure t
-:init
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:setup-keys t) ; optional
-(setq jedi:complete-on-dot t) ; optional
-)
+(setq py-python-command "python3")
+(setq python-shell-interpreter "python3")
+
+  (use-package jedi
+    :ensure t
+    :init
+    (add-hook 'python-mode-hook 'jedi:setup)
+    (add-hook 'python-mode-hook 'jedi:ac-setup))
+
+
+    (use-package elpy
+    :ensure t
+    :config 
+    (elpy-enable))
+
+(use-package virtualenvwrapper
+  :ensure t
+  :config
+  (venv-initialize-interactive-shells)
+  (venv-initialize-eshell))
 #+END_SRC
 #+RESULTS:
+* Beacon
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :ensure t
+    :config
+    (beacon-mode 1)
+                                          ; (setq beacon-color "#666600")
+    )
+#+END_SRC
 * Writing 
 ** Latex
 #+BEGIN_SRC emacs-lisp
@@ -1840,8 +2039,6 @@ mu4e-headers-visible-lines 18)
   (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 ))
 #+END_SRC
-#+RESULTS:
-
 * Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")

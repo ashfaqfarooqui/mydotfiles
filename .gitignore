@@ -1,21 +1,16 @@
 mpd/.mpd/mpd.log
 mpd/.mpd/mpdstate
-sublime3/.config/sublime-text-3/Backup
-sublime3/.config/sublime-text-3/Cache
-sublime3/.config/sublime-text-3/Installed Packages
-sublime3/.config/sublime-text-3/Local
-sublime3/.config/sublime-text-3/Packages/Anaconda
-sublime3/.config/sublime-text-3/Packages/User/Package Control.cache
-sublime3/.config/sublime-text-3/Packages/User/Package Control.last-run
-sublime3/.config/sublime-text-3/Packages/bz2
-sublime3/.config/sublime-text-3/Packages/oauthlib
-sublime3/.config/sublime-text-3/Packages/pygments
-sublime3/.config/sublime-text-3/Packages/pyyaml
-sublime3/.config/sublime-text-3/Packages/requests-oauthlib
-sublime3/.config/sublime-text-3/Packages/requests
-sublime3/.config/sublime-text-3/Packages/ssl-linux
-sublime3/.config/sublime-text-3/Packages/tabulate
 *.dat
 abbrev_defs
 ashfaq.html
 .smex-items
+emacsConf/.emacs.d/.cache
+emacsConf/.emacs.d/backups
+emacsConf/.emacs.d/emacs-backups/
+#*#
+emacsConf/.emacs.d/.mc-lists.el
+emacsConf/.emacs.d/.org-id-locations
+emacsConf/.emacs.d/.python-environments/
+emacsConf/.emacs.d/bookmarks
+*.log
+*.el

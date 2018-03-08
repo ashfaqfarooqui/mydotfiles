@@ -1,4 +1,4 @@
-#tic. i3 config file (v4)
+# i3 config file (v4)
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
@@ -44,7 +44,7 @@ bindsym $mod+z exec --no-startup-id morc_menu
 ## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
 ################################################################################################
 
-#exec --no-startup-id volumeicon
+exec --no-startup-id volumeicon
 #bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 exec --no-startup-id pulseaudio
 exec --no-startup-id pa-applet
@@ -52,9 +52,9 @@ bindsym $mod+Ctrl+m exec pavucontrol
 
 # Media keys (https://faq.i3wm.org/question/3747/enabling-multimedia-keys/?answer=3759#post-id-3759)
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5% #decrease sound volume
+### bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 1 toggle # mute sound
 ################################################################################################
 
 # Screen brightness controls
@@ -62,10 +62,10 @@ bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up
 bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
 
 # Touchpad controls
-bindsym XF86TouchpadToggle exec ~/.i3/scripts/touchpad.sh # toggle touchpad
+#bindsym XF86TouchpadToggle exec ~/.i3/scripts/touchpad.sh # toggle touchpad
 # keyboard brightness
-bindsym XF86KbdBrightnessUp exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -lt 3 ]; then echo `expr $val + 1` | sudo tee $file; fi"
-bindsym XF86KbdBrightnessDown exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -gt 0 ]; then echo `expr $val - 1` | sudo tee $file; fi"
+#bindsym XF86KbdBrightnessUp exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -lt 3 ]; then echo `expr $val + 1` | sudo tee $file; fi"
+#bindsym XF86KbdBrightnessDown exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -gt 0 ]; then echo `expr $val - 1` | sudo tee $file; fi"
 ## Keyboard layouts
 #exec --no-startup-id "setxkbmap -layout us,se"
 #exec --no-startup-id "setxkbmap -option 'grp:alt_shift_toggle'"
@@ -257,8 +257,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-#bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Do you really want to exit i3?' -b 'Yes, exit i3' 'gnome-session-quit --force --logout'"
+#bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Do you really want to exit i3?' -b 'Yes, exit i3' 'gnome-session-quit --force --logout'"
 # Set shut down, restart and locking features
 bindsym $mod+Shift+x mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
@@ -391,7 +391,6 @@ exec --no-startup-id caffeine
 exec --no-startup-id davmail
 ## Start personnal applications
 exec --no-startup-id dropbox start
-exec --no-startup-id nextcloud
 #exec --no-startup-id exec xrandr --output HDMI2 --mode 1680x1050 --scale 2x2 --pos 6560x0 --rotate normal --output DP1 --mode 1680x1050 --scale 2x2 --pos 3200x0 --rotate normal
 
 ## Run monitor script

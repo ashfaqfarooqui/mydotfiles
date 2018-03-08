@@ -323,7 +323,7 @@ as soon as the opening character is typed.
       ;(require 'autopair)
       (autopair-global-mode)
 #+end_src
-** Company mode
+** Company mode                                                  :ToInclude:
 #+BEGIN_SRC emacs-lisp
 
 (add-to-list 'exec-path "/usr/local/bin")
@@ -370,7 +370,7 @@ as soon as the opening character is typed.
 
 (add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
-** Indentation and buffer cleanup
+** Indentation and buffer cleanup                                :toInclude:
 Setup org mode indentation
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented t)
@@ -573,7 +573,7 @@ Customize eshell
 
 
 #+END_SRC
-* Setup scala and ensime
+* Setup scala and 
 ** Ensime
 #+BEGIN_SRC emacs-lisp
       (require 'ensime)
@@ -1014,7 +1014,7 @@ opening it up in order to start typing something, so this skips a step.
 (projectile-mode)
 
 #+END_SRC
-* Writing config
+* Writing config                                                  :toInclude:
 ** Linting prose
 
 I use [[http://proselint.com/][proselint]] to check my prose for common errors. This creates a flycheck
@@ -1319,7 +1319,7 @@ Markdown, or Org.
 ;;       :config
 ;;       (require 'calfw-gcal))
 #+END_SRC
-* mail client
+* mail client                                                     :toInclude:
 Need to move this to use-package later
 #+BEGIN_SRC emacs-lisp
     ;(add-to-list 'load-path "~/.emacs.d/dotEmacs/mu4e")
@@ -1433,65 +1433,65 @@ Need to move this to use-package later
   :mode (("\\.csv" . csv-mode)))
 
 #+END_SRC
-* Elfeed
-#+BEGIN_SRC emacs-lisp
-(use-package elfeed
-  :ensure t
-  :bind
-  (:map elfeed-search-mode-map
-        ("s" . bjm/elfeed-load-db-and-open)
-        ("q" . bjm/elfeed-save-db-and-bury))
-  :init
-  ;; thanks - http://pragmaticemacs.com/emacs/read-your-rss-feeds-in-emacs-with-elfeed/
-  ;; though slightly modified
-  ;; functions to support syncing .elfeed between machines
-  ;; makes sure elfeed reads index from disk before launching
-  (defun bjm/elfeed-load-db-and-open ()
-    "Load the elfeed db from disk before opening."
-    (interactive)
-    (elfeed-db-load)
-    (elfeed)
-    (elfeed-search-update--force)
-    (elfeed-update))
-  ;;write to disk when quiting
-  (defun bjm/elfeed-save-db-and-bury ()
-    "Wrapper to save the elfeed db to disk before burying buffer"
-    (interactive)
-    (elfeed-db-save)
-    (quit-window))
-  :config
-  (setq elfeed-db-directory "~/Dropbox/.elfeed")
-  ;; This lets me get the http links to entries with org-capture
-  ;; easily.
-  (defun elfeed-entry-as-html-link ()
-    "Store an http link to an elfeed entry"
-    (when (equal major-mode 'elfeed-show-mode)
-      (let ((description (elfeed-entry-title elfeed-show-entry))
-            (link (elfeed-entry-link elfeed-show-entry)))
-        (org-store-link-props
-         :type "http"
-         :link link
-         :description description))))
-  (org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link))
-(evil-define-key* 'motion elfeed-search-mode-map
-                  "U" #'elfeed-search-update--force
-                  "u" #'elfeed-search-fetch)
+* Elfeed              
+#+BEGIN_SRC  emacs-lisp
+  (use-package elfeed
+    :ensure t
+    :bind
+    (:map elfeed-search-mode-map
+          ("s" . bjm/elfeed-load-db-and-open)
+          ("q" . bjm/elfeed-save-db-and-bury))
+    :init
+    ;; thanks - http://pragmaticemacs.com/emacs/read-your-rss-feeds-in-emacs-with-elfeed/
+    ;; though slightly modified
+    ;; functions to support syncing .elfeed between machines
+    ;; makes sure elfeed reads index from disk before launching
+    (defun bjm/elfeed-load-db-and-open ()
+      "Load the elfeed db from disk before opening."
+      (interactive)
+      (elfeed-db-load)
+      (elfeed)
+      (elfeed-search-update--force)
+      (elfeed-update))
+    ;;write to disk when quiting
+    (defun bjm/elfeed-save-db-and-bury ()
+      "Wrapper to save the elfeed db to disk before burying buffer"
+      (interactive)
+      (elfeed-db-save)
+      (quit-window))
+    :config
+    (setq elfeed-db-directory "~/Dropbox/.elfeed")
+    ;; This lets me get the http links to entries with org-capture
+    ;; easily.
+    (defun elfeed-entry-as-html-link ()
+      "Store an http link to an elfeed entry"
+      (when (equal major-mode 'elfeed-show-mode)
+        (let ((description (elfeed-entry-title elfeed-show-entry))
+              (link (elfeed-entry-link elfeed-show-entry)))
+          (org-store-link-props
+           :type "http"
+           :link link
+           :description description))))
+    (org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link))
+  (evil-define-key* 'motion elfeed-search-mode-map
+                    "U" #'elfeed-search-update--force
+                    "u" #'elfeed-search-fetch)
 
-(evil-define-key* 'motion elfeed-show-mode-map
-                  "j" #'elfeed-show-next
-                  "k" #'elfeed-show-prev)
-(add-to-list 'evil-motion-state-modes 'elfeed-search-mode)
-(add-to-list 'evil-motion-state-modes 'elfeed-show-mode)
-(use-package elfeed-goodies
-:ensure t)
+  (evil-define-key* 'motion elfeed-show-mode-map
+                    "j" #'elfeed-show-next
+                    "k" #'elfeed-show-prev)
+  (add-to-list 'evil-motion-state-modes 'elfeed-search-mode)
+  (add-to-list 'evil-motion-state-modes 'elfeed-show-mode)
+  (use-package elfeed-goodies
+  :ensure t)
 
 
-(use-package elfeed-org
-  :ensure t
-  :config
-  (progn
-    (elfeed-org)
-    (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
+  (use-package elfeed-org
+    :ensure t
+    :config
+    (progn
+      (elfeed-org)
+      (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
 #+END_SRC
 * pocket
 #+BEGIN_SRC emacs-lisp
