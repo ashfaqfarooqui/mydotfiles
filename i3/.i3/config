@@ -64,8 +64,8 @@ bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness 
 # Touchpad controls
 bindsym XF86TouchpadToggle exec ~/.i3/scripts/touchpad.sh # toggle touchpad
 # keyboard brightness
-bindsym XF86KbdBrightnessUp exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -lt 3 ]; then echo `expr $val + 1` | sudo tee $file; fi"
-bindsym XF86KbdBrightnessDown exec "file=/sys/class/leds/asus::kbd_backlight/brightness; val=`cat $file`; if [ $val -gt 0 ]; then echo `expr $val - 1` | sudo tee $file; fi"
+bindsym XF86KbdBrightnessUp exec --no-startup-id /home/ashfaqf/.i3/scripts/kbdBrightnesUp.sh
+bindsym XF86KbdBrightnessDown exec --no-startup-id /home/ashfaqf/.i3/scripts/kbdBrightnesDown.sh
 ## Keyboard layouts
 #exec --no-startup-id "setxkbmap -layout us,se"
 #exec --no-startup-id "setxkbmap -option 'grp:alt_shift_toggle'"
@@ -275,7 +275,18 @@ mode "$mode_system" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+bindsym $mod+Shift+m mode "$monitor_conf"
+set $monitor_conf (o)ffice, (w)allpaper
+mode "$monitor_conf" {
+    bindsym o exec --no-startup-id xrandr --output HDMI2 --mode 1680x1050 --scale 2x2 --pos 6560x0 --rotate normal --output DP1 --mode 1680x1050 --scale 2x2 --pos 3200x0 --rotate normal --output eDP1 --mode 3200x1800 --pos 0x0 --rotate normal
 
+    # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+
+
+    bindsym w exec --no-startup-id /usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/nitrogen/Wallpapers/DSC_0749-1.jpg
+}
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
 mode "resize" {
@@ -304,6 +315,10 @@ mode "resize" {
 bindsym $mod+Ctrl+l exec --no-startup-id blurlock
 ## exec --no-startup-id autorandr -c
 
+
+exec --no-startup-id /usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/nitrogen/Wallpapers/DSC_0749-1.jpg
+
+
 # Autostart applications
 ## adjustment of i3bar battery reading (only run at the very first login):
 #exec --no-startup-id /usr/bin/adjust_i3statusconf
@@ -313,13 +328,16 @@ exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
 exec --no-startup-id clipit
 #exec --no-startup-id blueman
-exec_always --no-startup-id sbxkb
+#exec_always --no-startup-id sbxkb
 #exec --no-startup-id start_conky_maia
 # exec --no-startup-id start_conky_green
 exec --no-startup-id xautolock -time 5 -locker blurlock
 #exec --no-startup-id ~/.i3/scripts/conky/start_conky_live_AF
 exec emacs --daemon
 bindsym $mod+F4 exec emacsclient -c
+#make caps as control
+
+
 #############################
 ### settings for Themes : ###
 #############################
@@ -454,6 +472,7 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
+#exec --no-startup-id setxkbmap -layout se -option ctrl:nocaps
 # exec --no-startup-id nitrogen --restore; sleep 1; compton -b
 
 

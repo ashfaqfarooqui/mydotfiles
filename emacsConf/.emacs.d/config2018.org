@@ -1882,13 +1882,19 @@ Git gutter:
 #+END_SRC
 #+RESULTS:
 ** Wrap paragraphs automatically
-=AutoFillMode= automatically wraps paragraphs, kinda like hitting =M-q=. I wrap
-a lot of paragraphs, so this automatically wraps 'em when I'm writing text,
-Markdown, or Org.
+I dont like =AutoFillMode= which  automatically wraps paragraphs, kinda
+like hitting =M-q=. But i like wrapped paragraphs, hence use visual fill
+mode
+
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
-  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+    (add-hook 'text-mode-hook 'visual-line-mode)
+    (add-hook 'org-mode-hook 'visual-line-mode)
+
+  (use-package visual-fill-column
+    :ensure t
+    :config
+    (add-hook 'visual-line-mode-hook #'visual-fill-column-mode))
 #+END_SRC
 #+RESULTS:
 ** Syntex with evince
@@ -1962,6 +1968,15 @@ Markdown, or Org.
 :ensure t)
 #+END_SRC
 #+RESULTS:
+* Bibliotek
+#+BEGIN_SRC emacs-lisp
+  (use-package bibliothek
+    :ensure t
+    :config
+    (setq bibliothek-path (list "~/readingMaterial"))
+    )
+
+#+END_SRC
 * Mail setup
 #+BEGIN_SRC emacs-lisp
 (use-package helm-mu
