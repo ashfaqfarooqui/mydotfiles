@@ -10,3 +10,6 @@
 *** http://sachachua.com/blog/feed/
 *** http://cestlaz.github.io/rss.xml
 *** http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml
+* Podcasts                                                           :elfeed:
+** Seeking Beauty                                                :KhaledIbn:
+*** http://138.68.4.140/seeking_beauty/seeking_beauty.xml
