@@ -118,7 +118,7 @@ Save backups in another folder
         '(("." . "~/.emacs.d/backups/emacs-saves"))   ; don't litter my fs tree
    auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
-      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+      auto-save-interval 20            ; number of keystrokes between auto-saves (default: 300)
 
 )
 
@@ -983,6 +983,12 @@ allows you to extract and execute code. It isn't aware of
                                                  (error nil)))
                'append)
 #+end_src
+-latex-classes '("koma-letter" "\\documentclass{scrlttr2}
+  [NO-DEFAULT-PACKAGES]"))
+
+  (use-package ox
+    :ensure org
+    :co
 ** org-refile
 from http://doc.norang.ca/org-mode.html#Refiling
 #+BEGIN_SRC emacs-lisp
@@ -1378,6 +1384,20 @@ opening it up in order to start typing something, so this skips a step.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
 #+END_SRC
+** Encryption
+#+BEGIN_SRC emacs-lisp
+(setq org-crypt-disable-auto-save nil)
+(require 'org-crypt)
+; Encrypt all entries before saving
+(org-crypt-use-before-save-magic)
+(setq org-tags-exclude-from-inheritance (quote ("crypt")))
+; GPG key to use for encryption
+(setq org-crypt-key "51DE2D88")
+#+END_SRC
+
+#+RESULTS:
+: 51DE2D88
+
 ** Keybinds for org
 #+BEGIN_SRC emacs-lisp
 (define-key global-map "\C-cl" 'org-store-link)
@@ -1793,6 +1813,12 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
     :ensure t)
 #+END_SRC
 
+* wgrep
+#+BEGIN_SRC emacs-lisp
+  (use-package wgrep
+    :ensure t)
+
+#+END_SRC
 * Undo tree
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
@@ -2145,16 +2171,25 @@ like hitting =M-q=. But i like wrapped paragraphs, hence use visual fill
 mode
 
 #+BEGIN_SRC emacs-lisp
-    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-    (add-hook 'text-mode-hook 'visual-line-mode)
-    (add-hook 'org-mode-hook 'visual-line-mode)
+      (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+      (add-hook 'text-mode-hook 'visual-line-mode)
+      (add-hook 'org-mode-hook 'visual-line-mode)
 
-  (use-package visual-fill-column
-    :ensure t
-    :config
-    )
+    (use-package visual-fill-column
+      :ensure t
+      :config
+  (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
+  (advice-add 'text-scale-adjust :after
+    #'visual-fill-column-adjust)
+  (setq visual-fill-column-width 100)
+  (setq-default fill-column 100)
+   (setq visual-fill-column-center-text t)
+   )
 #+END_SRC
 #+RESULTS:
+: t
+
+
 ** Syntex with evince
 #+BEGIN_SRC emacs-lisp
 (require 'dbus)
@@ -2189,6 +2224,7 @@ mode
 (add-hook 'LaTeX-mode-hook 'enable-evince-sync)
 #+END_SRC
 #+RESULTS:
+| enable-evince-sync | visual-line-mode | pdf-tools-install | (lambda nil (rainbow-delimiters-mode) (company-mode) (smartparens-mode) (turn-on-reftex) (setq reftex-plug-into-AUCTeX t) (reftex-isearch-minor-mode) (flyspell-mode) (visual-line-mode) (setq TeX-PDF-mode t) (setq TeX-source-correlate-method (quote synctex)) (setq TeX-source-correlate-start-server t)) | (lambda nil (flyspell-mode)) | (lambda nil (writegood-mode)) | dubcaps-mode |
 ** Markdown
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
@@ -2326,6 +2362,17 @@ mu4e-headers-visible-lines 18)
     :ensure t)
 
 #+END_SRC
+* Paradox
+#+BEGIN_SRC emacs-lisp
+  (use-package paradox
+    :ensure t
+)
+    (setq paradox-github-token "8267f820b74c7e358f97163dd5ab3288b38e801c")
+#+END_SRC
+
+#+RESULTS:
+: 8267f820b74c7e358f97163dd5ab3288b38e801c
+
 * Speed typing
 #+BEGIN_SRC emacs-lisp
   (use-package speed-type
