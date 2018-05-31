@@ -5,6 +5,5 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
-(require 'org-install)
-(require 'ob-tangle)
+(require 'org)
 (org-babel-load-file (expand-file-name "config2018.org" user-emacs-directory))

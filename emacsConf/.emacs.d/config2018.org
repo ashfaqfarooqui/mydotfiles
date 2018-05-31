@@ -37,6 +37,9 @@ added.
   (require 'use-package))
 #+end_src
 
+#+RESULTS:
+: use-package
+
 * Some mandatory stuff
 ** Adding default folders
 #+BEGIN_SRC emacs-lisp
@@ -220,6 +223,10 @@ asks. Which it does often. Make it one character.
 #+begin_src emacs-lisp
       (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
+
+#+RESULTS:
+: yes-or-no-p
+
 ** Misc
 Turn down the time to echo keystrokes so I don't have to wait
 around for things to happen. Dialog boxes are also a bit annoying,
@@ -757,10 +764,13 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
 * Org
 #+BEGIN_SRC emacs-lisp
 (use-package org
-:ensure t)
+:ensure org-plus-contrib
+:pin org)
 (use-package org-bullets
 :ensure t)
 #+END_SRC
+
+#+RESULTS:
 
 =org-mode= is one of the most powerful and amazing features of
 Emacs. I mostly use it for task/day organization and generating
@@ -839,12 +849,6 @@ archive of finished tasks in =archive.org=.
 #+end_src
 
 #+RESULTS:
-| CANCELLED | (CANCELLED . t) |             |        |
-| WAITING   | (WAITING . t)   |             |        |
-| done      | (WAITING)       | (HOLD)      |        |
-| TODO      | (WAITING)       | (CANCELLED) | (HOLD) |
-| NEXT      | (WAITING)       | (CANCELLED) | (HOLD) |
-| DONE      | (WAITING)       | (CANCELLED) | (HOLD) |
 
 *** Display preferences
 
@@ -855,6 +859,8 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
             (lambda ()
               (org-bullets-mode t)))
 #+END_SRC
+
+#+RESULTS:
 
 I like seeing a little downward-pointing arrow instead of the usual ellipsis
 (=...=) that org displays when there's stuff under a header.
@@ -945,8 +951,7 @@ allows you to extract and execute code. It isn't aware of
 (use-package ob-async
 :ensure t)
 
-(use-package ob-ipython
-:ensure t)
+
 
 (require 'ob)
 
@@ -960,7 +965,8 @@ allows you to extract and execute code. It isn't aware of
     (ledger .t)
     (scala . t)
     (python . t)
-    (ipython . t)))
+;    (ipython . t)
+))
 
      (add-to-list 'org-src-lang-modes (quote ("dot". graphviz-dot)))
      (add-to-list 'org-babel-tangle-lang-exts '("clojure" . "clj"))
@@ -983,6 +989,9 @@ allows you to extract and execute code. It isn't aware of
                                                  (error nil)))
                'append)
 #+end_src
+
+#+RESULTS:
+
 -latex-classes '("koma-letter" "\\documentclass{scrlttr2}
   [NO-DEFAULT-PACKAGES]"))
 
@@ -1369,14 +1378,6 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 #+END_SRC
 
 #+RESULTS:
-| a | Appointment | entry | (file (org-file-path gcal.org))         | * %?\n\n%^T\n\n:PROPERTIES:\n\n:END:\n\n                                                                                                    |           |   |               |   |                   |   |
-| t | todo work   | entry | (file+headline Phd Notebook.org Tasks)  | * TODO %a %?\nSCHEDULE: %(org-insert-time-stamp (org-read-date nil t "+2d"))                                                               |           |   |               |   |                   |   |
-| b | Blog idea   | entry | (file (org-file-path blog-ideas.org))   | * TODO %?\n                                                                                                                                |           |   |               |   |                   |   |
-| p | Phd Notes   | entry | (file (org-file-path Phd Notebook.org)) |                                                                                                                                            |           |   |               |   |                   |   |
-| N | Notes       | entry | (file org-index-file)                   | * %? :NOTE:\n                                                                                                                              |           |   |               |   |                   |   |
-| i | Inbox       | entry | (file org-index-file)                   | * TODO %?\nSCHEDULED: %^{Scheduled to begin}t DEADLINE:\n  %^{Deadline}T\n                                                                       |           |   |               |   |                   |   |
-| r | respond     | entry | (file org-index-file)                   | * NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n                                                                             | :clock-in | t | :clock-resume | t | :immediate-finish | t |
-| h | Habit       | entry | (file org-index-file)                   | * NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string "%<<%Y-%m-%d %a .+1d/3d>>")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n |           |   |               |   |                   |   |
 
 When I'm starting an org capture template I'd like to begin in insert mode. I'm
 opening it up in order to start typing something, so this skips a step.
@@ -2349,30 +2350,12 @@ mu4e-headers-visible-lines 18)
   (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 ))
 #+END_SRC
-* System packages
-#+BEGIN_SRC emacs-lisp
-(use-package system-packages
-  :ensure t)
-(use-package helm-system-packages
-:ensure t)
-#+END_SRC
 * Academic phrases
 #+BEGIN_SRC emacs-lisp
   (use-package academic-phrases 
     :ensure t)
 
 #+END_SRC
-* Paradox
-#+BEGIN_SRC emacs-lisp
-  (use-package paradox
-    :ensure t
-)
-    (setq paradox-github-token "8267f820b74c7e358f97163dd5ab3288b38e801c")
-#+END_SRC
-
-#+RESULTS:
-: 8267f820b74c7e358f97163dd5ab3288b38e801c
-
 * Speed typing
 #+BEGIN_SRC emacs-lisp
   (use-package speed-type

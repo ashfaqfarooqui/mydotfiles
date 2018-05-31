@@ -14,3 +14,4 @@ emacsConf/.emacs.d/.python-environments/
 emacsConf/.emacs.d/bookmarks
 *.log
 *.el
+demo.org
