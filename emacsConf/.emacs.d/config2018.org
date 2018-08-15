@@ -957,13 +957,13 @@ allows you to extract and execute code. It isn't aware of
 
 (org-babel-do-load-languages
     'org-babel-load-languages
-    '((sh . t)
+    '((shell . t)
     (dot . t)
     (ruby . t)
     (js . t)
     (C . t)
     (ledger .t)
-    (scala . t)
+;    (scala . t)
     (python . t)
 ;    (ipython . t)
 ))
@@ -1428,6 +1428,23 @@ opening it up in order to start typing something, so this skips a step.
 
 
 #+END_SRC
+** Reveal
+#+BEGIN_SRC emacs-lisp
+(load "/home/ashfaqf/Orgs/PHD/Presentations/Licentiate/emacs-reveal/emacs-reveal/reveal-config.el")
+
+#+END_SRC
+#+RESULTS:
+: t
+
+** beamer
+#+BEGIN_SRC emacs-lisp
+(require 'ox-beamer)
+
+#+END_SRC
+
+#+RESULTS:
+: ox-beamer
+
 * Flycheck
 #+BEGIN_SRC emacs-lisp
 
@@ -1701,7 +1718,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
             ggtags
             go-mode
             help
-            helm
             ibuffer
             image
             image+
@@ -1714,7 +1730,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
             kotlin-mode
             macrostep
             man
-            ,@(when evil-collection-setup-minibuffer '(minibuffer))
+           ; ,@(when evil-collection-setup-minibuffer '(minibuffer))
             neotree
             notmuch
             nov
@@ -2035,7 +2051,7 @@ Git gutter:
   (interactive)
   (newline-and-indent)
   (scala-indent:insert-asterisk-on-multiline-comment))
-(bind-key "RET" 'scala-mode-newline-comments scala-mode-map)
+;(bind-key "RET" 'scala-mode-newline-comments scala-mode-map)
 (setq comment-start "/* "
           comment-end " */"
           comment-style 'multi-line
