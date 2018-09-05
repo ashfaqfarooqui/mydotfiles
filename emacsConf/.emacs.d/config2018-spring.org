@@ -274,6 +274,15 @@ Single Capitals as you type."
 
 #+END_SRC
 ** Indentation and buffer cleanup
+Setup org mode indentation
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-indented t)
+(use-package aggressive-indent
+  :ensure t
+  :config
+  (global-aggressive-indent-mode)
+  )
+#+END_SRC
 This re-indents, untabifies, and cleans up whitespace. It is stolen
 directly from the emacs-starter-kit.
 #+begin_src emacs-lisp
@@ -303,6 +312,35 @@ directly from the emacs-starter-kit.
 
       (setq-default show-trailing-whitespace t)
 #+end_src
+
+Indent stuff, copied from [[https://www.emacswiki.org/emacs/IndentingText]]
+
+#+BEGIN_SRC emacs-lisp
+ (defun shift-region (distance)
+  (let ((mark (mark)))
+    (save-excursion
+      (indent-rigidly (region-beginning) (region-end) distance)
+      (push-mark mark t t)
+      ;; Tell the command loop not to deactivate the mark
+      ;; for transient mark mode
+      (setq deactivate-mark nil))))
+
+(defun shift-right ()
+  (interactive)
+  (shift-region 1))
+
+(defun shift-left ()
+  (interactive)
+  (shift-region -1))
+
+;; Bind (shift-right) and (shift-left) function to your favorite keys. I use
+;; the following so that Ctrl-Shift-Right Arrow moves selected text one
+;; column to the right, Ctrl-Shift-Left Arrow moves selected text one
+;; column to the left:
+
+(global-set-key [C-S-right] 'shift-right)
+(global-set-key [C-S-left] 'shift-left)
+#+END_SRC
 ** Hungry delete
 #+BEGIN_SRC emacs-lisp
 (use-package hungry-delete
@@ -741,7 +779,7 @@ experience better.
 ** modules
 #+BEGIN_SRC emacs-lisp
 ; Enable habit tracking (and a bunch of other modules)
-(add-to-list 'org-modules 'org-habit t)
+ (add-to-list 'org-modules 'org-habit t)
 ; position the habit graph on the agenda to the right of the default
 (setq org-habit-graph-column 50)
 #+END_SRC
@@ -817,7 +855,7 @@ archive of finished tasks in =archive.org=.
 I like to see an outline of pretty bullets instead of a list of asterisks.
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook
+  (add-hook 'org-mode-hook
             (lambda ()
               (org-bullets-mode t)))
 #+END_SRC
@@ -961,6 +999,13 @@ allows you to extract and execute code. It isn't aware of
 
 #+RESULTS:
 : (\RequirePackage[ (, . preview-default-option-list) ]{preview}[2004/11/05] \PreviewEnvironment{tikzpicture})
+
+-latex-classes '("koma-letter" "\\documentclass{scrlttr2}
+  [NO-DEFAULT-PACKAGES]"))
+
+  (use-package ox
+    :ensure org
+    :co
 ** org-refile
 from http://doc.norang.ca/org-mode.html#Refiling
 #+BEGIN_SRC emacs-lisp
@@ -1518,9 +1563,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 * Yasnippet
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
-:ensure t
-(yas-global-mode 1)
-)
+:ensure t)
 
 #+END_SRC
 * Bind key
@@ -1898,12 +1941,16 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 
 * Gitgutter
 #+BEGIN_SRC emacs-lisp
-(use-package git-gutter
+(use-package git-gutter-fringe
   :ensure t
   :init
   (global-git-gutter-mode)
   :config
-  (setq git-gutter-modified-sign "¤"))
+(setq git-gutter-fr:side 'left-fringe)
+;(setq git-gutter-modified-sign "¤")
+(setq-default left-fringe-width  20)
+(setq-default right-fringe-width 20)
+)
 (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
                             :hint nil)
   "
@@ -1934,6 +1981,9 @@ Git gutter:
 (global-set-key (kbd "C-c h g") 'hydra-git-gutter/body)
 #+END_SRC
 
+#+RESULTS:
+: hydra-git-gutter/body
+
 * Restart emacs
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
@@ -1963,35 +2013,36 @@ Git gutter:
 * Scala setup
 ** Ensime
 #+BEGIN_SRC emacs-lisp
-  (use-package ensime
-  :ensure t
-  :bind ("C-c C-c c" . ensime)
-  :config
-  (progn (setq ensime-sem-high-faces
-               '( (implicitConversion nil)
-                  (var . (:foreground "#ff2222"))
-                  (val . (:foreground "#dddddd"))
-                  (varField . (:foreground "#ff3333"))
-                  (valField . (:foreground "#dddddd"))
-                  (functionCall . (:foreground "#dc9157"))
-                  (param . (:foreground "#ffffff"))
-                  (object . (:foreground "#D884E3"))
-                  (class . (:foreground "green"))
-                  (trait . (:foreground "#009933"))
-                  (operator . (:foreground "#cc7832"))
-                  (object . (:foreground "#6897bb" :slant italic))
-                  (package . (:foreground "yellow"))
-                  (implicitConversion . (:underline (:style wave :color "blue")))
-                  (implicitParams . (:underline (:style wave :color "blue")))
-                  (deprecated . (:strike-through "#a9b7c6"))
-                  (implicitParams nil)
-                  )
-               ensime-completion-style 'company
-               ensime-sem-high-enabled-p nil ;; disable semantic highlighting
-               ensime-tooltip-hints t ;; disable type-inspecting tooltips
-               ensime-tooltip-type-hints t ;; disable typeinspecting tooltips
-               )
-         ))
+(use-package ensime
+:ensure t
+:bind ("C-c C-c c" . ensime)
+:config
+(progn (setq ensime-sem-high-faces
+        '( (implicitConversion nil)
+           (var . (:foreground "#ff2222"))
+           (val . (:foreground "#dddddd"))
+           (varField . (:foreground "#ff3333"))
+           (valField . (:foreground "#dddddd"))
+           (functionCall . (:foreground "#dc9157"))
+           (param . (:foreground "#ffffff"))
+           (object . (:foreground "#D884E3"))
+           (class . (:foreground "green"))
+           (trait . (:foreground "#009933"))
+           (operator . (:foreground "#cc7832"))
+           (object . (:foreground "#6897bb" :slant italic))
+           (package . (:foreground "yellow"))
+           (implicitConversion . (:underline (:style wave :color "blue")))
+           (implicitParams . (:underline (:style wave :color "blue")))
+           (deprecated . (:strike-through "#a9b7c6"))
+           (implicitParams nil)
+         )
+        ensime-completion-style 'company
+        ensime-sem-high-enabled-p nil ;; disable semantic highlighting
+        ensime-tooltip-hints t ;; disable type-inspecting tooltips
+        ensime-tooltip-type-hints t ;; disable typeinspecting tooltips
+)
+    (global-set-key (kbd "C-c C-c c") 'ensime)
+))
 #+END_SRC
 #+RESULTS:
 ** Turn them on
@@ -2380,24 +2431,6 @@ mu4e-headers-visible-lines 18)
                 (load-theme 'zerodark t))))
     (load-theme 'zerodark t))
 #+END_SRC
-* Promela-mode
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "~/.emacs.d/vendor/promela-mode/")
-  ;;(load "~/.emacs.d/vendor/promela-mode/promela-mode.el")
-  ;;(require 'promela-mode)
-  (autoload 'promela-mode "promela-mode" "PROMELA mode" nil t)
-  (setq auto-mode-alist
-        (append
-         (list (cons "\\.promela$"  'promela-mode)
-               (cons "\\.spin$"     'promela-mode)
-               (cons "\\.pml$"      'promela-mode)
-               ;; (cons "\\.other-extensions$"     'promela-mode)
-               )
-         auto-mode-alist))
-#+END_SRC
-
-#+RESULTS:
-
 * Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")
