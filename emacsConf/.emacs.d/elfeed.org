@@ -16,6 +16,8 @@
 ** Islam :Islam:
 *** https://ballandalus.wordpress.com/feed/
 *** https://www.joebradford.net/feed/
+** Cooking                                                       :Cooking:
+https://egyptianmedievalcookbook.wordpress.com/feed/
 * Podcasts                                                           :elfeed:
 ** Seeking Beauty                                                :KhaledIbn:
 *** http://138.68.4.140/seeking_beauty/seeking_beauty.xml
