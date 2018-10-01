@@ -464,6 +464,56 @@ Hydra
 
 #+END_SRC
 
+* Swiper
+
+#+BEGIN_SRC emacs-lisp
+
+
+
+
+   (use-package counsel
+:ensure t
+  :bind
+  (("M-y" . counsel-yank-pop)
+   :map ivy-minibuffer-map
+   ("M-y" . ivy-next-line)))
+
+
+
+
+  (use-package ivy
+  :ensure t
+  :diminish (ivy-mode)
+  :bind (("C-x b" . ivy-switch-buffer))
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "%d/%d ")
+  (setq ivy-display-style 'fancy))
+
+
+  (use-package swiper
+  :ensure t
+  :bind (("C-s" . swiper)
+	 ("C-r" . swiper)
+	 ("C-c C-r" . ivy-resume)
+	 ("M-x" . counsel-M-x)
+	 ("C-x C-f" . counsel-find-file))
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+
+
+
+#+END_SRC
+
+#+RESULTS:
+: counsel-find-file
+
 * Ace-window
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window
@@ -496,7 +546,7 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
    ("e" hydra-move-splitter-up)
    ("r" hydra-move-splitter-right)
    ("b" helm-mini)
-   ("f" helm-find-files)
+   ("f" counsel-find-files)
    ("F" follow-mode)
    ("a" (lambda ()
           (interactive)
@@ -544,20 +594,16 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
 #+RESULTS:
 : hydra-window/body
 
-* Helm
+* Dired-sidebar
 #+BEGIN_SRC emacs-lisp
-(setq helm-display-function 'helm-display-buffer-in-own-frame
-        helm-display-buffer-reuse-frame t
-        helm-use-undecorated-frame-option t)
+(use-package dired-sidebar
+  :ensure t
+  :commands (dired-sidebar-toggle-sidebar))
 
-
-(use-package helm
-:ensure t
-:config
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") #'helm-find-files)
-(helm-mode 1))
 #+END_SRC
+
+#+RESULTS:
+
 * Ibuffer
 #+BEGIN_SRC emacs-lisp
 
@@ -713,7 +759,6 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
 (progn 
 (which-key-mode)
 (which-key-setup-side-window-bottom)
-(setq which-key-allow-evil-operators t)
 (setq which-key-show-operator-state-maps t)))
 
 #+END_SRC
@@ -840,8 +885,10 @@ Use syntax highlighting in source blocks while editing.
 Make TAB act as if it were issued in a buffer of the language's major mode.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-src-tab-acts-natively t)
+  ;;(setq org-src-tab-acts-natively t)
 #+END_SRC
+
+#+RESULTS:
 
 When editing a code snippet, use the current window rather than popping open a
 new one (which shows the same information).
@@ -850,12 +897,6 @@ new one (which shows the same information).
   (setq org-src-window-setup 'current-window)
 #+END_SRC
 
-When I'm starting an org capture template I'd like to begin in insert mode. I'm
-opening it up in order to start typing something, so this skips a step.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'org-capture-mode-hook 'evil-insert-state)
-#+END_SRC
 
 some more misc settings
 #+BEGIN_SRC emacs-lisp
@@ -1342,12 +1383,6 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 #+RESULTS:
 
-When I'm starting an org capture template I'd like to begin in insert mode. I'm
-opening it up in order to start typing something, so this skips a step.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'org-capture-mode-hook 'evil-insert-state)
-#+END_SRC
 ** Encryption
 #+BEGIN_SRC emacs-lisp
 (setq org-crypt-disable-auto-save nil)
@@ -1411,30 +1446,28 @@ opening it up in order to start typing something, so this skips a step.
 #+BEGIN_SRC emacs-lisp
 
 (use-package flycheck
-:ensure t
-:init (global-flycheck-mode))
+:ensure t)
 (use-package flyspell
 :ensure t
 )
 
-(use-package flyspell-correct-helm
+(use-package flyspell-correct-ivy
 :ensure t
 :config 
 (progn 
 (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)))
-(use-package helm-flycheck
-:ensure t)
+
 
 
 #+END_SRC
+
+#+RESULTS:
+: t
+
 * Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
 :ensure t)
-(use-package helm-projectile
-:ensure t
-:config 
-(helm-projectile-on))
 
 
 (defhydra hydra-projectile-other-window (:color teal)
@@ -1518,9 +1551,13 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 * Yasnippet
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
-:ensure t
-(yas-global-mode 1)
-)
+      :ensure t
+      :diminish yas-minor-mode
+      :config
+      (add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets")
+      (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+      (yas-global-mode)
+      (global-set-key (kbd "M-/") 'company-yasnippet))
 
 #+END_SRC
 * Bind key
@@ -1546,13 +1583,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 (use-package writegood-mode
 :ensure t)
 #+END_SRC
-
-* Mail 
-#+BEGIN_SRC emacs-lisp
-(use-package helm-mu
-:ensure t)
-#+END_SRC
-
 * Alert
 #+BEGIN_SRC emacs-lisp
 (use-package alert
@@ -1583,9 +1613,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :config
   (progn
-    (use-package treemacs-evil
-      :ensure t
-      :demand t)
     (setq treemacs-change-root-without-asking nil
           treemacs-collapse-dirs              (if (executable-find "python") 3 0)
           treemacs-file-event-delay           5000
@@ -1629,133 +1656,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
               ))
 #+END_SRC
 #+RESULTS:
-
-* Evil Mode
-#+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-integration nil)
-    :config
-    (evil-mode 1))
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :custom (evil-collection-setup-minibuffer t)
-    :config
-    (setq evil-collection-mode-list 
-          `(ace-jump-mode
-            ag
-            alchemist
-            anaconda-mode
-            arc-mode
-            avy
-            bookmark
-            (buff-menu "buff-menu")
-            calc
-            calendar
-            cider
-            cmake-mode
-            comint
-            company
-            compile
-            custom
-            cus-theme
-            debbugs
-            debug
-            diff-mode
-            dired
-            doc-view
-            edebug
-            elfeed
-            elisp-mode
-            elisp-refs
-            emms
-            epa
-            eshell
-            eval-sexp-fu
-            etags-select
-            eww
-            flycheck
-            free-keys
-            geiser
-            ggtags
-            go-mode
-            help
-            ibuffer
-            image
-            image+
-            indium
-            info
-            ivy
-            js2-mode
-            log-view
-            lua-mode
-            kotlin-mode
-            macrostep
-            man
-           ; ,@(when evil-collection-setup-minibuffer '(minibuffer))
-            neotree
-            notmuch
-            nov
-            ;; occur is in replace.el which was built-in before Emacs 26.
-            (occur ,(if (<= emacs-major-version 25) "replace" 'replace))
-            outline
-            p4
-            (package-menu package)
-            paren
-            pass
-            popup
-            proced
-            prodigy
-            profiler
-            python
-            quickrun
-            racer
-            realgud
-            reftex
-            rjsx-mode
-            robe
-            ruby-mode
-            rtags
-            simple
-            slime
-            (term term ansi-term multi-term)
-            tide
-            transmission
-            typescript-mode
-            vc-annotate
-            vdiff
-            view
-            vlf
-            which-key
-            woman
-            xref
-            (ztree ztree-diff))
-          )
-    (evil-collection-init))
-  ;;  (use-package evil-leader
-  ;;       :ensure t
-  ;;       :config
-  ;;       (global-evil-leader-mode))
-  ;;  (use-package evil-surround
-  ;;       :ensure t
-  ;;       :config
-  ;;       (global-evil-surround-mode))
-  ;;  (use-package evil-indent-textobject
-  ;;       :ensure t
-  ;; :config
-  ;;   (progn
-  ;;       (evil-ex-define-cmd "e[dit]" 'helm-find-files)
-  ;;       (evil-ex-define-cmd "b[uffer]" 'helm-buffers-list)
-  ;;       (bind-key "[escape]" 'keyboard-escape-quit evil-normal-state-map)
-  ;;       (bind-key "[escape]" 'keyboard-escape-quit evil-visual-state-map)
-  ;; n      (bind-key "<escape>" 'keyboard-escape-quit)))
-
-
-  (use-package evil-mu4e
-    :ensure t)
-#+END_SRC
 * Ranger
 #+BEGIN_SRC emacs-lisp
   (use-package ranger
@@ -1764,15 +1664,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 #+END_SRC
 * Highlights
 #+BEGIN_SRC emacs-lisp
-(use-package evil-goggles
-  :ensure t
-  :config
-  (evil-goggles-mode)
-  ;; optionally use diff-mode's faces; as a result, deleted text
-  ;; will be highlighed with `diff-removed` face which is typically
-  ;; some red color (as defined by the color theme)
-  ;; other faces such as `diff-added` will be used for other actions
-  (evil-goggles-use-diff-faces))
 (use-package volatile-highlights
 :ensure t  
 :config
@@ -1802,23 +1693,28 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 #+END_SRC
 * Undo tree
 #+BEGIN_SRC emacs-lisp
-(use-package undo-tree
-:ensure t
-:init
-(global-undo-tree-mode))
+  (use-package undo-tree
+  :ensure t
+  :init
+  (global-undo-tree-mode)
+  :config
+    (setq undo-tree-auto-save-history t)
+
+        ;; Compress the history files as .gz files
+         (advice-add 'undo-tree-make-history-save-file-name :filter-return
+                     (lambda (return-val) (concat return-val ".gz")))
+
+        ;; Persistent undo-tree history across emacs sessions
+        (setq af/undo-tree-history-dir (let ((dir (concat user-emacs-directory
+                                                            "undo-tree-history/")))
+                                           (make-directory dir :parents)
+                                           dir))
+        (setq undo-tree-history-directory-alist `(("." . ,af/undo-tree-history-dir)))
+  )
 #+END_SRC
 
-* Swiper
-#+BEGIN_SRC emacs-lisp
-(use-package swiper-helm
-:ensure t
-:config 
-(progn
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (global-set-key "\C-s" 'swiper)
-))
-#+END_SRC
+#+RESULTS:
+: t
 
 * Ledger mode
 #+BEGIN_SRC emacs-lisp
@@ -1833,7 +1729,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
      "Where the ledger journal is kept.")
    (setq file-ledger "finances.ledger")
      :config
-     (add-to-list 'evil-emacs-state-modes 'ledger-report-mode)
    (setq ledger-post-amount-alignment-column 70)
     (setq ledger-post-amount-alignment-at :decimal)
     ;; There is a correct way to write dates:
@@ -1852,12 +1747,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
      :mode "\\.ledger$'")
 
 
-(use-package evil-ledger
-  :ensure t
-  :after ledger-mode
-  :config
-  (setq evil-ledger-sort-key "S")
-  (add-hook 'ledger-mode-hook #'evil-ledger-mode))
 #+END_SRC
 
 * Windmove
@@ -2002,7 +1891,6 @@ Git gutter:
             (smartparens-mode)
             (yas-minor-mode)
             (git-gutter-mode)
-            (company-mode)
             (ensime-mode)
             (scala-mode:goto-start-of-code)))
 #+END_SRC
@@ -2019,51 +1907,6 @@ Git gutter:
           comment-end " */"
           comment-style 'multi-line
           comment-empty-lines t)
-#+END_SRC
-* Company mode
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'exec-path "/usr/local/bin")
-(use-package company
-  :ensure t
-  :bind
-  (:map company-active-map
-        ("C-s" . company-search-candidates)
-        ("<tab>" . company-complete-common-or-cycle)
-        ("RET" . company-complete-selection)
-        ("C-n" . company-select-next)
-        ("C-p" . company-select-previous))
-  :init
-  (add-hook 'after-init-hook #'global-company-mode)
-  :config
-  (setq company-minimum-prefix-length 2)
-  (setq company-idle-delay 0.5)
-  (setq company-require-match nil)
-  (use-package company-statistics
-    :ensure t
-    :config
-    (setq company-statistics-file
-          (concat my/emacs-cache "company-statistics-cache.el"))
-    (add-hook 'company-mode-hook #'company-statistics-mode))
-  (use-package company-math
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-math-symbols-latex))
-  (use-package company-quickhelp
-    :ensure t
-    :config
-    (company-quickhelp-mode))
-  (use-package company-flx
-    :ensure t
-    :init
-    (with-eval-after-load 'company
-      (company-flx-mode +1)))
-  (use-package company-web-html
-    :ensure company-web)
-  (use-package company-shell
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-shell)))
-(add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
 * Python
 #+BEGIN_SRC emacs-lisp
@@ -2090,6 +1933,20 @@ Git gutter:
 #+END_SRC
 #+RESULTS:
 : t
+* Autocomplete
+#+BEGIN_SRC emacs-lisp
+(use-package auto-complete 
+:ensure t
+:init
+(progn
+(ac-config-default)
+(auto-complete-mode)
+(ac-flyspell-workaround)))
+
+#+END_SRC
+
+#+RESULTS:
+
 * Beacon
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
@@ -2170,7 +2027,6 @@ mode
 #+RESULTS:
 : t
 
-
 ** Syntex with evince
 #+BEGIN_SRC emacs-lisp
 (require 'dbus)
@@ -2237,11 +2093,6 @@ mode
 #+END_SRC
 #+RESULTS:
 : t
-** Dictionary
-#+BEGIN_SRC emacs-lisp
-(use-package helm-dictionary
-:ensure t)
-#+END_SRC
 #+RESULTS:
 * Bibliotek
 #+BEGIN_SRC emacs-lisp
@@ -2254,82 +2105,82 @@ mode
 #+END_SRC
 * Mail setup
 #+BEGIN_SRC emacs-lisp
-(use-package helm-mu
-:ensure t
-:config
-(progn
-  (require 'mu4e)
-  (require 'mu4e-contrib)
-  (require 'helm-mu)
-  (require 'org-mu4e)
- (global-set-key (kbd "<f2>") 'mu4e)
- (setq mu4e-maildir "~/mail")
-    (setq mu4e-drafts-folder "/Drafts")
-    (setq mu4e-sent-folder   "/Sent")
-    (setq mu4e-trash-folder  "/Trash")
-      (setq mu4e-compose-signature-auto-include t)
-  (setq mu4e-compose-format-flowed t)
-(setq mu4e-change-filenames-when-moving t)
-    ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-    (setq mu4e-sent-messages-behavior 'sent)
-    ;; setup some handy shortcuts
-    ;; you can quickly switch to your Inbox -- press ``ji''
-    ;; then, when you want archive some messages, move them to
-    ;; the 'All Mail' folder by pressing ``ma''.
-    (setq mu4e-maildir-shortcuts
-          '( ("/Inbox"               . ?i)
-             ("/Sent"   . ?s)
-             ("/Drafts" . ?d)
-             ("/Trash"       . ?t)
-             ("/All Mail"    . ?a)))
-    ;; allow for updating mail using 'U' in the main view:
-    (setq mu4e-update-interval 600)
-    (setq mu4e-get-mail-command "mbsync chalmers")
-    ;; something about ourselves
-    (setq
-     user-mail-address "ashfaqf@chalmers.se"
-     user-full-name  "Ashfaq Farooqui"
-     message-signature  (concat "\n"
-      "//Ashfaq"
-      "\n"))
-    (setq mu4e-compose-signature t)
-    ;; sending mail -- replace USERNAME with your gmail username
-    ;; also, make sure the gnutls command line utils are installed
-    ;; package 'gnutls-bin' in Debian/Ubuntu
-    (require 'smtpmail)
-    (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-auth-credentials
-      (expand-file-name "~/.emacs.d/.authinfo.gpg")
-        smtpmail-default-smtp-server "localhost"
-        smtpmail-smtp-server "localhost"
-        smtpmail-smtp-service 1025)
-    ;; don't keep message buffers around
-    (setq message-kill-buffer-on-exit t)
-    ;;store org-mode links to messages
-    ;;store link to message if in header view, not to header query
-    (setq org-mu4e-link-query-in-headers-mode nil)
-(setq
-       ;; mu4e-use-fancy-chars t
-       ;; mu4e-view-prefer-html t
-       org-mu4e-convert-to-html t
-       mu4e-show-images t
-       mu4e-headers-include-related nil
-       mu4e-headers-skip-duplicates t
-mu4e-headers-visible-lines 18)
-    ;;; Html rendering
-    (setq mu4e-view-prefer-html t)
-    (setq mu4e-use-fancy-chars t)
-    (setq mu4e-attachment-dir "~/Documents/mail")
-    ;;; Attempt to show images when viewing messages
-    (setq mu4e-view-show-images t
-          mu4e-view-image-max-width 800)
-    ;; View html message in firefox (type aV)
-    (add-to-list 'mu4e-view-actions
-                '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-  ;; PGP-Sign all e-mails
-  (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
-))
+  (progn
+    (require 'mu4e)
+    (require 'mu4e-contrib)
+    (require 'org-mu4e)
+   (global-set-key (kbd "<f2>") 'mu4e)
+   (setq mu4e-maildir "~/mail")
+      (setq mu4e-drafts-folder "/Drafts")
+      (setq mu4e-sent-folder   "/Sent")
+      (setq mu4e-trash-folder  "/Trash")
+        (setq mu4e-compose-signature-auto-include t)
+    (setq mu4e-compose-format-flowed t)
+  (setq mu4e-change-filenames-when-moving t)
+      ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+      (setq mu4e-sent-messages-behavior 'sent)
+      ;; setup some handy shortcuts
+      ;; you can quickly switch to your Inbox -- press ``ji''
+      ;; then, when you want archive some messages, move them to
+      ;; the 'All Mail' folder by pressing ``ma''.
+      (setq mu4e-maildir-shortcuts
+            '( ("/Inbox"               . ?i)
+               ("/Sent"   . ?s)
+               ("/Drafts" . ?d)
+               ("/Trash"       . ?t)
+               ("/All Mail"    . ?a)))
+      ;; allow for updating mail using 'U' in the main view:
+      (setq mu4e-update-interval 600)
+      (setq mu4e-get-mail-command "mbsync chalmers")
+      ;; something about ourselves
+      (setq
+       user-mail-address "ashfaqf@chalmers.se"
+       user-full-name  "Ashfaq Farooqui"
+       message-signature  (concat "\n"
+        "//Ashfaq"
+        "\n"))
+      (setq mu4e-compose-signature t)
+      ;; sending mail -- replace USERNAME with your gmail username
+      ;; also, make sure the gnutls command line utils are installed
+      ;; package 'gnutls-bin' in Debian/Ubuntu
+      (require 'smtpmail)
+      (setq message-send-mail-function 'smtpmail-send-it
+          smtpmail-auth-credentials
+        (expand-file-name "~/.emacs.d/.authinfo.gpg")
+          smtpmail-default-smtp-server "localhost"
+          smtpmail-smtp-server "localhost"
+          smtpmail-smtp-service 1025)
+      ;; don't keep message buffers around
+      (setq message-kill-buffer-on-exit t)
+      ;;store org-mode links to messages
+      ;;store link to message if in header view, not to header query
+      (setq org-mu4e-link-query-in-headers-mode nil)
+  (setq
+         ;; mu4e-use-fancy-chars t
+         ;; mu4e-view-prefer-html t
+         org-mu4e-convert-to-html t
+         mu4e-show-images t
+         mu4e-headers-include-related nil
+         mu4e-headers-skip-duplicates t
+  mu4e-headers-visible-lines 18)
+      ;;; Html rendering
+      (setq mu4e-view-prefer-html t)
+      (setq mu4e-use-fancy-chars t)
+      (setq mu4e-attachment-dir "~/Documents/mail")
+      ;;; Attempt to show images when viewing messages
+      (setq mu4e-view-show-images t
+            mu4e-view-image-max-width 800)
+      ;; View html message in firefox (type aV)
+      (add-to-list 'mu4e-view-actions
+                  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+    ;; PGP-Sign all e-mails
+    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+  )
 #+END_SRC
+
+#+RESULTS:
+| mml-secure-message-sign-pgpmime |
+
 * Academic phrases
 #+BEGIN_SRC emacs-lisp
   (use-package academic-phrases 
@@ -2343,44 +2194,57 @@ mu4e-headers-visible-lines 18)
 #+END_SRC
 * Theme
 #+BEGIN_SRC emacs-lisp
-                                          ;(use-package zenburn-theme
-                                          ;:ensure t
-                                          ;:config
-                                          ;(load-theme 'zenburn t))
-  (use-package zerodark-theme
-    :ensure t
+    
+  (use-package atom-one-dark-theme
+    :ensure t)
+
+  (add-to-list 'custom-theme-load-path (expand-file-name "themes"
+                                                         user-emacs-directory))
+  (use-package smart-mode-line
     :config
-    (load-theme 'zerodark t)
-    (zerodark-setup-modeline-format))
-  ;;  (use-package powerline
-  ;;  :ensure t
-  ;;  :config
-  ;;  (powerline-center-evil-theme))
-  ;;    (use-package spacemacs-common
-  ;;      :ensure spacemacs-theme
-  ;;      :init
-  ;;      (load-theme 'spacemacs-dark t)
-  ;;      (setq spacemacs-theme-org-agenda-height nil)
-  ;;      (setq spacemacs-theme-org-height nil))
-  ;;    (set-face-attribute 'org-level-1 nil :height 1.0)
-  ;;    (set-face-attribute 'org-level-2 nil :height 1.0)
-  ;;    (set-face-attribute 'org-level-3 nil :height 1.0)
-  ;;    (set-face-attribute 'org-scheduled-today nil :height 1.0)
-  ;;    (set-face-attribute 'org-agenda-date-today nil :height 1.1)
-  ;;    (set-face-attribute 'org-table nil :foreground "#008787")
-  ;;  (use-package spaceline
-  ;;    :ensure t
-  ;;    :config
-  ;;    (require 'spaceline-config)
-  ;;    (spaceline-emacs-theme)
-  ;;    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
-(if (daemonp)
-    (add-hook 'after-make-frame-functions
-        (lambda (frame)
-            (with-selected-frame frame
-                (load-theme 'zerodark t))))
-    (load-theme 'zerodark t))
+    (setq sml/theme 'atom-one-dark)
+    (sml/setup))
+
+                                        ;(use-package zenburn-theme
+                                            ;:ensure t
+                                            ;:config
+                                            ;(load-theme 'zenburn t))
+   ;; (use-package zerodark-theme
+    ;;  :ensure t
+    ;;  :config
+    ;;  (load-theme 'zerodark t)
+    ;;  (zerodark-setup-modeline-format))
+    ;;  (use-package powerline
+    ;;  :ensure t
+    ;;  :config
+    ;;    (use-package spacemacs-common
+    ;;      :ensure spacemacs-theme
+    ;;      :init
+    ;;      (load-theme 'spacemacs-dark t)
+    ;;      (setq spacemacs-theme-org-agenda-height nil)
+    ;;      (setq spacemacs-theme-org-height nil))
+    ;;    (set-face-attribute 'org-level-1 nil :height 1.0)
+    ;;    (set-face-attribute 'org-level-2 nil :height 1.0)
+    ;;    (set-face-attribute 'org-level-3 nil :height 1.0)
+    ;;    (set-face-attribute 'org-scheduled-today nil :height 1.0)
+    ;;    (set-face-attribute 'org-agenda-date-today nil :height 1.1)
+    ;;    (set-face-attribute 'org-table nil :foreground "#008787")
+    ;;  (use-package spaceline
+    ;;    :ensure t
+    ;;    :config
+    ;;    (require 'spaceline-config)
+    ;;    (spaceline-emacs-theme)
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+          (lambda (frame)
+              (with-selected-frame frame
+                  (load-theme 'zerodark t))))
+      (load-theme 'zerodark t))
 #+END_SRC
+
+#+RESULTS:
+| (lambda (frame) (with-selected-frame frame (load-theme (quote zerodark) t))) | (lambda (frame) (let ((old-frame (selected-frame)) (old-buffer (current-buffer))) (unwind-protect (progn (select-frame frame (quote norecord)) (load-theme (quote zerodark) t)) (if (frame-live-p old-frame) (progn (select-frame old-frame (quote norecord)))) (if (buffer-live-p old-buffer) (progn (set-buffer old-buffer)))))) | x-dnd-init-frame |
+
 * Promela-mode
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "~/.emacs.d/vendor/promela-mode/")
@@ -2399,6 +2263,17 @@ mu4e-headers-visible-lines 18)
 
 #+RESULTS:
 : ((\.promela$ . promela-mode) (\.spin$ . promela-mode) (\.pml$ . promela-mode) (\.promela$ . promela-mode) (\.spin$ . promela-mode) (\.pml$ . promela-mode) (README\.md\' . gfm-mode) (\.tex\' . latex-mode) (\.csv . csv-mode) (\.ledger$' . flycheck-ledger) (\.ledger$ . ledger-mode) (\.odc\' . archive-mode) (\.odf\' . archive-mode) (\.odi\' . archive-mode) (\.otp\' . archive-mode) (\.odp\' . archive-mode) (\.otg\' . archive-mode) (\.odg\' . archive-mode) (\.ots\' . archive-mode) (\.ods\' . archive-mode) (\.odm\' . archive-mode) (\.ott\' . archive-mode) (\.odt\' . archive-mode) (\.[pP][dD][fF]\' . pdf-view-mode) (\.\(vcf\|gpg\)$ . sensitive-minor-mode) (\.hva\' . latex-mode) (\.drv\' . latex-mode) (\.[Cc][Ss][Vv]\' . csv-mode) (\.gv\' . graphviz-dot-mode) (\.dot\' . graphviz-dot-mode) (\.hsc\' . haskell-mode) (\.l[gh]s\' . literate-haskell-mode) (\.hsig\' . haskell-mode) (\.[gh]s\' . haskell-mode) (\.cabal\' . haskell-cabal-mode) (\.chs\' . haskell-c2hs-mode) (\.ghci\' . ghci-script-mode) (\.dump-simpl\' . ghc-core-mode) (\.hcr\' . ghc-core-mode) (\(?:\(?:\(?:\.\(?:b\(?:\(?:abel\|ower\)rc\)\|json\(?:ld\)?\)\|composer\.lock\)\)\'\) . json-mode) (\.ledger\' . ledger-mode) (\.md\' . markdown-mode) (\.markdown\' . markdown-mode) (\.\(scala\|sbt\)\' . scala-mode) (/git-rebase-todo\' . git-rebase-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.\(?:a\(?:rt\|vs\)\|bmp[23]?\|c\(?:als?\|myka?\|u[rt]\)\|d\(?:c[mx]\|ds\|px\)\|f\(?:ax\|its\)\|gif\(?:87\)?\|hrz\|ic\(?:on\|[bo]\)\|j\(?:\(?:pe\|[np]\)g\)\|m\(?:iff\|ng\|s\(?:l\|vg\)\|tv\)\|otb\|p\(?:bm\|c\(?:ds\|[dltx]\)\|db\|gm\|i\(?:ct\|x\)\|jpeg\|n\(?:g\(?:24\|32\|8\)\|[gm]\)\|pm\|sd\|tif\|wp\)\|r\(?:as\|gb[ao]?\|l[ae]\)\|s\(?:c[rt]\|fw\|gi\|un\|vgz?\)\|t\(?:ga\|i\(?:ff\(?:64\)?\|le\|m\)\|tf\)\|uyvy\|v\(?:da\|i\(?:car\|d\|ff\)\|st\)\|w\(?:bmp\|pg\)\|x\(?:bm\|cf\|pm\|wd\|[cv]\)\|y\(?:cbcra?\|uv\)\)\' . image-mode) (\.elc\' . elisp-byte-code-mode) (\.zst\' nil jka-compr) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.py[iw]?\' . python-mode) (\.less\' . less-css-mode) (\.scss\' . scss-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.h\' . c-or-c++-mode) (\.c\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . mhtml-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.ad[abs]\' . ada-mode) (\.ad[bs].dg\' . ada-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-gmake-mode) (\.make\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-gmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|zshrc\|m?kshrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|cbr\|7z\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|CBR\|7Z\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.jsm?\' . javascript-mode) (\.json\' . javascript-mode) (\.jsx\' . js-jsx-mode) (\.[ds]?vh?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|DVI\|OD[FGPST]\|DOCX?\|XLSX?\|PPTX?\|pdf\|djvu\|dvi\|od[fgpst]\|docx?\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.la\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\.toml\' . conf-toml-mode) (\.desktop\' . conf-desktop-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.\(?:enigma\|gltron\|gtk\|hxplayer\|net\|neverball\|qt/.+\|realplayer\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode) (\.tzst\' . tar-mode))
+
+* icons
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons
+:ensure t
+:config 
+((add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+
+#+END_SRC
+
+#+RESULTS:
 
 * Purpose
 #+BEGIN_SRC emacs-lisp

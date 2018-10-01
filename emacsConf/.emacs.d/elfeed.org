@@ -1,4 +1,5 @@
 * Blog :elfeed:
+*** http://nullprogram.com/feed
 ** Pocket :pocket:
 *** https://getpocket.com/users/ashfaq.farooqui/feed/all
 ** comics :comics:
