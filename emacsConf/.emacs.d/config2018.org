@@ -269,7 +269,7 @@ Single Capitals as you type."
 #+end_src
 ** Hydra
 #+BEGIN_SRC emacs-lisp
-(use-package hydra 
+(use-package hydra
   :ensure t)
 
 #+END_SRC
@@ -379,7 +379,7 @@ directly from the emacs-starter-kit.
            :description description))))
  ;(org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link)
 )
- 
+
   (use-package elfeed-goodies
   :ensure t)
 
@@ -392,7 +392,7 @@ directly from the emacs-starter-kit.
       (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
 #+END_SRC
 
-* PDF tools 
+* PDF tools
 https://github.com/abo-abo/hydra/wiki/PDF-Tools
 #+BEGIN_SRC emacs-lisp
  (use-package pdf-tools
@@ -471,48 +471,52 @@ Hydra
 
 
 
-   (use-package counsel
-:ensure t
-  :bind
-  (("M-y" . counsel-yank-pop)
-   :map ivy-minibuffer-map
-   ("M-y" . ivy-next-line)))
-
-
-
-
-  (use-package ivy
+     (use-package counsel
   :ensure t
-  :diminish (ivy-mode)
-  :bind (("C-x b" . ivy-switch-buffer))
-  :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "%d/%d ")
-  (setq ivy-display-style 'fancy))
+    :bind
+    (("M-y" . counsel-yank-pop)
+     :map ivy-minibuffer-map
+     ("M-y" . ivy-next-line)))
 
 
-  (use-package swiper
-  :ensure t
-  :bind (("C-s" . swiper)
-	 ("C-r" . swiper)
-	 ("C-c C-r" . ivy-resume)
-	 ("M-x" . counsel-M-x)
-	 ("C-x C-f" . counsel-find-file))
-  :config
-  (progn
+
+
+    (use-package ivy
+    :ensure t
+    :diminish (ivy-mode)
+    :bind (("C-x b" . ivy-switch-buffer))
+    :config
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
-    (setq ivy-display-style 'fancy)
-    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-    ))
+    (setq ivy-count-format "%d/%d ")
+    (setq ivy-display-style 'fancy))
 
+
+    (use-package swiper
+    :ensure t
+    :bind (("C-s" . swiper)
+           ("C-r" . swiper)
+           ("C-c C-r" . ivy-resume)
+           ("M-x" . counsel-M-x)
+           ("C-x C-f" . counsel-find-file))
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      ))
+
+  (use-package ivy-rich
+    :ensure t
+    :config
+    (ivy-rich-mode 1))
 
 
 #+END_SRC
 
 #+RESULTS:
-: counsel-find-file
+: t
 
 * Ace-window
 #+BEGIN_SRC emacs-lisp
@@ -523,19 +527,19 @@ Hydra
     (global-set-key [remap other-window] 'ace-window)
     (custom-set-faces
      '(aw-leading-char-face
-       ((t (:inherit ace-jump-face-foreground :height 3.0))))) 
+       ((t (:inherit ace-jump-face-foreground :height 3.0)))))
     ))
 
 (defhydra hydra-frame-window ()
    "
-Movement^^        ^Split^         ^Switch^		^Resize^
+Movement^^        ^Split^         ^Switch^              ^Resize^
 ----------------------------------------------------------------
-_h_ ←       	_v_ertical    	_b_uffer		_q_ X←
-_j_ ↓        	_x_ horizontal	_f_ind files	_w_ X↓
-_k_ ↑        	_z_ undo      	_a_ce 1		_e_ X↑
-_l_ →        	_Z_ reset      	_s_wap		_r_ X→
-_F_ollow		_D_lt Other   	_S_ave		max_i_mize
-\n_SPC_ cancel	_o_nly this   	_d_elete	
+_h_ ←           _v_ertical      _b_uffer                _q_ X←
+_j_ ↓           _x_ horizontal  _f_ind files    _w_ X↓
+_k_ ↑           _z_ undo        _a_ce 1         _e_ X↑
+_l_ →           _Z_ reset       _s_wap          _r_ X→
+_F_ollow                _D_lt Other     _S_ave          max_i_mize
+\n_SPC_ cancel  _o_nly this     _d_elete
 "
    ("h" windmove-left )
    ("j" windmove-down )
@@ -594,22 +598,145 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
 #+RESULTS:
 : hydra-window/body
 
-* Dired-sidebar
+* Dired
 #+BEGIN_SRC emacs-lisp
-(use-package dired-sidebar
+  (put 'dired-find-alternate-file 'disabled nil)  ;; use single window
+
+  (setq dired-dwim-target t
+        dired-auto-revert-buffer t
+        dired-recursive-copies 'always
+        dired-recursive-deletes 'always
+        dired-omit-verbose nil)
+
+  ;; sort files and show sizes
+  ;; (setq dired-listing-switches "-alhvF --group-directories-first")
+  (setq dired-listing-switches "-aBhl --group-directories-first")
+
+  ;; dired async
+  ;; (dired-async-mode)
+
+
+  ;; show sizes of subdirs and dirs / file
+  (use-package dired-du
   :ensure t
-  :commands (dired-sidebar-toggle-sidebar))
+  :config
+    (setq dired-du-size-format t))
+
+  ;; dired hacks
+  (use-package dired-hacks-utils
+    :ensure t
+    :config
+
+    ;; find files quicker
+    (use-package dired-narrow
+:ensure t)
+
+    ;; dired filters
+    (use-package dired-filter
+      :ensure t
+      :config
+      (setq dired-filter-saved-filters '(
+                                         ("Video" (extension "mkv" "mp4" "avi") (omit))
+                                         ("Audio" (extension "mp3" "ogg" "wave" "flac") (omit)))
+
+            dired-filter-group-saved-groups '(("default"
+                                               ("Directory" (directory))
+                                               ("Code" (extension "py" "cpp" "c" "java" "gradle" "js" "jsx" "ts" "go" "sql" "cs" "lisp" "vala" "scala" "rs" "rb" "r" "php" "pas" "ml" "nim" "lua" "jl" "coffee" "clj" "dart" "d" "ex" "elm" "erl" "fs" "groovy" "hh" "hs"))
+                                               ("Elisp" (extension . "el"))
+                                               ("Shell" (extension . "sh"))
+                                               ("Markup" (extension "xml" "html" "xhtml" "iml" "ejs"))
+                                               ("Stylesheet" (extension "css" "less" "sass" "scss"))
+                                               ("Data" (extension "json" "dat" "data"))
+                                               ("Database" (extension "sqlite" "db"))
+                                               ("Config" (extension "sln" "csproj" "ini" "config" "csv" "conf" "properties"))
+                                               ("Doc" (extension "pdf" "doc" "docx" "odt"))
+                                               ("Org" (extension . "org"))
+                                               ("LaTeX" (extension "tex" "bib"))
+                                               ("Markdown" (extension "md" "txt"))
+                                               ("Spreadsheet" (extension "xls" "xlsx"))
+                                               ("Presentation" (extension "ppt" "pptx"))
+                                               ("Video" (extension "mkv" "mp4" "avi" "mpg" "mpeg"))
+                                               ("Audio" (extension "mp3" "aiff" "ogg" "wave" "wav" "flac"))
+                                               ("Image" (extension "jpg" "jpeg" "png" "bmp" "gif"))
+                                               ("Archive" (extension "zip" "tar" "gz" "7z" "xz" "jar" "iso" "pac" "pak" "rar" "bz2")))))
+      (add-hook 'dired-mode-hook #'dired-filter-group-mode))
+
+    ;; dired subtree
+    (use-package dired-subtree
+:ensure t
+)
+
+    ;; dired multistage copy/move/paste
+    (use-package dired-ranger
+:ensure t))
+
+  ;; show/hide dotfiles
+  (use-package dired-hide-dotfiles
+  :ensure t
+:config
+    (add-hook 'dired-mode-hook #'dired-hide-dotfiles-mode))
+
+  ;; launch dired from point
+  (use-package dired-launch
+:ensure t
+    :config
+    (dired-launch-enable)
+    (setq-default dired-launch-default-launcher '("xdg-open")
+                  dired-launch-extensions-map nil))
+
+  (use-package diredful
+    :defer 1
+    :config
+    (diredful-mode 1))
+
+  ;; --------------------------------------------------------------------
+  ;; Hooks
+  ;; --------------------------------------------------------------------
+  ;; truncate lines
+  (add-hook 'dired-after-readin-hook (lambda () (progn
+                                                  (dired-hide-details-mode)
+                                                  (setq truncate-partial-width-windows t
+                                                        truncate-lines t))))
+  (add-hook 'dired-mode-hook 'auto-revert-mode)
+
+
+  (use-package dired-sidebar
+    :ensure t
+    :commands (dired-sidebar-toggle-sidebar))
 
 #+END_SRC
 
 #+RESULTS:
+
+* Theme
+#+BEGIN_SRC emacs-lisp
+
+     (use-package zerodark-theme
+      :ensure t
+      :config
+      (load-theme 'zerodark t)
+      (zerodark-setup-modeline-format)
+       )
+
+
+
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+          (lambda (frame)
+              (with-selected-frame frame
+                  (load-theme 'zerodark t))))
+      (load-theme 'zerodark t))
+#+END_SRC
+
+#+RESULTS:
+| (lambda (frame) (with-selected-frame frame (load-theme (quote zerodark) t))) | x-dnd-init-frame |
 
 * Ibuffer
 #+BEGIN_SRC emacs-lisp
 
   (use-package ibuffer
     :ensure t
-    :config 
+    :config
   (progn (setq ibuffer-saved-filter-groups
                (quote (("default"
                         ("dired" (mode . dired-mode))
@@ -628,7 +755,7 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
                          (mode . haskell-mode))
 ("Magit" (name . "\*magit"))
 ("emacs-config" (or (filename . ".emacs.d")
-			     (filename . "emacs-config")))
+                             (filename . "emacs-config")))
 
                         ("emacs" (or
                                   (name . "^\\*scratch\\*$")
@@ -755,8 +882,8 @@ _F_ollow		_D_lt Other   	_S_ave		max_i_mize
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :ensure t
-    :config 
-(progn 
+    :config
+(progn
 (which-key-mode)
 (which-key-setup-side-window-bottom)
 (setq which-key-show-operator-state-maps t)))
@@ -1271,117 +1398,68 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 - Maintain a reading list in =to-read.org=
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
+(setq org-capture-templates
         (quote ( ("a" "Appointment" entry (file  (org-file-path "gcal.org"))
                   "* %?\n\n%^T\n\n:PROPERTIES:\n\n:END:\n\n")
 
-                 ("t" "todo work" entry (file+headline "Phd.org" "Tasks")
-                  "* TODO %a %?\nSCHEDULE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))")
+                  ("l" "Link" entry (file+headline "links.org" "Links")
+                  "* %? %^L %^g \n%T" :prepend t)
+
+                  ("t" "todo task" entry (file+headline "Phd.org" "Tasks")
+                  "* TODO %a %?\nSCHEDULE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))" :prepend t)
 
                  ("b" "Blog idea"
                   entry
-                  (file (org-file-path "blog-ideas.org"))
-                  "* TODO %?\n")
+                  (file (file+headline  "personal.org" "Blog"))
+                  "* TODO %?\n" :prepend t)
 
-                 ("p" "Phd Notes"
-                  entry
-                  (file (org-file-path "Phd.org")))
+                  ("m" "Mail To Do" entry (file+headline "Phd.org" "To Do and Notes")"* TODO %a\n %?" :prepend t)
 
                  ("N" "Notes"
                   entry
                   (file org-index-file)
                   "* %? :NOTE:\n")
+
                  ("i" "Inbox"
                   entry
                   (file org-index-file)
                   "* TODO %?\nSCHEDULED: %^{Scheduled to begin}t DEADLINE:
-  %^{Deadline}T\n")
-("r" "respond" entry (file org-index-file)
-               "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
-("h" "Habit" entry (file org-index-file)
-               "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+                  %^{Deadline}T\n")
+
+                  ("r" "respond" entry (file org-index-file)
+                  "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+                  ("h" "Habit" entry (file org-index-file)
+                  "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
 )))
 
-  ;; (setq ledger-expense-completions
-  ;;      (list
-  ;;       "" ;; needed for first | for mapconcat
-  ;;       "Income:Salary"
-  ;;       "Assets:Savings" "Assets:Checking"
-  ;;       "Expenses:Dining" "Expenses:ToIndia" "Expenses:Additional" "Expenses:Groceries" "Expenses:Rent" "Expenses:Outfit:Apparel" "Expenses:Outfit:Accessories" "Expenses:Goods" "Expenses:Electronics:Gadgets" "Expenses:Phone" "Expenses:Tools" "Expenses:Transport" "Expenses:Entertainment"
-  ;;       "Liabilities:ChalmersCard"
-  ;;       ))
-  ;;
-  ;;
-  ;;   (setq capture-expense-template
-  ;;         "%%(org-read-date) * %%^{What}
-  ;;       %%^{Expenses%s}  %%^{Amount}
-  ;;       %%^{Assets%s}")
-  ;;
-  ;;   (setq capture-income-template
-  ;;         "%%(org-read-date) * Salary
-  ;;       Assets:Checking  %%^{Amount}
-  ;;       Income:Salary")
-  ;;
-  ;;   (setq capture-credit-template
-  ;;         "%%(org-read-date) * %%^{What}
-  ;;       %%^{Expense%s}  %%^{Amount}
-  ;;       Liabilities:ChalmersCard")
-  ;;
-  ;;   (setq capture-transfer-template
-  ;;         "%%(org-read-date) * %%^{What}
-  ;;       %%^{Assets%s}  %%^{Amount}
-  ;;       %%^{Assets%s}")
-  ;;
-  ;;defun return-capture-expense-template ()
-  ;;   (let ((compstring
-  ;;          (mapconcat 'identity ledger-expense-completions  "|" )))
-  ;; (format capture-expense-template compstring compstring)))
-  ;;
-  ;;defun return-capture-credit-template ()
-  ;;   (let ((compstring
-  ;;          (mapconcat 'identity ledger-expense-completions  "|" )))
-  ;; (format capture-credit-template compstring compstring))
-  ;; )
-  ;;defun return-capture-income-template ()
-  ;;   (let ((compstring
-  ;;          (mapconcat 'identity ledger-expense-completions  "|" )))
-  ;; (format capture-income-template compstring compstring))
-  ;; )
-  ;;defun return-capture-transfer-template ()
-  ;;   (let ((compstring
-  ;;          (mapconcat 'identity ledger-expense-completions  "|" )))
-  ;; (format capture-transfer-template compstring compstring))
-  ;; )
-  ;;
-  ;;setq org-capture-templates
-  ;;       (append '(("l" "Ledger entries")
-  ;;                 ("ls" "Spending" plain
-  ;;                 (file "~/Dropbox/orgs/Accounts/finances.ledger")
-  ;;                 (function return-capture-expense-template)
-  ;;                 :empty-lines-before 1
-  ;;                 :empty-lines-after 1)
-  ;;                 ("lc" "Credit" plain
-  ;;                 (file "~/Dropbox/orgs/Accounts/finances.ledger")
-  ;;                 (function return-capture-credit-template)
-  ;;                 :empty-lines-before 1
-  ;;                 :empty-lines-after 1)
-  ;;                 ("li" "Income" plain
-  ;;                 (file "~/Dropbox/orgs/Accounts/finances.ledger")
-  ;;                 (function return-capture-income-template)
-  ;;                 :empty-lines-before 1
-  ;;                 :empty-lines-after 1)
-  ;;                 ("lt" "Transfer" plain
-  ;;                 (file "~/Dropbox/orgs/Accounts/finances.ledger")
-  ;;                 (function return-capture-transfer-template)
-  ;;                 :empty-lines-before 1
-  ;;                 :empty-lines-after 1)
-  ;;
-  ;;org-capture-templates))
-  ;;
 
+        (defadvice org-capture-finalize
+            (after delete-capture-frame activate)
+        "Advise capture-finalize to close the frame"
+        (if (equal "capture" (frame-parameter nil 'name))
+        (delete-frame)))
+
+        (defadvice org-capture-destroy
+            (after delete-capture-frame activate)
+        "Advise capture-destroy to close the frame"
+        (if (equal "capture" (frame-parameter nil 'name))
+        (delete-frame)))
+
+        (use-package noflet
+        :ensure t )
+        (defun make-capture-frame ()
+        "Create a new frame and run org-capture."
+        (interactive)
+        (make-frame '((name . "capture")))
+        (select-frame-by-name "capture")
+        (delete-other-windows)
+        (noflet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+            (org-capture)))
 #+END_SRC
 
 #+RESULTS:
+: make-capture-frame
+
 
 ** Encryption
 #+BEGIN_SRC emacs-lisp
@@ -1453,8 +1531,8 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 (use-package flyspell-correct-ivy
 :ensure t
-:config 
-(progn 
+:config
+(progn
 (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)))
 
 
@@ -1665,7 +1743,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 * Highlights
 #+BEGIN_SRC emacs-lisp
 (use-package volatile-highlights
-:ensure t  
+:ensure t
 :config
   (volatile-highlights-mode t))
 #+END_SRC
@@ -1922,7 +2000,7 @@ Git gutter:
 
     (use-package elpy
     :ensure t
-    :config 
+    :config
     (elpy-enable))
 
 (use-package virtualenvwrapper
@@ -1935,7 +2013,7 @@ Git gutter:
 : t
 * Autocomplete
 #+BEGIN_SRC emacs-lisp
-(use-package auto-complete 
+(use-package auto-complete
 :ensure t
 :init
 (progn
@@ -1956,12 +2034,12 @@ Git gutter:
 ;(setq beacon-color "#666600")
     )
 #+END_SRC
-* Writing 
+* Writing
 ** Latex
 #+BEGIN_SRC emacs-lisp
     (use-package auctex-latexmk
     :ensure t
-      :config 
+      :config
       (auctex-latexmk-setup)
       (setq auctex-latexmk-inherit-TeX-PDF-mode t)
   (use-package tex-site
@@ -2077,10 +2155,10 @@ mode
 #+BEGIN_SRC emacs-lisp
 (use-package langtool
 :ensure t
-:config 
+:config
 (setq langtool-language-tool-jar "~/.emacs.d/vendor/langtool/languagetool-commandline.jar")
 (setq langtool-default-language "en-US")
-(setq langtool-java-classpath nil))  
+(setq langtool-java-classpath nil))
 #+END_SRC
 #+RESULTS:
 : t
@@ -2105,18 +2183,18 @@ mode
 #+END_SRC
 * Mail setup
 #+BEGIN_SRC emacs-lisp
-  (progn
-    (require 'mu4e)
-    (require 'mu4e-contrib)
-    (require 'org-mu4e)
-   (global-set-key (kbd "<f2>") 'mu4e)
-   (setq mu4e-maildir "~/mail")
+    (progn
+      (require 'mu4e)
+      (require 'mu4e-contrib)
+      (require 'org-mu4e)
+      (global-set-key (kbd "<f2>") 'mu4e)
+      (setq mu4e-maildir "~/mail")
       (setq mu4e-drafts-folder "/Drafts")
       (setq mu4e-sent-folder   "/Sent")
       (setq mu4e-trash-folder  "/Trash")
-        (setq mu4e-compose-signature-auto-include t)
-    (setq mu4e-compose-format-flowed t)
-  (setq mu4e-change-filenames-when-moving t)
+      (setq mu4e-compose-signature-auto-include t)
+      (setq mu4e-compose-format-flowed t)
+      (setq mu4e-change-filenames-when-moving t)
       ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
       (setq mu4e-sent-messages-behavior 'sent)
       ;; setup some handy shortcuts
@@ -2124,129 +2202,150 @@ mode
       ;; then, when you want archive some messages, move them to
       ;; the 'All Mail' folder by pressing ``ma''.
       (setq mu4e-maildir-shortcuts
-            '( ("/Inbox"               . ?i)
-               ("/Sent"   . ?s)
-               ("/Drafts" . ?d)
-               ("/Trash"       . ?t)
-               ("/All Mail"    . ?a)))
+      '( ("/Inbox"               . ?i)
+      ("/Sent"   . ?s)
+      ("/Drafts" . ?d)
+      ("/Trash"       . ?t)
+      ("/All Mail"    . ?a)))
       ;; allow for updating mail using 'U' in the main view:
       (setq mu4e-update-interval 600)
       (setq mu4e-get-mail-command "mbsync chalmers")
       ;; something about ourselves
-      (setq
-       user-mail-address "ashfaqf@chalmers.se"
-       user-full-name  "Ashfaq Farooqui"
-       message-signature  (concat "\n"
-        "//Ashfaq"
-        "\n"))
-      (setq mu4e-compose-signature t)
-      ;; sending mail -- replace USERNAME with your gmail username
-      ;; also, make sure the gnutls command line utils are installed
-      ;; package 'gnutls-bin' in Debian/Ubuntu
-      (require 'smtpmail)
-      (setq message-send-mail-function 'smtpmail-send-it
-          smtpmail-auth-credentials
-        (expand-file-name "~/.emacs.d/.authinfo.gpg")
-          smtpmail-default-smtp-server "localhost"
-          smtpmail-smtp-server "localhost"
-          smtpmail-smtp-service 1025)
-      ;; don't keep message buffers around
-      (setq message-kill-buffer-on-exit t)
-      ;;store org-mode links to messages
-      ;;store link to message if in header view, not to header query
-      (setq org-mu4e-link-query-in-headers-mode nil)
-  (setq
-         ;; mu4e-use-fancy-chars t
-         ;; mu4e-view-prefer-html t
-         org-mu4e-convert-to-html t
-         mu4e-show-images t
-         mu4e-headers-include-related nil
-         mu4e-headers-skip-duplicates t
-  mu4e-headers-visible-lines 18)
-      ;;; Html rendering
-      (setq mu4e-view-prefer-html t)
-      (setq mu4e-use-fancy-chars t)
-      (setq mu4e-attachment-dir "~/Documents/mail")
-      ;;; Attempt to show images when viewing messages
-      (setq mu4e-view-show-images t
-            mu4e-view-image-max-width 800)
-      ;; View html message in firefox (type aV)
-      (add-to-list 'mu4e-view-actions
-                  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-    ;; PGP-Sign all e-mails
-    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
-  )
+        (setq
+         user-mail-address "ashfaqf@chalmers.se"
+         user-full-name  "Ashfaq Farooqui"
+         message-signature  (concat "\n"
+                                    "//Ashfaq"
+                                    "\n"))
+        (setq mu4e-compose-signature t)
+        ;; sending mail -- replace USERNAME with your gmail username
+        ;; also, make sure the gnutls command line utils are installed
+        ;; package 'gnutls-bin' in Debian/Ubuntu
+        (require 'smtpmail)
+        (setq message-send-mail-function 'smtpmail-send-it
+              smtpmail-auth-credentials
+              (expand-file-name "~/.emacs.d/.authinfo.gpg")
+              smtpmail-default-smtp-server "localhost"
+              smtpmail-smtp-server "localhost"
+              smtpmail-smtp-service 1025)
+        ;; don't keep message buffers around
+        (setq message-kill-buffer-on-exit t)
+        ;;store org-mode links to messages
+        ;;store link to message if in header view, not to header query
+        (setq org-mu4e-link-query-in-headers-mode nil)
+    (setq
+           ;; mu4e-use-fancy-chars t
+           ;; mu4e-view-prefer-html t
+           org-mu4e-convert-to-html t
+           mu4e-show-images t
+           mu4e-headers-include-related nil
+           mu4e-headers-skip-duplicates t
+           mu4e-headers-visible-lines 18)
+        ;;; Html rendering
+        (setq mu4e-view-prefer-html t)
+        (setq mu4e-use-fancy-chars t)
+        (setq mu4e-attachment-dir "~/Documents/mail")
+        ;;; Attempt to show images when viewing messages
+        (setq mu4e-view-show-images t
+              mu4e-view-image-max-width 800)
+        ;; View html message in firefox (type aV)
+        (add-to-list 'mu4e-view-actions
+                    '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+      ;; PGP-Sign all e-mails
+      (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+    )
+
+    (use-package mu4e-conversation
+    :ensure t)
+    
+
 #+END_SRC
 
 #+RESULTS:
-| mml-secure-message-sign-pgpmime |
+: mu4e-conversation
 
 * Academic phrases
 #+BEGIN_SRC emacs-lisp
-  (use-package academic-phrases 
+  (use-package academic-phrases
     :ensure t)
 
 #+END_SRC
+
+#+RESULTS:
+
 * Speed typing
 #+BEGIN_SRC emacs-lisp
   (use-package speed-type
     :ensure t)
 #+END_SRC
-* Theme
+
+* Icons
 #+BEGIN_SRC emacs-lisp
+(use-package all-the-icons)
 
-     (use-package zerodark-theme
-      :ensure t
-      :config
-      (load-theme 'zerodark t)
-      (zerodark-setup-modeline-format)
-       )
-
-
-
-  (if (daemonp)
-      (add-hook 'after-make-frame-functions
-          (lambda (frame)
-              (with-selected-frame frame
-                  (load-theme 'zerodark t))))
-      (load-theme 'zerodark t))
+(use-package all-the-icons-dired
+:ensure t
+  :config
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+(use-package all-the-icons-ivy
+  :ensure t
+  :config
+  (all-the-icons-ivy-setup))
 #+END_SRC
 
 #+RESULTS:
 : t
 
-* Promela-mode
+* EyeBrowse
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "~/.emacs.d/vendor/promela-mode/")
-  ;;(load "~/.emacs.d/vendor/promela-mode/promela-mode.el")
-  ;;(require 'promela-mode)
-  (autoload 'promela-mode "promela-mode" "PROMELA mode" nil t)
-  (setq auto-mode-alist
-        (append
-         (list (cons "\\.promela$"  'promela-mode)
-               (cons "\\.spin$"     'promela-mode)
-               (cons "\\.pml$"      'promela-mode)
-               ;; (cons "\\.other-extensions$"     'promela-mode)
-               )
-         auto-mode-alist))
+  (use-package eyebrowse
+    :ensure t)
+  (eyebrowse-mode t)
+(eyebrowse-setup-opinionated-keys)
 #+END_SRC
 
 #+RESULTS:
-: ((\.promela$ . promela-mode) (\.spin$ . promela-mode) (\.pml$ . promela-mode) (\.promela$ . promela-mode) (\.spin$ . promela-mode) (\.pml$ . promela-mode) (README\.md\' . gfm-mode) (\.tex\' . latex-mode) (\.csv . csv-mode) (\.ledger$' . flycheck-ledger) (\.ledger$ . ledger-mode) (\.odc\' . archive-mode) (\.odf\' . archive-mode) (\.odi\' . archive-mode) (\.otp\' . archive-mode) (\.odp\' . archive-mode) (\.otg\' . archive-mode) (\.odg\' . archive-mode) (\.ots\' . archive-mode) (\.ods\' . archive-mode) (\.odm\' . archive-mode) (\.ott\' . archive-mode) (\.odt\' . archive-mode) (\.[pP][dD][fF]\' . pdf-view-mode) (\.\(vcf\|gpg\)$ . sensitive-minor-mode) (\.hva\' . latex-mode) (\.drv\' . latex-mode) (\.[Cc][Ss][Vv]\' . csv-mode) (\.gv\' . graphviz-dot-mode) (\.dot\' . graphviz-dot-mode) (\.hsc\' . haskell-mode) (\.l[gh]s\' . literate-haskell-mode) (\.hsig\' . haskell-mode) (\.[gh]s\' . haskell-mode) (\.cabal\' . haskell-cabal-mode) (\.chs\' . haskell-c2hs-mode) (\.ghci\' . ghci-script-mode) (\.dump-simpl\' . ghc-core-mode) (\.hcr\' . ghc-core-mode) (\(?:\(?:\(?:\.\(?:b\(?:\(?:abel\|ower\)rc\)\|json\(?:ld\)?\)\|composer\.lock\)\)\'\) . json-mode) (\.ledger\' . ledger-mode) (\.md\' . markdown-mode) (\.markdown\' . markdown-mode) (\.\(scala\|sbt\)\' . scala-mode) (/git-rebase-todo\' . git-rebase-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.\(?:a\(?:rt\|vs\)\|bmp[23]?\|c\(?:als?\|myka?\|u[rt]\)\|d\(?:c[mx]\|ds\|px\)\|f\(?:ax\|its\)\|gif\(?:87\)?\|hrz\|ic\(?:on\|[bo]\)\|j\(?:\(?:pe\|[np]\)g\)\|m\(?:iff\|ng\|s\(?:l\|vg\)\|tv\)\|otb\|p\(?:bm\|c\(?:ds\|[dltx]\)\|db\|gm\|i\(?:ct\|x\)\|jpeg\|n\(?:g\(?:24\|32\|8\)\|[gm]\)\|pm\|sd\|tif\|wp\)\|r\(?:as\|gb[ao]?\|l[ae]\)\|s\(?:c[rt]\|fw\|gi\|un\|vgz?\)\|t\(?:ga\|i\(?:ff\(?:64\)?\|le\|m\)\|tf\)\|uyvy\|v\(?:da\|i\(?:car\|d\|ff\)\|st\)\|w\(?:bmp\|pg\)\|x\(?:bm\|cf\|pm\|wd\|[cv]\)\|y\(?:cbcra?\|uv\)\)\' . image-mode) (\.elc\' . elisp-byte-code-mode) (\.zst\' nil jka-compr) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.py[iw]?\' . python-mode) (\.less\' . less-css-mode) (\.scss\' . scss-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.h\' . c-or-c++-mode) (\.c\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . mhtml-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.ad[abs]\' . ada-mode) (\.ad[bs].dg\' . ada-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-gmake-mode) (\.make\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-gmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|zshrc\|m?kshrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|cbr\|7z\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|CBR\|7Z\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.jsm?\' . javascript-mode) (\.json\' . javascript-mode) (\.jsx\' . js-jsx-mode) (\.[ds]?vh?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|DVI\|OD[FGPST]\|DOCX?\|XLSX?\|PPTX?\|pdf\|djvu\|dvi\|od[fgpst]\|docx?\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.la\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\.toml\' . conf-toml-mode) (\.desktop\' . conf-desktop-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.\(?:enigma\|gltron\|gtk\|hxplayer\|net\|neverball\|qt/.+\|realplayer\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode) (\.tzst\' . tar-mode))
-* Icons
+: eyebrowse-switch-to-window-config-9
+* Iedit and Narrowing
 #+BEGIN_SRC emacs-lisp
-(use-package all-the-icons
-:ensure t)
+  ; mark and edit all copies of the marked region simultaniously.
+  (use-package iedit
+  :ensure t)
+
+  ; if you're windened, narrow to the region, if you're narrowed, widen
+  ; bound to C-x n
+  (defun narrow-or-widen-dwim (p)
+  "If the buffer is narrowed, it widens. Otherwise, it narrows intelligently.
+  Intelligently means: region, org-src-block, org-subtree, or defun,
+  whichever applies first.
+  Narrowing to org-src-block actually calls `org-edit-src-code'.
+
+  With prefix P, don't widen, just narrow even if buffer is already
+  narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+  ((region-active-p)
+  (narrow-to-region (region-beginning) (region-end)))
+  ((derived-mode-p 'org-mode)
+  ;; `org-edit-src-code' is not a real narrowing command.
+  ;; Remove this first conditional if you don't want it.
+  (cond ((ignore-errors (org-edit-src-code))
+  (delete-other-windows))
+  ((org-at-block-p)
+  (org-narrow-to-block))
+  (t (org-narrow-to-subtree))))
+  (t (narrow-to-defun))))
+
+  ;; (define-key endless/toggle-map "n" #'narrow-or-widen-dwim)
+  ;; This line actually replaces Emacs' entire narrowing keymap, that's
+  ;; how much I like this command. Only copy it if that's what you want.
+  (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
 
 #+END_SRC
 
 #+RESULTS:
-
-* Purpose
-#+BEGIN_SRC emacs-lisp
-
-
-#+END_SRC
+: narrow-or-widen-dwim
 * Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")

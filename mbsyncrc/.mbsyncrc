@@ -22,7 +22,7 @@ SubFolders Legacy
 Channel chalmers
 Master :chalmers-remote:
 Slave :chalmers-local:
-Patterns *
+Patterns INBOX Sent Trash 
 # Automatically create missing mailboxes, both locally and on the server
 Create Slave
 # Save the synchronization state files in the relevant directory

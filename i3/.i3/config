@@ -49,7 +49,7 @@ bindsym $mod+z exec --no-startup-id morc_menu
 exec --no-startup-id pulseaudio
 exec --no-startup-id pa-applet
 bindsym $mod+Ctrl+m exec pavucontrol
-
+exec --no-startup-id gxkb
 # Media keys (https://faq.i3wm.org/question/3747/enabling-multimedia-keys/?answer=3759#post-id-3759)
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
@@ -73,8 +73,11 @@ bindsym XF86KbdBrightnessDown exec --no-startup-id /home/ashfaqf/.i3/scripts/kbd
 # Start Applications
 #bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
 bindsym $mod+F2 exec firefox
-#bindsym $mod+F3 exec nautilus
-bindsym $mod+F3 exec ranger
+bindsym $mod+F3 exec nautilus
+#make capture frame
+bindsym $mod+F1 exec emacsclient -ne "(make-capture-frame)"
+for_window [class="Emacs" instance="capture"] floating enable
+
 bindsym $mod+Shift+F3 exec gksu pcmanfm
 bindsym $mod+F5 exec terminal -e 'mocp'
 #bindsym $mod+t exec --no-startup-id pkill compton
@@ -335,7 +338,7 @@ exec --no-startup-id clipit
 exec --no-startup-id xautolock -time 5 -locker blurlock
 #exec --no-startup-id ~/.i3/scripts/conky/start_conky_live_AF
 exec emacs --daemon
-bindsym $mod+F4 exec emacsclient -c
+bindsym $mod+F4 exec emacsclient --alternate-editor='' --no-wait --create-frame 
 #make caps as control
 
 
@@ -383,9 +386,10 @@ bar {
 	status_command i3status
 #	i3bar_command $HOME/.config/polybar/launch.sh
 ## please set your primary output first. Example: 'xrandr --output eDP1 --primary'
-	tray_output HDMI2
-	tray_output eDP1
-
+	
+	tray_output primary
+	tray_padding 2
+    separator_symbol ":|:"	
 
        bindsym button4 nop
 	bindsym button5 nop
