@@ -700,13 +700,43 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
   (add-hook 'dired-mode-hook 'auto-revert-mode)
 
 
-  (use-package dired-sidebar
-    :ensure t
-    :commands (dired-sidebar-toggle-sidebar))
 
+(use-package dired-sidebar
+  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
+  :ensure t
+  :commands (dired-sidebar-toggle-sidebar)
+  :init
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode))))
+  :config
+  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+
+  (setq dired-sidebar-subtree-line-prefix "__")
+  (setq dired-sidebar-theme 'icons)
+  (setq dired-sidebar-use-term-integration t)
+  (setq dired-sidebar-use-custom-font t))
+
+
+(use-package ibuffer-sidebar
+:load-path "~/.emacs.d/fork/ibuffer-sidebar"
+  :ensure nil
+  :commands (ibuffer-sidebar-toggle-sidebar)
+  :config
+  (setq ibuffer-sidebar-use-custom-font t)
+  (setq ibuffer-sidebar-face `(:family "Helvetica" :height 140)))
+ 
+(defun sidebar-toggle ()
+  "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
+  (interactive)
+  (dired-sidebar-toggle-sidebar)
+  (ibuffer-sidebar-toggle-sidebar))
 #+END_SRC
 
 #+RESULTS:
+: sidebar-toggle
 
 * Theme
 #+BEGIN_SRC emacs-lisp
@@ -2162,6 +2192,14 @@ mode
 #+END_SRC
 #+RESULTS:
 : t
+** Dictionary
+#+BEGIN_SRC emacs-lisp
+  (use-package dictionary
+    :ensure t)
+#+END_SRC
+
+#+RESULTS:
+
 ** Synonyms
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
