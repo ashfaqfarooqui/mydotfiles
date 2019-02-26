@@ -1,1 +1,2 @@
+source .zprofile
 xmodmap ~/.Xmodmap

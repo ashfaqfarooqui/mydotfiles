@@ -6,9 +6,67 @@ set $mod Mod4
 # set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
 
+#Gaps
+
+#############################
+### settings for i3-gaps: ###
+#############################
+
+# Set inner/outer gaps
+for_window [class="^.*"] border pixel 2
+gaps inner 15
+gaps outer 15
+
+# Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
+# gaps inner|outer current|all set|plus|minus <px>
+# gaps inner all set 10
+# gaps outer all plus 5
+
+# Smart gaps (gaps used if only more than one container on the workspace)
+smart_gaps on
+
+# Smart borders (draw borders around container only if it is not the only container on this workspace)
+# on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
+smart_borders on
+
+# General dropdown window traits. The order can matter.
+for_window [instance="dropdown_*"] floating enable
+for_window [instance="dropdown_*"] move scratchpad
+for_window [instance="dropdown_*"] sticky enable
+for_window [instance="dropdown_*"] scratchpad show
+for_window [instance="dropdown_tmuxdd"] resize set 625 450
+for_window [instance="dropdown_dropdowncalc"] resize set 800 300
+for_window [instance="dropdown_tmuxdd"] border pixel 3
+for_window [instance="dropdown_dropdowncalc"] border pixel 2
+for_window [instance="dropdown_*"] move position center
+
+
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
 new_window pixel 1
 new_float normal
+
+
+# Autostart applications
+## adjustment of i3bar battery reading (only run at the very first login):
+#exec --no-startup-id /usr/bin/adjust_i3statusconf
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+#exec --no-startup-id nm-applet
+exec --no-startup-id copyq
+#exec --no-startup-id blueman
+exec --no-startup-id xautolock -time 5 -locker blurlock
+exec emacs --daemon
+
+exec --no-startup-id caffeine
+exec --no-startup-id davmail
+exec --no-startup-id dropbox start
+exec --no-startup-id nextcloud
+exec --no-startup-id pulseaudio
+exec --no-startup-id pa-applet
+
+exec --no-startup-id /usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/nitrogen/Wallpapers/DSC_0749-1.jpg
+
+
+
 
 # Hide borders
 hide_edge_borders none
@@ -29,25 +87,24 @@ font pango:Monospace 13,
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec termite
-
-# kill focused window
-bindsym $mod+Shift+q kill
+bindsym $mod+Return exec $TERMINAL
+bindsym $mod+Shift+Return exec --no-startup-id samedir
 
 # start program launcher
 bindsym $mod+d exec --no-startup-id rofi -show run -lines 3 -eh 2 -width 50
 
-# launch categorized menu
-bindsym $mod+z exec --no-startup-id morc_menu
+# window Resize
+bindsym $mod+Shift+y exec --no-startup-id i3resize left
+bindsym $mod+Shift+u exec --no-startup-id i3resize down
+bindsym $mod+Shift+i exec --no-startup-id i3resize up
+bindsym $mod+Shift+o exec --no-startup-id i3resize right
+bindsym $mod+i exec $TERMINAL -e htop
+bindsym $mod+a exec --no-startup-id ddspawn dropdowncalc -f mono:pixelsize=24
 
 ################################################################################################
 ## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
 ################################################################################################
 
-#exec --no-startup-id volumeicon
-#bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
-exec --no-startup-id pulseaudio
-exec --no-startup-id pa-applet
 bindsym $mod+Ctrl+m exec pavucontrol
 exec --no-startup-id gxkb
 # Media keys (https://faq.i3wm.org/question/3747/enabling-multimedia-keys/?answer=3759#post-id-3759)
@@ -66,54 +123,46 @@ bindsym XF86TouchpadToggle exec ~/.i3/scripts/touchpad.sh # toggle touchpad
 # keyboard brightness
 bindsym XF86KbdBrightnessUp exec --no-startup-id /home/ashfaqf/.i3/scripts/kbdBrightnesUp.sh
 bindsym XF86KbdBrightnessDown exec --no-startup-id /home/ashfaqf/.i3/scripts/kbdBrightnesDown.sh
-## Keyboard layouts
-#exec --no-startup-id "setxkbmap -layout us,se"
-#exec --no-startup-id "setxkbmap -option 'grp:alt_shift_toggle'"
-#exec --no-startup-id "xinput set-prop 16 298 1"
+
 # Start Applications
-#bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
-bindsym $mod+F2 exec firefox
-bindsym $mod+F3 exec nautilus
+bindsym $mod+Shift+w exec --no-startup-id firefox
+bindsym $mod+Shift+t exec nautilus
+
 #make capture frame
-bindsym $mod+F1 exec emacsclient -ne "(make-capture-frame)"
+bindsym $mod+F1 exec emacsclient -cne "(make-capture-frame)"
 for_window [class="Emacs" instance="capture"] floating enable
 
-bindsym $mod+Shift+F3 exec gksu pcmanfm
-bindsym $mod+F5 exec terminal -e 'mocp'
-#bindsym $mod+t exec --no-startup-id pkill compton
-#bindsym $mod+Ctrl+t exec --no-startup-id compton -b
 bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 bindsym Print exec --no-startup-id i3-scrot
 bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
 bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
-#bindsym $mod+Shift+h exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
-#bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
+
+
+
 
 # focus_follows_mouse no
 
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+odiaeresis focus right
+bindsym $mod+h			focus left
+bindsym $mod+Shift+h		move left 30
+bindsym $mod+j			focus down
+bindsym $mod+Shift+j		move down 30
+bindsym $mod+k			focus up
+bindsym $mod+Shift+k		move up 30
+bindsym $mod+l			focus right
+bindsym $mod+Shift+l move right 30
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
 
-# move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+odiaeresis move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
+# #---Arrow Keys---# #
+bindsym $mod+Left		focus left
+bindsym $mod+Down		focus down
+bindsym $mod+Up			focus up
+bindsym $mod+Right 		focus right
+bindsym $mod+Shift+Left		move left
+bindsym $mod+Shift+Down		move down
+bindsym $mod+Shift+Up		move up
 bindsym $mod+Shift+Right move right
+
 
 # workspace back and forth (with/without active container)
 workspace_auto_back_and_forth yes
@@ -121,9 +170,9 @@ bindsym $mod+b workspace back_and_forth
 bindsym $mod+Shift+b move container to workspace back_and_forth; workspace back_and_forth
 
 # split orientation
-bindsym $mod+h split h;exec notify-send 'tile horizontally'
-bindsym $mod+v split v;exec notify-send 'tile vertically'
-bindsym $mod+q split toggle
+#bindsym $mod+h v split h;exec notify-send 'tile horizontally'
+#bindsym $mod+v split v;exec notify-send 'tile vertically'
+bindsym $mod+t split toggle
 
 # toggle fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -139,14 +188,16 @@ bindsym $mod+Shift+space floating toggle
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
-# toggle sticky
-bindsym $mod+Shift+s sticky toggle
-
-# focus the parent container
-bindsym $mod+a focus parent
 
 # move the currently focused window to the scratchpad
 bindsym $mod+Shift+minus move scratchpad
+
+bindsym $mod+q			[con_id="__focused__" instance="^(?!dropdown_).*$"] kill
+bindsym $mod+Shift+q [con_id="__focused__" instance="^(?!dropdown_).*$"] kill
+bindsym $mod+g exec emacsclient --alternate-editor='' --no-wait --create-frame
+bindsym $mod+r exec --no-startup-id winresize
+
+
 
 # Show the next scratchpad window or hide the focused scratchpad window.
 # If there are multiple scratchpad windows, this command cycles through them.
@@ -157,13 +208,13 @@ bindsym $mod+minus scratchpad show
 set $workspace1 "1:"
 set $workspace2 "2:"
 set $workspace3 "3:Emacs"
-set $workspace4 "4:"
-set $workspace5 "5:File Browser"
+set $workspace4 "4:"
+set $workspace5 "5:"
 set $workspace6 "6:"
-set $workspace7 "7:VirtBox"
+set $workspace7 "7:"
 set $workspace8 "8:"
 set $workspace9 "9:"
-set $workspace10 "0:"
+set $workspace10 "0:"
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
@@ -261,8 +312,10 @@ bindsym $mod+Shift+r restart
 
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-#bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Do you really want to exit i3?' -b 'Yes, exit i3' 'gnome-session-quit --force --logout'"
 # Set shut down, restart and locking features
+bindsym $mod+z			gaps outer current plus 5
+bindsym $mod+Shift+z gaps outer current minus 5
+
 bindsym $mod+Shift+x mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
@@ -292,54 +345,12 @@ mode "$monitor_conf" {
     bindsym w exec --no-startup-id /usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/nitrogen/Wallpapers/DSC_0749-1.jpg
 }
 # Resize window (you can also use the mouse for that)
-bindsym $mod+r mode "resize"
-mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 5 px or 5 ppt
-        bindsym k resize grow height 5 px or 5 ppt
-        bindsym l resize shrink height 5 px or 5 ppt
-        bindsym odiaeresis resize grow width 5 px or 5 ppt
-
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-
-        # exit resize mode: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
 
 # Lock screen
 bindsym $mod+Ctrl+l exec --no-startup-id blurlock
-## exec --no-startup-id autorandr -c
 
 
-exec --no-startup-id /usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/nitrogen/Wallpapers/DSC_0749-1.jpg
 
-
-# Autostart applications
-## adjustment of i3bar battery reading (only run at the very first login):
-#exec --no-startup-id /usr/bin/adjust_i3statusconf
-exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id nm-applet
-exec --no-startup-id xfce4-power-manager
-exec --no-startup-id pamac-tray
-exec --no-startup-id clipit
-#exec --no-startup-id blueman
-#exec_always --no-startup-id sbxkb
-#exec --no-startup-id start_conky_maia
-# exec --no-startup-id start_conky_green
-exec --no-startup-id xautolock -time 5 -locker blurlock
-#exec --no-startup-id ~/.i3/scripts/conky/start_conky_live_AF
-exec emacs --daemon
-bindsym $mod+F4 exec emacsclient --alternate-editor='' --no-wait --create-frame 
-#make caps as control
 
 
 #############################
@@ -375,124 +386,16 @@ client.urgent           $dectext $dectext $dectext $dectext
 # Start i3bar to display a workspace bar (plus the system information i3status if available)
 bar {
 
-	output eDP1
-	output DP1
-	separator_symbol " • "
+tray_padding 1
+#	woyirkspace_buttons yes
+#	binding_mode_indicator yes
 
-	workspace_buttons yes
-	binding_mode_indicator yes
-
+  status_command i3blocks
 	position top
-	status_command i3status
-#	i3bar_command $HOME/.config/polybar/launch.sh
-## please set your primary output first. Example: 'xrandr --output eDP1 --primary'
-	
-	tray_output primary
-	tray_padding 2
-    separator_symbol ":|:"	
 
-       bindsym button4 nop
-	bindsym button5 nop
 	font pango:Monospace,Icons 10
 
-	colors {
-         background $background
-         statusline $bartext
-         separator  $background
-# #       class                border      background  text
-         focused_workspace    $background $background $barfoc
-         active_workspace     $background $background $barfoc
-         inactive_workspace   $background $background $ufocus
-         urgent_workspace $background $background $warning
-	}
 }
 
 # hide/unhide i3status bar
 bindsym $mod+m bar mode toggle
-exec --no-startup-id owncloud
-exec --no-startup-id caffeine
-exec --no-startup-id davmail
-## Start personnal applications
-exec --no-startup-id dropbox start
-exec --no-startup-id nextcloud
-#exec --no-startup-id exec xrandr --output HDMI2 --mode 1680x1050 --scale 2x2 --pos 6560x0 --rotate normal --output DP1 --mode 1680x1050 --scale 2x2 --pos 3200x0 --rotate normal
-
-## Run monitor script
-#exec --no-startup-id confMonitors.sh
-
-#############################
-### settings for i3-gaps: ###
-#############################
-
-# Set inner/outer gaps
-gaps inner 30
-gaps outer -4
-
-# Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
-# gaps inner|outer current|all set|plus|minus <px>
-# gaps inner all set 10
-# gaps outer all plus 5
-
-# Smart gaps (gaps used if only more than one container on the workspace)
-smart_gaps on
-
-# Smart borders (draw borders around container only if it is not the only container on this workspace) 
-# on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
-smart_borders on
-
-# Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
-set $mode_gaps Gaps: (o) outer, (i) inner
-set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
-set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
-bindsym $mod+Shift+g mode "$mode_gaps"
-
-mode "$mode_gaps" {
-        bindsym o      mode "$mode_gaps_outer"
-        bindsym i      mode "$mode_gaps_inner"
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-mode "$mode_gaps_inner" {
-        bindsym plus  gaps inner current plus 5
-        bindsym minus gaps inner current minus 5
-        bindsym 0     gaps inner current set 0
-
-        bindsym Shift+plus  gaps inner all plus 5
-        bindsym Shift+minus gaps inner all minus 5
-        bindsym Shift+0     gaps inner all set 0
-
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-mode "$mode_gaps_outer" {
-        bindsym plus  gaps outer current plus 5
-        bindsym minus gaps outer current minus 5
-        bindsym 0     gaps outer current set 0
-
-        bindsym Shift+plus  gaps outer all plus 5
-        bindsym Shift+minus gaps outer all minus 5
-        bindsym Shift+0     gaps outer all set 0
-
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-
-#exec --no-startup-id setxkbmap -layout se -option ctrl:nocaps
-# exec --no-startup-id nitrogen --restore; sleep 1; compton -b
-
-
-#exec --no-startup-id dbus-send \
-#    --session \
-#    --print-reply=literal \
-#    --dest=org.gnome.SessionManager \
-#    "/org/gnome/SessionManager" \
-#    org.gnome.SessionManager.RegisterClient \
-#    "string:i3" \
-#    "string:$DESKTOP_AUTOSTART_ID"
-
-#exec --no-startup-id echo "$0: DESKTOP_AUTOSTART_ID $DESKTOP_AUTOSTART_ID, registering with org.gnome.SessionManager"
-
-#exec --no-startup-id dbus-send --session --print-reply=literal --dest=org.gnome.SessionManager "/org/gnome/SessionManager" org.gnome.SessionManager.RegisterClient "string:i3" "string:$DESKTOP_AUTOSTART_ID"
-
-
-
