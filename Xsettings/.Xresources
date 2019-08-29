@@ -6,7 +6,7 @@ Xft.dpi: 192
 *.dpi: 192
 
 Xcursor.theme: Vanilla-DMZ
-Xcursor.size: 64
+Xcursor.size: 128
 
 Xft.antialias: 1
 Xft.hinting:   0

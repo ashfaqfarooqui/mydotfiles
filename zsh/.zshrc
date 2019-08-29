@@ -62,8 +62,7 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -t"                  # $EDITOR should open in terminal
-export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI with non-daemon as alternate
+
 
 
 
@@ -88,7 +87,10 @@ export SSH_KEY_PATH="~/.ssh/id_rsa"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias emax="emacsclient -t"   
+alias e="emacsclient -c -a emacs"   
+alias et="emacsclient -t"
+ef() { fzf | xargs -r -I % $EDITOR % ;}
+ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
 NPM_PACKAGES="${HOME}/.npm-packages"
 

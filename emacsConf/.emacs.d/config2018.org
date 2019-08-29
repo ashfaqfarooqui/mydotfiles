@@ -338,6 +338,11 @@ directly from the emacs-starter-kit.
 
 (global-subword-mode 1)
 #+END_SRC
+* Cooking
+#+BEGIN_SRC emacs-lisp
+(use-package org-chef
+  :ensure t)
+#+END_SRC
 * Elfeed
 #+BEGIN_SRC emacs-lisp
   (use-package elfeed
@@ -467,11 +472,7 @@ Hydra
 * Swiper
 
 #+BEGIN_SRC emacs-lisp
-
-
-
-
-     (use-package counsel
+(use-package counsel
   :ensure t
     :bind
     (("M-y" . counsel-yank-pop)
@@ -1460,6 +1461,14 @@ Define a few common tasks as capture templates. Specifically, I frequently:
                   "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
                   ("h" "Habit" entry (file org-index-file)
                   "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+
+("c" "Cookbook" entry (file "~/Orgs/cookbook.org")
+         "%(org-chef-get-recipe-from-url)"
+         :empty-lines 1)
+        ("m" "Manual Cookbook" entry (file "~/Orgs/cookbook.org")
+         "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
+
+
 )))
 
 
