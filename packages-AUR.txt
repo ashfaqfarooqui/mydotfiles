@@ -1,6 +1,5 @@
 caffeine-ng
 davmail
-debtap
 dict-wn
 google-chrome
 i3-volume
@@ -10,10 +9,7 @@ light-git
 mist
 mu
 nautilus-dropbox
-networkmanager-l2tp
-pdftk-bin
 slack-desktop
-spotify
 stardict-wordnet
 teiler-git
 ttf-symbola
@@ -21,6 +17,5 @@ vlc-plugin-fluidsynth
 wordnet-common
 xcalib
 xininfo-git
-yaourt
 yed
 zotero
