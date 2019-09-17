@@ -20,9 +20,9 @@ added.
     (package-initialize)
     (add-to-list 'package-archives
                  '("marmalade" . "http://marmalade-repo.org/packages/"))
-    (add-to-list 'package-archives
-                 '("melpa" . "http://melpa.milkbox.net/packages/") t)
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+  (add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
     (add-to-list 'package-archives
                 '("elpy" . "http://jorgenschaefer.github.io/packages/"))
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
@@ -42,6 +42,7 @@ added.
 
 * Some mandatory stuff
 ** Adding default folders
+(add-to-list 'load-path "~/.emacs.d/vendor/")
 #+BEGIN_SRC emacs-lisp
 (defvar my/emacs-cache (concat user-emacs-directory ".cache/")
   "Folder to store cache files in.
@@ -1125,7 +1126,6 @@ allows you to extract and execute code. It isn't aware of
      (C . t)
      (latex . t)
      (ledger .t)
-                                          ;    (scala . t)
      (python . t)
                                           ;    (ipython . t)
      ))
@@ -1967,39 +1967,39 @@ Git gutter:
 
 #+END_SRC
 * Scala setup
-** Ensime
+** Metals
 #+BEGIN_SRC emacs-lisp
-  (use-package ensime
-  :ensure t
-  :bind ("C-c C-c c" . ensime)
+ (use-package scala-mode
+  :mode "\\.s\\(cala\\|bt\\)$")
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command
   :config
-  (progn (setq ensime-sem-high-faces
-               '( (implicitConversion nil)
-                  (var . (:foreground "#ff2222"))
-                  (val . (:foreground "#dddddd"))
-                  (varField . (:foreground "#ff3333"))
-                  (valField . (:foreground "#dddddd"))
-                  (functionCall . (:foreground "#dc9157"))
-                  (param . (:foreground "#ffffff"))
-                  (object . (:foreground "#D884E3"))
-                  (class . (:foreground "green"))
-                  (trait . (:foreground "#009933"))
-                  (operator . (:foreground "#cc7832"))
-                  (object . (:foreground "#6897bb" :slant italic))
-                  (package . (:foreground "yellow"))
-                  (implicitConversion . (:underline (:style wave :color "blue")))
-                  (implicitParams . (:underline (:style wave :color "blue")))
-                  (deprecated . (:strike-through "#a9b7c6"))
-                  (implicitParams nil)
-                  )
-               ensime-completion-style 'company
-               ensime-sem-high-enabled-p nil ;; disable semantic highlighting
-               ensime-tooltip-hints t ;; disable type-inspecting tooltips
-               ensime-tooltip-type-hints t ;; disable typeinspecting tooltips
-               )
-         ))
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map))
+
+;; Enable nice rendering of diagnostics like compile errors.
+(use-package flycheck
+  :init (global-flycheck-mode))
+
+(use-package lsp-mode
+  ;; Optional - enable lsp-mode automatically in scala files
+  :hook (scala-mode . lsp)
+  :config (setq lsp-prefer-flymake nil))
+(use-package lsp-ui )
+(use-package company-lsp )
+(use-package lsp-treemacs)
+
+
+
 #+END_SRC
+
 #+RESULTS:
+
 ** Turn them on
 #+BEGIN_SRC emacs-lisp
 (add-hook 'scala-mode-hook
@@ -2008,7 +2008,6 @@ Git gutter:
             (smartparens-mode)
             (yas-minor-mode)
             (git-gutter-mode)
-            (ensime-mode)
             (scala-mode:goto-start-of-code)))
 #+END_SRC
 ** New line in comments
