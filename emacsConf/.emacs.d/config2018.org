@@ -16,25 +16,26 @@ packages. Since the default package archive doesn't include
 everything necessary, the [[http://marmalade-repo.org/][marmalade]], and [[http://melpa.milkbox.net/#][melpa]] repositories are also
 added.
 #+begin_src emacs-lisp
-     (load "package")
-    (package-initialize)
-    (add-to-list 'package-archives
-                 '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (load "package")
+  (package-initialize)
   (add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+               '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (add-to-list 'package-archives
+               '("melpa-stable" . "https://stable.melpa.org/packages/") t)
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
-    (add-to-list 'package-archives
-                '("elpy" . "http://jorgenschaefer.github.io/packages/"))
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-    (setq package-archive-enable-alist '(("melpa" magit f)))
-    (require 'cl)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list 'package-archives
+               '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+;;  (setq package-archive-enable-alist '(("melpa" magit f)))
+  (require 'cl)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
 
-(eval-when-compile
-  (require 'use-package))
+  (eval-when-compile
+    (require 'use-package))
 #+end_src
 
 #+RESULTS:
@@ -340,6 +341,69 @@ directly from the emacs-starter-kit.
 
 (global-subword-mode 1)
 #+END_SRC
+** Navigation
+Navigation is an important part of productivity. The next function is a more efficient way to go to the beginning of a line with move-beginning-of-line (C-a) and back-to-indentation (M-m). [[https://github.com/rememberYou/.emacs.d/blob/master/config.org/#alert]]
+#+begin_src emacs-lisp
+(defun my/smarter-move-beginning-of-line (arg)
+  "Moves point back to indentation of beginning of line.
+
+   Move point to the first non-whitespace character on this line.
+   If point is already there, move to the beginning of the line.
+   Effectively toggle between the first non-whitespace character and
+   the beginning of the line.
+
+   If ARG is not nil or 1, move forward ARG - 1 lines first. If
+   point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+(global-set-key (kbd "C-a") 'my/smarter-move-beginning-of-line)
+
+#+end_src
+** Emacslisp mode
+#+begin_src emacs-lisp
+
+(use-package elisp-mode :ensure nil :delight "ξ ")
+#+END_src
+* Recent files
+#+begin_src emacs-lisp
+(use-package recentf
+  :bind ("C-c r" . recentf-open-files)
+  :init (recentf-mode)
+  :custom
+  (recentf-exclude (list "COMMIT_EDITMSG"
+                         "~$"
+                         "/scp:"
+                         "/ssh:"
+                         "/sudo:"
+                         "/tmp/"))
+  (recentf-max-menu-items 15)
+  (recentf-max-saved-items 200)
+    :config (run-at-time nil (* 5 60) 'recentf-save-list))
+
+#+end_src
+* Windows
+#+begin_src emcas-lisp
+(use-package windmove
+  :bind (("C-c h" . windmove-left)
+         ("C-c j" . windmove-down)
+         ("C-c k" . windmove-up)
+         ("C-c l" . windmove-right)))
+
+(use-package winner
+  :defer 2
+  :config (winner-mode 1))
+#+end_src
 * Cooking
 #+BEGIN_SRC emacs-lisp
 (use-package org-chef
@@ -474,46 +538,170 @@ Hydra
 * Swiper
 
 #+BEGIN_SRC emacs-lisp
-(use-package counsel
-  :ensure t
-    :bind
-    (("M-y" . counsel-yank-pop)
-     :map ivy-minibuffer-map
-     ("M-y" . ivy-next-line)))
+    (use-package counsel
+      :ensure t
+      :bind
+      (("M-y" . counsel-yank-pop)
+       :map ivy-minibuffer-map
+       ("M-y" . ivy-next-line)))
+
+
+    (use-package avy
+      :ensure t
+      :bind
+      ("C-'" . 'avy-goto-word-1)
+      )
+    (global-set-key (kbd "C-:") 'avy-goto-char-timer)
+    (setq avy-timeout-seconds 2.0)
+
+  
 
 
 
+(use-package ivy
+  :delight
+  :after ivy-rich
+  :bind (("C-x b" . ivy-switch-buffer)
+         ("C-x B" . ivy-switch-buffer-other-window)
+         ("M-H"   . ivy-resume)
+         :map ivy-minibuffer-map
+         ("<tab>" . ivy-alt-done)
+         ("C-i" . ivy-partial-or-done)
+         ("S-SPC" . nil)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-switch-buffer-kill))
+  :custom
+  (ivy-case-fold-search-default t)
+  (ivy-count-format "(%d/%d) ")
+  (ivy-re-builders-alist '((t . ivy--regex-plus)))
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode))
 
-    (use-package ivy
-    :ensure t
-    :diminish (ivy-mode)
-    :bind (("C-x b" . ivy-switch-buffer))
-    :config
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-count-format "%d/%d ")
-    (setq ivy-display-style 'fancy))
+(use-package ivy-rich
+  :defer 0.1
+  :preface
+  (defun ivy-rich-branch-candidate (candidate)
+    "Displays the branch candidate of the candidate for ivy-rich."
+    (let ((candidate (expand-file-name candidate ivy--directory)))
+      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+          ""
+        (format "%s%s"
+                (propertize
+                 (replace-regexp-in-string abbreviated-home-dir "~/"
+                                           (file-name-directory
+                                            (directory-file-name candidate)))
+                 'face 'font-lock-doc-face)
+                (propertize
+                 (file-name-nondirectory
+                  (directory-file-name candidate))
+                 'face 'success)))))
+
+  (defun ivy-rich-compiling (candidate)
+    "Displays compiling buffers of the candidate for ivy-rich."
+    (let* ((candidate (expand-file-name candidate ivy--directory)))
+      (if (or (not (file-exists-p candidate)) (file-remote-p candidate)
+              (not (magit-git-repo-p candidate)))
+          ""
+        (if (my/projectile-compilation-buffers candidate)
+            "compiling"
+          ""))))
+
+  (defun ivy-rich-file-group (candidate)
+    "Displays the file group of the candidate for ivy-rich"
+    (let ((candidate (expand-file-name candidate ivy--directory)))
+      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+          ""
+        (let* ((group-id (file-attribute-group-id (file-attributes candidate)))
+               (group-function (if (fboundp #'group-name) #'group-name #'identity))
+               (group-name (funcall group-function group-id)))
+          (format "%s" group-name)))))
+
+  (defun ivy-rich-file-modes (candidate)
+    "Displays the file mode of the candidate for ivy-rich."
+    (let ((candidate (expand-file-name candidate ivy--directory)))
+      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+          ""
+        (format "%s" (file-attribute-modes (file-attributes candidate))))))
+
+  (defun ivy-rich-file-size (candidate)
+    "Displays the file size of the candidate for ivy-rich."
+    (let ((candidate (expand-file-name candidate ivy--directory)))
+      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+          ""
+        (let ((size (file-attribute-size (file-attributes candidate))))
+          (cond
+           ((> size 1000000) (format "%.1fM " (/ size 1000000.0)))
+           ((> size 1000) (format "%.1fk " (/ size 1000.0)))
+           (t (format "%d " size)))))))
+
+  (defun ivy-rich-file-user (candidate)
+    "Displays the file user of the candidate for ivy-rich."
+    (let ((candidate (expand-file-name candidate ivy--directory)))
+      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+          ""
+        (let* ((user-id (file-attribute-user-id (file-attributes candidate)))
+               (user-name (user-login-name user-id)))
+          (format "%s" user-name)))))
+
+  (defun ivy-rich-switch-buffer-icon (candidate)
+    "Returns an icon for the candidate out of `all-the-icons'."
+    (with-current-buffer
+        (get-buffer candidate)
+      (let ((icon (all-the-icons-icon-for-mode major-mode :height 0.9)))
+        (if (symbolp icon)
+            (all-the-icons-icon-for-mode 'fundamental-mode :height 0.9)
+          icon))))
+  :config
+  (plist-put ivy-rich-display-transformers-list
+             'counsel-find-file
+             '(:columns
+               ((ivy-rich-candidate               (:width 73))
+                (ivy-rich-file-user               (:width 8 :face font-lock-doc-face))
+                (ivy-rich-file-group              (:width 4 :face font-lock-doc-face))
+                (ivy-rich-file-modes              (:width 11 :face font-lock-doc-face))
+                (ivy-rich-file-size               (:width 7 :face font-lock-doc-face))
+                (ivy-rich-file-last-modified-time (:width 30 :face font-lock-doc-face)))))
+  (plist-put ivy-rich-display-transformers-list
+             'counsel-projectile-switch-project
+             '(:columns
+               ((ivy-rich-branch-candidate        (:width 80))
+                (ivy-rich-compiling))))
+  (plist-put ivy-rich-display-transformers-list
+             'ivy-switch-buffer
+             '(:columns
+               ((ivy-rich-switch-buffer-icon       (:width 2))
+                (ivy-rich-candidate                (:width 40))
+                (ivy-rich-switch-buffer-size       (:width 7))
+                (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+                (ivy-rich-switch-buffer-major-mode (:width 20 :face warning)))
+               :predicate (lambda (cand) (get-buffer cand))))
+  (ivy-rich-mode 1))
+
+(use-package all-the-icons-ivy
+  :after (all-the-icons ivy)
+  :custom (all-the-icons-ivy-buffer-commands '(ivy-switch-buffer-other-window))
+  :config
+  (add-to-list 'all-the-icons-ivy-file-commands 'counsel-dired-jump)
+  (add-to-list 'all-the-icons-ivy-file-commands 'counsel-find-library)
+  (all-the-icons-ivy-setup))
 
 
     (use-package swiper
-    :ensure t
-    :bind (("C-s" . swiper)
-           ("C-r" . swiper)
-           ("C-c C-r" . ivy-resume)
-           ("M-x" . counsel-M-x)
-           ("C-x C-f" . counsel-find-file))
-    :config
-    (progn
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (setq ivy-display-style 'fancy)
-      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-      ))
+      :ensure t
+      :bind (("C-s" . swiper)
+             ("C-r" . swiper)
+             ("C-c C-r" . ivy-resume)
+             ("M-x" . counsel-M-x)
+             ("C-x C-f" . counsel-find-file))
+      :config
+      (progn
+        (ivy-mode 1)
+        (setq ivy-use-virtual-buffers t)
+        (setq ivy-display-style 'fancy)
+        (setq enable-recursive-minibuffers t)
+        (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+        ))
 
-  (use-package ivy-rich
-    :ensure t
-    :config
-    (ivy-rich-mode 1))
 
 
 #+END_SRC
@@ -621,8 +809,8 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 
   ;; show sizes of subdirs and dirs / file
   (use-package dired-du
-  :ensure t
-  :config
+    :ensure t
+    :config
     (setq dired-du-size-format t))
 
   ;; dired hacks
@@ -632,7 +820,7 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 
     ;; find files quicker
     (use-package dired-narrow
-:ensure t)
+      :ensure t)
 
     ;; dired filters
     (use-package dired-filter
@@ -666,22 +854,22 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 
     ;; dired subtree
     (use-package dired-subtree
-:ensure t
-)
+      :ensure t
+      )
 
     ;; dired multistage copy/move/paste
     (use-package dired-ranger
-:ensure t))
+      :ensure t))
 
   ;; show/hide dotfiles
   (use-package dired-hide-dotfiles
-  :ensure t
-:config
+    :ensure t
+    :config
     (add-hook 'dired-mode-hook #'dired-hide-dotfiles-mode))
 
   ;; launch dired from point
   (use-package dired-launch
-:ensure t
+    :ensure t
     :config
     (dired-launch-enable)
     (setq-default dired-launch-default-launcher '("xdg-open")
@@ -704,61 +892,193 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 
 
 
-(use-package dired-sidebar
-  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
-  :ensure t
-  :commands (dired-sidebar-toggle-sidebar)
-  :init
-  (add-hook 'dired-sidebar-mode-hook
-            (lambda ()
-              (unless (file-remote-p default-directory)
-                (auto-revert-mode))))
-  :config
-  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+  (use-package dired-sidebar
+    :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
+    :ensure t
+    :commands (dired-sidebar-toggle-sidebar)
+    :init
+    (add-hook 'dired-sidebar-mode-hook
+              (lambda ()
+                (unless (file-remote-p default-directory)
+                  (auto-revert-mode))))
+    :config
+    (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+    (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
 
-  (setq dired-sidebar-subtree-line-prefix "__")
-  (setq dired-sidebar-theme 'icons)
-  (setq dired-sidebar-use-term-integration t)
-  (setq dired-sidebar-use-custom-font t))
+    (setq dired-sidebar-subtree-line-prefix "__")
+   ;; (setq dired-sidebar-theme 'icons)
+    (setq dired-sidebar-use-term-integration t)
+    (setq dired-sidebar-use-custom-font t))
 
-
-(use-package ibuffer-sidebar
-:load-path "~/.emacs.d/fork/ibuffer-sidebar"
-  :ensure nil
-  :commands (ibuffer-sidebar-toggle-sidebar)
-  :config
-  (setq ibuffer-sidebar-use-custom-font t)
-  (setq ibuffer-sidebar-face `(:family "Helvetica" :height 140)))
- 
-(defun sidebar-toggle ()
-  "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
-  (interactive)
-  (dired-sidebar-toggle-sidebar)
-  (ibuffer-sidebar-toggle-sidebar))
 #+END_SRC
 
 #+RESULTS:
 : sidebar-toggle
-
+* History
+Provides the ability to have commands and their history saved so that whenever you return to work, you can re-run things as you need them. This is not a radical function, it is part of a good user experience. [[https://github.com/rememberYou/.emacs.d/blob/master/config.org/#alert]]
+#+begin_src emacs-lisp
+(use-package savehist
+  :ensure nil
+  :custom
+  (history-delete-duplicates t)
+  (history-length t)
+  (savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+  (savehist-file (expand-file-name (format "%s/emacs/history" "./emacs.d/")))
+  (savehist-save-minibuffer-history 1)
+  :config (savehist-mode 1))
+#+end_src
 * Theme
 #+BEGIN_SRC emacs-lisp
 
-     (use-package zerodark-theme
+  ;;(use-package zerodark-theme
+  ;;  :ensure t
+  ;;  :config
+  ;;  (load-theme 'zerodark t)
+    ;;      (zerodark-setup-modeline-format)
+  ;;  )
+
+
+  (use-package doom-themes
+    :ensure t)
+
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+
+  ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
+  ;; may have their own settings.
+  (load-theme 'doom-one t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
+
+  ;;;If you use nlinum or linum in org-mode, the larger headline sizes in some themes could bleed into the line numbers.
+
+  ;;; Fix this by setting :height explicitly for your line number plugins, after you've loaded the theme. e.g.
+ ;; (let ((height (face-attribute 'default :height)))
+    ;; for all linum/nlinum users
+ ;;   (set-face-attribute 'linum nil :height height)
+    ;; only for `linum-relative' users:
+ ;;   (set-face-attribute 'linum-relative-current-face nil :height height)
+ ;;  )
+
+  ;;modeline
+
+    (use-package doom-modeline
+          :ensure t
+          :hook (after-init . doom-modeline-mode))
+    (use-package nyan-mode
       :ensure t
       :config
-      (load-theme 'zerodark t)
-      (zerodark-setup-modeline-format)
-       )
+      (nyan-mode))
 
 
 
-  (if (daemonp)
-      (add-hook 'after-make-frame-functions
-          (lambda (frame)
-              (with-selected-frame frame
-                  (load-theme 'zerodark t))))
-      (load-theme 'zerodark t))
+  ;;; doommodeline config
+  (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
+
+  ;; Whether display icons in mode-line or not.
+  (setq doom-modeline-icon (display-graphic-p))
+
+  ;; Whether display the icon for major mode. It respects `doom-modeline-icon'.
+  (setq doom-modeline-major-mode-icon t)
+
+  ;; Whether display color icons for `major-mode'. It respects
+  ;; `doom-modeline-icon' and `all-the-icons-color-icons'.
+  (setq doom-modeline-major-mode-color-icon t)
+
+  ;; Whether display icons for buffer states. It respects `doom-modeline-icon'.
+  (setq doom-modeline-buffer-state-icon t)
+
+  ;; Whether display buffer modification icon. It respects `doom-modeline-icon'
+  ;; and `doom-modeline-buffer-state-icon'.
+  (setq doom-modeline-buffer-modification-icon t)
+
+  ;; Whether display minor modes in mode-line or not.
+  (setq doom-modeline-minor-modes (featurep 'minions))
+
+  ;; If non-nil, a word count will be added to the selection-info modeline segment.
+  (setq doom-modeline-enable-word-count nil)
+
+  ;; Whether display buffer encoding.
+  (setq doom-modeline-buffer-encoding t)
+
+  ;; Whether display indentation information.
+  (setq doom-modeline-indent-info nil)
+
+  ;; If non-nil, only display one number for checker information if applicable.
+  (setq doom-modeline-checker-simple-format t)
+
+  ;; The maximum displayed length of the branch name of version control.
+  (setq doom-modeline-vcs-max-length 12)
+
+  ;; Whether display perspective name or not. Non-nil to display in mode-line.
+  (setq doom-modeline-persp-name t)
+
+  ;; Whether display icon for persp name. Nil to display a # sign. It respects `doom-modeline-icon'
+  (setq doom-modeline-persp-name-icon nil)
+
+  ;; Whether display `lsp' state or not. Non-nil to display in mode-line.
+  (setq doom-modeline-lsp t)
+
+  ;; Whether display GitHub notifications or not. Requires `ghub` package.
+  (setq doom-modeline-github nil)
+
+  ;; The interval of checking GitHub.
+  (setq doom-modeline-github-interval (* 30 60))
+
+  ;; Whether display mu4e notifications or not. Requires `mu4e-alert' package.
+  (setq doom-modeline-mu4e t)
+
+  ;; Whether display irc notifications or not. Requires `circe' package.
+  (setq doom-modeline-irc t)
+
+  ;; Function to stylize the irc buffer names.
+  (setq doom-modeline-irc-stylize 'identity)
+
+  ;; Whether display environment version or not
+  (setq doom-modeline-env-version t)
+  ;; Or for individual languages
+  (setq doom-modeline-env-enable-python t)
+  (setq doom-modeline-env-enable-ruby t)
+  (setq doom-modeline-env-enable-perl t)
+  (setq doom-modeline-env-enable-go t)
+  (setq doom-modeline-env-enable-elixir t)
+  (setq doom-modeline-env-enable-rust t)
+
+  ;; Change the executables to use for the language version string
+  (setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
+  (setq doom-modeline-env-ruby-executable "ruby")
+  (setq doom-modeline-env-perl-executable "perl")
+  (setq doom-modeline-env-go-executable "go")
+  (setq doom-modeline-env-elixir-executable "iex")
+  (setq doom-modeline-env-rust-executable "rustc")
+
+  ;; What to dispaly as the version while a new one is being loaded
+  (setq doom-modeline-env-load-string "...")
+
+  ;; Hooks that run before/after the modeline version string is updated
+  (setq doom-modeline-before-update-env-hook nil)
+  (setq doom-modeline-after-update-env-hook nil)
+
+
+  ;;;;Some config to make deamon work with i3
+
+      (if (daemonp)
+          (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                  (with-selected-frame frame
+                      (load-theme 'zerodark t))))
+          (load-theme 'zerodark t))
 #+END_SRC
 
 #+RESULTS:
@@ -906,6 +1226,7 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 
 #+RESULTS:
 | hydra-ibuffer-main/body |
+
 * Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -1510,6 +1831,19 @@ Define a few common tasks as capture templates. Specifically, I frequently:
                     "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?"))
    (use-package org-journal
      :ensure t
+     :bind (("C-c T" . org-journal-new-entry)
+     ("C-c Y" . journal-file-yesterday))
+:preface
+  (defun get-journal-file-yesterday ()
+    "Gets filename for yesterday's journal entry."
+    (let* ((yesterday (time-subtract (current-time) (days-to-time 1)))
+           (daily-name (format-time-string "%Y%m%d" yesterday)))
+      (expand-file-name (concat org-journal-dir daily-name))))
+
+  (defun journal-file-yesterday ()
+    "Creates and load a file based on yesterday's date."
+    (interactive)
+    (find-file (get-journal-file-yesterday)))
      :custom
      (org-journal-dir (concat org-directory "/Journal"))
      (org-journal-date-format "%A, %d %B %Y")
@@ -1699,6 +2033,9 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
       (yas-global-mode)
       (global-set-key (kbd "M-/") 'company-yasnippet))
 
+
+(use-package ivy-yasnippet :after yasnippet)
+
 #+END_SRC
 * Bind key
 #+BEGIN_SRC emacs-lisp
@@ -1795,15 +2132,16 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 :ensure t
 :config
   (volatile-highlights-mode t))
-#+END_
+#+END_SRC
+
 * Move text
 
 #+BEGIN_SRC emacs-lisp
-(use-package move-text
-  :ensure t
-  :bind
-  (([(meta shift up)] . move-text-up)
-   ([(meta shift down)] . move-text-down)))
+  (use-package move-text
+    :ensure t
+    :bind
+    (([(meta shift up)] . move-text-up)
+     ([(meta shift down)] . move-text-down)))
 #+END_SRC
 
 * Line numbers
@@ -1914,6 +2252,16 @@ Git gutter:
 (global-set-key (kbd "C-c h g") 'hydra-git-gutter/body)
 #+END_SRC
 
+* Aggressive indent
+#+begin_src emacs-lisp
+(use-package aggressive-indent
+  :hook ((css-mode . aggressive-indent-mode)
+         (emacs-lisp-mode . aggressive-indent-mode)
+         (js-mode . aggressive-indent-mode)
+         (lisp-mode . aggressive-indent-mode))
+  :custom (aggressive-indent-comments-too))
+
+#+end_src
 * Restart emacs
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
@@ -2003,50 +2351,60 @@ Git gutter:
     )
 #+END_SRC
 * Writing
-** Latex
+** COMMENT Latex
 #+BEGIN_SRC emacs-lisp
-    (use-package auctex-latexmk
+  (use-package auctex-latexmk
     :ensure t
-      :config
-      (auctex-latexmk-setup)
-      (setq auctex-latexmk-inherit-TeX-PDF-mode t)
-  (use-package tex-site
-    :ensure auctex
-    :mode ("\\.tex\\'" . latex-mode)
     :config
-    (setq TeX-auto-save t)
-    (setq TeX-parse-self t)
-    (setq-default TeX-master nil)
-    (add-hook 'LaTeX-mode-hook
-              (lambda ()
-                (rainbow-delimiters-mode)
-                (company-mode)
-                (smartparens-mode)
-                (turn-on-reftex)
-                (setq reftex-plug-into-AUCTeX t)
-                (reftex-isearch-minor-mode)
-                (flyspell-mode)
-                (visual-line-mode)
-                (setq TeX-PDF-mode t)
-                (setq TeX-source-correlate-method 'synctex)
-                (setq TeX-source-correlate-start-server t)))
-  ;; Update PDF buffers after successful LaTeX runs
-  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-             #'TeX-revert-document-buffer)
-  ;; to use pdfview with auctex
-  (add-hook 'LaTeX-mode-hook 'pdf-tools-install)
-  ;; to use pdfview with auctex
-  (setq TeX-view-program-selection '((output-pdf "pdf-tools"))
-         TeX-source-correlate-start-server t)
-  (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view"))))
-)
-    (use-package latex-preview-pane
+    (auctex-latexmk-setup)
+    (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+    (use-package tex-site
+      :ensure auctex
+      :mode ("\\.tex\\'" . latex-mode)
+      :config
+      (setq TeX-auto-save t)
+      (setq TeX-parse-self t)
+      (setq TeX-PDF-mode t)
+      (setq-default TeX-master nil)
+      (defun turn-on-outline-minor-mode ()
+        (outline-minor-mode 1))
+      (add-hook 'TeX-mode-hook
+                (lambda () (TeX-fold-mode 1))); Automatically activate TeX-fold-mode.
+      (add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
+      (add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
+      (add-hook 'TeX-mode-hook 'LaTeX-math-mode)
+  (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
+      (add-hook 'LaTeX-mode-hook
+                (lambda ()
+                  (rainbow-delimiters-mode)
+                  (company-mode)
+                  (smartparens-mode)
+                  (turn-on-reftex)
+                  (setq reftex-plug-into-AUCTeX t)
+                  (reftex-isearch-minor-mode)
+                  (flyspell-mode)
+                  (flyspell-buffer)
+                  (visual-line-mode)
+                  (setq TeX-PDF-mode t)
+                  (setq TeX-source-correlate-method 'synctex)
+                  (setq TeX-source-correlate-start-server t)))
+      ;; Update PDF buffers after successful LaTeX runs
+      (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+                #'TeX-revert-document-buffer)
+      ;; to use pdfview with auctex
+      (add-hook 'LaTeX-mode-hook 'pdf-tools-install)
+      ;; to use pdfview with auctex
+      (setq TeX-view-program-selection '((output-pdf "pdf-tools"))
+            TeX-source-correlate-start-server t)
+      (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view"))))
+    )
+  (use-package latex-preview-pane
     :ensure t)
-(use-package reftex
-  :ensure t
-  :defer t
-  :config
-  (setq reftex-cite-prompt-optional-args t)); Prompt for empty optional arguments in cite
+  (use-package reftex
+    :ensure t
+    :defer t
+    :config
+    (setq reftex-cite-prompt-optional-args t)); Prompt for empty optional arguments in cite
 #+END_SRC
 #+RESULTS:
 ** Wrap paragraphs automatically
@@ -2361,10 +2719,7 @@ mode
 :ensure t
   :config
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-(use-package all-the-icons-ivy
-  :ensure t
-  :config
-  (all-the-icons-ivy-setup))
+
 #+END_SRC
 
 #+RESULTS:
