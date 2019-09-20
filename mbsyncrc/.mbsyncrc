@@ -3,7 +3,8 @@ IMAPAccount chalmers
 Host localhost
 Port 1143
 user ashfaqf
-PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine localhost login ashfaqf/ {print $NF}'"
+PassCmd "gopass show -o Account/webmail.chalmers.se"
+# "gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine localhost login ashfaqf/ {print $NF}'"
 # To store the password in an encrypted file use PassCmd instead of Pass
 # PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mailpass.gpg"
 #
@@ -15,9 +16,9 @@ Account chalmers
 
 MaildirStore chalmers-local
 # The trailing "/" is important
-Path ~/mail/
-Inbox ~/mail/Inbox
-SubFolders Legacy
+Path ~/mail/Chalmers/
+Inbox ~/mail/Chalmers/Inbox
+SubFolders Verbatim
 
 Channel chalmers
 Master :chalmers-remote:
@@ -29,4 +30,34 @@ Create Slave
 SyncState *
 Sync All
 Expunge Both
+CopyArrivalDate yes
+
+
+
+# Personal: ashfaqfarooqui.me
+IMAPAccount personal
+Host imap.mailbox.org
+Port 143
+User ashfaq.farooqui@mailbox.org
+PassCmd "gopass show -o Account/register.mailbox.org"
+AuthMechs PLAIN
+SSLType STARTTLS
+
+
+IMAPStore personal-remote
+Account personal
+
+MaildirStore personal-local
+SubFolders Verbatim
+Path ~/mail/Personal/
+Inbox ~/mail/Personal/Inbox/
+
+Channel personal
+Master :personal-remote:
+Slave :personal-local:
+Patterns "INBOX" "*"
+Create Slave
+Sync All
+Expunge Both
+SyncState *
 CopyArrivalDate yes
