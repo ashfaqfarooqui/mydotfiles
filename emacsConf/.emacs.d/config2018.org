@@ -98,9 +98,14 @@ minor tweak to the frame title. It's also nice to be able to see
 when a file actually ends. This will put empty line markers into
 the left hand side.
 #+begin_src emacs-lisp
-      (setq-default indicate-empty-lines t)
-      (when (not indicate-empty-lines)
-        (toggle-indicate-empty-lines))
+        (setq-default indicate-empty-lines t)
+        (when (not indicate-empty-lines)
+          (toggle-indicate-empty-lines))
+  (setq redisplay-dont-pause t
+    scroll-margin 1
+    scroll-step 1
+    scroll-conservatively 10000
+    scroll-preserve-screen-position 1)
 #+end_src
 ** Indentation
 There's nothing I dislike more than tabs in my files. Make sure I
@@ -392,16 +397,196 @@ Navigation is an important part of productivity. The next function is a more eff
     :config (run-at-time nil (* 5 60) 'recentf-save-list))
 
 #+end_src
+* Icons
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons)
+
+  (use-package all-the-icons-dired
+  :ensure t
+    :config
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+
+  ;; from allthe icons wiki
+
+
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* Theme
+#+BEGIN_SRC emacs-lisp
+
+   ;;(use-package zerodark-theme2
+   ;;  :ensure t
+   ;;  :config
+   ;;  (load-theme 'zerodark t)
+     ;;      (zerodark-setup-modeline-format)
+   ;;  )
+
+
+   (use-package doom-themes
+     :ensure t)
+
+   ;; Global settings (defaults)
+   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+
+   ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
+   ;; may have their own settings.
+   (load-theme 'doom-one t)
+
+   ;; Enable flashing mode-line on errors
+   (doom-themes-visual-bell-config)
+
+   ;; Enable custom neotree theme (all-the-icons must be installed!)
+   (doom-themes-neotree-config)
+   ;; or for treemacs users
+   (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+   (doom-themes-treemacs-config)
+
+   ;; Corrects (and improves) org-mode's native fontification.
+   (doom-themes-org-config)
+
+
+   ;;;If you use nlinum or linum in org-mode, the larger headline sizes in some themes could bleed into the line numbers.
+
+   ;;; Fix this by setting :height explicitly for your line number plugins, after you've loaded the theme. e.g.
+  ;; (let ((height (face-attribute 'default :height)))
+     ;; for all linum/nlinum users
+  ;;   (set-face-attribute 'linum nil :height height)
+     ;; only for `linum-relative' users:
+  ;;   (set-face-attribute 'linum-relative-current-face nil :height height)
+  ;;  )
+
+   ;;modeline
+
+     (use-package doom-modeline
+           :ensure t
+           :hook (after-init . doom-modeline-mode))
+     (use-package nyan-mode
+       :ensure t
+       :config
+       (nyan-mode))
+
+
+
+   ;;; doommodeline config
+   (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
+
+   ;; Whether display icons in mode-line or not.
+   (setq doom-modeline-icon (display-graphic-p))
+
+   ;; Whether display the icon for major mode. It respects `doom-modeline-icon'.
+   (setq doom-modeline-major-mode-icon t)
+
+   ;; Whether display color icons for `major-mode'. It respects
+   ;; `doom-modeline-icon' and `all-the-icons-color-icons'.
+   (setq doom-modeline-major-mode-color-icon t)
+
+   ;; Whether display icons for buffer states. It respects `doom-modeline-icon'.
+   (setq doom-modeline-buffer-state-icon t)
+
+   ;; Whether display buffer modification icon. It respects `doom-modeline-icon'
+   ;; and `doom-modeline-buffer-state-icon'.
+   (setq doom-modeline-buffer-modification-icon t)
+
+   ;; Whether display minor modes in mode-line or not.
+   (setq doom-modeline-minor-modes (featurep 'minions))
+
+   ;; If non-nil, a word count will be added to the selection-info modeline segment.
+   (setq doom-modeline-enable-word-count nil)
+
+   ;; Whether display buffer encoding.
+   (setq doom-modeline-buffer-encoding t)
+
+   ;; Whether display indentation information.
+   (setq doom-modeline-indent-info nil)
+
+   ;; If non-nil, only display one number for checker information if applicable.
+   (setq doom-modeline-checker-simple-format t)
+
+   ;; The maximum displayed length of the branch name of version control.
+   (setq doom-modeline-vcs-max-length 12)
+
+   ;; Whether display perspective name or not. Non-nil to display in mode-line.
+   (setq doom-modeline-persp-name t)
+
+   ;; Whether display icon for persp name. Nil to display a # sign. It respects `doom-modeline-icon'
+   (setq doom-modeline-persp-name-icon nil)
+
+   ;; Whether display `lsp' state or not. Non-nil to display in mode-line.
+   (setq doom-modeline-lsp t)
+
+   ;; Whether display GitHub notifications or not. Requires `ghub` package.
+   (setq doom-modeline-github nil)
+
+   ;; The interval of checking GitHub.
+   (setq doom-modeline-github-interval (* 30 60))
+
+   ;; Whether display mu4e notifications or not. Requires `mu4e-alert' package.
+   (setq doom-modeline-mu4e t)
+
+   ;; Whether display irc notifications or not. Requires `circe' package.
+   (setq doom-modeline-irc t)
+
+   ;; Function to stylize the irc buffer names.
+   (setq doom-modeline-irc-stylize 'identity)
+
+   ;; Whether display environment version or not
+   (setq doom-modeline-env-version t)
+   ;; Or for individual languages
+   (setq doom-modeline-env-enable-python t)
+   (setq doom-modeline-env-enable-ruby t)
+   (setq doom-modeline-env-enable-perl t)
+   (setq doom-modeline-env-enable-go t)
+   (setq doom-modeline-env-enable-elixir t)
+   (setq doom-modeline-env-enable-rust t)
+
+   ;; Change the executables to use for the language version string
+   (setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
+   (setq doom-modeline-env-ruby-executable "ruby")
+   (setq doom-modeline-env-perl-executable "perl")
+   (setq doom-modeline-env-go-executable "go")
+   (setq doom-modeline-env-elixir-executable "iex")
+   (setq doom-modeline-env-rust-executable "rustc")
+
+   ;; What to dispaly as the version while a new one is being loaded
+   (setq doom-modeline-env-load-string "...")
+
+   ;; Hooks that run before/after the modeline version string is updated
+   (setq doom-modeline-before-update-env-hook nil)
+   (setq doom-modeline-after-update-env-hook nil)
+
+  (setq pdf-view-midnight-colors '("#bbc2cf" . "#282c34"))
+  ;; midnite mode hook
+;;This should be in pdftools
+ (add-hook 'pdf-view-mode-hook (lambda ()
+                                 (pdf-view-midnight-minor-mode))) ; automatically turns on midnight-mode for pdfs
+
+
+
+
+
+   ;;;;Some config to make deamon work with i3
+
+       (if (daemonp)
+           (add-hook 'after-make-frame-functions
+               (lambda (frame)
+                   (with-selected-frame frame
+                       (load-theme 'zerodark t))))
+           (load-theme 'zerodark t))
+#+END_SRC
+
+#+RESULTS:
+| (lambda (frame) (with-selected-frame frame (load-theme (quote zerodark) t))) | x-dnd-init-frame |
+
 * Windows
 #+begin_src emcas-lisp
-(use-package windmove
-  :bind (("C-c h" . windmove-left)
-         ("C-c j" . windmove-down)
-         ("C-c k" . windmove-up)
-         ("C-c l" . windmove-right)))
 
 (use-package winner
-  :defer 2
+  :ensure t
   :config (winner-mode 1))
 #+end_src
 * Cooking
@@ -475,6 +660,8 @@ https://github.com/abo-abo/hydra/wiki/PDF-Tools
     (setq-default pdf-view-display-size 'fit-page))
      (use-package org-pdfview
        :ensure t)
+
+(add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 #+END_SRC
 
 #+RESULTS:
@@ -914,176 +1101,6 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 
 #+RESULTS:
 : sidebar-toggle
-* History
-Provides the ability to have commands and their history saved so that whenever you return to work, you can re-run things as you need them. This is not a radical function, it is part of a good user experience. [[https://github.com/rememberYou/.emacs.d/blob/master/config.org/#alert]]
-#+begin_src emacs-lisp
-(use-package savehist
-  :ensure nil
-  :custom
-  (history-delete-duplicates t)
-  (history-length t)
-  (savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-  (savehist-file (expand-file-name (format "%s/emacs/history" "./emacs.d/")))
-  (savehist-save-minibuffer-history 1)
-  :config (savehist-mode 1))
-#+end_src
-* Theme
-#+BEGIN_SRC emacs-lisp
-
-  ;;(use-package zerodark-theme
-  ;;  :ensure t
-  ;;  :config
-  ;;  (load-theme 'zerodark t)
-    ;;      (zerodark-setup-modeline-format)
-  ;;  )
-
-
-  (use-package doom-themes
-    :ensure t)
-
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-
-  ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
-  ;; may have their own settings.
-  (load-theme 'doom-one t)
-
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (doom-themes-treemacs-config)
-
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
-
-  ;;;If you use nlinum or linum in org-mode, the larger headline sizes in some themes could bleed into the line numbers.
-
-  ;;; Fix this by setting :height explicitly for your line number plugins, after you've loaded the theme. e.g.
- ;; (let ((height (face-attribute 'default :height)))
-    ;; for all linum/nlinum users
- ;;   (set-face-attribute 'linum nil :height height)
-    ;; only for `linum-relative' users:
- ;;   (set-face-attribute 'linum-relative-current-face nil :height height)
- ;;  )
-
-  ;;modeline
-
-    (use-package doom-modeline
-          :ensure t
-          :hook (after-init . doom-modeline-mode))
-    (use-package nyan-mode
-      :ensure t
-      :config
-      (nyan-mode))
-
-
-
-  ;;; doommodeline config
-  (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
-
-  ;; Whether display icons in mode-line or not.
-  (setq doom-modeline-icon (display-graphic-p))
-
-  ;; Whether display the icon for major mode. It respects `doom-modeline-icon'.
-  (setq doom-modeline-major-mode-icon t)
-
-  ;; Whether display color icons for `major-mode'. It respects
-  ;; `doom-modeline-icon' and `all-the-icons-color-icons'.
-  (setq doom-modeline-major-mode-color-icon t)
-
-  ;; Whether display icons for buffer states. It respects `doom-modeline-icon'.
-  (setq doom-modeline-buffer-state-icon t)
-
-  ;; Whether display buffer modification icon. It respects `doom-modeline-icon'
-  ;; and `doom-modeline-buffer-state-icon'.
-  (setq doom-modeline-buffer-modification-icon t)
-
-  ;; Whether display minor modes in mode-line or not.
-  (setq doom-modeline-minor-modes (featurep 'minions))
-
-  ;; If non-nil, a word count will be added to the selection-info modeline segment.
-  (setq doom-modeline-enable-word-count nil)
-
-  ;; Whether display buffer encoding.
-  (setq doom-modeline-buffer-encoding t)
-
-  ;; Whether display indentation information.
-  (setq doom-modeline-indent-info nil)
-
-  ;; If non-nil, only display one number for checker information if applicable.
-  (setq doom-modeline-checker-simple-format t)
-
-  ;; The maximum displayed length of the branch name of version control.
-  (setq doom-modeline-vcs-max-length 12)
-
-  ;; Whether display perspective name or not. Non-nil to display in mode-line.
-  (setq doom-modeline-persp-name t)
-
-  ;; Whether display icon for persp name. Nil to display a # sign. It respects `doom-modeline-icon'
-  (setq doom-modeline-persp-name-icon nil)
-
-  ;; Whether display `lsp' state or not. Non-nil to display in mode-line.
-  (setq doom-modeline-lsp t)
-
-  ;; Whether display GitHub notifications or not. Requires `ghub` package.
-  (setq doom-modeline-github nil)
-
-  ;; The interval of checking GitHub.
-  (setq doom-modeline-github-interval (* 30 60))
-
-  ;; Whether display mu4e notifications or not. Requires `mu4e-alert' package.
-  (setq doom-modeline-mu4e t)
-
-  ;; Whether display irc notifications or not. Requires `circe' package.
-  (setq doom-modeline-irc t)
-
-  ;; Function to stylize the irc buffer names.
-  (setq doom-modeline-irc-stylize 'identity)
-
-  ;; Whether display environment version or not
-  (setq doom-modeline-env-version t)
-  ;; Or for individual languages
-  (setq doom-modeline-env-enable-python t)
-  (setq doom-modeline-env-enable-ruby t)
-  (setq doom-modeline-env-enable-perl t)
-  (setq doom-modeline-env-enable-go t)
-  (setq doom-modeline-env-enable-elixir t)
-  (setq doom-modeline-env-enable-rust t)
-
-  ;; Change the executables to use for the language version string
-  (setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
-  (setq doom-modeline-env-ruby-executable "ruby")
-  (setq doom-modeline-env-perl-executable "perl")
-  (setq doom-modeline-env-go-executable "go")
-  (setq doom-modeline-env-elixir-executable "iex")
-  (setq doom-modeline-env-rust-executable "rustc")
-
-  ;; What to dispaly as the version while a new one is being loaded
-  (setq doom-modeline-env-load-string "...")
-
-  ;; Hooks that run before/after the modeline version string is updated
-  (setq doom-modeline-before-update-env-hook nil)
-  (setq doom-modeline-after-update-env-hook nil)
-
-
-  ;;;;Some config to make deamon work with i3
-
-      (if (daemonp)
-          (add-hook 'after-make-frame-functions
-              (lambda (frame)
-                  (with-selected-frame frame
-                      (load-theme 'zerodark t))))
-          (load-theme 'zerodark t))
-#+END_SRC
-
-#+RESULTS:
-| (lambda (frame) (with-selected-frame frame (load-theme (quote zerodark) t))) | x-dnd-init-frame |
-
 * Ibuffer
 #+BEGIN_SRC emacs-lisp
 
@@ -1227,11 +1244,6 @@ Provides the ability to have commands and their history saved so that whenever y
 #+RESULTS:
 | hydra-ibuffer-main/body |
 
-* Magit
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :ensure t)
-#+END_SRC
 * Which key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -1299,43 +1311,42 @@ archive of finished tasks in =archive.org=.
 ** Settings
 *** Sequences
 #+begin_src emacs-lisp
-                 (setq org-todo-keywords '((sequence
-                     "TODO(t)"  ; next action
-                     "NEXT(s)"
-                     "WAITING(w@/!)"
-                     "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
-                     (sequence "IDEA"))
-         org-todo-keyword-faces '(("IDEA" . (:foreground "green" :weight bold))
-                                       ("NEXT" . (:foreground "blue" :weight bold))
-                                       ("CANCELLED" . (:foreground "red" :weight book))
-                                       ("SOMEDAY" . (:foreground "red" :weight book))
-                                       ("WAITING" . (:foreground "yellow" :weight book))
-                                       ("COMPLETE" . (:foreground "green" :weight bold))
-                                       ("DONE" . (:foreground "green" :weight bold))))
+  (setq org-todo-keywords '((sequence
+                             "TODO(t)"  ; next action
+                             "NEXT(s)"
+                             "WAITING(w@/!)"
+                             "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+                            (sequence "IDEA"))
+        org-todo-keyword-faces '(("IDEA" . (:foreground "green" :weight bold))
+                                 ("NEXT" . (:foreground "blue" :weight bold))
+                                 ("CANCELLED" . (:foreground "red" :weight book))
+                                 ("SOMEDAY" . (:foreground "red" :weight book))
+                                 ("WAITING" . (:foreground "yellow" :weight book))
+                                 ("COMPLETE" . (:foreground "green" :weight bold))
+                                 ("DONE" . (:foreground "green" :weight bold))))
 
 
-
-                   (setq org-log-done t)
-                      (add-hook 'org-mode-hook
-                                (lambda ()
-                                  (flyspell-mode)))
-                      (add-hook 'org-mode-hook
-                                (lambda ()
-                                  (writegood-mode)))
-    (add-hook 'LaTeX-mode-hook (lambda () (writegood-mode)))
+  (setq org-log-done t)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (flyspell-mode)))
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (writegood-mode)))
+  (add-hook 'LaTeX-mode-hook (lambda () (writegood-mode)))
   (add-hook 'LaTeX-mode-hook (lambda () (flyspell-mode)))
 
-(setq org-use-fast-todo-selection t)
-(setq org-treat-S-cursor-todo-selection-as-state-change nil)
+  (setq org-use-fast-todo-selection t)
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 
 
-(setq org-todo-state-tags-triggers
-      (quote (("CANCELLED" ("CANCELLED" . t))
-              ("WAITING" ("WAITING" . t))
-              (done ("WAITING") ("HOLD"))
-              ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-              ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-              ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+  (setq org-todo-state-tags-triggers
+        (quote (("CANCELLED" ("CANCELLED" . t))
+                ("WAITING" ("WAITING" . t))
+                (done ("WAITING") ("HOLD"))
+                ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+                ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 #+end_src
 
 #+RESULTS:
@@ -1503,7 +1514,8 @@ Use all the files to derive agenda.
   (setq org-agenda-files (list org-directory org-phd-file))
   (setq org-agenda-include-diary t)
   (setq org-agenda-include-all-todo t)
-
+;;Always open in a new frame
+(setq org-agenda-window-setup (quote other-frame))
 ;; Do not dim blocked tasks
 (setq org-agenda-dim-blocked-tasks nil)
 
@@ -1736,7 +1748,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
-        (quote ( ("t" "todo task" entry (file+headline "Phd.org" "Tasks")
+        (quote ( ("t" "todo task" entry (file+headline org-index-file "Tasks")
                   "* TODO %a %?\nSCHEDULE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))" :prepend t)
 
                  ("b" "Blog idea"
@@ -2220,8 +2232,15 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   :ensure t
   :init
   (global-git-gutter-mode)
-  :config
-  (setq git-gutter-modified-sign "¤"))
+:config
+(custom-set-variables
+ '(git-gutter:modified-sign " ") ;; two space
+ '(git-gutter:added-sign " ")    ;; multiple character is OK
+ '(git-gutter:deleted-sign " "))
+
+(set-face-background 'git-gutter:modified "purple") ;; background color
+(set-face-foreground 'git-gutter:added "green")
+(set-face-foreground 'git-gutter:deleted "red"))
 (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
                             :hint nil)
   "
@@ -2295,7 +2314,7 @@ Git gutter:
   :config (setq lsp-prefer-flymake nil))
 (use-package lsp-ui )
 (use-package company-lsp )
-(use-package lsp-treemacs)
+
 
 
 
@@ -2508,222 +2527,214 @@ mode
 #+RESULTS:
 * Mail setup
 #+BEGIN_SRC emacs-lisp
-      ;;;(progn
-  (require 'mu4e)
-  (require 'mu4e-contrib)
-  (require 'org-mu4e)
-  ;; sending mail -- replace USERNAME with your gmail username
-  ;; also, make sure the gnutls command line utils are installed
-  ;; package 'gnutls-bin' in Debian/Ubuntu
-  (require 'smtpmail)
+        ;;;(progn
+    (require 'mu4e)
+    (require 'mu4e-contrib)
+    (require 'org-mu4e)
+    ;; sending mail -- replace USERNAME with your gmail username
+    ;; also, make sure the gnutls command line utils are installed
+    ;; package 'gnutls-bin' in Debian/Ubuntu
+    (require 'smtpmail)
 
-  ;; the list of all of my e-mail addresses
-  (setq mu4e-user-mail-address-list '("ashfaqf@chalmers.se"
-                                      "ashfaq@ashfaqfarooqui.me"
-                                      ))
+    ;; the list of all of my e-mail addresses
+    (setq mu4e-user-mail-address-list '("ashfaqf@chalmers.se"
+                                        "ashfaq@ashfaqfarooqui.me"
+                                        ))
 
-  ;; spell check
-  (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
+    ;; spell check
+    (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 
-  ;; use mu4e for e-mail in emacs
-  (setq mail-user-agent 'mu4e-user-agent)
+    ;; use mu4e for e-mail in emacs
+    (setq mail-user-agent 'mu4e-user-agent)
 
-  ;; for mbsync
-  (setq mu4e-change-filenames-when-moving t)
+    ;; for mbsync
+    (setq mu4e-change-filenames-when-moving t)
 
-  (global-set-key (kbd "<f2>") 'mu4e)
-  (setq mu4e-maildir "~/mail")
+    (global-set-key (kbd "<f2>") 'mu4e)
+    (setq mu4e-maildir "~/mail")
 
-  (setq mu4e-compose-signature-auto-include t)
-  (setq mu4e-compose-format-flowed t)
+    (setq mu4e-compose-signature-auto-include t)
+    (setq mu4e-compose-format-flowed t)
 
-  ;; setup some handy shortcuts
-  ;; you can quickly switch to your Inbox -- press ``ji''
-  ;; then, when you want archive some messages, move them to
-  ;; the 'All Mail' folder by pressing ``ma''.
-  (setq mu4e-maildir-shortcuts
-        '( ("/Chalmers/Inbox"               . ?i)
-           ("/Personal/Inbox"   . ?p)
-           ("/Chalmers/Drafts" . ?d)
-           ("/Personal/Drafts". ?D)
-           ("/Chalmers/Trash"       . ?t)
-           ("/Chalmers/All Mail"    . ?a)))
-  ;; allow for updating mail using 'U' in the main view:
-  (setq mu4e-update-interval 600)
-  (setq mu4e-get-mail-command "mbsync -a")
-  (require 'starttls)
+    ;; setup some handy shortcuts
+    ;; you can quickly switch to your Inbox -- press ``ji''
+    ;; then, when you want archive some messages, move them to
+    ;; the 'All Mail' folder by pressing ``ma''.
+    (setq mu4e-maildir-shortcuts
+          '( ("/Chalmers/Inbox"               . ?i)
+             ("/Personal/Inbox"   . ?p)
+             ("/Chalmers/Drafts" . ?d)
+             ("/Personal/Drafts". ?D)
+             ("/Chalmers/Trash"       . ?t)
+             ("/Chalmers/All Mail"    . ?a)))
+    ;; allow for updating mail using 'U' in the main view:
+    (setq mu4e-update-interval 600)
+    (setq mu4e-get-mail-command "mbsync -a")
+    (require 'starttls)
+  (setq mu4e-enable-mode-line t)
+    (setq mu4e-contexts
+          `( ,(make-mu4e-context
+               :name "w ashfaqf@chalmers.se"
+               :enter-func (lambda () (mu4e-message "Enter ashfaqf@chalmers.se context"))
+               :leave-func (lambda () (mu4e-message "Leave ashfaqf@chalmers.se context"))
+               ;; we match based on the contact-fields of the message (that we are replying to)
+               ;; https://www.djcbsoftware.nl/code/mu/mu4e/What-are-contexts.html#What-are-contexts
+               :match-func (lambda (msg)
+                             (when msg 
+                               (mu4e-message-contact-field-matches msg 
+                                                                   :to "ashfaqf@chalmers.se")))
+               :vars '( ( user-mail-address      . "ashfaqf@chalmers.se"  )
+                        ( user-full-name         . "Ashfaq Farooqui" )
+                        ( mu4e-drafts-folder .  "/Chalmers/Drafts")
+                        ( mu4e-sent-folder  . "/Chalmers/Sent")
+                        ( mu4e-trash-folder . "/Chalmers/Trash")
+                        ( mu4e-attachment-dir . "~/Documents/MailAttachments/Chalmers")
+                        ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+                        (setq mu4e-sent-messages-behavior 'delete)
+                        ( smtpmail-smtp-server   . "localhost" )
+                        ( smtpmail-smtp-service . 1025)
+                        ( mu4e-compose-signature .
+                                                 "//Ashfaq"
+                                                 )))
 
-  (setq mu4e-contexts
-        `( ,(make-mu4e-context
-             :name "w ashfaqf@chalmers.se"
-             :enter-func (lambda () (mu4e-message "Enter ashfaqf@chalmers.se context"))
-             :leave-func (lambda () (mu4e-message "Leave ashfaqf@chalmers.se context"))
-             ;; we match based on the contact-fields of the message (that we are replying to)
-             ;; https://www.djcbsoftware.nl/code/mu/mu4e/What-are-contexts.html#What-are-contexts
-             :match-func (lambda (msg)
-                           (when msg 
-                             (mu4e-message-contact-field-matches msg 
-                                                                 :to "ashfaqf@chalmers.se")))
-             :vars '( ( user-mail-address      . "ashfaqf@chalmers.se"  )
-                      ( user-full-name         . "Ashfaq Farooqui" )
-                      ( mu4e-drafts-folder .  "/Chalmers/Drafts")
-                      ( mu4e-sent-folder  . "/Chalmers/Sent")
-                      ( mu4e-trash-folder . "/Chalmers/Trash")
-                      ( mu4e-attachment-dir . "~/Documents/MailAttachments/Chalmers")
-                      ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-                      (setq mu4e-sent-messages-behavior 'delete)
-                      ( smtpmail-smtp-server   . "localhost" )
-                      ( smtpmail-smtp-service . 1025)
-                      ( mu4e-compose-signature .
-                                               "//Ashfaq"
-                                               )))
+             ,(make-mu4e-context
+               :name "p ashfaq@ashfaqfarooqui.me"
+               :enter-func (lambda () (mu4e-message "Enter ashfaq@ashfaqfarooqui.me context"))
+               ;; no leave-func
+               ;; we match based on the contact-fields of the message
+               :match-func (lambda (msg)
+                             (when msg 
+                               (mu4e-message-contact-field-matches msg 
+                                                                   :to "ashfaq@ashfaqfarooqui.me")))
+               :vars '( ( user-mail-address       . "ashfaq@ashfaqfarooqui.me" )
+                        ( user-full-name          . "Ashfaq Farooqui" )
+                        (smtpmail-smtp-user . "ashfaq.farooqui@mailbox.org")
+                        (mu4e-sent-messages-behavior . sent)
+                        (mu4e-attachment-dir . "~/Documents/MailAttachments/Personal")
+                        ( mu4e-drafts-folder . "/Personal/Drafts")
+                        ( mu4e-sent-folder  . "/Personal/Sent")
+                        ( mu4e-trash-folder . "/Personal/Trash")
+                        (mu4e-refile-folder . "/Personal/Archive")
+                        (smtpmail-smtp-server . "smtp.mailbox.org")
+                        (smtpmail-stream-type . ssl )
+                        (smtpmail-smtp-service . 465)
+                        ( mu4e-compose-signature  .
+                                                  "Ashfaq Farooqui\n"
+                                                  )))         
 
-           ,(make-mu4e-context
-             :name "p ashfaq@ashfaqfarooqui.me"
-             :enter-func (lambda () (mu4e-message "Enter ashfaq@ashfaqfarooqui.me context"))
-             ;; no leave-func
-             ;; we match based on the contact-fields of the message
-             :match-func (lambda (msg)
-                           (when msg 
-                             (mu4e-message-contact-field-matches msg 
-                                                                 :to "ashfaq@ashfaqfarooqui.me")))
-             :vars '( ( user-mail-address       . "ashfaq@ashfaqfarooqui.me" )
-                      ( user-full-name          . "Ashfaq Farooqui" )
-                      (smtpmail-smtp-user . "ashfaq.farooqui@mailbox.org")
-                      (mu4e-sent-messages-behavior . sent)
-                      (mu4e-attachment-dir . "~/Documents/MailAttachments/Personal")
-                      ( mu4e-drafts-folder . "/Personal/Drafts")
-                      ( mu4e-sent-folder  . "/Personal/Sent")
-                      ( mu4e-trash-folder . "/Personal/Trash")
-                      (smtpmail-smtp-server . "smtp.mailbox.org")
-                      (smtpmail-stream-type . ssl )
-                      (smtpmail-smtp-service . 465)
-                      ( mu4e-compose-signature  .
-                                                "Ashfaq Farooqui\n"
-                                                )))         
+             ))
+        (setq smtpmail-debug-verb t)
 
-           ))
-      (setq smtpmail-debug-verb t)
+    (setq mu4e-context-policy 'pick-first)
+    (setq mu4e-compose-context-policy nil)
+    (setq mu4e-compose-signature message-signature)
 
-  (setq mu4e-context-policy 'pick-first)
-  (setq mu4e-compose-context-policy nil)
-  (setq mu4e-compose-signature message-signature)
+    (setq message-send-mail-function 'smtpmail-send-it
+          )
+    ;; don't keep message buffers around
+    (setq message-kill-buffer-on-exit t)
+    ;;store org-mode links to messages
+    ;;store link to message if in header view, not to header query
+    (setq org-mu4e-link-query-in-headers-mode nil)
+    (setq
+     ;; mu4e-use-fancy-chars t
+     mu4e-view-prefer-html t
+     org-mu4e-convert-to-html t
+     mu4e-show-images t
+     mu4e-headers-include-related nil
+     mu4e-headers-skip-duplicates t
+     mu4e-headers-visible-lines 18)
+              ;;; Html rendering
+    (setq mu4e-view-prefer-html t)
+    (setq mu4e-use-fancy-chars t)
 
-  (setq message-send-mail-function 'smtpmail-send-it
-        )
-  ;; don't keep message buffers around
-  (setq message-kill-buffer-on-exit t)
-  ;;store org-mode links to messages
-  ;;store link to message if in header view, not to header query
-  (setq org-mu4e-link-query-in-headers-mode nil)
-  (setq
-   ;; mu4e-use-fancy-chars t
-   mu4e-view-prefer-html t
-   org-mu4e-convert-to-html t
-   mu4e-show-images t
-   mu4e-headers-include-related nil
-   mu4e-headers-skip-duplicates t
-   mu4e-headers-visible-lines 18)
-            ;;; Html rendering
-  (setq mu4e-view-prefer-html t)
-  (setq mu4e-use-fancy-chars t)
+              ;;; Attempt to show images when viewing messages
+    (setq mu4e-view-show-images t
+          mu4e-view-image-max-width 800)
+    ;; View html message in firefox (type aV)
+    (add-to-list 'mu4e-view-actions
+                 '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+    ;; PGP-Sign all e-mails
+    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
-            ;;; Attempt to show images when viewing messages
-  (setq mu4e-view-show-images t
-        mu4e-view-image-max-width 800)
-  ;; View html message in firefox (type aV)
-  (add-to-list 'mu4e-view-actions
-               '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-  ;; PGP-Sign all e-mails
-  (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+         ;;;Taking the below from [[http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e]]
 
-       ;;;Taking the below from [[http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e]]
+    (defun mbork/message-attachment-present-p ()
+      "Return t if an attachment is found in the current message."
+      (save-excursion
+        (save-restriction
+          (widen)
+          (goto-char (point-min))
+          (when (search-forward "<#part" nil t) t))))
 
-  (defun mbork/message-attachment-present-p ()
-    "Return t if an attachment is found in the current message."
-    (save-excursion
-      (save-restriction
-        (widen)
-        (goto-char (point-min))
-        (when (search-forward "<#part" nil t) t))))
+    (defcustom mbork/message-attachment-intent-re
+      (regexp-opt '("I attach"
+                    "I have attached"
+                    "I've attached"
+                    "I have included"
+                    "I've included"
+                    "see the attached"
+                    "see the attachment"
+                    "attached file"))
+      "A regex which - if found in the message, and if there is no
+    attachment - should launch the no-attachment warning.")
 
-  (defcustom mbork/message-attachment-intent-re
-    (regexp-opt '("I attach"
-                  "I have attached"
-                  "I've attached"
-                  "I have included"
-                  "I've included"
-                  "see the attached"
-                  "see the attachment"
-                  "attached file"))
-    "A regex which - if found in the message, and if there is no
-  attachment - should launch the no-attachment warning.")
+    (defcustom mbork/message-attachment-reminder
+      "Are you sure you want to send this message without any attachment? "
+      "The default question asked when trying to send a message
+    containing `mbork/message-attachment-intent-re' without an
+    actual attachment.")
 
-  (defcustom mbork/message-attachment-reminder
-    "Are you sure you want to send this message without any attachment? "
-    "The default question asked when trying to send a message
-  containing `mbork/message-attachment-intent-re' without an
-  actual attachment.")
+    (defun mbork/message-warn-if-no-attachments ()
+      "Ask the user if s?he wants to send the message even though
+    there are no attachments."
+      (when (and (save-excursion
+                   (save-restriction
+                     (widen)
+                     (goto-char (point-min))
+                     (re-search-forward mbork/message-attachment-intent-re nil t)))
+                 (not (mbork/message-attachment-present-p)))
+        (unless (y-or-n-p mbork/message-attachment-reminder)
+          (keyboard-quit))))
 
-  (defun mbork/message-warn-if-no-attachments ()
-    "Ask the user if s?he wants to send the message even though
-  there are no attachments."
-    (when (and (save-excursion
-                 (save-restriction
-                   (widen)
-                   (goto-char (point-min))
-                   (re-search-forward mbork/message-attachment-intent-re nil t)))
-               (not (mbork/message-attachment-present-p)))
-      (unless (y-or-n-p mbork/message-attachment-reminder)
-        (keyboard-quit))))
-
-  (add-hook 'message-send-hook #'mbork/message-warn-if-no-attachments)
+    (add-hook 'message-send-hook #'mbork/message-warn-if-no-attachments)
 
 
 
-  (use-package mu4e-conversation
-    :ensure t)
+    (use-package mu4e-conversation
+      :ensure t)
 
-  ;; Taken from [[https://vxlabs.com/2019/08/25/format-flowed-with-long-lines/]]
-  ;; enable format=flowed
-  ;; - mu4e sets up visual-line-mode and also fill (M-q) to do the right thing
-  ;; - each paragraph is a single long line; at sending, emacs will add the
-  ;;   special line continuation characters.
-  ;; - also see visual-line-fringe-indicators setting below
+    ;; Taken from [[https://vxlabs.com/2019/08/25/format-flowed-with-long-lines/]]
+    ;; enable format=flowed
+    ;; - mu4e sets up visual-line-mode and also fill (M-q) to do the right thing
+    ;; - each paragraph is a single long line; at sending, emacs will add the
+    ;;   special line continuation characters.
+    ;; - also see visual-line-fringe-indicators setting below
 
-  (setq mu4e-compose-format-flowed t)
-  ;; because it looks like email clients are basically ignoring format=flowed,
-  ;; let's complicate their lives too. send format=flowed with looong lines. :)
-  ;; https://www.ietf.org/rfc/rfc2822.txt
-  (setq fill-flowed-encode-column 998)
-  ;; in mu4e with format=flowed, this gives me feedback where the soft-wraps are
-  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+    (setq mu4e-compose-format-flowed t)
+    ;; because it looks like email clients are basically ignoring format=flowed,
+    ;; let's complicate their lives too. send format=flowed with looong lines. :)
+    ;; https://www.ietf.org/rfc/rfc2822.txt
+    (setq fill-flowed-encode-column 998)
+    ;; in mu4e with format=flowed, this gives me feedback where the soft-wraps are
+    (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
-  ;;Some stuff from martin dahl
-  (setq mu4e-html2text-command 'mu4e-shr2text)
-  (setq shr-color-visible-luminance-min 60)
-  (setq shr-color-visible-distance-min 5)
-  (setq shr-use-colors nil)
-  (advice-add #'shr-colorize-region :around (defun
-                                                shr-no-colourise-region (&rest ignore)))
+    ;;Some stuff from martin dahl
+    (setq mu4e-html2text-command 'mu4e-shr2text)
+    (setq shr-color-visible-luminance-min 60)
+    (setq shr-color-visible-distance-min 5)
+    (setq shr-use-colors nil)
+    (advice-add #'shr-colorize-region :around (defun
+                                                  shr-no-colourise-region (&rest ignore)))
 #+END_SRC
 
 #+RESULTS:
 : mu4e-conversation
-
-* Icons
+* Magit
 #+BEGIN_SRC emacs-lisp
-(use-package all-the-icons)
-
-(use-package all-the-icons-dired
-:ensure t
-  :config
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
+  (use-package magit
+    :ensure t)
 #+END_SRC
-
-#+RESULTS:
-: t
 
 * EyeBrowse
 #+BEGIN_SRC emacs-lisp

@@ -15,7 +15,6 @@ set $mod Mod4
 # Set inner/outer gaps
 for_window [class="^.*"] border pixel 2
 gaps inner 15
-gaps outer 15
 
 # Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
 # gaps inner|outer current|all set|plus|minus <px>
@@ -53,7 +52,8 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 #exec --no-startup-id nm-applet
 exec --no-startup-id copyq
 #exec --no-startup-id blueman
-exec xautolock -time 5 -locker blurlockexec emacs --daemon
+exec xautolock -time 5 -locker blurlock
+exec emacs --daemon
 exec eval $(gpg-agent)
 exec_always --no-startup-id caffeine
 exec_always --no-startup-id davmail
