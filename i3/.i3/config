@@ -53,7 +53,7 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id copyq
 #exec --no-startup-id blueman
 exec xautolock -time 5 -locker blurlock
-exec emacs --daemon
+exec emacs --fg-daemon
 exec eval $(gpg-agent)
 exec_always --no-startup-id caffeine
 exec_always --no-startup-id davmail

@@ -17,6 +17,9 @@
 ** Islam :Islam:
 *** https://ballandalus.wordpress.com/feed/
 *** https://www.joebradford.net/feed/
+** Wired :Wired:
+*** https://www.wired.com/feed/rss
+
 ** Cooking                                                       :Cooking:
 https://egyptianmedievalcookbook.wordpress.com/feed/
 * Podcasts                                                           :elfeed:
