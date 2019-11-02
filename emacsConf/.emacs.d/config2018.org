@@ -1918,7 +1918,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 (smartparens-global-mode 1)))
 #+END_SRC
 
-* Treemacs
+* COMMENT Treemacs
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
   :ensure t
@@ -2650,6 +2650,7 @@ mode
 : t
 
 * Theme
+** Main theme
 #+BEGIN_SRC emacs-lisp
 
            ;;(use-package zerodark-theme2
@@ -2695,6 +2696,10 @@ mode
           ;;  )
 
            ;;modeline
+#+end_src
+** Modeline
+
+#+begin_src emacs-lisp
 
              (use-package doom-modeline
                    :ensure t
@@ -2808,14 +2813,14 @@ mode
           (add-hook 'after-make-frame-functions
                     (lambda (frame)
                       (with-selected-frame frame
-                        (load-theme 'doom-one t)
-                      (setq doom-modeline-icons (display-graphic-p)))
+                        (load-theme 'doom-one t))
+                      (setq doom-modeline-icon (display-graphic-p))
                       ))
         (load-theme 'doom-one t))
 #+END_SRC
 
 #+RESULTS:
-| t | eyebrowse-init | x-dnd-init-frame | (lambda (frame) (with-selected-frame frame (load-theme (quote doom-one) t))) |
+| doom-modeline-set-selected-window | (lambda (frame) (let ((old-frame (selected-frame)) (old-buffer (current-buffer))) (unwind-protect (progn (select-frame frame (quote norecord)) (load-theme (quote doom-one) t)) (if (frame-live-p old-frame) (progn (select-frame old-frame (quote norecord)))) (if (buffer-live-p old-buffer) (progn (set-buffer old-buffer))))) (setq doom-modeline-icon (display-graphic-p))) | eyebrowse-init | x-dnd-init-frame | (lambda (frame) (with-selected-frame frame (load-theme (quote doom-one) t))) |
 
 * Loading complete
 #+BEGIN_SRC emacs-lisp

@@ -193,7 +193,7 @@ bindsym $mod+Shift+minus move scratchpad
 
 bindsym $mod+q			[con_id="__focused__" instance="^(?!dropdown_).*$"] kill
 bindsym $mod+Shift+q [con_id="__focused__" instance="^(?!dropdown_).*$"] kill
-bindsym $mod+g exec emacsclient --alternate-editor='' --no-wait --create-frame
+bindsym $mod+g exec emacsclient --alternate-editor='' --no-wait --create-frame --eval "(setq doom-modeline-icon (display-graphic-p))"
 bindsym $mod+r exec --no-startup-id winresize
 
 
