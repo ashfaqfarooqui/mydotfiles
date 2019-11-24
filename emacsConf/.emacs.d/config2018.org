@@ -416,11 +416,12 @@ Navigation is an important part of productivity. The next function is a more eff
 : t
 
 * Windows
-#+begin_src emcas-lisp
+#+begin_src emacs-lisp
 
 (use-package winner
-  :ensure t
-  :config (winner-mode 1))
+  :ensure t)
+(winner-mode)
+
 #+end_src
 * Cooking
 #+BEGIN_SRC emacs-lisp
@@ -571,7 +572,7 @@ Hydra
       :bind
       ("C-'" . 'avy-goto-word-1)
       )
-    (global-set-key (kbd "C-:") 'avy-goto-char-timer)
+    (global-set-key (kbd "C-.") 'avy-goto-char-timer)
     (setq avy-timeout-seconds 2.0)
 
   
@@ -1597,8 +1598,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
                  ("i" "Inbox"
                   entry
                   (file org-index-file)
-                  "* TODO %?\nSCHEDULED: %^{Scheduled to begin}t DEADLINE:
-                    %^{Deadline}T\n")
+                  "* TODO %?\n")
 
                  ("r" "respond" entry (file org-index-file)
                   "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
@@ -1971,6 +1971,26 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
               ))
 #+END_SRC
 #+RESULTS:
+* Smex
+#+begin_src emacs-lisp
+(use-package smex
+:ensure t)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
+#+end_src
+
+#+RESULTS:
+: smex-major-mode-commands
+
+* Ediff
+#+begin_src emacs-lisp
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+end_src
+
+#+RESULTS:
+: ediff-setup-windows-plain
+
 * Highlights
 #+BEGIN_SRC emacs-lisp
 (use-package volatile-highlights
@@ -2106,10 +2126,10 @@ Git gutter:
 
 #+RESULTS:
 : hydra-git-gutter/body
-
 * Aggressive indent
 #+begin_src emacs-lisp
 (use-package aggressive-indent
+:ensure t
   :hook ((css-mode . aggressive-indent-mode)
          (emacs-lisp-mode . aggressive-indent-mode)
          (js-mode . aggressive-indent-mode)
@@ -2150,7 +2170,8 @@ Git gutter:
   :config (setq lsp-prefer-flymake nil))
 (use-package lsp-ui )
 (use-package company-lsp )
-
+(use-package lsp-ivy
+:ensure t)
 
 
 
@@ -2205,8 +2226,12 @@ Git gutter:
 ;(setq beacon-color "#666600")
     )
 #+END_SRC
+
+#+RESULTS:
+: t
+
 * Writing
-** COMMENT Latex
+** Latex
 #+BEGIN_SRC emacs-lisp
   (use-package auctex-latexmk
     :ensure t
@@ -2409,7 +2434,7 @@ mode
     (require 'starttls)
   (setq mu4e-enable-mode-line t)
     (setq mu4e-contexts
-          `( ,(make-mu4e-context
+          `(,(make-mu4e-context
                :name "w ashfaqf@chalmers.se"
                :enter-func (lambda () (mu4e-message "Enter ashfaqf@chalmers.se context"))
                :leave-func (lambda () (mu4e-message "Leave ashfaqf@chalmers.se context"))
@@ -2431,7 +2456,8 @@ mode
                         ( smtpmail-smtp-service . 1025)
                         ( mu4e-compose-signature .
                                                  "//Ashfaq"
-                                                 )))
+                                                 )
+                       ))
 
              ,(make-mu4e-context
                :name "p ashfaq@ashfaqfarooqui.me"
@@ -2565,12 +2591,44 @@ mode
 #+END_SRC
 
 #+RESULTS:
-: mu4e-conversation
+
+** org-msg
+#+begin_src emacs-lisp
+(use-package org-msg
+:ensure t)
+
+ (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil"
+	org-msg-startup "hidestars indent inlineimages"
+	org-msg-greeting-fmt "\nHi *%s*,\n\n"
+	org-msg-greeting-name-limit 3
+	org-msg-signature "
+
+ Regards,
+
+ #+begin_signature
+ //Ashfaq
+ #+end_signature")
+ (org-msg-mode)
+
+#+end_src
+
+#+RESULTS:
+: t
+
 * Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t)
 #+END_SRC
+** Forge
+#+begin_src emacs-lisp
+(use-package forge
+:after magit
+:ensure t)
+
+#+end_src
+
+#+RESULTS:
 
 * EyeBrowse
 #+BEGIN_SRC emacs-lisp
@@ -2648,7 +2706,243 @@ mode
 
 #+RESULTS:
 : t
+* Hydras
+** Avy
+#+begin_src emacs-lisp
+(defhydra hydra-avy (:exit t :hint nil)
+  "
+ Line^^       Region^^        Goto
+----------------------------------------------------------
+ [_y_] yank   [_Y_] yank      [_c_] timed char  [_C_] char
+ [_m_] move   [_M_] move      [_w_] word        [_W_] any word
+ [_k_] kill   [_K_] kill      [_l_] line        [_L_] end of line"
+  ("c" avy-goto-char-timer)
+  ("C" avy-goto-char)
+  ("w" avy-goto-word-1)
+  ("W" avy-goto-word-0)
+  ("l" avy-goto-line)
+  ("L" avy-goto-end-of-line)
+  ("m" avy-move-line)
+  ("M" avy-move-region)
+  ("k" avy-kill-whole-line)
+  ("K" avy-kill-region)
+  ("y" avy-copy-line)
+  ("Y" avy-copy-region))
 
+(global-set-key (kbd "C-c h a") 'hydra-avy/body)
+
+
+(define-key ivy-minibuffer-map "\C-o"
+  (defhydra soo-ivy (:hint nil :color pink)
+    "
+ Move     ^^^^^^^^^^ | Call         ^^^^ | Cancel^^ | Options^^ | Action _w_/_s_/_a_: %s(ivy-action-name)
+----------^^^^^^^^^^-+--------------^^^^-+-------^^-+--------^^-+---------------------------------
+ _g_ ^ ^ _k_ ^ ^ _u_ | _f_orward _o_ccur | _i_nsert | _c_alling: %-7s(if ivy-calling \"on\" \"off\") _C_ase-fold: %-10`ivy-case-fold-search
+ ^↨^ _h_ ^+^ _l_ ^↕^ | _RET_ done     ^^ | _q_uit   | _m_atcher: %-7s(ivy--matcher-desc) _t_runcate: %-11`truncate-lines
+ _G_ ^ ^ _j_ ^ ^ _d_ | _TAB_ alt-done ^^ | ^ ^      | _<_/_>_: shrink/grow
+"
+    ;; arrows
+    ("j" ivy-next-line)
+    ("k" ivy-previous-line)
+    ("l" ivy-alt-done)
+    ("h" ivy-backward-delete-char)
+    ("g" ivy-beginning-of-buffer)
+    ("G" ivy-end-of-buffer)
+    ("d" ivy-scroll-up-command)
+    ("u" ivy-scroll-down-command)
+    ("e" ivy-scroll-down-command)
+    ;; actions
+    ("q" keyboard-escape-quit :exit t)
+    ("C-g" keyboard-escape-quit :exit t)
+    ("<escape>" keyboard-escape-quit :exit t)
+    ("C-o" nil)
+    ("i" nil)
+    ("TAB" ivy-alt-done :exit nil)
+    ("C-j" ivy-alt-done :exit nil)
+    ;; ("d" ivy-done :exit t)
+    ("RET" ivy-done :exit t)
+    ("C-m" ivy-done :exit t)
+    ("f" ivy-call)
+    ("c" ivy-toggle-calling)
+    ("m" ivy-toggle-fuzzy)
+    (">" ivy-minibuffer-grow)
+    ("<" ivy-minibuffer-shrink)
+    ("w" ivy-prev-action)
+    ("s" ivy-next-action)
+    ("a" ivy-read-action)
+    ("t" (setq truncate-lines (not truncate-lines)))
+    ("C" ivy-toggle-case-fold)
+    ("o" ivy-occur :exit t)))
+
+
+(global-set-key (kbd "C-c h i") 'soo-ivy/body)
+#+end_src
+
+#+RESULTS:
+: soo-ivy/body
+
+** mu4e hyddra
+#+begin_src emacs-lisp
+(defhydra hydra-mu4e-headers (:color blue :hint nil)
+  "
+ ^General^   | ^Search^           | _!_: read    | _#_: deferred  | ^Switches^
+-^^----------+-^^-----------------| _?_: unread  | _%_: pattern   |-^^------------------
+_n_: next    | _s_: search        | _r_: refile  | _&_: custom    | _O_: sorting
+_p_: prev    | _S_: edit prev qry | _u_: unmk    | _+_: flag      | _P_: threading
+_]_: n unred | _/_: narrow search | _U_: unmk *  | _-_: unflag    | _Q_: full-search
+_[_: p unred | _b_: search bkmk   | _d_: trash   | _T_: thr       | _V_: skip dups 
+_y_: sw view | _B_: edit bkmk     | _D_: delete  | _t_: subthr    | _W_: include-related
+_R_: reply   | _{_: previous qry  | _m_: move    |-^^-------------+-^^------------------ 
+_C_: compose | _}_: next query    | _a_: action  | _|_: thru shl  | _`_: update, reindex
+_F_: forward | _C-+_: show more   | _A_: mk4actn | _H_: help      | _;_: context-switch
+_o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2maildir "
+
+  ;; general
+  ("n" mu4e-headers-next)
+  ("p" mu4e-headers-previous)
+  ("[" mu4e-select-next-unread)
+  ("]" mu4e-select-previous-unread)
+  ("y" mu4e-select-other-view)
+  ("R" mu4e-compose-reply)
+  ("C" mu4e-compose-new)
+  ("F" mu4e-compose-forward)
+  ("o" my/org-capture-mu4e)                  ; differs from built-in
+
+  ;; search
+  ("s" mu4e-headers-search)
+  ("S" mu4e-headers-search-edit)
+  ("/" mu4e-headers-search-narrow)
+  ("b" mu4e-headers-search-bookmark)
+  ("B" mu4e-headers-search-bookmark-edit)
+  ("{" mu4e-headers-query-prev)              ; differs from built-in
+  ("}" mu4e-headers-query-next)              ; differs from built-in
+  ("C-+" mu4e-headers-split-view-grow)
+  ("C--" mu4e-headers-split-view-shrink)
+
+  ;; mark stuff 
+  ("!" mu4e-headers-mark-for-read)
+  ("?" mu4e-headers-mark-for-unread)
+  ("r" mu4e-headers-mark-for-refile)
+  ("u" mu4e-headers-mark-for-unmark)
+  ("U" mu4e-mark-unmark-all)
+  ("d" mu4e-headers-mark-for-trash)
+  ("D" mu4e-headers-mark-for-delete)
+  ("m" mu4e-headers-mark-for-move)
+  ("a" mu4e-headers-action)                  ; not really a mark per-se
+  ("A" mu4e-headers-mark-for-action)         ; differs from built-in
+  ("*" mu4e-headers-mark-for-something)
+
+  ("#" mu4e-mark-resolve-deferred-marks)
+  ("%" mu4e-headers-mark-pattern)
+  ("&" mu4e-headers-mark-custom)
+  ("+" mu4e-headers-mark-for-flag)
+  ("-" mu4e-headers-mark-for-unflag)
+  ("t" mu4e-headers-mark-subthread)
+  ("T" mu4e-headers-mark-thread)
+
+  ;; miscellany
+  ("q" mu4e~headers-quit-buffer)
+  ("H" mu4e-display-manual)
+  ("|" mu4e-view-pipe)                       ; does not seem built-in any longer
+
+  ;; switches
+  ("O" mu4e-headers-change-sorting)
+  ("P" mu4e-headers-toggle-threading)
+  ("Q" mu4e-headers-toggle-full-search)
+  ("V" mu4e-headers-toggle-skip-duplicates)
+  ("W" mu4e-headers-toggle-include-related)
+
+  ;; more miscellany
+  ("`" mu4e-update-mail-and-index)           ; differs from built-in
+  (";" mu4e-context-switch)  
+  ("j" mu4e~headers-jump-to-maildir)
+
+  ("." nil))
+
+;;Ensure that the bindings will be available outside of the hydra:
+
+(bind-keys
+ :map mu4e-headers-mode-map
+
+ ("{" . mu4e-headers-query-prev)             ; differs from built-in
+ ("}" . mu4e-headers-query-next)             ; differs from built-in
+ ("o" . my/org-capture-mu4e)                 ; differs from built-in
+
+ ("A" . mu4e-headers-mark-for-action)        ; differs from built-in
+
+ ("`" . mu4e-update-mail-and-index)          ; differs from built-in
+ ("|" . mu4e-view-pipe)               	     ; does not seem to be built in any longer
+ ("." . hydra-mu4e-headers/body))
+
+
+(defun my/org-capture-mu4e ()
+  (interactive)
+  "Capture a TODO item via email."
+  (org-capture nil "o"))
+
+(add-to-list
+ 'org-capture-templates
+ '("o" 
+   "TODO respond to email"
+   entry 
+   (file YOUR_TODO_FILE.org)
+   "* TODO %^{Description}\n%A\n%?\n"))
+
+(global-set-key (kbd "C-c h c") 'hydra-mu4e-headers/body)
+#+end_src
+
+#+RESULTS:
+: hydra-mu4e-headers/body
+** movement
+#+begin_src emacs-lisp
+(global-set-key
+ (kbd "C-n")
+ (defhydra hydra-move
+   (:body-pre (next-line))
+   "move"
+   ("n" next-line)
+   ("p" previous-line)
+   ("f" forward-char)
+   ("b" backward-char)
+   ("a" beginning-of-line)
+   ("e" move-end-of-line)
+   ("v" scroll-up-command)
+   ;; Converting M-v to V here by analogy.
+   ("V" scroll-down-command)
+   ("l" recenter-top-bottom)))
+
+#+end_src
+
+#+RESULTS:
+: hydra-move/body
+** lsp mode
+#+begin_src emacs-lisp
+(defhydra hydra-lsp (:exit t :hint nil)
+  "
+ Buffer^^               Server^^                   Symbol
+-------------------------------------------------------------------------------------
+ [_f_] format           [_M-r_] restart            [_d_] declaration  [_i_] implementation  [_o_] documentation
+ [_m_] imenu            [_S_]   shutdown           [_D_] definition   [_t_] type            [_r_] rename
+ [_x_] execute action   [_M-s_] describe session   [_R_] references   [_s_] signature"
+  ("d" lsp-find-declaration)
+  ("D" lsp-ui-peek-find-definitions)
+  ("R" lsp-ui-peek-find-references)
+  ("i" lsp-ui-peek-find-implementation)
+  ("t" lsp-find-type-definition)
+  ("s" lsp-signature-help)
+  ("o" lsp-describe-thing-at-point)
+  ("r" lsp-rename)
+
+  ("f" lsp-format-buffer)
+  ("m" lsp-ui-imenu)
+  ("x" lsp-execute-code-action)
+
+  ("M-s" lsp-describe-session)
+  ("M-r" lsp-restart-workspace)
+  ("S" lsp-shutdown-workspace))
+
+(global-set-key (kbd "C-c h l") 'hydra-lsp/body)
+#+end_src
 * Theme
 ** Main theme
 #+BEGIN_SRC emacs-lisp

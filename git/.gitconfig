@@ -12,3 +12,5 @@
        username = ashfaqf@chalmers.se
 [credential "https://github.com"]
        username = ashfaq@ashfaqfarooqui.me
+[github]
+	user = ashfaqfarooqui
