@@ -1,26 +1,35 @@
-* Blog :elfeed:
-*** http://nullprogram.com/feed
+* Blog                                                        :elfeed:
 ** Pocket :pocket:
 *** https://getpocket.com/users/ashfaq.farooqui/feed/all
-** comics :comics:
+** Wallabag                                                       :wallabag:
+*** https://app.wallabag.it/feed/ashfaqf/dfrW6PbNo2qG1fW/all
+** Comics                                                           :comics:
 *** http://feeds.feedburner.com/satwcomic
 *** http://phdcomics.com/gradfeed.php
 *** https://existentialcomics.com/rss.xml
-** emacs :emacs:
+*** https://www.xkcd.com/atom.xml
+** Tech                                                 :tech:
+*** https://irreal.org/blog/?feed=rss2
 *** http://planet.emacsen.org/atom.xml
 *** http://pragmaticemacs.com/feed/
 *** http://sachachua.com/blog/feed/
 *** http://cestlaz.github.io/rss.xml
 *** http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml
+*** https://metaredux.com/feed.xml
+*** http://nullprogram.com/feed
 ** Urdu :Urdu:
 *** https://urduwallahs.wordpress.com/feed/
 ** Islam :Islam:
 *** https://ballandalus.wordpress.com/feed/
 *** https://www.joebradford.net/feed/
+*** http://nizami.co.uk/feed
 ** General :General:
-**** https://hangingodes.wordpress.com/rss.xml
+*** https://hangingodes.wordpress.com/rss.xml
+*** https://blog.sarvajna.in/feed
 ** Cooking                                                       :Cooking:
 https://egyptianmedievalcookbook.wordpress.com/feed/
-* Podcasts                                                           :elfeed:
-** Seeking Beauty                                                :KhaledIbn:
-*** http://138.68.4.140/seeking_beauty/seeking_beauty.xml
+* Youtube                                                    :elfeed:youtube:
+** Usuli Institute
+*** https://www.youtube.com/feeds/videos.xml?channel_id=UCacZ3k2AOpd5-3tdCxcDmgQ
+** Programming with cats
+*** https://www.youtube.com/playlist?list=PLhgq-BqyZ7i7MTGhUROZy3BOICnVixETS

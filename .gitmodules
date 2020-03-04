@@ -1,0 +1,12 @@
+[submodule "emacsConf/.emacs.d/vendor/lsp-latex"]
+	path = emacsConf/.emacs.d/vendor/lsp-latex
+	url = git@github.com:ROCKTAKEY/lsp-latex.git
+[submodule "emacsConf/.emacs.d/vendor/maple-minibuffer"]
+	path = emacsConf/.emacs.d/vendor/maple-minibuffer
+	url = https://github.com/honmaple/emacs-maple-minibuffer
+[submodule "emacsConf/.emacs.d/vendor/promela-mode"]
+	path = emacsConf/.emacs.d/vendor/promela-mode
+	url = https://github.com/ashfaqfarooqui/promela-mode
+[submodule "emacsConf/.emacs.d/vendor/youtube-dl-emacs"]
+	path = emacsConf/.emacs.d/vendor/youtube-dl-emacs
+	url = git@github.com:skeeto/youtube-dl-emacs.git

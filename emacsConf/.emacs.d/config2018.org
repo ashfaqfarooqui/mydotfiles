@@ -1,6 +1,6 @@
 #+TITLE: Ashfaq Farooqui's Emacs Configuration
 #+AUTHOR: Ashfaq Farooqui
-#+EMAIL: ashfaq.farooqui@gmail.com
+#+EMAIL: ashfaq@ashfaqfarooqui.me
 #+OPTIONS: toc:3 num:nil
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://thomasf.github.io/solarized-css/solarized-light.min.css" />
 
@@ -275,6 +275,25 @@ Single Capitals as you type."
 (add-hook 'LaTeX-mode-hook #'dubcaps-mode)
 (add-hook 'org-mode-hook #'dubcaps-mode)
 #+end_src
+
+** lsp latex
+#+begin_src emacs-lisp
+(add-to-list 'load-path "/home/ashfaqf/.emacs.d/vendor/lsp-latex")
+(require 'lsp-latex)
+
+;; "texlab" must be located at a directory contained in `exec-path'.
+;; If you want to put "texlab" somewhere else,
+;; you can specify the path to "texlab" as follows:
+ ;;(setq lsp-latex-texlab-executable "/usr/bin/texlab")
+
+(with-eval-after-load "tex-mode"
+ (add-hook 'tex-mode-hook 'lsp)
+ (add-hook 'latex-mode-hook 'lsp))
+
+#+end_src
+
+#+RESULTS:
+
 ** Hydra
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
@@ -346,6 +365,10 @@ directly from the emacs-starter-kit.
 
 (global-subword-mode 1)
 #+END_SRC
+
+#+RESULTS:
+: current-window
+
 ** Navigation
 Navigation is an important part of productivity. The next function is a more efficient way to go to the beginning of a line with move-beginning-of-line (C-a) and back-to-indentation (M-m). [[https://github.com/rememberYou/.emacs.d/blob/master/config.org/#alert]]
 #+begin_src emacs-lisp
@@ -399,7 +422,8 @@ Navigation is an important part of productivity. The next function is a more eff
 #+end_src
 * Icons
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons)
+  (use-package all-the-icons
+:ensure t)
 
   (use-package all-the-icons-dired
   :ensure t
@@ -428,60 +452,204 @@ Navigation is an important part of productivity. The next function is a more eff
 (use-package org-chef
   :ensure t)
 #+END_SRC
+* try
+#+begin_src emacs-lisp
+(use-package try
+	:ensure t)
+
+#+end_src
 * Elfeed
 #+BEGIN_SRC emacs-lisp
   (use-package elfeed
-    :ensure t
-    :bind
-    (:map elfeed-search-mode-map
-          ("s" . bjm/elfeed-load-db-and-open)
-          ("q" . bjm/elfeed-save-db-and-bury))
-    :init
-    ;; thanks - http://pragmaticemacs.com/emacs/read-your-rss-feeds-in-emacs-with-elfeed/
-    ;; though slightly modified
-    ;; functions to support syncing .elfeed between machines
-    ;; makes sure elfeed reads index from disk before launching
-    (defun bjm/elfeed-load-db-and-open ()
-      "Load the elfeed db from disk before opening."
+  :ensure t)  
+
+      (defun elfeed-mark-all-as-read ()
+            (interactive)
+            (mark-whole-buffer)
+            (elfeed-search-untag-all-unread))
+
+
+      ;;functions to support syncing .elfeed between machines
+      ;;makes sure elfeed reads index from disk before launching
+      (defun bjm/elfeed-load-db-and-open ()
+        "Wrapper to load the elfeed db from disk before opening"
+        (interactive)
+        (elfeed-db-load)
+        (elfeed)
+        (elfeed-search-update--force))
+
+      ;;write to disk when quiting
+      (defun bjm/elfeed-save-db-and-bury ()
+        "Wrapper to save the elfeed db to disk before burying buffer"
+        (interactive)
+        (elfeed-db-save)
+        (quit-window))
+
+
+
+
+      (use-package elfeed
+        :ensure t
+        :bind (:map elfeed-search-mode-map
+                    ("q" . bjm/elfeed-save-db-and-bury)
+                    ("Q" . bjm/elfeed-save-db-and-bury)
+                    ("m" . elfeed-toggle-star)
+                    ("M" . elfeed-toggle-star)
+		  ("j" . mz/make-and-run-elfeed-hydra)
+		  ("J" . mz/make-and-run-elfeed-hydra)
+                    )
+  :config
+      (defalias 'elfeed-toggle-star
+        (elfeed-expose #'elfeed-search-toggle-all 'star))
+
+        )
+
+      (use-package elfeed-goodies
+        :ensure t
+        :config
+        (elfeed-goodies/setup))
+
+
+
+
+      (setq elfeed-db-directory "~/Documents/.elfeed")
+
+  (defun z/hasCap (s) ""
+	 (let ((case-fold-search nil))
+	 (string-match-p "[[:upper:]]" s)
+	 ))
+
+
+  (defun z/get-hydra-option-key (s)
+    "returns single upper case letter (converted to lower) or first"
+    (interactive)
+    (let ( (loc (z/hasCap s)))
+      (if loc
+	  (downcase (substring s loc (+ loc 1)))
+	(substring s 0 1)
+      )))
+
+  ;;  (active blogs cs eDucation emacs local misc sports star tech unread webcomics)
+  (defun mz/make-elfeed-cats (tags)
+    "Returns a list of lists. Each one is line for the hydra configuratio in the form
+       (c function hint)"
+    (interactive)
+    (mapcar (lambda (tag)
+	      (let* (
+		     (tagstring (symbol-name tag))
+		     (c (z/get-hydra-option-key tagstring))
+		     )
+		(list c (append '(elfeed-search-set-filter) (list (format "@6-months-ago +%s" tagstring) ))tagstring  )))
+	    tags))
+
+
+
+
+  
+  (defmacro mz/make-elfeed-hydra ()
+    `(defhydra mz/hydra-elfeed ()
+       "filter"
+       ,@(mz/make-elfeed-cats (elfeed-db-get-all-tags))
+       ("*" (elfeed-search-set-filter "@6-months-ago +star") "Starred")
+       ("M" elfeed-toggle-star "Mark")
+       ("A" (elfeed-search-set-filter "@6-months-ago") "All")
+       ("T" (elfeed-search-set-filter "@1-day-ago") "Today")
+       ("Q" bjm/elfeed-save-db-and-bury "Quit Elfeed" :color blue)
+       ("q" nil "quit" :color blue)
+       ))
+
+
+
+
+    (defun mz/make-and-run-elfeed-hydra ()
+      ""
       (interactive)
-      (elfeed-db-load)
-      (elfeed)
-      (elfeed-search-update--force)
-      (elfeed-update))
-    ;;write to disk when quiting
-    (defun bjm/elfeed-save-db-and-bury ()
-      "Wrapper to save the elfeed db to disk before burying buffer"
-      (interactive)
-      (elfeed-db-save)
-      (quit-window))
-    :config
-    (setq elfeed-db-directory "~/Dropbox/.elfeed")
-    ;; This lets me get the http links to entries with org-capture
-    ;; easily.
-    (defun elfeed-entry-as-html-link ()
-      "Store an http link to an elfeed entry"
-      (when (equal major-mode 'elfeed-show-mode)
-        (let ((description (elfeed-entry-title elfeed-show-entry))
-              (link (elfeed-entry-link elfeed-show-entry)))
-          (org-store-link-props
-           :type "http"
-           :link link
-           :description description))))
- ;(org-link-set-parameters "elfeed" :follow #'browse-url :store #'elfeed-entry-as-html-link)
-)
-
-  (use-package elfeed-goodies
-  :ensure t)
+      (mz/make-elfeed-hydra)
+      (mz/hydra-elfeed/body))
 
 
-  (use-package elfeed-org
-    :ensure t
-    :config
-    (progn
-      (elfeed-org)
-      (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
+    (use-package elfeed-org
+      :ensure t
+      :config
+      (progn
+        (elfeed-org)
+        (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
+
+  ;; ;\;\ ;\\;\\ Set executable path
+  ; (setq youtube-dl-path "/usr/bin/youtube-dl")
+  ;|| || ;\\;\\ Set video storage path
+  ;|| || (setq youtube-dl-output-dir "~/Videos/")
+  ;|| || 
+  ;|| || (defun elfeed-download-video ()
+  ;|| ||   "Download a video using youtube-dl."
+  ;|| ||   (interactive)
+  ;|| ||   (async-shell-command (format "%s -o \"%s%s\" -f bestvideo+bestaudio %s"
+  ;|| ||                                youtube-dl-path
+  ;|| ||                                youtube-dl-output-dir
+  ;|| ||                                "%(title)s.%(ext)s"
+  ;|| ||                                (elfeed-entry-link elfeed-show-entry))))
+  ;|| || (defun elfeed-download-video-onlyaudio ()
+  ;|| ||   "Download a video using youtube-dl."
+  ;|| ||   (interactive)
+  ;|| ||   (async-shell-command (format "%s -o \"%s%s\" -f bestaudio %s"
+  ;|| ||                                youtube-dl-path
+  ;|| ||                                youtube-dl-output-dir
+  ;|| ||                                "%(title)s.%(ext)s"
+  ;|| ||                                (elfeed-entry-link elfeed-show-entry)))) **\/
+   
+   
+   ;\;\ Add `youtube` tag to all videos
+
+
+;  (use-package youtube-dl
+; :ensure t)
+(add-to-list 'load-path "~/.emacs.d/vendor/youtube-dl-emacs/")
+(require 'cl-lib)
+(require 'elfeed)
+(require 'youtube-dl)
+  ;; youtube-dl config
+
+  (setq youtube-dl-directory "~/Videos")
+
+  (defface elfeed-youtube
+    '((t :foreground "#f9f"))
+    "Marks YouTube videos in Elfeed."
+    :group 'elfeed)
+
+  (push '(youtube elfeed-youtube)
+        elfeed-search-face-alist)
+
+  (defun elfeed-show-youtube-dl ()
+    "Download the current entry with youtube-dl."
+    (interactive)
+    (pop-to-buffer (youtube-dl (elfeed-entry-link elfeed-show-entry))))
+
+  (cl-defun elfeed-search-youtube-dl (&key slow)
+    "Download the current entry with youtube-dl."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (dolist (entry entries)
+        (if (null (youtube-dl (elfeed-entry-link entry)
+                              :title (elfeed-entry-title entry)
+                              :slow slow))
+            (message "Entry is not a YouTube link!")
+          (message "Downloading %s" (elfeed-entry-title entry)))
+        (elfeed-untag entry 'unread)
+        (elfeed-search-update-entry entry)
+        (unless (use-region-p) (forward-line)))))
+
+ ; (defalias 'elfeed-search-youtube-dl-slow
+  ;  (expose #'elfeed-search-youtube-dl :slow t))
+
+  (define-key elfeed-show-mode-map "d" 'elfeed-show-youtube-dl)
+  (define-key elfeed-search-mode-map "d" 'elfeed-search-youtube-dl)
+  (define-key elfeed-search-mode-map "D" 'elfeed-search-youtube-dl-slow)
+  (define-key elfeed-search-mode-map "L" 'youtube-dl-list)
+
 #+END_SRC
 
+#+RESULTS:
+: youtube-dl-list
 * PDF tools
 https://github.com/abo-abo/hydra/wiki/PDF-Tools
 #+BEGIN_SRC emacs-lisp
@@ -570,7 +738,7 @@ Hydra
     (use-package avy
       :ensure t
       :bind
-      ("C-'" . 'avy-goto-word-1)
+      ("M-s" . 'avy-goto-word-1)
       )
     (global-set-key (kbd "C-.") 'avy-goto-char-timer)
     (setq avy-timeout-seconds 2.0)
@@ -580,6 +748,7 @@ Hydra
 
 
 (use-package ivy
+:ensure t
   :delight
   :after ivy-rich
   :bind (("C-x b" . ivy-switch-buffer)
@@ -599,6 +768,7 @@ Hydra
   :config (ivy-mode))
 
 (use-package ivy-rich
+:ensure t
   :defer 0.1
   :preface
   (defun ivy-rich-branch-candidate (candidate)
@@ -699,6 +869,7 @@ Hydra
   (ivy-rich-mode 1))
 
 (use-package all-the-icons-ivy
+:ensure t
   :after (all-the-icons ivy)
   :custom (all-the-icons-ivy-buffer-commands '(ivy-switch-buffer-other-window))
   :config
@@ -728,7 +899,7 @@ Hydra
 #+END_SRC
 
 #+RESULTS:
-: t
+: counsel-find-file
 
 * Ace-window
 #+BEGIN_SRC emacs-lisp
@@ -941,42 +1112,47 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
   (use-package ibuffer
     :ensure t
     :config
-  (progn (setq ibuffer-saved-filter-groups
-               (quote (("default"
-                        ("dired" (mode . dired-mode))
-                        ("org" (name . "^.*org$"))
-                        ("web" (or (mode . web-mode) (mode . js2-mode)))
-                        ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
-                          ("latex" (or (mode . latex-mode) (name . "^.*tex$") (filename . "ShareLaTeX") ))
+    (progn (setq ibuffer-saved-filter-groups
+                 (quote (("default"
+                          ("dired" (mode . dired-mode))
+                          ("org" (name . "^.*org$"))
+                          ("web" (or (mode . web-mode) (mode . js2-mode)))
+                          ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+                          ("latex" (or (mode . latex-mode) 
+                                       (name . "^.*tex$") 
+                                       (filename . "ShareLaTeX") ))
                           ("mu4e" (or
-                                 (mode . mu4e-compose-mode)
-                                 (name . "\*mu4e\*")
-                                 ))
-                        ("programming" (or
-                                        (mode . python-mode)
-                                        (mode . c++-mode))
-                         (mode . scala-mode)
-                         (mode . haskell-mode))
-("Magit" (name . "\*magit"))
-("emacs-config" (or (filename . ".emacs.d")
-                             (filename . "emacs-config")))
+                                   (mode . mu4e-compose-mode)
+                                   (name . "\*mu4e\*")
+                                   ))
+                          ("programming" (or
+                                          (mode . python-mode)
+                                          (mode . c++-mode)
+                                          (mode . scala-mode)
+                                          (mode . haskell-mode)))
+                          ("Magit" (name . "\\*magit\\*"))
+                          ("emacs-config" (or (filename . ".emacs.d")
+                                              (filename . "emacs-config")))
 
-                        ("emacs" (or
-                                  (name . "^\\*scratch\\*$")
-                                  (name . "^\\*Messages\\*$")))
-                        ))))
-         (add-hook 'ibuffer-mode-hook
-                   (lambda ()
-                     (ibuffer-auto-mode 1)
-                     (ibuffer-switch-to-saved-filter-groups "default"))))
-(setq ibuffer-show-empty-filter-groups nil)
+                          ("emacs" (or
+                                    (name . "^\\*scratch\\*$")
+                                    (name . "^\\*Messages\\*$")))
+                          ))))
+           (add-hook 'ibuffer-mode-hook
+                     (lambda ()
+                       (ibuffer-auto-mode 1)
+                       (ibuffer-switch-to-saved-filter-groups "default"))))
+    (setq ibuffer-show-empty-filter-groups nil)
 
-)
-  (defalias 'list-buffers 'ibuffer-other-window)
+    )
+    (defalias 'list-buffers 'ibuffer-other-window)
 
 
 
 #+END_SRC
+
+#+RESULTS:
+: list-buffers
 
 ** hydra ibuf
 #+BEGIN_SRC emacs-lisp
@@ -1077,6 +1253,19 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 
 #+RESULTS:
 | hydra-ibuffer-main/body |
+
+* Supersave
+#+begin_src emacs-lisp
+(use-package super-save
+  :ensure t
+  :config
+  (super-save-mode +1))
+(setq super-save-exclude '(".gpg"))
+(setq super-save-auto-save-when-idle t)
+#+end_src
+
+#+RESULTS:
+: t
 
 * Which key
 #+BEGIN_SRC emacs-lisp
@@ -1690,16 +1879,19 @@ Define a few common tasks as capture templates. Specifically, I frequently:
     (interactive)
     (find-file (get-journal-file-yesterday)))
      :custom
-     (org-journal-dir (concat org-directory "/Journal"))
+     (org-journal-dir (concat org-directory "/Journal/"))
      (org-journal-date-format "%A, %d %B %Y")
      (org-journal-enable-encryption t)
      (org-journal-file-type 'weekly)
 
 
-     (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
+    ; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
 
     )
 #+END_SRC
+
+#+RESULTS:
+: journal-file-yesterday
 
 ** Encryption
 #+BEGIN_SRC emacs-lisp
@@ -1918,7 +2110,21 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 (smartparens-global-mode 1)))
 #+END_SRC
 
-* COMMENT Treemacs
+* Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t)
+#+END_SRC
+** Forge
+#+begin_src emacs-lisp
+(use-package forge
+:after magit
+:ensure t)
+
+#+end_src
+
+#+RESULTS:
+* Treemacs
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
   :ensure t
@@ -1961,16 +2167,30 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   (:map global-map
         ([f8]         . treemacs-toggle)
         ("M-0"        . treemacs-select-window)))
+
 (use-package treemacs-projectile
-  :defer t
+  :after treemacs projectile
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :after treemacs dired
   :ensure t
+  :config (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
+
+(use-package lsp-treemacs
+:ensure t
   :config
-  (setq treemacs-header-function #'treemacs-projectile-create-header)
-  :bind (:map global-map
-              ("C-c t P" . treemacs-projectile)
-              ))
+  (lsp-metals-treeview-enable t)
+  (setq lsp-metals-treeview-show-when-views-received t))
+
+
 #+END_SRC
 #+RESULTS:
+: t
 * Smex
 #+begin_src emacs-lisp
 (use-package smex
@@ -2008,6 +2228,33 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
     (([(meta shift up)] . move-text-up)
      ([(meta shift down)] . move-text-down)))
 #+END_SRC
+
+* Maple minibuffer
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/vendor/maple-minibuffer")
+(use-package maple-minibuffer
+  :ensure nil
+  :hook (after-init . maple-minibuffer-mode)
+  :config
+  (setq maple-minibuffer:position-type 'window-bottom-left
+        maple-minibuffer:border-color "gray50"
+        maple-minibuffer:height nil
+        maple-minibuffer:width 0.7
+        maple-minibuffer:cache t)
+
+  (setq maple-minibuffer:action '(read-from-minibuffer read-string)
+        maple-minibuffer:ignore-action '(evil-ex eval-expression))
+
+  (add-to-list 'maple-minibuffer:ignore-action 'org-schedule)
+
+  ;; more custom parameters for frame
+  (defun maple-minibuffer:parameters ()
+    "Maple minibuffer parameters."
+    `((height . ,(or maple-minibuffer:height 10))
+      (width . ,(or maple-minibuffer:width (window-pixel-width)))
+      (left-fringe . 5)
+      (right-fringe . 5))))
+#+End_SRC
 
 * Line numbers
 #+BEGIN_SRC emacs-lisp
@@ -2094,6 +2341,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 (set-face-background 'git-gutter:modified "purple") ;; background color
 (set-face-foreground 'git-gutter:added "green")
 (set-face-foreground 'git-gutter:deleted "red"))
+
 (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
                             :hint nil)
   "
@@ -2137,6 +2385,10 @@ Git gutter:
   :custom (aggressive-indent-comments-too))
 
 #+end_src
+
+#+RESULTS:
+| aggressive-indent-mode |
+
 * Restart emacs
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
@@ -2148,9 +2400,13 @@ Git gutter:
 ** Metals
 #+BEGIN_SRC emacs-lisp
  (use-package scala-mode
-  :mode "\\.s\\(cala\\|bt\\)$")
+:ensure t
+  :mode "\\.s\\(cala\\|bt\\)$"
+:interpreter
+    ("scala" . scala-mode))
 
 (use-package sbt-mode
+:ensure t
   :commands sbt-start sbt-command
   :config
   ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
@@ -2162,14 +2418,24 @@ Git gutter:
 
 ;; Enable nice rendering of diagnostics like compile errors.
 (use-package flycheck
+:ensure t
   :init (global-flycheck-mode))
+#+END_SRC
+
+#+RESULTS:
+
+* LSP mode
+#+begin_src emacs-lisp
+
 
 (use-package lsp-mode
+:ensure t
   ;; Optional - enable lsp-mode automatically in scala files
   :hook (scala-mode . lsp)
   :config (setq lsp-prefer-flymake nil))
-(use-package lsp-ui )
-(use-package company-lsp )
+(use-package lsp-ui
+:ensure t )
+
 (use-package lsp-ivy
 :ensure t)
 
@@ -2189,21 +2455,52 @@ Git gutter:
             (git-gutter-mode)
             (scala-mode:goto-start-of-code)))
 #+END_SRC
+
+#+RESULTS:
+| (lambda nil (show-paren-mode) (smartparens-mode) (yas-minor-mode) (git-gutter-mode) (scala-mode:goto-start-of-code)) | lsp |
+
 ** New line in comments
 #+BEGIN_SRC emacs-lisp
-(defun scala-mode-newline-comments ()
-  "Custom newline appropriate for `scala-mode'."
-  ;; shouldn't this be in a post-insert hook?
-  (interactive)
-  (newline-and-indent)
-  (scala-indent:insert-asterisk-on-multiline-comment))
-;(bind-key "RET" 'scala-mode-newline-comments scala-mode-map)
-(setq comment-start "/* "
-          comment-end " */"
-          comment-style 'multi-line
-          comment-empty-lines t)
+  (setq scala-indent:use-javadoc-style t)
+
+  (defun scala-mode-newline-comments ()
+    "Custom newline appropriate for `scala-mode'."
+    ;; shouldn't this be in a post-insert hook?
+    (interactive)
+    (newline-and-indent)
+    (scala-indent:insert-asterisk-on-multiline-comment))
+  ;; (bind-key "RET" 'scala-mode-newline-comments scala-mode-map)
+  (setq comment-start "/* "
+        comment-end " */"
+        comment-style 'multi-line
+        comment-empty-lines t)
+
+  (eval-after-load "scala-mode" 
+    '(progn
+       (define-key scala-mode-map (kbd "RET") 'scala-mode-newline-comments)
+       ))
 #+END_SRC
-* Autocomplete
+
+#+RESULTS:
+: scala-mode-newline-comments
+
+* Haskell
+#+begin_src emacs-lisp
+
+(use-package haskell-mode
+:ensure t)
+
+(use-package lsp-haskell
+:ensure t
+:hook (haskell-mode . lsp)
+)
+
+#+end_src
+
+#+RESULTS:
+| lsp |
+
+* COMMENT Autocomplete
 #+BEGIN_SRC emacs-lisp
 (use-package auto-complete
 :ensure t
@@ -2213,9 +2510,39 @@ Git gutter:
 (auto-complete-mode)
 (ac-flyspell-workaround)))
 
+
 #+END_SRC
 
 #+RESULTS:
+
+* company-mode
+#+begin_src emacs-lisp
+
+(use-package company
+:ensure t
+:config
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 3)
+
+(global-company-mode t)
+)
+(use-package company-lsp
+  :ensure t
+  :config
+(setq company-lsp-enable-snippet t)
+ (push 'company-lsp company-backends)
+)
+
+;; With use-package:
+(use-package company-box
+:ensure t
+  :hook (company-mode . company-box-mode))
+
+
+#+end_src
+
+#+RESULTS:
+| company-box-mode | company-mode-set-explicitly |
 
 * Beacon
 #+BEGIN_SRC emacs-lisp
@@ -2287,6 +2614,14 @@ Git gutter:
     (setq reftex-cite-prompt-optional-args t)); Prompt for empty optional arguments in cite
 #+END_SRC
 #+RESULTS:
+*** latex diff
+#+begin_src emacs-lisp
+  (use-package latexdiff
+    :ensure t)
+#+end_src
+
+#+RESULTS:
+
 ** Wrap paragraphs automatically
 I dont like =AutoFillMode= which  automatically wraps paragraphs, kinda
 like hitting =M-q=. But i like wrapped paragraphs, hence use visual fill
@@ -2454,9 +2789,8 @@ mode
                         (setq mu4e-sent-messages-behavior 'delete)
                         ( smtpmail-smtp-server   . "localhost" )
                         ( smtpmail-smtp-service . 1025)
-                        ( mu4e-compose-signature .
-                                                 "//Ashfaq"
-                                                 )
+                  ;;      ( mu4e-compose-signature .
+                   ;;                              "//Ashfaq")
                        ))
 
              ,(make-mu4e-context
@@ -2500,14 +2834,14 @@ mode
     (setq org-mu4e-link-query-in-headers-mode nil)
     (setq
      ;; mu4e-use-fancy-chars t
-     mu4e-view-prefer-html t
-     org-mu4e-convert-to-html t
+    ; mu4e-view-prefer-html t
+   ;  org-mu4e-convert-to-html t
      mu4e-show-images t
      mu4e-headers-include-related nil
      mu4e-headers-skip-duplicates t
      mu4e-headers-visible-lines 18)
               ;;; Html rendering
-    (setq mu4e-view-prefer-html t)
+ ;   (setq mu4e-view-prefer-html t)
     (setq mu4e-use-fancy-chars t)
 
               ;;; Attempt to show images when viewing messages
@@ -2517,7 +2851,7 @@ mode
     (add-to-list 'mu4e-view-actions
                  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
     ;; PGP-Sign all e-mails
-    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+    ;(add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
          ;;;Taking the below from [[http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e]]
 
@@ -2573,13 +2907,13 @@ mode
     ;;   special line continuation characters.
     ;; - also see visual-line-fringe-indicators setting below
 
-    (setq mu4e-compose-format-flowed t)
+   ; (setq mu4e-compose-format-flowed t)
     ;; because it looks like email clients are basically ignoring format=flowed,
     ;; let's complicate their lives too. send format=flowed with looong lines. :)
     ;; https://www.ietf.org/rfc/rfc2822.txt
-    (setq fill-flowed-encode-column 998)
+   ; (setq fill-flowed-encode-column 998)
     ;; in mu4e with format=flowed, this gives me feedback where the soft-wraps are
-    (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+   ; (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
     ;;Some stuff from martin dahl
     (setq mu4e-html2text-command 'mu4e-shr2text)
@@ -2603,7 +2937,7 @@ mode
 	org-msg-greeting-name-limit 3
 	org-msg-signature "
 
- Regards,
+
 
  #+begin_signature
  //Ashfaq
@@ -2614,21 +2948,6 @@ mode
 
 #+RESULTS:
 : t
-
-* Magit
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :ensure t)
-#+END_SRC
-** Forge
-#+begin_src emacs-lisp
-(use-package forge
-:after magit
-:ensure t)
-
-#+end_src
-
-#+RESULTS:
 
 * EyeBrowse
 #+BEGIN_SRC emacs-lisp
@@ -2695,7 +3014,7 @@ mode
     (global-activity-watch-mode))
 
 #+end_src
-* NeoTree
+* COMMENT  NeoTree
 #+begin_src emacs-lisp
 (use-package neotree
 :ensure t
@@ -2781,7 +3100,7 @@ mode
 #+RESULTS:
 : soo-ivy/body
 
-** mu4e hyddra
+** mu4e hydra
 #+begin_src emacs-lisp
 (defhydra hydra-mu4e-headers (:color blue :hint nil)
   "
@@ -2885,7 +3204,7 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
  '("o" 
    "TODO respond to email"
    entry 
-   (file YOUR_TODO_FILE.org)
+   (file org-index-file)
    "* TODO %^{Description}\n%A\n%?\n"))
 
 (global-set-key (kbd "C-c h c") 'hydra-mu4e-headers/body)
@@ -2943,6 +3262,7 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 
 (global-set-key (kbd "C-c h l") 'hydra-lsp/body)
 #+end_src
+
 * Theme
 ** Main theme
 #+BEGIN_SRC emacs-lisp
@@ -3092,11 +3412,11 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
            (setq doom-modeline-before-update-env-hook nil)
            (setq doom-modeline-after-update-env-hook nil)
 
-          (setq pdf-view-midnight-colors '("#bbc2cf" . "#282c34"))
+          ;;(setq pdf-view-midnight-colors '("#bbc2cf" . "#282c34"))
           ;; midnite mode hook
         ;;This should be in pdftools
-         (add-hook 'pdf-view-mode-hook (lambda ()
-                                         (pdf-view-midnight-minor-mode))) ; automatically turns on midnight-mode for pdfs
+         ;;(add-hook 'pdf-view-mode-hook (lambda ()
+           ;;                              (pdf-view-midnight-minor-mode))) ; automatically turns on midnight-mode for pdfs
 
 
 
@@ -3116,6 +3436,36 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 #+RESULTS:
 | doom-modeline-set-selected-window | (lambda (frame) (let ((old-frame (selected-frame)) (old-buffer (current-buffer))) (unwind-protect (progn (select-frame frame (quote norecord)) (load-theme (quote doom-one) t)) (if (frame-live-p old-frame) (progn (select-frame old-frame (quote norecord)))) (if (buffer-live-p old-buffer) (progn (set-buffer old-buffer))))) (setq doom-modeline-icon (display-graphic-p))) | eyebrowse-init | x-dnd-init-frame | (lambda (frame) (with-selected-frame frame (load-theme (quote doom-one) t))) |
 
+** Heaven and hell
+#+begin_src emacs-lisp
+(use-package heaven-and-hell
+  :ensure t
+  :init
+  (setq heaven-and-hell-theme-type 'dark) ;; Omit to use light by default
+  (setq heaven-and-hell-themes
+        '((light . doom-one-light)
+          (dark . doom-one))) ;; Themes can be the list: (dark . (tsdh-dark wombat))
+  ;; Optionall, load themes without asking for confirmation.
+  (setq heaven-and-hell-load-theme-no-confirm t)
+  :hook (after-init . heaven-and-hell-init-hook)
+  :bind (("C-c <f6>" . heaven-and-hell-load-default-theme)
+         ("<f6>" . heaven-and-hell-toggle-theme)))
+
+#+end_src
+
+#+RESULTS:
+: heaven-and-hell-toggle-theme
+
+* Personal keymap
+#+begin_src emacs-lisp
+;; set up my own map
+(define-prefix-command 'z-map)
+(global-set-key (kbd "C-z") 'z-map) ;; was C-1
+(define-key z-map (kbd "g") 'magit-status)
+(define-key z-map (kbd "e") 'elfeed)
+(define-key z-map (kbd "m") 'mu4e)
+
+#+end_src
 * Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")

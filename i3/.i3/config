@@ -54,6 +54,7 @@ exec --no-startup-id copyq
 #exec --no-startup-id blueman
 exec xautolock -time 5 -locker blurlock
 exec emacs --fg-daemon
+exec redshift
 exec eval $(gpg-agent)
 exec_always --no-startup-id caffeine
 exec_always --no-startup-id davmail
@@ -350,6 +351,7 @@ mode "$monitor_conf" {
 
 # Lock screen
 bindsym $mod+Ctrl+l exec --no-startup-id blurlock
+exec eval $(ssh-agent)
 
 
 
@@ -447,4 +449,3 @@ set $volumestep 5
 bindsym XF86AudioRaiseVolume exec i3-volume -np -i $volumestep -t $statuscmd -u $statussig
 bindsym XF86AudioLowerVolume exec i3-volume -np -d $volumestep -t $statuscmd -u $statussig
 bindsym XF86AudioMute        exec i3-volume -mn -t $statuscmd -u $statussig
-
