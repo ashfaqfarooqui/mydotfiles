@@ -26,6 +26,7 @@
 ** General :General:
 *** https://hangingodes.wordpress.com/rss.xml
 *** https://blog.sarvajna.in/feed
+*** https://protesilaos.com/master.xml
 ** Cooking                                                       :Cooking:
 https://egyptianmedievalcookbook.wordpress.com/feed/
 * Youtube                                                    :elfeed:youtube:

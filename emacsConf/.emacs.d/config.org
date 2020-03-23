@@ -10,11 +10,7 @@
      (setq user-mail-address "ashfaq@ashfaqfarooqui.me")
 #+end_src
 * Package Management
-Since Emacs 24, Emacs includes the Emacs Lisp Package Archive
-([[http://www.emacswiki.org/emacs/ELPA][ELPA]]) by default. This provides a nice way to install additional
-packages. Since the default package archive doesn't include
-everything necessary, the [[http://marmalade-repo.org/][marmalade]], and [[http://melpa.milkbox.net/#][melpa]] repositories are also
-added.
+Here we add the upstream repositories from where our packages can be fetched. Additionally, I initiate use-package  so we can use it to install other packages.
 #+begin_src emacs-lisp
   (load "package")
   (package-initialize)
@@ -43,8 +39,9 @@ added.
 
 * Some mandatory stuff
 ** Adding default folders
-(add-to-list 'load-path "~/.emacs.d/vendor/")
 #+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/vendor/")
+
 (defvar my/emacs-cache (concat user-emacs-directory ".cache/")
   "Folder to store cache files in.
 
@@ -98,9 +95,9 @@ minor tweak to the frame title. It's also nice to be able to see
 when a file actually ends. This will put empty line markers into
 the left hand side.
 #+begin_src emacs-lisp
-        (setq-default indicate-empty-lines t)
-        (when (not indicate-empty-lines)
-          (toggle-indicate-empty-lines))
+  (setq-default indicate-empty-lines t)
+  (when (not indicate-empty-lines)
+    (toggle-indicate-empty-lines))
   (setq redisplay-dont-pause t
     scroll-margin 1
     scroll-step 1
@@ -277,6 +274,7 @@ Single Capitals as you type."
 #+end_src
 
 ** lsp latex
+Experimenting with LSP for latex
 #+begin_src emacs-lisp
 (add-to-list 'load-path "/home/ashfaqf/.emacs.d/vendor/lsp-latex")
 (require 'lsp-latex)
@@ -325,8 +323,6 @@ directly from the emacs-starter-kit.
         (dolist (re '("\\\\│\·*\n" "\W*│\·*"))
           (replace-regexp re "" nil beg end)))
 
-      (global-set-key (kbd "C-x M-t") 'cleanup-region)
-      (global-set-key (kbd "C-c n") 'cleanup-buffer)
 
       (setq-default show-trailing-whitespace nil)
 #+end_src
@@ -358,8 +354,8 @@ directly from the emacs-starter-kit.
 )
 #+END_SRC
 ** Some additions ones
-- Open in current window
-- Enable cycling camelcase
+- Open in current window: When using C-' on code blocks I prefer it opens in the same window. Rather than creating new windows.
+- Enable cycling camelcase, I would like to be able to navigate camel case words
 #+BEGIN_SRC emacs-lisp
 (setq org-src-window-setup 'current-window)
 
@@ -369,66 +365,50 @@ directly from the emacs-starter-kit.
 #+RESULTS:
 : current-window
 
-** Navigation
-Navigation is an important part of productivity. The next function is a more efficient way to go to the beginning of a line with move-beginning-of-line (C-a) and back-to-indentation (M-m). [[https://github.com/rememberYou/.emacs.d/blob/master/config.org/#alert]]
-#+begin_src emacs-lisp
-(defun my/smarter-move-beginning-of-line (arg)
-  "Moves point back to indentation of beginning of line.
-
-   Move point to the first non-whitespace character on this line.
-   If point is already there, move to the beginning of the line.
-   Effectively toggle between the first non-whitespace character and
-   the beginning of the line.
-
-   If ARG is not nil or 1, move forward ARG - 1 lines first. If
-   point reaches the beginning or end of the buffer, stop there."
-  (interactive "^p")
-  (setq arg (or arg 1))
-
-  ;; Move lines first
-  (when (/= arg 1)
-    (let ((line-move-visual nil))
-      (forward-line (1- arg))))
-
-  (let ((orig-point (point)))
-    (back-to-indentation)
-    (when (= orig-point (point))
-      (move-beginning-of-line 1))))
-
-(global-set-key (kbd "C-a") 'my/smarter-move-beginning-of-line)
-
-#+end_src
 ** Emacslisp mode
 #+begin_src emacs-lisp
 
 (use-package elisp-mode :ensure nil :delight "ξ ")
 #+END_src
-* Recent files
+* Initialize keymap
 #+begin_src emacs-lisp
-(use-package recentf
-  :bind ("C-c r" . recentf-open-files)
-  :init (recentf-mode)
-  :custom
-  (recentf-exclude (list "COMMIT_EDITMSG"
-                         "~$"
-                         "/scp:"
-                         "/ssh:"
-                         "/sudo:"
-                         "/tmp/"))
-  (recentf-max-menu-items 15)
-  (recentf-max-saved-items 200)
+(define-prefix-command 'z-map)
+(global-set-key (kbd "C-z") 'z-map) ;; was C-1
+
+#+end_src
+* Recent files
+When I start up emacs I would like to navigate to recently used files easily. I like the emacs dashboard for this, but when running in server mode the dashboard does not work well for me.
+#+begin_src emacs-lisp
+  (use-package recentf
+    :bind (:map z-map
+                ("r" . recentf-open-files))
+    :init (recentf-mode)
+    :custom
+    (recentf-exclude (list "COMMIT_EDITMSG"
+                           "~$"
+                           "/scp:"
+                           "/ssh:"
+                           "/sudo:"
+                           "/tmp/"))
+    (recentf-max-menu-items 15)
+    (recentf-max-saved-items 200)
     :config (run-at-time nil (* 5 60) 'recentf-save-list))
 
 #+end_src
+
+#+RESULTS:
+: recentf-open-files
+
 * Icons
+Working with icons is a more pleasant experience.
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons
 :ensure t)
 
-  (use-package all-the-icons-dired
-  :ensure t
-    :config
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+  ;(use-package all-the-icons-dired
+  ;:ensure t
+  ;  :config
+  ;(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 
   ;; from allthe icons wiki
@@ -440,6 +420,7 @@ Navigation is an important part of productivity. The next function is a more eff
 : t
 
 * Windows
+Emacs has a horrible way of using windows. I like my window configuration to not change. Winner-mode helps with this.
 #+begin_src emacs-lisp
 
 (use-package winner
@@ -448,6 +429,7 @@ Navigation is an important part of productivity. The next function is a more eff
 
 #+end_src
 * Cooking
+Package to capture recipes from various websites into org format.
 #+BEGIN_SRC emacs-lisp
 (use-package org-chef
   :ensure t)
@@ -459,6 +441,7 @@ Navigation is an important part of productivity. The next function is a more eff
 
 #+end_src
 * Elfeed
+Read RSS feeds from emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package elfeed
   :ensure t)  
@@ -495,8 +478,8 @@ Navigation is an important part of productivity. The next function is a more eff
                     ("Q" . bjm/elfeed-save-db-and-bury)
                     ("m" . elfeed-toggle-star)
                     ("M" . elfeed-toggle-star)
-		  ("j" . mz/make-and-run-elfeed-hydra)
-		  ("J" . mz/make-and-run-elfeed-hydra)
+		  ("h" . mz/make-and-run-elfeed-hydra)
+		  ("H" . mz/make-and-run-elfeed-hydra)
                     )
   :config
       (defalias 'elfeed-toggle-star
@@ -575,30 +558,6 @@ Navigation is an important part of productivity. The next function is a more eff
         (elfeed-org)
         (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))))
 
-  ;; ;\;\ ;\\;\\ Set executable path
-  ; (setq youtube-dl-path "/usr/bin/youtube-dl")
-  ;|| || ;\\;\\ Set video storage path
-  ;|| || (setq youtube-dl-output-dir "~/Videos/")
-  ;|| || 
-  ;|| || (defun elfeed-download-video ()
-  ;|| ||   "Download a video using youtube-dl."
-  ;|| ||   (interactive)
-  ;|| ||   (async-shell-command (format "%s -o \"%s%s\" -f bestvideo+bestaudio %s"
-  ;|| ||                                youtube-dl-path
-  ;|| ||                                youtube-dl-output-dir
-  ;|| ||                                "%(title)s.%(ext)s"
-  ;|| ||                                (elfeed-entry-link elfeed-show-entry))))
-  ;|| || (defun elfeed-download-video-onlyaudio ()
-  ;|| ||   "Download a video using youtube-dl."
-  ;|| ||   (interactive)
-  ;|| ||   (async-shell-command (format "%s -o \"%s%s\" -f bestaudio %s"
-  ;|| ||                                youtube-dl-path
-  ;|| ||                                youtube-dl-output-dir
-  ;|| ||                                "%(title)s.%(ext)s"
-  ;|| ||                                (elfeed-entry-link elfeed-show-entry)))) **\/
-   
-   
-   ;\;\ Add `youtube` tag to all videos
 
 
 ;  (use-package youtube-dl
@@ -720,179 +679,181 @@ Hydra
         ("h" image-backward-hscroll :color red))
 
 
-(global-set-key (kbd "C-c h d") 'hydra-pdftools/body)
+
 
 #+END_SRC
 
 * Swiper
-
+Swiper and other utils from aboabo. 
 #+BEGIN_SRC emacs-lisp
-    (use-package counsel
-      :ensure t
-      :bind
-      (("M-y" . counsel-yank-pop)
-       :map ivy-minibuffer-map
-       ("M-y" . ivy-next-line)))
+  (use-package counsel
+    :ensure t
+    :bind
+    (("M-y" . counsel-yank-pop)
+     :map ivy-minibuffer-map
+     ("M-y" . ivy-next-line)))
 
 
-    (use-package avy
-      :ensure t
-      :bind
-      ("M-s" . 'avy-goto-word-1)
-      )
-    (global-set-key (kbd "C-.") 'avy-goto-char-timer)
-    (setq avy-timeout-seconds 2.0)
-
-  
+  (use-package avy
+    :ensure t
+    :bind
+    ("M-s" . 'avy-goto-word-1)
+    )
+  (global-set-key (kbd "C-.") 'avy-goto-char-timer)
+  (setq avy-timeout-seconds 2.0)
 
 
-
-(use-package ivy
-:ensure t
-  :delight
-  :after ivy-rich
-  :bind (("C-x b" . ivy-switch-buffer)
-         ("C-x B" . ivy-switch-buffer-other-window)
-         ("M-H"   . ivy-resume)
-         :map ivy-minibuffer-map
-         ("<tab>" . ivy-alt-done)
-         ("C-i" . ivy-partial-or-done)
-         ("S-SPC" . nil)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-switch-buffer-kill))
-  :custom
-  (ivy-case-fold-search-default t)
-  (ivy-count-format "(%d/%d) ")
-  (ivy-re-builders-alist '((t . ivy--regex-plus)))
-  (ivy-use-virtual-buffers t)
-  :config (ivy-mode))
-
-(use-package ivy-rich
-:ensure t
-  :defer 0.1
-  :preface
-  (defun ivy-rich-branch-candidate (candidate)
-    "Displays the branch candidate of the candidate for ivy-rich."
-    (let ((candidate (expand-file-name candidate ivy--directory)))
-      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-          ""
-        (format "%s%s"
-                (propertize
-                 (replace-regexp-in-string abbreviated-home-dir "~/"
-                                           (file-name-directory
-                                            (directory-file-name candidate)))
-                 'face 'font-lock-doc-face)
-                (propertize
-                 (file-name-nondirectory
-                  (directory-file-name candidate))
-                 'face 'success)))))
-
-  (defun ivy-rich-compiling (candidate)
-    "Displays compiling buffers of the candidate for ivy-rich."
-    (let* ((candidate (expand-file-name candidate ivy--directory)))
-      (if (or (not (file-exists-p candidate)) (file-remote-p candidate)
-              (not (magit-git-repo-p candidate)))
-          ""
-        (if (my/projectile-compilation-buffers candidate)
-            "compiling"
-          ""))))
-
-  (defun ivy-rich-file-group (candidate)
-    "Displays the file group of the candidate for ivy-rich"
-    (let ((candidate (expand-file-name candidate ivy--directory)))
-      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-          ""
-        (let* ((group-id (file-attribute-group-id (file-attributes candidate)))
-               (group-function (if (fboundp #'group-name) #'group-name #'identity))
-               (group-name (funcall group-function group-id)))
-          (format "%s" group-name)))))
-
-  (defun ivy-rich-file-modes (candidate)
-    "Displays the file mode of the candidate for ivy-rich."
-    (let ((candidate (expand-file-name candidate ivy--directory)))
-      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-          ""
-        (format "%s" (file-attribute-modes (file-attributes candidate))))))
-
-  (defun ivy-rich-file-size (candidate)
-    "Displays the file size of the candidate for ivy-rich."
-    (let ((candidate (expand-file-name candidate ivy--directory)))
-      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-          ""
-        (let ((size (file-attribute-size (file-attributes candidate))))
-          (cond
-           ((> size 1000000) (format "%.1fM " (/ size 1000000.0)))
-           ((> size 1000) (format "%.1fk " (/ size 1000.0)))
-           (t (format "%d " size)))))))
-
-  (defun ivy-rich-file-user (candidate)
-    "Displays the file user of the candidate for ivy-rich."
-    (let ((candidate (expand-file-name candidate ivy--directory)))
-      (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-          ""
-        (let* ((user-id (file-attribute-user-id (file-attributes candidate)))
-               (user-name (user-login-name user-id)))
-          (format "%s" user-name)))))
-
-  (defun ivy-rich-switch-buffer-icon (candidate)
-    "Returns an icon for the candidate out of `all-the-icons'."
-    (with-current-buffer
-        (get-buffer candidate)
-      (let ((icon (all-the-icons-icon-for-mode major-mode :height 0.9)))
-        (if (symbolp icon)
-            (all-the-icons-icon-for-mode 'fundamental-mode :height 0.9)
-          icon))))
-  :config
-  (plist-put ivy-rich-display-transformers-list
-             'counsel-find-file
-             '(:columns
-               ((ivy-rich-candidate               (:width 73))
-                (ivy-rich-file-user               (:width 8 :face font-lock-doc-face))
-                (ivy-rich-file-group              (:width 4 :face font-lock-doc-face))
-                (ivy-rich-file-modes              (:width 11 :face font-lock-doc-face))
-                (ivy-rich-file-size               (:width 7 :face font-lock-doc-face))
-                (ivy-rich-file-last-modified-time (:width 30 :face font-lock-doc-face)))))
-  (plist-put ivy-rich-display-transformers-list
-             'counsel-projectile-switch-project
-             '(:columns
-               ((ivy-rich-branch-candidate        (:width 80))
-                (ivy-rich-compiling))))
-  (plist-put ivy-rich-display-transformers-list
-             'ivy-switch-buffer
-             '(:columns
-               ((ivy-rich-switch-buffer-icon       (:width 2))
-                (ivy-rich-candidate                (:width 40))
-                (ivy-rich-switch-buffer-size       (:width 7))
-                (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-                (ivy-rich-switch-buffer-major-mode (:width 20 :face warning)))
-               :predicate (lambda (cand) (get-buffer cand))))
-  (ivy-rich-mode 1))
-
-(use-package all-the-icons-ivy
-:ensure t
-  :after (all-the-icons ivy)
-  :custom (all-the-icons-ivy-buffer-commands '(ivy-switch-buffer-other-window))
-  :config
-  (add-to-list 'all-the-icons-ivy-file-commands 'counsel-dired-jump)
-  (add-to-list 'all-the-icons-ivy-file-commands 'counsel-find-library)
-  (all-the-icons-ivy-setup))
+  (use-package swiper
+    :ensure t
+    :bind (("C-s" . swiper)
+           ("C-r" . swiper)
+           ("C-c C-r" . ivy-resume)
+           ("M-x" . counsel-M-x)
+           ("C-x C-f" . counsel-find-file))
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      (setq enable-recursive-minibuffers t)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      ))
 
 
-    (use-package swiper
-      :ensure t
-      :bind (("C-s" . swiper)
-             ("C-r" . swiper)
-             ("C-c C-r" . ivy-resume)
-             ("M-x" . counsel-M-x)
-             ("C-x C-f" . counsel-find-file))
-      :config
-      (progn
-        (ivy-mode 1)
-        (setq ivy-use-virtual-buffers t)
-        (setq ivy-display-style 'fancy)
-        (setq enable-recursive-minibuffers t)
-        (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-        ))
+
+
+
+  (use-package ivy
+    :ensure t
+    :delight
+    :after ivy-rich
+    :bind (("C-x b" . ivy-switch-buffer)
+           ("C-x B" . ivy-switch-buffer-other-window)
+           ("M-H"   . ivy-resume)
+           :map ivy-minibuffer-map
+           ("<tab>" . ivy-alt-done)
+           ("C-i" . ivy-partial-or-done)
+           ("S-SPC" . nil)
+           :map ivy-switch-buffer-map
+           ("C-k" . ivy-switch-buffer-kill))
+    :custom
+    (ivy-case-fold-search-default t)
+    (ivy-count-format "(%d/%d) ")
+    (ivy-re-builders-alist '((t . ivy--regex-plus)))
+    (ivy-use-virtual-buffers t)
+    :config (ivy-mode))
+
+  (use-package ivy-rich
+  :ensure t
+    :defer 0.1
+    :preface
+    (defun ivy-rich-branch-candidate (candidate)
+      "Displays the branch candidate of the candidate for ivy-rich."
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (format "%s%s"
+                  (propertize
+                   (replace-regexp-in-string abbreviated-home-dir "~/"
+                                             (file-name-directory
+                                              (directory-file-name candidate)))
+                   'face 'font-lock-doc-face)
+                  (propertize
+                   (file-name-nondirectory
+                    (directory-file-name candidate))
+                   'face 'success)))))
+
+    (defun ivy-rich-compiling (candidate)
+      "Displays compiling buffers of the candidate for ivy-rich."
+      (let* ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate)
+                (not (magit-git-repo-p candidate)))
+            ""
+          (if (my/projectile-compilation-buffers candidate)
+              "compiling"
+            ""))))
+
+    (defun ivy-rich-file-group (candidate)
+      "Displays the file group of the candidate for ivy-rich"
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (let* ((group-id (file-attribute-group-id (file-attributes candidate)))
+                 (group-function (if (fboundp #'group-name) #'group-name #'identity))
+                 (group-name (funcall group-function group-id)))
+            (format "%s" group-name)))))
+
+    (defun ivy-rich-file-modes (candidate)
+      "Displays the file mode of the candidate for ivy-rich."
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (format "%s" (file-attribute-modes (file-attributes candidate))))))
+
+    (defun ivy-rich-file-size (candidate)
+      "Displays the file size of the candidate for ivy-rich."
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (let ((size (file-attribute-size (file-attributes candidate))))
+            (cond
+             ((> size 1000000) (format "%.1fM " (/ size 1000000.0)))
+             ((> size 1000) (format "%.1fk " (/ size 1000.0)))
+             (t (format "%d " size)))))))
+
+    (defun ivy-rich-file-user (candidate)
+      "Displays the file user of the candidate for ivy-rich."
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (let* ((user-id (file-attribute-user-id (file-attributes candidate)))
+                 (user-name (user-login-name user-id)))
+            (format "%s" user-name)))))
+
+    (defun ivy-rich-switch-buffer-icon (candidate)
+      "Returns an icon for the candidate out of `all-the-icons'."
+      (with-current-buffer
+          (get-buffer candidate)
+        (let ((icon (all-the-icons-icon-for-mode major-mode :height 0.9)))
+          (if (symbolp icon)
+              (all-the-icons-icon-for-mode 'fundamental-mode :height 0.9)
+            icon))))
+    :config
+    (plist-put ivy-rich-display-transformers-list
+               'counsel-find-file
+               '(:columns
+                 ((ivy-rich-candidate               (:width 73))
+                  (ivy-rich-file-user               (:width 8 :face font-lock-doc-face))
+                  (ivy-rich-file-group              (:width 4 :face font-lock-doc-face))
+                  (ivy-rich-file-modes              (:width 11 :face font-lock-doc-face))
+                  (ivy-rich-file-size               (:width 7 :face font-lock-doc-face))
+                  (ivy-rich-file-last-modified-time (:width 30 :face font-lock-doc-face)))))
+    (plist-put ivy-rich-display-transformers-list
+               'counsel-projectile-switch-project
+               '(:columns
+                 ((ivy-rich-branch-candidate        (:width 80))
+                  (ivy-rich-compiling))))
+    (plist-put ivy-rich-display-transformers-list
+               'ivy-switch-buffer
+               '(:columns
+                 ((ivy-rich-switch-buffer-icon       (:width 2))
+                  (ivy-rich-candidate                (:width 40))
+                  (ivy-rich-switch-buffer-size       (:width 7))
+                  (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+                  (ivy-rich-switch-buffer-major-mode (:width 20 :face warning)))
+                 :predicate (lambda (cand) (get-buffer cand))))
+    (ivy-rich-mode 1))
+
+  (use-package all-the-icons-ivy
+    :ensure t
+    :after (all-the-icons ivy)
+    :custom (all-the-icons-ivy-buffer-commands '(ivy-switch-buffer-other-window))
+    :config
+    (add-to-list 'all-the-icons-ivy-file-commands 'counsel-dired-jump)
+    (add-to-list 'all-the-icons-ivy-file-commands 'counsel-find-library)
+    (all-the-icons-ivy-setup))
+
+
 
 
 
@@ -902,6 +863,7 @@ Hydra
 : counsel-find-file
 
 * Ace-window
+Window management.
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window
   :ensure t
@@ -975,7 +937,7 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
    )
 
 
-(global-set-key (kbd "C-c h w") 'hydra-frame-window/body)
+
 #+END_SRC
 
 #+RESULTS:
@@ -1107,6 +1069,8 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 #+RESULTS:
 : sidebar-toggle
 * Ibuffer
+Buffer management and buffer groupings
+
 #+BEGIN_SRC emacs-lisp
 
   (use-package ibuffer
@@ -1255,6 +1219,7 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 | hydra-ibuffer-main/body |
 
 * Supersave
+Auto save files.
 #+begin_src emacs-lisp
 (use-package super-save
   :ensure t
@@ -1278,27 +1243,21 @@ _F_ollow                _D_lt Other     _S_ave          max_i_mize
 (setq which-key-show-operator-state-maps t)))
 
 #+END_SRC
-* Graphviz
-#+BEGIN_SRC emacs-lisp
-(use-package graphviz-dot-mode
-:ensure t)
-
-#+END_SRC
 * Org
+
+=org-mode= is one of the most powerful and amazing features of
+Emacs. Just a few tweaks here to make the
+experience better.
 #+BEGIN_SRC emacs-lisp
-(use-package org
-:ensure org-plus-contrib
-:pin org)
-(use-package org-bullets
-:ensure t)
+  (use-package org
+    :ensure org-plus-contrib
+    :pin org)
+  (use-package org-bullets
+    :ensure t)
 #+END_SRC
 
 #+RESULTS:
 
-=org-mode= is one of the most powerful and amazing features of
-Emacs. I mostly use it for task/day organization and generating
-code snippets in HTML. Just a few tweaks here to make the
-experience better.
 ** modules
 #+BEGIN_SRC emacs-lisp
 ; Enable habit tracking (and a bunch of other modules)
@@ -1398,14 +1357,6 @@ Use syntax highlighting in source blocks while editing.
 #+BEGIN_SRC emacs-lisp
   (setq org-src-fontify-natively t)
 #+END_SRC
-
-Make TAB act as if it were issued in a buffer of the language's major mode.
-
-#+BEGIN_SRC emacs-lisp
-  ;;(setq org-src-tab-acts-natively t)
-#+END_SRC
-
-#+RESULTS:
 
 When editing a code snippet, use the current window rather than popping open a
 new one (which shows the same information).
@@ -1772,7 +1723,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
         (quote ( ("t" "todo task" entry (file+headline org-index-file "Tasks")
-                  "* TODO %a %?\nSCHEDULE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))" :prepend t)
+                  "* TODO %a %?\n" :prepend t)
 
                  ("b" "Blog idea"
                   entry
@@ -1938,7 +1889,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
   ("?" (org-info "Clocking commands")))
 
 
-(global-set-key (kbd "C-c o") 'hydra-global-org/body)
+
 
 
 #+END_SRC
@@ -1964,7 +1915,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 :ensure t
 :config
 (progn
-(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)))
+(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous)))
 
 
 
@@ -2026,7 +1977,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   ("z"   projectile-cache-current-file)
   ("`"   hydra-projectile-other-window/body "other window")
   ("q"   nil "cancel" :color blue))
-(global-set-key (kbd "C-c h p") 'hydra-projectile/body)
+
 
 
 #+END_SRC
@@ -2057,7 +2008,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   ("r" mc/mark-all-in-region-regexp :exit t)
   ("q" nil))
 
-(global-set-key (kbd "C-c h m") 'hydra-multiple-cursors/body)
+
 #+END_SRC
 * Yasnippet
 #+BEGIN_SRC emacs-lisp
@@ -2124,6 +2075,14 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 #+end_src
 
 #+RESULTS:
+* winum
+#+begin_src emacs-lisp
+  (use-package winum
+    :ensure t)
+#+end_src
+
+#+RESULTS:
+
 * Treemacs
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
@@ -2229,7 +2188,9 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
      ([(meta shift down)] . move-text-down)))
 #+END_SRC
 
-* Maple minibuffer
+*  Maple minibuffer
+I like this. But does not play well with multiple monitor systems.
+
 #+begin_src emacs-lisp
 (add-to-list 'load-path "~/.emacs.d/vendor/maple-minibuffer")
 (use-package maple-minibuffer
@@ -2369,7 +2330,7 @@ Git gutter:
               (sit-for 0.1)
               (git-gutter:clear))
        :color blue))
-(global-set-key (kbd "C-c h g") 'hydra-git-gutter/body)
+
 #+END_SRC
 
 #+RESULTS:
@@ -2449,10 +2410,6 @@ Git gutter:
 #+BEGIN_SRC emacs-lisp
 (add-hook 'scala-mode-hook
           (lambda ()
-            (show-paren-mode)
-            (smartparens-mode)
-            (yas-minor-mode)
-            (git-gutter-mode)
             (scala-mode:goto-start-of-code)))
 #+END_SRC
 
@@ -2899,7 +2856,6 @@ mode
 
     (use-package mu4e-conversation
       :ensure t)
-
     ;; Taken from [[https://vxlabs.com/2019/08/25/format-flowed-with-long-lines/]]
     ;; enable format=flowed
     ;; - mu4e sets up visual-line-mode and also fill (M-q) to do the right thing
@@ -3014,17 +2970,6 @@ mode
     (global-activity-watch-mode))
 
 #+end_src
-* COMMENT  NeoTree
-#+begin_src emacs-lisp
-(use-package neotree
-:ensure t
-:config 
-(global-set-key [f8] 'neotree-toggle))
-
-#+end_src
-
-#+RESULTS:
-: t
 * Hydras
 ** Avy
 #+begin_src emacs-lisp
@@ -3047,8 +2992,6 @@ mode
   ("K" avy-kill-region)
   ("y" avy-copy-line)
   ("Y" avy-copy-region))
-
-(global-set-key (kbd "C-c h a") 'hydra-avy/body)
 
 
 (define-key ivy-minibuffer-map "\C-o"
@@ -3094,7 +3037,6 @@ mode
     ("o" ivy-occur :exit t)))
 
 
-(global-set-key (kbd "C-c h i") 'soo-ivy/body)
 #+end_src
 
 #+RESULTS:
@@ -3207,7 +3149,7 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
    (file org-index-file)
    "* TODO %^{Description}\n%A\n%?\n"))
 
-(global-set-key (kbd "C-c h c") 'hydra-mu4e-headers/body)
+
 #+end_src
 
 #+RESULTS:
@@ -3260,7 +3202,7 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
   ("M-r" lsp-restart-workspace)
   ("S" lsp-shutdown-workspace))
 
-(global-set-key (kbd "C-c h l") 'hydra-lsp/body)
+
 #+end_src
 
 * Theme
@@ -3443,7 +3385,7 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
   :init
   (setq heaven-and-hell-theme-type 'dark) ;; Omit to use light by default
   (setq heaven-and-hell-themes
-        '((light . doom-one-light)
+        '((light . doom-solarized-light)
           (dark . doom-one))) ;; Themes can be the list: (dark . (tsdh-dark wombat))
   ;; Optionall, load themes without asking for confirmation.
   (setq heaven-and-hell-load-theme-no-confirm t)
@@ -3459,13 +3401,26 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 * Personal keymap
 #+begin_src emacs-lisp
 ;; set up my own map
-(define-prefix-command 'z-map)
-(global-set-key (kbd "C-z") 'z-map) ;; was C-1
 (define-key z-map (kbd "g") 'magit-status)
 (define-key z-map (kbd "e") 'elfeed)
 (define-key z-map (kbd "m") 'mu4e)
-
+(define-key z-map (kbd "C-c r") 'cleanup-region)
+(define-key z-map (kbd "C-c b") 'cleanup-buffer)
+(define-key z-map (kbd "h p") 'hydra-pdftools/body)
+(define-key z-map (kbd "w") 'hydra-frame-window/body)
+(define-key z-map (kbd "h o") 'hydra-global-org/body)
+(define-key z-map (kbd "p") 'hydra-projectile/body)
+(define-key z-map (kbd "h m") 'hydra-multiple-cursors/body)
+(define-key z-map (kbd "h g") 'hydra-git-gutter/body)
+(define-key z-map (kbd "h c") 'hydra-mu4e-headers/body)
+(define-key z-map (kbd "h i") 'soo-ivy/body)
+(define-key z-map (kbd "a") 'hydra-avy/body)
+(define-key z-map (kbd "l") 'hydra-lsp/body)
 #+end_src
+
+#+RESULTS:
+: hydra-lsp/body
+
 * Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")
