@@ -38,6 +38,14 @@ Here we add the upstream repositories from where our packages can be fetched. Ad
 : use-package
 
 * Some mandatory stuff
+** Encoding
+#+begin_src emacs-lisp
+(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
+#+end_src
+
+#+RESULTS:
+
 ** Adding default folders
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "~/.emacs.d/vendor/")
@@ -298,34 +306,7 @@ Experimenting with LSP for latex
   :ensure t)
 
 #+END_SRC
-** Indentation and buffer cleanup
-This re-indents, untabifies, and cleans up whitespace. It is stolen
-directly from the emacs-starter-kit.
-#+begin_src emacs-lisp
-      (defun untabify-buffer ()
-        (interactive)
-        (untabify (point-min) (point-max)))
 
-      (defun indent-buffer ()
-        (interactive)
-        (indent-region (point-min) (point-max)))
-
-      (defun cleanup-buffer ()
-        "Perform a bunch of operations on the whitespace content of a buffer."
-        (interactive)
-        (indent-buffer)
-        (untabify-buffer)
-        (delete-trailing-whitespace))
-
-      (defun cleanup-region (beg end)
-        "Remove tmux artifacts from region."
-        (interactive "r")
-        (dolist (re '("\\\\│\·*\n" "\W*│\·*"))
-          (replace-regexp re "" nil beg end)))
-
-
-      (setq-default show-trailing-whitespace nil)
-#+end_src
 ** Hungry delete
 #+BEGIN_SRC emacs-lisp
 (use-package hungry-delete
@@ -443,6 +424,8 @@ Package to capture recipes from various websites into org format.
 * Elfeed
 Read RSS feeds from emacs.
 #+BEGIN_SRC emacs-lisp
+
+      (setq elfeed-db-directory "~/Documents/.elfeed")
   (use-package elfeed
   :ensure t)  
 
@@ -495,7 +478,7 @@ Read RSS feeds from emacs.
 
 
 
-      (setq elfeed-db-directory "~/Documents/.elfeed")
+
 
   (defun z/hasCap (s) ""
 	 (let ((case-fold-search nil))
@@ -682,186 +665,6 @@ Hydra
 
 
 #+END_SRC
-
-* Swiper
-Swiper and other utils from aboabo. 
-#+BEGIN_SRC emacs-lisp
-  (use-package counsel
-    :ensure t
-    :bind
-    (("M-y" . counsel-yank-pop)
-     :map ivy-minibuffer-map
-     ("M-y" . ivy-next-line)))
-
-
-  (use-package avy
-    :ensure t
-    :bind
-    ("M-s" . 'avy-goto-word-1)
-    )
-  (global-set-key (kbd "C-.") 'avy-goto-char-timer)
-  (setq avy-timeout-seconds 2.0)
-
-
-  (use-package swiper
-    :ensure t
-    :bind (("C-s" . swiper)
-           ("C-r" . swiper)
-           ("C-c C-r" . ivy-resume)
-           ("M-x" . counsel-M-x)
-           ("C-x C-f" . counsel-find-file))
-    :config
-    (progn
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (setq ivy-display-style 'fancy)
-      (setq enable-recursive-minibuffers t)
-      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-      ))
-
-
-
-
-
-  (use-package ivy
-    :ensure t
-    :delight
-    :after ivy-rich
-    :bind (("C-x b" . ivy-switch-buffer)
-           ("C-x B" . ivy-switch-buffer-other-window)
-           ("M-H"   . ivy-resume)
-           :map ivy-minibuffer-map
-           ("<tab>" . ivy-alt-done)
-           ("C-i" . ivy-partial-or-done)
-           ("S-SPC" . nil)
-           :map ivy-switch-buffer-map
-           ("C-k" . ivy-switch-buffer-kill))
-    :custom
-    (ivy-case-fold-search-default t)
-    (ivy-count-format "(%d/%d) ")
-    (ivy-re-builders-alist '((t . ivy--regex-plus)))
-    (ivy-use-virtual-buffers t)
-    :config (ivy-mode))
-
-  (use-package ivy-rich
-  :ensure t
-    :defer 0.1
-    :preface
-    (defun ivy-rich-branch-candidate (candidate)
-      "Displays the branch candidate of the candidate for ivy-rich."
-      (let ((candidate (expand-file-name candidate ivy--directory)))
-        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-            ""
-          (format "%s%s"
-                  (propertize
-                   (replace-regexp-in-string abbreviated-home-dir "~/"
-                                             (file-name-directory
-                                              (directory-file-name candidate)))
-                   'face 'font-lock-doc-face)
-                  (propertize
-                   (file-name-nondirectory
-                    (directory-file-name candidate))
-                   'face 'success)))))
-
-    (defun ivy-rich-compiling (candidate)
-      "Displays compiling buffers of the candidate for ivy-rich."
-      (let* ((candidate (expand-file-name candidate ivy--directory)))
-        (if (or (not (file-exists-p candidate)) (file-remote-p candidate)
-                (not (magit-git-repo-p candidate)))
-            ""
-          (if (my/projectile-compilation-buffers candidate)
-              "compiling"
-            ""))))
-
-    (defun ivy-rich-file-group (candidate)
-      "Displays the file group of the candidate for ivy-rich"
-      (let ((candidate (expand-file-name candidate ivy--directory)))
-        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-            ""
-          (let* ((group-id (file-attribute-group-id (file-attributes candidate)))
-                 (group-function (if (fboundp #'group-name) #'group-name #'identity))
-                 (group-name (funcall group-function group-id)))
-            (format "%s" group-name)))))
-
-    (defun ivy-rich-file-modes (candidate)
-      "Displays the file mode of the candidate for ivy-rich."
-      (let ((candidate (expand-file-name candidate ivy--directory)))
-        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-            ""
-          (format "%s" (file-attribute-modes (file-attributes candidate))))))
-
-    (defun ivy-rich-file-size (candidate)
-      "Displays the file size of the candidate for ivy-rich."
-      (let ((candidate (expand-file-name candidate ivy--directory)))
-        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-            ""
-          (let ((size (file-attribute-size (file-attributes candidate))))
-            (cond
-             ((> size 1000000) (format "%.1fM " (/ size 1000000.0)))
-             ((> size 1000) (format "%.1fk " (/ size 1000.0)))
-             (t (format "%d " size)))))))
-
-    (defun ivy-rich-file-user (candidate)
-      "Displays the file user of the candidate for ivy-rich."
-      (let ((candidate (expand-file-name candidate ivy--directory)))
-        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
-            ""
-          (let* ((user-id (file-attribute-user-id (file-attributes candidate)))
-                 (user-name (user-login-name user-id)))
-            (format "%s" user-name)))))
-
-    (defun ivy-rich-switch-buffer-icon (candidate)
-      "Returns an icon for the candidate out of `all-the-icons'."
-      (with-current-buffer
-          (get-buffer candidate)
-        (let ((icon (all-the-icons-icon-for-mode major-mode :height 0.9)))
-          (if (symbolp icon)
-              (all-the-icons-icon-for-mode 'fundamental-mode :height 0.9)
-            icon))))
-    :config
-    (plist-put ivy-rich-display-transformers-list
-               'counsel-find-file
-               '(:columns
-                 ((ivy-rich-candidate               (:width 73))
-                  (ivy-rich-file-user               (:width 8 :face font-lock-doc-face))
-                  (ivy-rich-file-group              (:width 4 :face font-lock-doc-face))
-                  (ivy-rich-file-modes              (:width 11 :face font-lock-doc-face))
-                  (ivy-rich-file-size               (:width 7 :face font-lock-doc-face))
-                  (ivy-rich-file-last-modified-time (:width 30 :face font-lock-doc-face)))))
-    (plist-put ivy-rich-display-transformers-list
-               'counsel-projectile-switch-project
-               '(:columns
-                 ((ivy-rich-branch-candidate        (:width 80))
-                  (ivy-rich-compiling))))
-    (plist-put ivy-rich-display-transformers-list
-               'ivy-switch-buffer
-               '(:columns
-                 ((ivy-rich-switch-buffer-icon       (:width 2))
-                  (ivy-rich-candidate                (:width 40))
-                  (ivy-rich-switch-buffer-size       (:width 7))
-                  (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-                  (ivy-rich-switch-buffer-major-mode (:width 20 :face warning)))
-                 :predicate (lambda (cand) (get-buffer cand))))
-    (ivy-rich-mode 1))
-
-  (use-package all-the-icons-ivy
-    :ensure t
-    :after (all-the-icons ivy)
-    :custom (all-the-icons-ivy-buffer-commands '(ivy-switch-buffer-other-window))
-    :config
-    (add-to-list 'all-the-icons-ivy-file-commands 'counsel-dired-jump)
-    (add-to-list 'all-the-icons-ivy-file-commands 'counsel-find-library)
-    (all-the-icons-ivy-setup))
-
-
-
-
-
-#+END_SRC
-
-#+RESULTS:
-: counsel-find-file
-
 * Ace-window
 Window management.
 #+BEGIN_SRC emacs-lisp
@@ -874,6 +677,12 @@ Window management.
      '(aw-leading-char-face
        ((t (:inherit ace-jump-face-foreground :height 3.0)))))
     ))
+
+(global-set-key (kbd "C-c w <left>")  'windmove-left)
+(global-set-key (kbd "C-c w <right>") 'windmove-right)
+(global-set-key (kbd "C-c w <up>")    'windmove-up)
+(global-set-key (kbd "C-c w <down>")  'windmove-down)
+
 
 (defhydra hydra-frame-window ()
    "
@@ -1243,6 +1052,10 @@ Auto save files.
 (setq which-key-show-operator-state-maps t)))
 
 #+END_SRC
+
+#+RESULTS:
+: t
+
 * Org
 
 =org-mode= is one of the most powerful and amazing features of
@@ -1266,10 +1079,19 @@ experience better.
 (setq org-habit-graph-column 50)
 
 (require 'org-tempo)
+  
+  (require 'org-habit)
+  (setq org-habit-following-days 7)
+  (setq org-habit-preceding-days 35)
+  (setq org-habit-show-habits t)
+
+
+
+
 #+END_SRC
 
 #+RESULTS:
-: 50
+: t
 
 ** Directory setup
 Store my org files in =~/Orgs=, define an index file and an
@@ -1283,13 +1105,18 @@ archive of finished tasks in =archive.org=.
     (concat (file-name-as-directory org-directory) filename))
 
   (setq org-inbox-file
-        (concat (org-file-path "inbox.org")))
+        (concat (org-file-path "inbox-orgzly.org")))
+  (setq org-personal-file (org-file-path "personal.org"))
   (setq org-index-file (org-file-path "index.org"))
   (setq org-phd-file (concat (org-file-path "PHD/Phd.org")))
   (setq org-archive-location
         (concat (org-file-path "archive.org") "::* From %s"))
 
 #+END_SRC
+
+#+RESULTS:
+: ~/Orgs/archive.org::* From %s
+
 ** Settings
 *** Sequences
 #+begin_src emacs-lisp
@@ -1461,9 +1288,9 @@ allows you to extract and execute code. I can not ignore headlines when exportin
 ** org-refile
 from http://doc.norang.ca/org-mode.html#Refiling
 #+BEGIN_SRC emacs-lisp
-; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-(setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                 (org-agenda-files :maxlevel . 9))))
+; Targets include this file and any file contributing to the agenda - up to 3 levels deep
+(setq org-refile-targets (quote ((nil :maxlevel . 3)
+                                 (org-agenda-files :maxlevel . 3))))
 
 ; Use full outline paths for refile targets - we file directly with IDO
 (setq org-refile-use-outline-path t)
@@ -1480,220 +1307,48 @@ from http://doc.norang.ca/org-mode.html#Refiling
 #+END_SRC
 
 #+RESULTS:
-: bh/verify-refile-target
+: current-window
 
 ** org-agenda
 Use all the files to derive agenda.
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (list org-directory org-phd-file))
-  (setq org-agenda-include-diary t)
-  (setq org-agenda-include-all-todo t)
-;;Always open in a new frame
-(setq org-agenda-window-setup (quote other-frame))
-;; Do not dim blocked tasks
-(setq org-agenda-dim-blocked-tasks nil)
-
-;; Compact the block agenda view
-(setq org-agenda-compact-blocks t)
-
-;; Custom agenda command definitions
-(setq org-agenda-custom-commands
-      (quote (("N" "Notes" tags "NOTE"
-               ((org-agenda-overriding-header "Notes")
-                (org-tags-match-list-sublevels t)))
-              ("h" "Habits" tags-todo "STYLE=\"habit\""
-               ((org-agenda-overriding-header "Habits")
-                (org-agenda-sorting-strategy
-                 '(todo-state-down effort-up category-keep))))
-              (" " "Agenda"
-               ((agenda "" nil)
-                (tags "REFILE"
-                      ((org-agenda-overriding-header "Tasks to Refile")
-                       (org-tags-match-list-sublevels nil)))
-                (tags-todo "-CANCELLED/!"
-                           ((org-agenda-overriding-header "Stuck Projects")
-                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-HOLD-CANCELLED/!"
-                           ((org-agenda-overriding-header "Projects")
-                            (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-tags-match-list-sublevels 'indented)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-CANCELLED/!NEXT"
-                           ((org-agenda-overriding-header (concat "Project Next Tasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      ""
-                                                                    " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
-                            (org-tags-match-list-sublevels t)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy
-                             '(todo-state-down effort-up category-keep))))
-                (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
-                           ((org-agenda-overriding-header (concat "Project Subtasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      ""
-                                                                    " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-non-project-tasks)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
-                           ((org-agenda-overriding-header (concat "Standalone Tasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      ""
-                                                                    " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-project-tasks)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-CANCELLED+WAITING|HOLD/!"
-                           ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      ""
-                                                                    " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-non-tasks)
-                            (org-tags-match-list-sublevels nil)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
-                (tags "-REFILE/"
-                      ((org-agenda-overriding-header "Tasks to Archive")
-                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-                       (org-tags-match-list-sublevels nil))))
-               nil))))
+    (setq org-agenda-files (list org-inbox-file org-index-file org-personal-file org-phd-file))
+ ;   (setq org-agenda-include-diary t)
+ ;   (setq org-agenda-include-all-todo t)
+  (setq org-habit-show-habits-only-for-today nil)
 
 
-(setq org-habit-graph-column 50)
-;; Use sticky agenda's so they persist
-(setq org-agenda-sticky t)
-;; Show all future entries for repeating tasks
-(setq org-agenda-repeating-timestamp-show-all t)
+  ;; Do not dim blocked tasks
+  (setq org-agenda-dim-blocked-tasks nil)
 
-;; Show all agenda dates - even if they are empty
-(setq org-agenda-show-all-dates t)
+  ;; Compact the block agenda view
+  (setq org-agenda-compact-blocks t)
 
-;; Sorting order for tasks on the agenda
-(setq org-agenda-sorting-strategy
-      (quote ((agenda habit-down time-up user-defined-up effort-up category-keep)
-              (todo category-up effort-up)
-              (tags category-up effort-up)
-              (search category-up))))
+  (use-package org-super-agenda
+    :ensure t
+    :config
+    (org-super-agenda-mode t)
+    (setq org-super-agenda-groups
+          '(
+            (:name "Today\n"
+                   :and(:scheduled today :not (:habit t))
+                   )
+            (:name "Habits\n"
+                   :habit t)
+            (:name "Refile\n"
+                   :tag "Refile")
+            (:name "To Scheduled\n"
+                   :scheduled nil)
+          
+         
+            )
+          )  ;; end setq superagenda block
+) ;; end whole super agenda block
 
-;; Start the weekly agenda on Monday
-(setq org-agenda-start-on-weekday 1)
-
-;; Enable display of the time grid so we can see the marker for the current time
-(setq org-agenda-time-grid (quote ((daily today remove-match)
-                                   #("----------------" 0 16 (org-heading t))
-                                   (0900 1100 1300 1500 1700))))
-
-;; Display tags farther right
-(setq org-agenda-tags-column -102)
-
-;;
-;; Agenda sorting functions
-;;
-(setq org-agenda-cmp-user-defined 'bh/agenda-sort)
-
-(defun bh/agenda-sort (a b)
-  "Sorting strategy for agenda items.
-Late deadlines first, then scheduled, then non-late deadlines"
-  (let (result num-a num-b)
-    (cond
-     ; time specific items are already sorted first by org-agenda-sorting-strategy
-
-     ; non-deadline and non-scheduled items next
-     ((bh/agenda-sort-test 'bh/is-not-scheduled-or-deadline a b))
-
-     ; deadlines for today next
-     ((bh/agenda-sort-test 'bh/is-due-deadline a b))
-
-     ; late deadlines next
-     ((bh/agenda-sort-test-num 'bh/is-late-deadline '> a b))
-
-     ; scheduled items for today next
-     ((bh/agenda-sort-test 'bh/is-scheduled-today a b))
-
-     ; late scheduled items next
-     ((bh/agenda-sort-test-num 'bh/is-scheduled-late '> a b))
-
-     ; pending deadlines last
-     ((bh/agenda-sort-test-num 'bh/is-pending-deadline '< a b))
-
-     ; finally default to unsorted
-     (t (setq result nil)))
-    result))
-
-(defmacro bh/agenda-sort-test (fn a b)
-  "Test for agenda sort"
-  `(cond
-    ; if both match leave them unsorted
-    ((and (apply ,fn (list ,a))
-          (apply ,fn (list ,b)))
-     (setq result nil))
-    ; if a matches put a first
-    ((apply ,fn (list ,a))
-     (setq result -1))
-    ; otherwise if b matches put b first
-    ((apply ,fn (list ,b))
-     (setq result 1))
-    ; if none match leave them unsorted
-    (t nil)))
-
-(defmacro bh/agenda-sort-test-num (fn compfn a b)
-  `(cond
-    ((apply ,fn (list ,a))
-     (setq num-a (string-to-number (match-string 1 ,a)))
-     (if (apply ,fn (list ,b))
-         (progn
-           (setq num-b (string-to-number (match-string 1 ,b)))
-           (setq result (if (apply ,compfn (list num-a num-b))
-                            -1
-                          1)))
-       (setq result -1)))
-    ((apply ,fn (list ,b))
-     (setq result 1))
-    (t nil)))
-
-(defun bh/is-not-scheduled-or-deadline (date-str)
-  (and (not (bh/is-deadline date-str))
-       (not (bh/is-scheduled date-str))))
-
-(defun bh/is-due-deadline (date-str)
-  (string-match "Deadline:" date-str))
-
-(defun bh/is-late-deadline (date-str)
-  (string-match "\\([0-9]*\\) d\. ago:" date-str))
-
-(defun bh/is-pending-deadline (date-str)
-  (string-match "In \\([^-]*\\)d\.:" date-str))
-
-(defun bh/is-deadline (date-str)
-  (or (bh/is-due-deadline date-str)
-      (bh/is-late-deadline date-str)
-      (bh/is-pending-deadline date-str)))
-
-(defun bh/is-scheduled (date-str)
-  (or (bh/is-scheduled-today date-str)
-      (bh/is-scheduled-late date-str)))
-
-(defun bh/is-scheduled-today (date-str)
-  (string-match "Scheduled:" date-str))
-
-(defun bh/is-scheduled-late (date-str)
-  (string-match "Sched\.\\(.*\\)x:" date-str))
 #+END_SRC
 
 #+RESULTS:
-: bh/is-scheduled-late
+: t
 
 ** Ending tasks
 Mark a =TODO= as done using =C-c C-x C-s= and send to archive.
@@ -1711,6 +1366,15 @@ Mark a =TODO= as done using =C-c C-x C-s= and send to archive.
 #+RESULTS:
 : time
 
+** COMMENT org-books
+Org-books seems to be a good package but has dependencies on helm and helm-org
+#+begin_src emacs-lisp
+
+(add-to-list 'load-path "/home/ashfaqf/.emacs.d/vendor/org-books/")
+(require 'org-books)
+(setq org-books-file "~/Orgs/Literature/books.org")
+
+#+end_src
 ** Capturing tasks
 
 Define a few common tasks as capture templates. Specifically, I frequently:
@@ -1722,61 +1386,69 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
-        (quote ( ("t" "todo task" entry (file+headline org-index-file "Tasks")
-                  "* TODO %a %?\n" :prepend t)
-
-                 ("b" "Blog idea"
-                  entry
-                  (file (file+headline  "personal.org" "Blog"))
-                  "* TODO %?\n" :prepend t)
-
-                 ("N" "Notes"
-                  entry
-                  (file org-index-file)
-                  "* %? :NOTE:\n")
-
-                 ("i" "Inbox"
-                  entry
-                  (file org-index-file)
-                  "* TODO %?\n")
-
-                 ("r" "respond" entry (file org-index-file)
-                  "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
-                 ("h" "Habit" entry (file org-index-file)
-                  "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
-
-                 ("c" "Cookbook" entry (file "~/Orgs/cookbook.org")
-                  "%(org-chef-get-recipe-from-url)"
-                  :empty-lines 1)
-                 ("m" "Manual Cookbook" entry (file "~/Orgs/cookbook.org")
-                  "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
+        (quote (
 
 
-                 )))
+        ("b" "Blog idea"
+                 entry
+                 (file (file+headline  "personal.org" "Blog"))
+                 "* TODO %?\n %U \n" :prepend t)
+
+                ("N" "Notes"
+                 entry
+                 (file+headline org-index-file "Notes")
+                 "* %u %? :NOTE:\n")
+
+                ("i" "Inbox"
+                 entry
+                 (file org-index-file)
+                 "* TODO %?\n")
+
+                ("m" "mail todo"
+                 entry
+                 (file org-index-file)
+                 "* TODO %a\n %?" :prepend t )
+
+                ("h" "Habit" entry (file org-index-file)
+                 "* TODO %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:END:\n")
 
 
-  (defadvice org-capture-finalize
-      (after delete-capture-frame activate)
-    "Advise capture-finalize to close the frame"
-    (if (equal "capture" (frame-parameter nil 'name))
-        (delete-frame)))
+                ("d" "Diary" entry (file+olp+datetree "~/Orgs/jrl/journal.org")
+                 "** %(format-time-string \"%R\") %? %^g \n")
 
-  (defadvice org-capture-destroy
-      (after delete-capture-frame activate)
-    "Advise capture-destroy to close the frame"
-    (if (equal "capture" (frame-parameter nil 'name))
-        (delete-frame)))
+                ("c" "Cookbook" entry (file "~/Orgs/cookbook.org")
+                 "%(org-chef-get-recipe-from-url)"
+                 :empty-lines 1)
 
-  (use-package noflet
-    :ensure t )
-  (defun make-capture-frame ()
-    "Create a new frame and run org-capture."
-    (interactive)
-    (make-frame '((name . "capture")))
-    (select-frame-by-name "capture")
-    (delete-other-windows)
-    (noflet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
-      (org-capture)))
+                ("m" "Manual Cookbook" entry (file "~/Orgs/cookbook.org")
+                 "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
+
+
+                )))
+
+
+    (defadvice org-capture-finalize
+        (after delete-capture-frame activate)
+      "Advise capture-finalize to close the frame"
+      (if (equal "capture" (frame-parameter nil 'name))
+          (delete-frame)))
+
+    (defadvice org-capture-destroy
+        (after delete-capture-frame activate)
+      "Advise capture-destroy to close the frame"
+      (if (equal "capture" (frame-parameter nil 'name))
+          (delete-frame)))
+
+    (use-package noflet
+      :ensure t )
+    (defun make-capture-frame ()
+      "Create a new frame and run org-capture."
+      (interactive)
+      (make-frame '((name . "capture")))
+      (select-frame-by-name "capture")
+      (delete-other-windows)
+      (noflet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+        (org-capture)))
 #+END_SRC
 
 #+RESULTS:
@@ -1902,6 +1574,64 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 #+RESULTS:
 : ox-beamer
 
+** Comment org caldav
+#+begin_src emacs-lisp
+
+(use-package org-caldav
+  :init
+  ;; This is the sync on close function; it also prompts for save after syncing so 
+  ;; no late changes get lost 
+  (defun org-caldav-sync-at-close ()
+    (org-caldav-sync)
+    (save-some-buffers))
+  
+  ;; This is the delayed sync function; it waits until emacs has been idle for 
+  ;; "secs" seconds before syncing.  The delay is important because the caldav-sync
+  ;; can take five or ten seconds, which would be painful if it did that right at save.  
+  ;; This way it just waits until you've been idle for a while to avoid disturbing 
+  ;; the user.
+  (defvar org-caldav-sync-timer nil
+     "Timer that `org-caldav-push-timer' used to reschedule itself, or nil.")
+  (defun org-caldav-sync-with-delay (secs)
+    (when org-caldav-sync-timer
+      (cancel-timer org-caldav-sync-timer))
+    (setq org-caldav-sync-timer
+	  (run-with-idle-timer
+	   (* 1 secs) nil 'org-caldav-sync)))
+  
+  ;; Actual calendar configuration edit this to meet your specific needs
+  (setq org-caldav-url "put_your_caldav_url_here")
+      (setq org-caldav-calendars
+    '((:calendar-id "desk-org"
+	    	:files ("~/path-to-file.org" "~/path-to-file-2.org")
+		:inbox "~/Calendars/org-caldav-inbox.org")
+	  (:calendar-id "shared_cal1"
+		:files ("~/Calendars/shared_cal1.org")
+		:inbox "~/Calendars/shared_cal1.org")
+      (:calendar-id "default"
+		:files ("~/Calendars/shared_cal2.org")
+		:inbox "~/Calendars/shared_cal2.org"))
+)
+  (setq org-caldav-backup-file "~/org-caldav/org-caldav-backup.org")
+  (setq org-caldav-save-directory "~/org-caldav/")
+
+  :config
+  (setq org-icalendar-alarm-time 1)
+  ;; This makes sure to-do items as a category can show up on the calendar
+  (setq org-icalendar-include-todo t)
+  ;; This ensures all org "deadlines" show up, and show up as due dates
+  (setq org-icalendar-use-deadline '(event-if-todo event-if-not-todo todo-due))
+  ;; This ensures "scheduled" org items show up, and show up as start times
+  (setq org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo))
+  ;; Add the delayed save hook with a five minute idle timer
+  (add-hook 'after-save-hook
+	    (lambda ()
+	      (when (eq major-mode 'org-mode)
+		(org-caldav-sync-with-delay 300))))
+  ;; Add the close emacs hook
+  (add-hook 'kill-emacs-hook 'org-caldav-sync-at-close))
+
+#+end_src
 * Flycheck
 #+BEGIN_SRC emacs-lisp
 
@@ -1981,6 +1711,188 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 
 
 #+END_SRC
+* Swiper
+Swiper and other utils from aboabo. 
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :ensure t
+    :bind
+    (("M-y" . counsel-yank-pop)
+     :map ivy-minibuffer-map
+     ("M-y" . ivy-next-line)))
+
+
+  (use-package avy
+    :ensure t
+    :bind
+    (
+     ("M-j" . 'avy-goto-word-1)
+     ("C-j" . 'avy-goto-char-2)
+     ("C-M-j" . 'avy-goto-line)
+     )
+    )
+
+  (setq avy-timeout-seconds 2.0)
+
+
+  (use-package swiper
+    :ensure t
+    :bind (("C-s" . swiper)
+           ("C-r" . swiper)
+           ("C-c C-r" . ivy-resume)
+           ("M-x" . counsel-M-x)
+           ("C-x C-f" . counsel-find-file))
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      (setq enable-recursive-minibuffers t)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      ))
+
+
+
+
+
+  (use-package ivy
+    :ensure t
+    :delight
+    :after ivy-rich
+    :bind (("C-x b" . ivy-switch-buffer)
+           ("C-x B" . ivy-switch-buffer-other-window)
+           ("M-H"   . ivy-resume)
+           :map ivy-minibuffer-map
+           ("<tab>" . ivy-alt-done)
+           ("C-i" . ivy-partial-or-done)
+           ("S-SPC" . nil)
+           :map ivy-switch-buffer-map
+           ("C-k" . ivy-switch-buffer-kill))
+    :custom
+    (ivy-case-fold-search-default t)
+    (ivy-count-format "(%d/%d) ")
+    (ivy-re-builders-alist '((t . ivy--regex-plus)))
+    (ivy-use-virtual-buffers t)
+    :config (ivy-mode))
+
+  (use-package ivy-rich
+    :ensure t
+    :defer 0.1
+    :preface
+    (defun ivy-rich-branch-candidate (candidate)
+      "Displays the branch candidate of the candidate for ivy-rich."
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (format "%s%s"
+                  (propertize
+                   (replace-regexp-in-string abbreviated-home-dir "~/"
+                                             (file-name-directory
+                                              (directory-file-name candidate)))
+                   'face 'font-lock-doc-face)
+                  (propertize
+                   (file-name-nondirectory
+                    (directory-file-name candidate))
+                   'face 'success)))))
+
+    (defun ivy-rich-compiling (candidate)
+      "Displays compiling buffers of the candidate for ivy-rich."
+      (let* ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate)
+                (not (magit-git-repo-p candidate)))
+            ""
+          (if (my/projectile-compilation-buffers candidate)
+              "compiling"
+            ""))))
+
+    (defun ivy-rich-file-group (candidate)
+      "Displays the file group of the candidate for ivy-rich"
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (let* ((group-id (file-attribute-group-id (file-attributes candidate)))
+                 (group-function (if (fboundp #'group-name) #'group-name #'identity))
+                 (group-name (funcall group-function group-id)))
+            (format "%s" group-name)))))
+
+    (defun ivy-rich-file-modes (candidate)
+      "Displays the file mode of the candidate for ivy-rich."
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (format "%s" (file-attribute-modes (file-attributes candidate))))))
+
+    (defun ivy-rich-file-size (candidate)
+      "Displays the file size of the candidate for ivy-rich."
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (let ((size (file-attribute-size (file-attributes candidate))))
+            (cond
+             ((> size 1000000) (format "%.1fM " (/ size 1000000.0)))
+             ((> size 1000) (format "%.1fk " (/ size 1000.0)))
+             (t (format "%d " size)))))))
+
+    (defun ivy-rich-file-user (candidate)
+      "Displays the file user of the candidate for ivy-rich."
+      (let ((candidate (expand-file-name candidate ivy--directory)))
+        (if (or (not (file-exists-p candidate)) (file-remote-p candidate))
+            ""
+          (let* ((user-id (file-attribute-user-id (file-attributes candidate)))
+                 (user-name (user-login-name user-id)))
+            (format "%s" user-name)))))
+
+    (defun ivy-rich-switch-buffer-icon (candidate)
+      "Returns an icon for the candidate out of `all-the-icons'."
+      (with-current-buffer
+          (get-buffer candidate)
+        (let ((icon (all-the-icons-icon-for-mode major-mode :height 0.9)))
+          (if (symbolp icon)
+              (all-the-icons-icon-for-mode 'fundamental-mode :height 0.9)
+            icon))))
+    :config
+    (plist-put ivy-rich-display-transformers-list
+               'counsel-find-file
+               '(:columns
+                 ((ivy-rich-candidate               (:width 73))
+                  (ivy-rich-file-user               (:width 8 :face font-lock-doc-face))
+                  (ivy-rich-file-group              (:width 4 :face font-lock-doc-face))
+                  (ivy-rich-file-modes              (:width 11 :face font-lock-doc-face))
+                  (ivy-rich-file-size               (:width 7 :face font-lock-doc-face))
+                  (ivy-rich-file-last-modified-time (:width 30 :face font-lock-doc-face)))))
+    (plist-put ivy-rich-display-transformers-list
+               'counsel-projectile-switch-project
+               '(:columns
+                 ((ivy-rich-branch-candidate        (:width 80))
+                  (ivy-rich-compiling))))
+    (plist-put ivy-rich-display-transformers-list
+               'ivy-switch-buffer
+               '(:columns
+                 ((ivy-rich-switch-buffer-icon       (:width 2))
+                  (ivy-rich-candidate                (:width 40))
+                  (ivy-rich-switch-buffer-size       (:width 7))
+                  (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+                  (ivy-rich-switch-buffer-major-mode (:width 20 :face warning)))
+                 :predicate (lambda (cand) (get-buffer cand))))
+    (ivy-rich-mode 1))
+
+  (use-package all-the-icons-ivy
+    :ensure t
+    :after (all-the-icons ivy)
+    :custom (all-the-icons-ivy-buffer-commands '(ivy-switch-buffer-other-window))
+    :config
+    (add-to-list 'all-the-icons-ivy-file-commands 'counsel-dired-jump)
+    (add-to-list 'all-the-icons-ivy-file-commands 'counsel-find-library)
+    (all-the-icons-ivy-setup))
+
+
+
+  (use-package ivy-hydra
+    :ensure t)
+
+#+END_SRC
+
+#+RESULTS:
 * Multiple cursors
 #+BEGIN_SRC emacs-lisp
 (use-package multiple-cursors
@@ -2150,17 +2062,6 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 #+END_SRC
 #+RESULTS:
 : t
-* Smex
-#+begin_src emacs-lisp
-(use-package smex
-:ensure t)
-  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-
-#+end_src
-
-#+RESULTS:
-: smex-major-mode-commands
-
 * Ediff
 #+begin_src emacs-lisp
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -2188,7 +2089,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
      ([(meta shift down)] . move-text-down)))
 #+END_SRC
 
-*  Maple minibuffer
+* COMMENT Maple minibuffer
 I like this. But does not play well with multiple monitor systems.
 
 #+begin_src emacs-lisp
@@ -2197,7 +2098,7 @@ I like this. But does not play well with multiple monitor systems.
   :ensure nil
   :hook (after-init . maple-minibuffer-mode)
   :config
-  (setq maple-minibuffer:position-type 'window-bottom-left
+  (setq maple-minibuffer:position-type 'frame-center
         maple-minibuffer:border-color "gray50"
         maple-minibuffer:height nil
         maple-minibuffer:width 0.7
@@ -2208,6 +2109,7 @@ I like this. But does not play well with multiple monitor systems.
 
   (add-to-list 'maple-minibuffer:ignore-action 'org-schedule)
 
+(setq maple-minibuffer:cache nil)
   ;; more custom parameters for frame
   (defun maple-minibuffer:parameters ()
     "Maple minibuffer parameters."
@@ -2216,6 +2118,9 @@ I like this. But does not play well with multiple monitor systems.
       (left-fringe . 5)
       (right-fringe . 5))))
 #+End_SRC
+
+#+RESULTS:
+| maple-minibuffer-mode | x-wm-set-size-hint | heaven-and-hell-init-hook | doom-modeline-mode | #[0 \303\211\235\203 \304"\301\305!\210\210	\205 \306 \210\307\211\207 [command-line-args desktop-save-mode inhibit-startup-screen --no-desktop delete 0 desktop-read t] 4] | table--make-cell-map | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version | forge-startup-asserts |
 
 * Line numbers
 #+BEGIN_SRC emacs-lisp
@@ -2537,7 +2442,7 @@ Git gutter:
       (add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
       (add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
       (add-hook 'TeX-mode-hook 'LaTeX-math-mode)
-  (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
+      (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
       (add-hook 'LaTeX-mode-hook
                 (lambda ()
                   (rainbow-delimiters-mode)
@@ -2563,14 +2468,21 @@ Git gutter:
       (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view"))))
     )
   (use-package latex-preview-pane
-    :ensure t)
+    :ensure t
+    :config
+    (setq latex-preview-pane-multifile-mode TeX-master)
+    (setq latex-preview-pane-use-frame t)
+(latex-preview-pane-enable)
+    )
   (use-package reftex
     :ensure t
     :defer t
     :config
     (setq reftex-cite-prompt-optional-args t)); Prompt for empty optional arguments in cite
+
 #+END_SRC
 #+RESULTS:
+: t
 *** latex diff
 #+begin_src emacs-lisp
   (use-package latexdiff
@@ -2668,12 +2580,23 @@ mode
 
 #+RESULTS:
 
+** Thesaurus
+#+begin_src emacs-lisp
+(use-package powerthesaurus
+:ensure t)
+
+#+end_src
+
+#+RESULTS:
+
 ** Synonyms
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
 :ensure t
 :config
-(setq synosaurus-choose-method 'popup))
+(setq synosaurus-choose-method 'ido)
+(setq synosaurus-backend 'synosaurus-backend-wordnet)
+)
 #+END_SRC
 #+RESULTS:
 : t
@@ -2770,10 +2693,7 @@ mode
                         (mu4e-refile-folder . "/Personal/Archive")
                         (smtpmail-smtp-server . "smtp.mailbox.org")
                         (smtpmail-stream-type . ssl )
-                        (smtpmail-smtp-service . 465)
-                        ( mu4e-compose-signature  .
-                                                  "Ashfaq Farooqui\n"
-                                                  )))         
+                        (smtpmail-smtp-service . 465)))
 
              ))
         (setq smtpmail-debug-verb t)
@@ -2970,6 +2890,34 @@ mode
     (global-activity-watch-mode))
 
 #+end_src
+* Dumb jump
+#+begin_src emacs-lisp
+
+(use-package dumb-jump
+  :bind (("M-g o" . dumb-jump-go-other-window)
+         ("M-g j" . dumb-jump-go)
+         ("M-g b" . dumb-jump-back)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config (setq dumb-jump-selector 'ivy) ;; (setq dumb-jump-selector 'helm)
+  :ensure)
+
+(defhydra hydra-dumb-jump (:color blue :columns 3)
+    "Dumb Jump"
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back"))
+
+#+end_src
+
+#+RESULTS:
+: hydra-dumb-jump/body
+
 * Hydras
 ** Avy
 #+begin_src emacs-lisp
@@ -2993,48 +2941,6 @@ mode
   ("y" avy-copy-line)
   ("Y" avy-copy-region))
 
-
-(define-key ivy-minibuffer-map "\C-o"
-  (defhydra soo-ivy (:hint nil :color pink)
-    "
- Move     ^^^^^^^^^^ | Call         ^^^^ | Cancel^^ | Options^^ | Action _w_/_s_/_a_: %s(ivy-action-name)
-----------^^^^^^^^^^-+--------------^^^^-+-------^^-+--------^^-+---------------------------------
- _g_ ^ ^ _k_ ^ ^ _u_ | _f_orward _o_ccur | _i_nsert | _c_alling: %-7s(if ivy-calling \"on\" \"off\") _C_ase-fold: %-10`ivy-case-fold-search
- ^↨^ _h_ ^+^ _l_ ^↕^ | _RET_ done     ^^ | _q_uit   | _m_atcher: %-7s(ivy--matcher-desc) _t_runcate: %-11`truncate-lines
- _G_ ^ ^ _j_ ^ ^ _d_ | _TAB_ alt-done ^^ | ^ ^      | _<_/_>_: shrink/grow
-"
-    ;; arrows
-    ("j" ivy-next-line)
-    ("k" ivy-previous-line)
-    ("l" ivy-alt-done)
-    ("h" ivy-backward-delete-char)
-    ("g" ivy-beginning-of-buffer)
-    ("G" ivy-end-of-buffer)
-    ("d" ivy-scroll-up-command)
-    ("u" ivy-scroll-down-command)
-    ("e" ivy-scroll-down-command)
-    ;; actions
-    ("q" keyboard-escape-quit :exit t)
-    ("C-g" keyboard-escape-quit :exit t)
-    ("<escape>" keyboard-escape-quit :exit t)
-    ("C-o" nil)
-    ("i" nil)
-    ("TAB" ivy-alt-done :exit nil)
-    ("C-j" ivy-alt-done :exit nil)
-    ;; ("d" ivy-done :exit t)
-    ("RET" ivy-done :exit t)
-    ("C-m" ivy-done :exit t)
-    ("f" ivy-call)
-    ("c" ivy-toggle-calling)
-    ("m" ivy-toggle-fuzzy)
-    (">" ivy-minibuffer-grow)
-    ("<" ivy-minibuffer-shrink)
-    ("w" ivy-prev-action)
-    ("s" ivy-next-action)
-    ("a" ivy-read-action)
-    ("t" (setq truncate-lines (not truncate-lines)))
-    ("C" ivy-toggle-case-fold)
-    ("o" ivy-occur :exit t)))
 
 
 #+end_src
@@ -3149,12 +3055,11 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
    (file org-index-file)
    "* TODO %^{Description}\n%A\n%?\n"))
 
-
 #+end_src
 
 #+RESULTS:
 : hydra-mu4e-headers/body
-** movement
+** COMMENT movement 
 #+begin_src emacs-lisp
 (global-set-key
  (kbd "C-n")
@@ -3204,7 +3109,16 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 
 
 #+end_src
+** zoom
+#+begin_src emacs-lisp
+(defhydra hydra-zoom ()
+  "zoom"
+  ("+" text-scale-increase "in")
+  ("-" text-scale-decrease "out")
+  ("0" (text-scale-adjust 0) "reset")
+  ("q" nil "quit" :color blue))
 
+#+end_src
 * Theme
 ** Main theme
 #+BEGIN_SRC emacs-lisp
@@ -3379,6 +3293,7 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 | doom-modeline-set-selected-window | (lambda (frame) (let ((old-frame (selected-frame)) (old-buffer (current-buffer))) (unwind-protect (progn (select-frame frame (quote norecord)) (load-theme (quote doom-one) t)) (if (frame-live-p old-frame) (progn (select-frame old-frame (quote norecord)))) (if (buffer-live-p old-buffer) (progn (set-buffer old-buffer))))) (setq doom-modeline-icon (display-graphic-p))) | eyebrowse-init | x-dnd-init-frame | (lambda (frame) (with-selected-frame frame (load-theme (quote doom-one) t))) |
 
 ** Heaven and hell
+
 #+begin_src emacs-lisp
 (use-package heaven-and-hell
   :ensure t
@@ -3397,6 +3312,48 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 
 #+RESULTS:
 : heaven-and-hell-toggle-theme
+** fonts
+#+begin_src emacs-lisp
+;cap(set-face-font 'default "SauceCodePro Nerd Font Medium")
+
+(set-face-attribute 'default nil :font "SauceCodePro Nerd Font Medium")
+(set-fontset-font t 'latin "Noto Sans")
+#+end_src
+
+#+RESULTS:
+
+* Ripgrep
+#+begin_src emacs-lisp
+(use-package rg
+:ensure t
+:config
+(rg-enable-default-bindings))
+
+#+end_src
+
+#+RESULTS:
+: t
+
+* pomidor
+#+begin_src emacs-lisp
+  (use-package pomidor
+    :ensure t
+    :bind (("<f12>" . pomidor))
+    :config (setq pomidor-sound-tick nil
+                  pomidor-sound-tack nil)
+    (setq pomidor-seconds (* 25 60)) ; 25 minutes for the work period
+    (setq pomidor-break-seconds (* 5 60)) ; 5 minutes break time
+    :hook (pomidor-mode . (lambda ()
+                            (display-line-numbers-mode -1) ; Emacs 26.1+
+                            (setq left-fringe-width 0 right-fringe-width 0)
+                            (setq left-margin-width 2 right-margin-width 0)
+                            ;; force fringe update
+                            (set-window-buffer nil (current-buffer)))))
+
+#+end_src
+
+#+RESULTS:
+: pomidor
 
 * Personal keymap
 #+begin_src emacs-lisp
@@ -3404,24 +3361,24 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 (define-key z-map (kbd "g") 'magit-status)
 (define-key z-map (kbd "e") 'elfeed)
 (define-key z-map (kbd "m") 'mu4e)
-(define-key z-map (kbd "C-c r") 'cleanup-region)
-(define-key z-map (kbd "C-c b") 'cleanup-buffer)
 (define-key z-map (kbd "h p") 'hydra-pdftools/body)
 (define-key z-map (kbd "w") 'hydra-frame-window/body)
 (define-key z-map (kbd "h o") 'hydra-global-org/body)
 (define-key z-map (kbd "p") 'hydra-projectile/body)
-(define-key z-map (kbd "h m") 'hydra-multiple-cursors/body)
+(define-key z-map (kbd "h c") 'hydra-multiple-cursors/body)
 (define-key z-map (kbd "h g") 'hydra-git-gutter/body)
-(define-key z-map (kbd "h c") 'hydra-mu4e-headers/body)
-(define-key z-map (kbd "h i") 'soo-ivy/body)
+(define-key z-map (kbd "h m") 'hydra-mu4e-headers/body)
+(define-key z-map (kbd "h i") 'hydra-ivy/body)
 (define-key z-map (kbd "a") 'hydra-avy/body)
 (define-key z-map (kbd "l") 'hydra-lsp/body)
+(define-key z-map (kbd "j") 'hydra-dumb-jump/body)
+(define-key z-map (kbd "z") 'hydra-zoom/body)
 #+end_src
 
 #+RESULTS:
-: hydra-lsp/body
+: hydra-zoom/body
 
-* Loading complete
+* Loadiang complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")
 #+END_SRC

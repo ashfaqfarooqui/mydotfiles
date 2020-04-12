@@ -17,6 +17,7 @@
 *** http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml
 *** https://metaredux.com/feed.xml
 *** http://nullprogram.com/feed
+*** https://www.electronicsforu.com/feed
 ** Urdu :Urdu:
 *** https://urduwallahs.wordpress.com/feed/
 ** Islam :Islam:
@@ -28,7 +29,10 @@
 *** https://blog.sarvajna.in/feed
 *** https://protesilaos.com/master.xml
 ** Cooking                                                       :Cooking:
-https://egyptianmedievalcookbook.wordpress.com/feed/
+*** https://egyptianmedievalcookbook.wordpress.com/feed/
+
+** Productivity
+*** https://radreads.co/rss
 * Youtube                                                    :elfeed:youtube:
 ** Usuli Institute
 *** https://www.youtube.com/feeds/videos.xml?channel_id=UCacZ3k2AOpd5-3tdCxcDmgQ
