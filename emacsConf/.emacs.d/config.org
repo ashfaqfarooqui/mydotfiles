@@ -1,3 +1,4 @@
+# -*- mode: org; coding: utf-8; -*-
 #+TITLE: Ashfaq Farooqui's Emacs Configuration
 #+AUTHOR: Ashfaq Farooqui
 #+EMAIL: ashfaq@ashfaqfarooqui.me
@@ -23,6 +24,7 @@ Here we add the upstream repositories from where our packages can be fetched. Ad
   (add-to-list 'package-archives
                '("elpy" . "http://jorgenschaefer.github.io/packages/"))
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+  (add-to-list 'package-archives '("org-roam" . "https://www.github.com/jethrokuan/company-org-roam") t)
 ;;  (setq package-archive-enable-alist '(("melpa" magit f)))
   (require 'cl)
 
@@ -38,13 +40,19 @@ Here we add the upstream repositories from where our packages can be fetched. Ad
 : use-package
 
 * Some mandatory stuff
-** Encoding
+** COMMENT Encoding
+
 #+begin_src emacs-lisp
-(set-language-environment "UTF-8")
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
+
+(set-default-coding-systems 'utf-8)
 #+end_src
 
 #+RESULTS:
+: (utf-8-unix . utf-8-unix)
 
 ** Adding default folders
 #+BEGIN_SRC emacs-lisp
@@ -281,25 +289,6 @@ Single Capitals as you type."
 (add-hook 'org-mode-hook #'dubcaps-mode)
 #+end_src
 
-** lsp latex
-Experimenting with LSP for latex
-#+begin_src emacs-lisp
-(add-to-list 'load-path "/home/ashfaqf/.emacs.d/vendor/lsp-latex")
-(require 'lsp-latex)
-
-;; "texlab" must be located at a directory contained in `exec-path'.
-;; If you want to put "texlab" somewhere else,
-;; you can specify the path to "texlab" as follows:
- ;;(setq lsp-latex-texlab-executable "/usr/bin/texlab")
-
-(with-eval-after-load "tex-mode"
- (add-hook 'tex-mode-hook 'lsp)
- (add-hook 'latex-mode-hook 'lsp))
-
-#+end_src
-
-#+RESULTS:
-
 ** Hydra
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
@@ -346,11 +335,14 @@ Experimenting with LSP for latex
 #+RESULTS:
 : current-window
 
-** Emacslisp mode
+** COMMENT Emacslisp mode
 #+begin_src emacs-lisp
 
-(use-package elisp-mode :ensure nil :delight "ξ ")
+(use-package elisp-mode :ensure t :delight "ξ ")
 #+END_src
+
+#+RESULTS:
+
 * Initialize keymap
 #+begin_src emacs-lisp
 (define-prefix-command 'z-map)
@@ -602,8 +594,7 @@ https://github.com/abo-abo/hydra/wiki/PDF-Tools
     :config
     (pdf-tools-install)
     (setq-default pdf-view-display-size 'fit-page))
-     (use-package org-pdfview
-       :ensure t)
+
 
 (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 #+END_SRC
@@ -1109,8 +1100,8 @@ archive of finished tasks in =archive.org=.
   (setq org-personal-file (org-file-path "personal.org"))
   (setq org-index-file (org-file-path "index.org"))
   (setq org-phd-file (concat (org-file-path "PHD/Phd.org")))
-  (setq org-archive-location
-        (concat (org-file-path "archive.org") "::* From %s"))
+(setq org-basb-main-file (concat (org-file-path "BASB/main.org")))
+
 
 #+END_SRC
 
@@ -1122,18 +1113,20 @@ archive of finished tasks in =archive.org=.
 #+begin_src emacs-lisp
   (setq org-todo-keywords '((sequence
                              "TODO(t)"  ; next action
-                             "NEXT(s)"
+                             "NEXT(n)"
                              "WAITING(w@/!)"
-                             "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")
+                             "SOMEDAY(.)" "MAYBE(m)" "|" "DONE(x!)" "CANCELLED(c@)")
                             (sequence "IDEA"))
-        org-todo-keyword-faces '(("IDEA" . (:foreground "green" :weight bold))
-                                 ("NEXT" . (:foreground "blue" :weight bold))
-                                 ("CANCELLED" . (:foreground "red" :weight book))
-                                 ("SOMEDAY" . (:foreground "red" :weight book))
-                                 ("WAITING" . (:foreground "yellow" :weight book))
-                                 ("COMPLETE" . (:foreground "green" :weight bold))
-                                 ("DONE" . (:foreground "green" :weight bold))))
+)
 
+  (setq org-todo-keyword-faces
+        (quote (("TODO" :foreground "#cc6666" :weight bold)
+                ("NEXT" :foreground "#8abeb7" :weight bold)
+                ("DONE" :foreground "#b5bd68" :weight bold)
+                ("WAITING" :foreground "#de935f" :weight bold)
+                ("MAYBE" . (:foreground "#b394aa" :weight book))
+                ("SOMEDAY" :foreground "#b294bb" :weight bold)
+                ("CANCELLED" :foreground "#f0c674" :weight bold))))
 
   (setq org-log-done t)
   (add-hook 'org-mode-hook
@@ -1149,13 +1142,6 @@ archive of finished tasks in =archive.org=.
   (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 
 
-  (setq org-todo-state-tags-triggers
-        (quote (("CANCELLED" ("CANCELLED" . t))
-                ("WAITING" ("WAITING" . t))
-                (done ("WAITING") ("HOLD"))
-                ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-                ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-                ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 #+end_src
 
 #+RESULTS:
@@ -1218,15 +1204,12 @@ some more misc settings
                             ("@office" . ?o)
                             ("@home" . ?H)
                             (:endgroup)
-                            ("WAITING" . ?w)
-                            ("HOLD" . ?h)
-                            ("PERSONAL" . ?P)
-                            ("WORK" . ?W)
-                            ("ORG" . ?O)
+                      ("Challenge" . ?1)
+                      ("Average" . ?2)
+                      ("Easy" . ?3)
                             ("crypt" . ?E)
                             ("NOTE" . ?n)
-                            ("CANCELLED" . ?c)
-                            ("FLAGGED" . ??))))
+)))
 
 ; Allow setting single tags without the menu
 (setq org-fast-tag-selection-single-key (quote expert))
@@ -1312,10 +1295,10 @@ from http://doc.norang.ca/org-mode.html#Refiling
 ** org-agenda
 Use all the files to derive agenda.
 #+BEGIN_SRC emacs-lisp
-    (setq org-agenda-files (list org-inbox-file org-index-file org-personal-file org-phd-file))
- ;   (setq org-agenda-include-diary t)
- ;   (setq org-agenda-include-all-todo t)
-  (setq org-habit-show-habits-only-for-today nil)
+  (setq org-agenda-files (list org-index-file org-inbox-file org-basb-main-file))
+                                          ;   (setq org-agenda-include-diary t)
+                                          ;   (setq org-agenda-include-all-todo t)
+  (setq org-habit-show-habits-only-for-today t)
 
 
   ;; Do not dim blocked tasks
@@ -1324,6 +1307,9 @@ Use all the files to derive agenda.
   ;; Compact the block agenda view
   (setq org-agenda-compact-blocks t)
 
+   
+
+
   (use-package org-super-agenda
     :ensure t
     :config
@@ -1331,24 +1317,32 @@ Use all the files to derive agenda.
     (setq org-super-agenda-groups
           '(
             (:name "Today\n"
+                   :time-grid t
                    :and(:scheduled today :not (:habit t))
                    )
+            (:name "Important"
+                   :priority "A")
+            (:name "Overdue"
+                   :deadline past)
             (:name "Habits\n"
                    :habit t)
-            (:name "Refile\n"
-                   :tag "Refile")
             (:name "To Scheduled\n"
                    :scheduled nil)
-          
-         
-            )
-          )  ;; end setq superagenda block
-) ;; end whole super agenda block
+            )  ;; end setq superagenda block
+          )) ;; end whole super agenda block
+
+
+  (add-to-list 'org-agenda-custom-commands
+               '("u" "Unscheduled TODOs"
+                 ((todo ""
+                        ((org-agenda-overriding-header "\nUnscheduled TODO")
+                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'todo '("DONE" "CANCELLED" "MAYBE" "WAITING" "SOMEDAY"))))))) t)
 
 #+END_SRC
 
 #+RESULTS:
-: t
+| n | Agenda and all TODOs | ((agenda ) (alltodo ))                 |
+| u | Unscheduled TODOs    | ((todo  ((org-agenda-overriding-header |
 
 ** Ending tasks
 Mark a =TODO= as done using =C-c C-x C-s= and send to archive.
@@ -1366,16 +1360,25 @@ Mark a =TODO= as done using =C-c C-x C-s= and send to archive.
 #+RESULTS:
 : time
 
-** COMMENT org-books
-Org-books seems to be a good package but has dependencies on helm and helm-org
+** Org web tools
 #+begin_src emacs-lisp
-
-(add-to-list 'load-path "/home/ashfaqf/.emacs.d/vendor/org-books/")
-(require 'org-books)
-(setq org-books-file "~/Orgs/Literature/books.org")
+(use-package org-web-tools
+:ensure t)
 
 #+end_src
-** Capturing tasks
+
+#+RESULTS:
+
+** Org-protocol
+#+begin_src emacs-lisp
+(require 'org-protocol)
+
+#+end_src
+
+#+RESULTS:
+: org-protocol
+
+** Capturing
 
 Define a few common tasks as capture templates. Specifically, I frequently:
 
@@ -1385,46 +1388,70 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 - Maintain a reading list in =to-read.org=
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
-        (quote (
+      (setq org-capture-templates
+            (quote (
+
+                    ("p" "Protocol" entry (file+headline org-index-file "Links")
+                     "* %^{Title}\nCaptured On: %U\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+                    ("L" "Protocol Link" entry (file+headline org-index-file "Links")
+                     "* %? [[%:link][%:description]] \nCaptured On: %U")
+		  
+                    ("P" "Project" entry (file+headline org-basb-main-file "Projects")
+                     (file "~/.emacs.d/templates/newProjecttemplate.org") :empty-lines 1)
+		  
+                    ("s" "Someday" entry (file+headline "~/Orgs/BASB/somedaymaybe.org" "Someday / Maybe")
+                     "* SOMEDAY %?\n")
+                    ("m" "Maybe" entry (file+headline "~/Orgs/BASB/somedaymaybe.org" "Someday / Maybe")
+                     "* MAYBE %?\n")
+
+		  
+                    ("n" "Notes"
+                     entry
+                     (file+headline org-index-file "Notes")
+                     "* %u %? :NOTE:\n")
+
+                    ("t" "Task"
+                     entry
+                     (file+headline org-index-file "Tasks")
+                     "* TODO %?\n")
+
+                     ("h" "health log")
+                    ("hr" "Running" entry (file+headline  "~/Orgs/BASB/Areas/Health/log.org" "Running")
+                     (file "~/.emacs.d/templates/running.org") :empty-lines 1)
+
+                    ("hs" "Sleep" entry (file+headline  "~/Orgs/BASB/Areas/Health/log.org" "Sleep")
+                     (file "~/.emacs.d/templates/sleep.org") :empty-lines 1)
 
 
-        ("b" "Blog idea"
-                 entry
-                 (file (file+headline  "personal.org" "Blog"))
-                 "* TODO %?\n %U \n" :prepend t)
-
-                ("N" "Notes"
-                 entry
-                 (file+headline org-index-file "Notes")
-                 "* %u %? :NOTE:\n")
-
-                ("i" "Inbox"
-                 entry
-                 (file org-index-file)
-                 "* TODO %?\n")
-
-                ("m" "mail todo"
-                 entry
-                 (file org-index-file)
-                 "* TODO %a\n %?" :prepend t )
-
-                ("h" "Habit" entry (file org-index-file)
-                 "* TODO %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:END:\n")
+                    ("e" "Email" entry (file+headline org-index-file "Mail")
+                     "* TODO %? email |- %:from: %:subject :EMAIL:\n:PROPERTIES:\n:CREATED: %U\n:EMAIL-SOURCE: %l\n:END:\n%U\n" )
+	
 
 
-                ("d" "Diary" entry (file+olp+datetree "~/Orgs/jrl/journal.org")
-                 "** %(format-time-string \"%R\") %? %^g \n")
-
-                ("c" "Cookbook" entry (file "~/Orgs/cookbook.org")
-                 "%(org-chef-get-recipe-from-url)"
-                 :empty-lines 1)
-
-                ("m" "Manual Cookbook" entry (file "~/Orgs/cookbook.org")
-                 "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
+                    ("H" "Habit" entry (file org-index-file)
+                     "* TODO %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:END:\n")
 
 
-                )))
+                     ("j" "Journal")
+                    ("ji" "Inaya Journal" entry (file+olp+datetree "~/Orgs/BASB/Areas/Parenting/Journal.org")
+                     "** %(format-time-string \"%R\") %?  \n")
+
+                    ("jp" "Personal Journal" entry (file+olp+datetree "~/Orgs/jrl/journal.org")
+                     "** %(format-time-string \"%R\") %? \n")
+
+                     ("c" "cooking")
+                    ("cc" "Cookbook" entry (file "~/Orgs/BASB/Reference/Cookbook/cookbook.org")
+                     "%(org-chef-get-recipe-from-url)"
+                     :empty-lines 1)
+
+                    ("cm" "Manual Cookbook" entry (file "~/Orgs/BASB/Reference/Cookbook/cookbook.org")
+                     "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
+
+              )
+
+
+                    ))
+
 
 
     (defadvice org-capture-finalize
@@ -1454,6 +1481,26 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 #+RESULTS:
 : make-capture-frame
 
+Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-entry-for-elfeed/
+#+begin_src emacs-lisp
+;; ---------------------
+;; org capture in elfeed
+;; ---------------------
+(defun private/org-elfeed-entry-store-link ()
+  (when elfeed-show-entry
+    (let* ((link (elfeed-entry-link elfeed-show-entry))
+           (title (elfeed-entry-title elfeed-show-entry)))
+      (org-store-link-props
+       :link link
+       :description title)
+      )))
+
+(add-hook 'org-store-link-functions
+          'private/org-elfeed-entry-store-link)
+#+end_src
+#+RESULTS:
+| private/org-elfeed-entry-store-link |
+
 ** Org-toc
 #+BEGIN_SRC emacs-lisp
 (use-package toc-org
@@ -1461,60 +1508,6 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 (add-hook 'org-mode-hook 'toc-org-enable)
 #+END_SRC
 #+RESULTS:
-
-** Org-journal
-
-#+Begin_src emacs-lisp
-
-   (defun org-journal-save-entry-and-exit()
-     "Simple convenience function.
-       Saves the buffer of the current day's entry and kills the window
-       Similar to org-capture like behavior"
-     (interactive)
-     (save-buffer)
-     (kill-buffer-and-window))
-
-   (defun org-journal-find-location ()
-     ;; Open today's journal, but specify a non-nil prefix argument in order to
-     ;; inhibit inserting the heading; org-capture will insert the heading.
-     (org-journal-new-entry t)
-     ;; Position point on the journal's top-level heading so that org-capture
-     ;; will add the new entry as a child entry.
-     (goto-char (point-min)))
-
-  (add-to-list 'org-capture-templates 
-                  '("j" "Journal entry"
-                    entry (function org-journal-find-location)
-                    "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?"))
-   (use-package org-journal
-     :ensure t
-     :bind (("C-c T" . org-journal-new-entry)
-     ("C-c Y" . journal-file-yesterday))
-:preface
-  (defun get-journal-file-yesterday ()
-    "Gets filename for yesterday's journal entry."
-    (let* ((yesterday (time-subtract (current-time) (days-to-time 1)))
-           (daily-name (format-time-string "%Y%m%d" yesterday)))
-      (expand-file-name (concat org-journal-dir daily-name))))
-
-  (defun journal-file-yesterday ()
-    "Creates and load a file based on yesterday's date."
-    (interactive)
-    (find-file (get-journal-file-yesterday)))
-     :custom
-     (org-journal-dir (concat org-directory "/Journal/"))
-     (org-journal-date-format "%A, %d %B %Y")
-     (org-journal-enable-encryption t)
-     (org-journal-file-type 'weekly)
-
-
-    ; (define-key org-journal-mode-map (kbd "C-x C-s") 'org-journal-save-entry-and-exit)
-
-    )
-#+END_SRC
-
-#+RESULTS:
-: journal-file-yesterday
 
 ** Encryption
 #+BEGIN_SRC emacs-lisp
@@ -1574,10 +1567,11 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 #+RESULTS:
 : ox-beamer
 
-** Comment org caldav
+** COMMENT org caldav
 #+begin_src emacs-lisp
 
 (use-package org-caldav
+:ensure t
   :init
   ;; This is the sync on close function; it also prompts for save after syncing so 
   ;; no late changes get lost 
@@ -1600,20 +1594,15 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 	   (* 1 secs) nil 'org-caldav-sync)))
   
   ;; Actual calendar configuration edit this to meet your specific needs
-  (setq org-caldav-url "put_your_caldav_url_here")
+  (setq org-caldav-url "https://dav.mailbox.org/caldav/Y2FsOi8vMC8zMQ")
       (setq org-caldav-calendars
-    '((:calendar-id "desk-org"
-	    	:files ("~/path-to-file.org" "~/path-to-file-2.org")
-		:inbox "~/Calendars/org-caldav-inbox.org")
-	  (:calendar-id "shared_cal1"
-		:files ("~/Calendars/shared_cal1.org")
-		:inbox "~/Calendars/shared_cal1.org")
-      (:calendar-id "default"
-		:files ("~/Calendars/shared_cal2.org")
-		:inbox "~/Calendars/shared_cal2.org"))
+    '((:calendar-id "Calendar"
+	    	:files ("~/Orgs/BASB/main.org")
+		:inbox "~/Orgs/Calendars/org-caldav-inbox.org")
 )
-  (setq org-caldav-backup-file "~/org-caldav/org-caldav-backup.org")
-  (setq org-caldav-save-directory "~/org-caldav/")
+)
+  (setq org-caldav-backup-file "~/Orgs/Calenders/org-caldav/org-caldav-backup.org")
+  (setq org-caldav-save-directory "~/Orgs/Calenders/org-caldav/")
 
   :config
   (setq org-icalendar-alarm-time 1)
@@ -1632,6 +1621,131 @@ Define a few common tasks as capture templates. Specifically, I frequently:
   (add-hook 'kill-emacs-hook 'org-caldav-sync-at-close))
 
 #+end_src
+
+#+RESULTS:
+: t
+
+** ORG-download
+#+begin_src emacs-lisp
+(use-package org-download
+:ensure t)
+
+#+end_src
+
+* GTD and PARA
+Inspired from https://github.com/mwfogleman/.emacs.d/blob/master/michael.org
+** Projects
+A project is “any outcome that will take more than one action step to complete.” As a result of implementing Tiago Forte’s “PARA” system, I can ensure that I always have an up to date project list.
+#+begin_src emacs-lisp
+(defun go-to-projects ()
+  (interactive)
+  (find-file org-basb-main-file)
+  (widen)
+  (beginning-of-buffer)
+  (re-search-forward "* Projects")
+  (beginning-of-line))
+
+(defun project-overview ()
+  (interactive)
+  (go-to-projects)
+  (org-narrow-to-subtree)
+  (org-sort-entries t ?p)
+  (org-columns))
+
+(defun project-deadline-overview ()
+  (interactive)
+  (go-to-projects)
+  (org-narrow-to-subtree)
+  (org-sort-entries t ?d)
+  (org-columns))
+
+#+end_src
+The concept of Stuck Projects comes from David Allen’s GTD. A stuck project is a project without any action steps or tasks associated with it.
+
+Org-Mode has the ability to tell you which subtrees don’t have tasks associated with them. You can also configure what it recognizes as a stuck project. Unfortunately, by default, this functionality picks up a lot of noise.
+
+This function creates an agenda of stuck projects that is restricted to my “Projects” subtree.
+#+begin_src emacs-lisp
+(defun my-org-agenda-list-stuck-projects ()
+  (interactive)
+  (go-to-projects)
+  (org-agenda nil "#" 'subtree))
+
+#+end_src
+
+** Areas
+#+begin_src emacs-lisp
+(defun go-to-areas ()
+    (interactive)
+    (find-file org-basb-main-file)
+    (widen)
+    (beginning-of-buffer)
+    (re-search-forward "* Areas")
+    (beginning-of-line))
+
+(defun areas-overview ()
+    (interactive)
+    (go-to-areas)
+    (org-narrow-to-subtree)
+    (org-columns))
+
+#+end_src
+
+** Reviews
+#+begin_src emacs-lisp
+(defun my-new-daily-review ()
+  (interactive)
+  (let ((org-capture-templates '(("d" "Review: Daily Review" entry (file+olp+datetree "/tmp/reviews.org")
+                                  (file "~/.emacs.d/templates/dailyreviewtemplate.org")))))
+    (progn
+      (org-capture nil "d")
+      (org-capture-finalize t)
+      (org-speed-move-safe 'outline-up-heading)
+      (org-narrow-to-subtree)
+      (fetch-calendar)
+      (org-clock-in))))
+
+(defun my-new-weekly-review ()
+  (interactive)
+  (let ((org-capture-templates '(("w" "Review: Weekly Review" entry (file+olp+datetree "/tmp/reviews.org")
+                                  (file "~/.emacs.d/templates/weeklyreviewtemplate.org")))))
+    (progn
+      (org-capture nil "w")
+      (org-capture-finalize t)
+      (org-speed-move-safe 'outline-up-heading)
+      (org-narrow-to-subtree)
+      (fetch-calendar)
+      (org-clock-in))))
+
+(defun my-new-monthly-review ()
+  (interactive)
+  (let ((org-capture-templates '(("m" "Review: Monthly Review" entry (file+olp+datetree "/tmp/reviews.org")
+                                  (file "~/.emacs.d/templates/monthlyreviewtemplate.org")))))
+    (progn
+      (org-capture nil "m")
+      (org-capture-finalize t)
+      (org-speed-move-safe 'outline-up-heading)
+      (org-narrow-to-subtree)
+      (fetch-calendar)
+      (org-clock-in))))
+
+
+(bind-keys :prefix-map review-map
+           :prefix "C-z d"
+           ("d" . my-new-daily-review)
+           ("w" . my-new-weekly-review)
+           ("m" . my-new-monthly-review))
+
+(f-touch "/tmp/reviews.org")
+
+
+
+
+#+end_src
+
+#+RESULTS:
+: t
+
 * Flycheck
 #+BEGIN_SRC emacs-lisp
 
@@ -1991,9 +2105,25 @@ Swiper and other utils from aboabo.
 #+begin_src emacs-lisp
   (use-package winum
     :ensure t)
+(winum-mode)
 #+end_src
 
 #+RESULTS:
+* Perspectives
+#+begin_src emacs-lisp
+(use-package persp-mode
+:ensure t
+:config
+    (with-eval-after-load "persp-mode"
+      (setq wg-morph-on nil)
+      (setq persp-autokill-buffer-on-remove 'kill-weak)
+      (add-hook 'after-init-hook #'(lambda () (persp-mode 1))))
+)
+
+#+end_src
+
+#+RESULTS:
+: t
 
 * Treemacs
 #+BEGIN_SRC emacs-lisp
@@ -2005,39 +2135,63 @@ Swiper and other utils from aboabo.
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :config
   (progn
-    (setq treemacs-change-root-without-asking nil
-          treemacs-collapse-dirs              (if (executable-find "python") 3 0)
-          treemacs-file-event-delay           5000
-          treemacs-follow-after-init          t
-          treemacs-follow-recenter-distance   0.1
-          treemacs-goto-tag-strategy          'refetch-index
-          treemacs-indentation                2
-          treemacs-indentation-string         " "
-          treemacs-is-never-other-window      nil
-          treemacs-never-persist              nil
-          treemacs-no-png-images              nil
-          treemacs-recenter-after-file-follow nil
-          treemacs-recenter-after-tag-follow  nil
-          treemacs-show-hidden-files          t
-          treemacs-silent-filewatch           nil
-          treemacs-silent-refresh             nil
-          treemacs-sorting                    'alphabetic-desc
-          treemacs-tag-follow-cleanup         t
-          treemacs-tag-follow-delay           1.5
-         ; treemacs-width                      35
-)
+    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay      0.5
+          treemacs-directory-name-transformer    #'identity
+          treemacs-display-in-side-window        t
+          treemacs-eldoc-display                 t
+          treemacs-file-event-delay              5000
+          treemacs-file-extension-regex          treemacs-last-period-regex-value
+          treemacs-file-follow-delay             0.2
+          treemacs-file-name-transformer         #'identity
+          treemacs-follow-after-init             t
+          treemacs-git-command-pipe              ""
+          treemacs-goto-tag-strategy             'refetch-index
+          treemacs-indentation                   2
+          treemacs-indentation-string            " "
+          treemacs-is-never-other-window         nil
+          treemacs-max-git-entries               5000
+          treemacs-missing-project-action        'ask
+          treemacs-move-forward-on-expand        nil
+          treemacs-no-png-images                 nil
+          treemacs-no-delete-other-windows       t
+          treemacs-project-follow-cleanup        nil
+          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                      'left
+          treemacs-recenter-distance             0.1
+          treemacs-recenter-after-file-follow    nil
+          treemacs-recenter-after-tag-follow     nil
+          treemacs-recenter-after-project-jump   'always
+          treemacs-recenter-after-project-expand 'on-distance
+          treemacs-show-cursor                   nil
+          treemacs-show-hidden-files             t
+          treemacs-silent-filewatch              nil
+          treemacs-silent-refresh                nil
+          treemacs-sorting                       'alphabetic-asc
+          treemacs-space-between-root-nodes      t
+          treemacs-tag-follow-cleanup            t
+          treemacs-tag-follow-delay              1.5
+          treemacs-user-mode-line-format         nil
+          treemacs-width                         35)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
+
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode t)
     (pcase (cons (not (null (executable-find "git")))
-                 (not (null (executable-find "python3"))))
+                 (not (null treemacs-python-executable)))
       (`(t . t)
-       (treemacs-git-mode 'extended))
+       (treemacs-git-mode 'deferred))
       (`(t . _)
        (treemacs-git-mode 'simple))))
   :bind
   (:map global-map
-        ([f8]         . treemacs-toggle)
-        ("M-0"        . treemacs-select-window)))
+        ("M-0"       . treemacs-select-window)
+  ))
+
 
 (use-package treemacs-projectile
   :after treemacs projectile
@@ -2051,6 +2205,10 @@ Swiper and other utils from aboabo.
 (use-package treemacs-magit
   :after treemacs magit
   :ensure t)
+(use-package treemacs-persp
+  :after treemacs persp-mode
+  :ensure t
+  :config (treemacs-set-scope-type 'Perspectives))
 
 (use-package lsp-treemacs
 :ensure t
@@ -2405,6 +2563,19 @@ Git gutter:
 
 #+RESULTS:
 | company-box-mode | company-mode-set-explicitly |
+* COMMENT Golden ration
+#+begin_src emacs-lisp
+(use-package golden-ratio
+:ensure t
+:config
+(golden-ratio-mode 1)
+(setq golden-ratio-auto-scale t)
+)
+
+#+end_src
+
+#+RESULTS:
+: t
 
 * Beacon
 #+BEGIN_SRC emacs-lisp
@@ -2418,6 +2589,17 @@ Git gutter:
 
 #+RESULTS:
 : t
+
+* org-books
+#+begin_src emacs-lisp
+(use-package org-books
+:ensure t)
+(setq org-books-file "~/Orgs/BASB/Reference/Literature/Books.org")
+
+#+end_src
+
+#+RESULTS:
+: ~/Orgs/BASB/Reference/Literature/Books.org
 
 * Writing
 ** Latex
@@ -2469,11 +2651,12 @@ Git gutter:
     )
   (use-package latex-preview-pane
     :ensure t
-    :config
+)
     (setq latex-preview-pane-multifile-mode TeX-master)
-    (setq latex-preview-pane-use-frame t)
-(latex-preview-pane-enable)
-    )
+    (setq latex-preview-pane-use-frame nil)
+    (latex-preview-pane-enable)
+ 
+
   (use-package reftex
     :ensure t
     :defer t
@@ -2604,6 +2787,8 @@ mode
 * Mail setup
 #+BEGIN_SRC emacs-lisp
         ;;;(progn
+
+
     (require 'mu4e)
     (require 'mu4e-contrib)
     (require 'org-mu4e)
@@ -2612,10 +2797,6 @@ mode
     ;; package 'gnutls-bin' in Debian/Ubuntu
     (require 'smtpmail)
 
-    ;; the list of all of my e-mail addresses
-    (setq mu4e-user-mail-address-list '("ashfaqf@chalmers.se"
-                                        "ashfaq@ashfaqfarooqui.me"
-                                        ))
 
     ;; spell check
     (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
@@ -2627,7 +2808,7 @@ mode
     (setq mu4e-change-filenames-when-moving t)
 
     (global-set-key (kbd "<f2>") 'mu4e)
-    (setq mu4e-maildir "~/mail")
+
 
     (setq mu4e-compose-signature-auto-include t)
     (setq mu4e-compose-format-flowed t)
@@ -2825,7 +3006,7 @@ mode
 #+RESULTS:
 : t
 
-* EyeBrowse
+* COMMENT EyeBrowse
 #+BEGIN_SRC emacs-lisp
   (use-package eyebrowse
     :ensure t)
@@ -2869,7 +3050,7 @@ mode
   ;; (define-key endless/toggle-map "n" #'narrow-or-widen-dwim)
   ;; This line actually replaces Emacs' entire narrowing keymap, that's
   ;; how much I like this command. Only copy it if that's what you want.
-  (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
+ 
 
 #+END_SRC
 
@@ -2882,7 +3063,7 @@ mode
 :config (minions-mode 1))
 
 #+end_src
-* Activity Tracker
+* COMMENT Activity Tracker
 #+begin_src emacs-lisp
   (use-package activity-watch-mode
     :ensure t
@@ -2890,6 +3071,50 @@ mode
     (global-activity-watch-mode))
 
 #+end_src
+* org-roam
+#+begin_src emacs-lisp
+
+(setq org-roam-dir "~/Orgs/Roam")
+(use-package org-roam
+:ensure t
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory org-roam-dir)
+      (org-roam-buffer-position 'right)
+      (org-roam-buffer-width 0.3)
+      (org-roam-link-title-format "R:%s")
+(org-roam-completion-system 'ivy)
+
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n b" . org-roam-switch-to-buffer)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))))
+
+(use-package deft
+:ensure t
+  :after org
+  :bind
+  ("C-c n d" . deft)
+  :custom
+  (deft-recursive t)
+  (deft-use-filter-string-for-filename t)
+  (deft-default-extension "org")
+  (deft-directory org-roam-dir))
+(use-package company-org-roam
+   :ensure t
+  :config
+  (push 'company-org-roam company-backends))
+
+
+#+end_src
+
+#+RESULTS:
+: t
+
 * Dumb jump
 #+begin_src emacs-lisp
 
@@ -3047,18 +3272,18 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
   "Capture a TODO item via email."
   (org-capture nil "o"))
 
-(add-to-list
- 'org-capture-templates
- '("o" 
-   "TODO respond to email"
-   entry 
-   (file org-index-file)
-   "* TODO %^{Description}\n%A\n%?\n"))
+;(add-to-list
+; 'org-capture-templates
+; '("o" 
+;   "TODO respond to email"
+;   entry 
+;   (file org-index-file)
+;   "* TODO %^{Description}\n%A\n%?\n"))
 
 #+end_src
 
 #+RESULTS:
-: hydra-mu4e-headers/body
+: my/org-capture-mu4e
 ** COMMENT movement 
 #+begin_src emacs-lisp
 (global-set-key
@@ -3285,12 +3510,14 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
                       (with-selected-frame frame
                         (load-theme 'doom-one t))
                       (setq doom-modeline-icon (display-graphic-p))
-                      ))
+                     (set-face-attribute 'default nil :font "SauceCodePro Nerd Font Medium")
+(set-fontset-font t 'latin "Noto Sans")
+))
         (load-theme 'doom-one t))
 #+END_SRC
 
 #+RESULTS:
-| doom-modeline-set-selected-window | (lambda (frame) (let ((old-frame (selected-frame)) (old-buffer (current-buffer))) (unwind-protect (progn (select-frame frame (quote norecord)) (load-theme (quote doom-one) t)) (if (frame-live-p old-frame) (progn (select-frame old-frame (quote norecord)))) (if (buffer-live-p old-buffer) (progn (set-buffer old-buffer))))) (setq doom-modeline-icon (display-graphic-p))) | eyebrowse-init | x-dnd-init-frame | (lambda (frame) (with-selected-frame frame (load-theme (quote doom-one) t))) |
+: t
 
 ** Heaven and hell
 
@@ -3357,28 +3584,29 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 
 * Personal keymap
 #+begin_src emacs-lisp
-;; set up my own map
-(define-key z-map (kbd "g") 'magit-status)
-(define-key z-map (kbd "e") 'elfeed)
-(define-key z-map (kbd "m") 'mu4e)
-(define-key z-map (kbd "h p") 'hydra-pdftools/body)
-(define-key z-map (kbd "w") 'hydra-frame-window/body)
-(define-key z-map (kbd "h o") 'hydra-global-org/body)
-(define-key z-map (kbd "p") 'hydra-projectile/body)
-(define-key z-map (kbd "h c") 'hydra-multiple-cursors/body)
-(define-key z-map (kbd "h g") 'hydra-git-gutter/body)
-(define-key z-map (kbd "h m") 'hydra-mu4e-headers/body)
-(define-key z-map (kbd "h i") 'hydra-ivy/body)
-(define-key z-map (kbd "a") 'hydra-avy/body)
-(define-key z-map (kbd "l") 'hydra-lsp/body)
-(define-key z-map (kbd "j") 'hydra-dumb-jump/body)
-(define-key z-map (kbd "z") 'hydra-zoom/body)
+  ;; set up my own map
+  (define-key z-map (kbd "g") 'magit-status)
+  (define-key z-map (kbd "e") 'elfeed)
+  (define-key z-map (kbd "m") 'mu4e)
+  (define-key z-map (kbd "h p") 'hydra-pdftools/body)
+  (define-key z-map (kbd "w") 'hydra-frame-window/body)
+  (define-key z-map (kbd "h o") 'hydra-global-org/body)
+  (define-key z-map (kbd "p") 'hydra-projectile/body)
+  (define-key z-map (kbd "h c") 'hydra-multiple-cursors/body)
+  (define-key z-map (kbd "h g") 'hydra-git-gutter/body)
+  (define-key z-map (kbd "h m") 'hydra-mu4e-headers/body)
+  (define-key z-map (kbd "h i") 'hydra-ivy/body)
+  (define-key z-map (kbd "a") 'hydra-avy/body)
+  (define-key z-map (kbd "l") 'hydra-lsp/body)
+  (define-key z-map (kbd "j") 'hydra-dumb-jump/body)
+  (define-key z-map (kbd "z") 'hydra-zoom/body)
+  (define-key z-map (kbd "n") #'narrow-or-widen-dwim)
 #+end_src
 
 #+RESULTS:
-: hydra-zoom/body
+: narrow-or-widen-dwim
 
-* Loadiang complete
+* Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")
 #+END_SRC
