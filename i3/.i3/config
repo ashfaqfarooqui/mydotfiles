@@ -60,8 +60,8 @@ exec_always --no-startup-id caffeine
 exec_always --no-startup-id davmail
 exec --no-startup-id dropbox start
 exec_always --no-startup-id nextcloud
-exec_always --no-startup-id pulseaudio --start
-exec_always --no-startup-id aw-qt
+#exec_always --no-startup-id pulseaudio --start
+
 
 exec --no-startup-id /usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/nitrogen/Wallpapers/DSC_0749-1.jpg
 
@@ -272,9 +272,9 @@ assign [class="Nautilus"] $workspace5
 assign [class="(?i)virtualbox"] $workspace7
 assign [class="firefox"] $workspace2
 assign [class="Slack"] $workspace6
-for_window [class="Emacs" title="^Helm$"] floating enable border pixel 2
+
 for_window [class="copyq"] floating enable border normal
-for_window [class="copyq"] resize set 800 300
+#for_window [class="copyq"] resize set 800 300
 # Open specific applications in floating mode
 for_window [title="alsamixer"] floating enable border pixel 1
 for_window [class="Calamares"] floating enable border normal
@@ -448,7 +448,9 @@ set $volumestep 5
 #   List sink names: pacmd list-sinks | awk -F "[<>]" '/^\s+name: <.*>/{print $2}'
 #set $sinkname alsa_output.pci-0000_00_1b.0.analog-stereo
 
+set $sinkname alsa_output.pci-0000_00_1b.0.analog-stereo
+
 # Using pulseaudio-utils (append "-s $sinkname" without quotes to override default sink)
-bindsym XF86AudioRaiseVolume exec i3-volume -np -i $volumestep -t $statuscmd -u $statussig
-bindsym XF86AudioLowerVolume exec i3-volume -np -d $volumestep -t $statuscmd -u $statussig
-bindsym XF86AudioMute        exec i3-volume -mn -t $statuscmd -u $statussig
+bindsym XF86AudioRaiseVolume exec i3-volume -np -i $volumestep -t $statuscmd -u $statussig -s $sinkname
+bindsym XF86AudioLowerVolume exec i3-volume -np -d $volumestep -t $statuscmd -u $statussig -s $sinkname
+bindsym XF86AudioMute        exec i3-volume -mn -t $statuscmd -u $statussig -s $sinkname
