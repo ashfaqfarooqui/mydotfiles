@@ -1440,7 +1440,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
                      "** %(format-time-string \"%R\") %? \n")
 
                      ("c" "cooking")
-                    ("cc" "Cookbook" entry (file "~/Orgs/BASB/Reference/Cookbook/cookbook.org")
+                    ("cr" "Cookbook" entry (file "~/Orgs/BASB/Reference/Cookbook/cookbook.org")
                      "%(org-chef-get-recipe-from-url)"
                      :empty-lines 1)
 
@@ -1834,15 +1834,17 @@ Swiper and other utils from aboabo.
     (("M-y" . counsel-yank-pop)
      :map ivy-minibuffer-map
      ("M-y" . ivy-next-line)))
+(setq counsel-grep-base-command
+      "rg -i -M 120 --no-heading --line-number --color never %s %s")
 
 
   (use-package avy
-    :ensure t
+  :ensure t
     :bind
     (
      ("M-j" . 'avy-goto-word-1)
      ("C-j" . 'avy-goto-char-2)
-     ("C-M-j" . 'avy-goto-line)
+     ("C-S-j" . 'avy-goto-line)
      )
     )
 
@@ -1851,7 +1853,7 @@ Swiper and other utils from aboabo.
 
   (use-package swiper
     :ensure t
-    :bind (("C-s" . swiper)
+    :bind (("C-s" . swiper-isearch)
            ("C-r" . swiper)
            ("C-c C-r" . ivy-resume)
            ("M-x" . counsel-M-x)
@@ -2109,7 +2111,7 @@ Swiper and other utils from aboabo.
 #+end_src
 
 #+RESULTS:
-* Perspectives
+* COMMENT Perspectives
 #+begin_src emacs-lisp
 (use-package persp-mode
 :ensure t
@@ -2127,94 +2129,94 @@ Swiper and other utils from aboabo.
 
 * Treemacs
 #+BEGIN_SRC emacs-lisp
-(use-package treemacs
+  (use-package treemacs
+    :ensure t
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+            treemacs-deferred-git-apply-delay      0.5
+            treemacs-directory-name-transformer    #'identity
+            treemacs-display-in-side-window        t
+            treemacs-eldoc-display                 t
+            treemacs-file-event-delay              5000
+            treemacs-file-extension-regex          treemacs-last-period-regex-value
+            treemacs-file-follow-delay             0.2
+            treemacs-file-name-transformer         #'identity
+            treemacs-follow-after-init             t
+            treemacs-git-command-pipe              ""
+            treemacs-goto-tag-strategy             'refetch-index
+            treemacs-indentation                   2
+            treemacs-indentation-string            " "
+            treemacs-is-never-other-window         nil
+            treemacs-max-git-entries               5000
+            treemacs-missing-project-action        'ask
+            treemacs-move-forward-on-expand        nil
+            treemacs-no-png-images                 nil
+            treemacs-no-delete-other-windows       t
+            treemacs-project-follow-cleanup        nil
+            treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+            treemacs-position                      'left
+            treemacs-recenter-distance             0.1
+            treemacs-recenter-after-file-follow    nil
+            treemacs-recenter-after-tag-follow     nil
+            treemacs-recenter-after-project-jump   'always
+            treemacs-recenter-after-project-expand 'on-distance
+            treemacs-show-cursor                   nil
+            treemacs-show-hidden-files             t
+            treemacs-silent-filewatch              nil
+            treemacs-silent-refresh                nil
+            treemacs-sorting                       'alphabetic-asc
+            treemacs-space-between-root-nodes      t
+            treemacs-tag-follow-cleanup            t
+            treemacs-tag-follow-delay              1.5
+            treemacs-user-mode-line-format         nil
+            treemacs-width                         35)
+
+      ;; The default width and height of the icons is 22 pixels. If you are
+      ;; using a Hi-DPI display, uncomment this to double the icon size.
+      ;;(treemacs-resize-icons 44)
+
+      (treemacs-follow-mode t)
+      (treemacs-filewatch-mode t)
+      (treemacs-fringe-indicator-mode t)
+      (pcase (cons (not (null (executable-find "git")))
+                   (not (null treemacs-python-executable)))
+        (`(t . t)
+         (treemacs-git-mode 'deferred))
+        (`(t . _)
+         (treemacs-git-mode 'simple))))
+    :bind
+    (:map global-map
+          ("M-0"       . treemacs-select-window)
+    ))
+
+
+  (use-package treemacs-projectile
+    :after treemacs projectile
+    :ensure t)
+
+  (use-package treemacs-icons-dired
+    :after treemacs dired
+    :ensure t
+    :config (treemacs-icons-dired-mode))
+
+  (use-package treemacs-magit
+    :after treemacs magit
+    :ensure t)
+  ;; (use-package treemacs-persp
+  ;;   :after treemacs persp-mode
+  ;;   :ensure t
+  ;;   :config (treemacs-set-scope-type 'Perspectives)) **/
+
+  (use-package lsp-treemacs
   :ensure t
-  :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :config
-  (progn
-    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
-          treemacs-deferred-git-apply-delay      0.5
-          treemacs-directory-name-transformer    #'identity
-          treemacs-display-in-side-window        t
-          treemacs-eldoc-display                 t
-          treemacs-file-event-delay              5000
-          treemacs-file-extension-regex          treemacs-last-period-regex-value
-          treemacs-file-follow-delay             0.2
-          treemacs-file-name-transformer         #'identity
-          treemacs-follow-after-init             t
-          treemacs-git-command-pipe              ""
-          treemacs-goto-tag-strategy             'refetch-index
-          treemacs-indentation                   2
-          treemacs-indentation-string            " "
-          treemacs-is-never-other-window         nil
-          treemacs-max-git-entries               5000
-          treemacs-missing-project-action        'ask
-          treemacs-move-forward-on-expand        nil
-          treemacs-no-png-images                 nil
-          treemacs-no-delete-other-windows       t
-          treemacs-project-follow-cleanup        nil
-          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-          treemacs-position                      'left
-          treemacs-recenter-distance             0.1
-          treemacs-recenter-after-file-follow    nil
-          treemacs-recenter-after-tag-follow     nil
-          treemacs-recenter-after-project-jump   'always
-          treemacs-recenter-after-project-expand 'on-distance
-          treemacs-show-cursor                   nil
-          treemacs-show-hidden-files             t
-          treemacs-silent-filewatch              nil
-          treemacs-silent-refresh                nil
-          treemacs-sorting                       'alphabetic-asc
-          treemacs-space-between-root-nodes      t
-          treemacs-tag-follow-cleanup            t
-          treemacs-tag-follow-delay              1.5
-          treemacs-user-mode-line-format         nil
-          treemacs-width                         35)
-
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;;(treemacs-resize-icons 44)
-
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode t)
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null treemacs-python-executable)))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple))))
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-  ))
-
-
-(use-package treemacs-projectile
-  :after treemacs projectile
-  :ensure t)
-
-(use-package treemacs-icons-dired
-  :after treemacs dired
-  :ensure t
-  :config (treemacs-icons-dired-mode))
-
-(use-package treemacs-magit
-  :after treemacs magit
-  :ensure t)
-(use-package treemacs-persp
-  :after treemacs persp-mode
-  :ensure t
-  :config (treemacs-set-scope-type 'Perspectives))
-
-(use-package lsp-treemacs
-:ensure t
-  :config
-  (lsp-metals-treeview-enable t)
-  (setq lsp-metals-treeview-show-when-views-received t))
+    :config
+    (lsp-metals-treeview-enable t)
+    (setq lsp-metals-treeview-show-when-views-received t))
 
 
 #+END_SRC
@@ -2425,12 +2427,12 @@ Git gutter:
 #+BEGIN_SRC emacs-lisp
  (use-package scala-mode
 :ensure t
-  :mode "\\.s\\(cala\\|bt\\)$"
+  :mode "\\.s\\(cala\\|bt\\|c\\)$"
 :interpreter
     ("scala" . scala-mode))
 
+;; Enable sbt mode for executing sbt commands
 (use-package sbt-mode
-:ensure t
   :commands sbt-start sbt-command
   :config
   ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
@@ -2438,7 +2440,10 @@ Git gutter:
   (substitute-key-definition
    'minibuffer-complete-word
    'self-insert-command
-   minibuffer-local-completion-map))
+   minibuffer-local-completion-map)
+   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+   (setq sbt:program-options '("-Dsbt.supershell=false"))
+)
 
 ;; Enable nice rendering of diagnostics like compile errors.
 (use-package flycheck
@@ -2453,21 +2458,37 @@ Git gutter:
 
 
 (use-package lsp-mode
-:ensure t
   ;; Optional - enable lsp-mode automatically in scala files
-  :hook (scala-mode . lsp)
+  :hook  (scala-mode . lsp)
+         (lsp-mode . lsp-lens-mode)
   :config (setq lsp-prefer-flymake nil))
+
+
+(use-package lsp-metals
+:ensure t)
 (use-package lsp-ui
 :ensure t )
 
 (use-package lsp-ivy
 :ensure t)
 
+;; Use the Debug Adapter Protocol for running tests and debugging
+(use-package posframe
+  ;; Posframe is a pop-up tool that must be manually installed for dap-mode
+:ensure t
+  )
+(use-package dap-mode
+:ensure t
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode)
+  )
 
 
 #+END_SRC
 
 #+RESULTS:
+| dap-ui-mode | dap-mode | lsp-lens-mode |
 
 ** Turn them on
 #+BEGIN_SRC emacs-lisp
@@ -3548,6 +3569,45 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 #+end_src
 
 #+RESULTS:
+
+* Key presss
+#+begin_src emacs-lisp
+(use-package moody :ensure t)
+
+(use-package keycast
+  :ensure t
+  :after moody
+  :commands keycast-mode
+  :config
+  (setq keycast-window-predicate 'moody-window-active-p)
+  (setq keycast-separator-width 1)
+  
+  ;; TODO pending review
+  (add-to-list 'keycast-substitute-alist '(mouse-event-p nil))
+  (add-to-list 'keycast-substitute-alist '(mouse-movement-p nil))
+  (add-to-list 'keycast-substitute-alist '(mwheel-scroll nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-set-point nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-set-region nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-drag-secondary nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-drag-line nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-drag-drag nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-start-end nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-drag-region nil nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-drag-track nil nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-drag-region-rectangle nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-drag-and-drop-region nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mwheel-event-button nil))
+  ;; (add-to-list 'keycast-substitute-alist '(dframe-mouse-event-p nil))
+  ;; (add-to-list 'keycast-substitute-alist '(mouse-drag-events-are-point-events-p nil))
+  (add-to-list 'keycast-substitute-alist '(self-insert-command "." "Typing…"))
+  (add-to-list 'keycast-substitute-alist '(org-self-insert-command "." "Typing…")))
+
+
+#+end_src
+
+#+RESULTS:
+: t
+
 
 * Ripgrep
 #+begin_src emacs-lisp

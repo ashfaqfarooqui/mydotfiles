@@ -46,3 +46,5 @@
 * Podcasts                                                           :elfeed:
 ** Scala                                                     :scala:podcast:
 *** https://scala.love/feed/sonus-feed
+** Learning Swedish                                        :podcast:Swedish:
+*** https://rss.acast.com/coffeebreakswedish 
