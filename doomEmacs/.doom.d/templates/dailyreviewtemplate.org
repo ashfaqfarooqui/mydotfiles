@@ -1,0 +1,15 @@
+* Daily Review
+- [ ] Clear Physical Desktop / Inbox / Notebook
+- [ ] Clear Downloads and Desktop Folders
+- [ ] Clear Email Inboxes
+- [ ] Capture any remaining open loops as tasks
+- [ ] Schedule + refile tasks in inbox or orgzly inbox file.
+- [ ] Add running and sleeping.
+- [ ] Schedule today's tasks:
+  #+BEGIN_SRC emacs-lisp
+    (progn
+      (org-agenda nil "a")
+      (org-agenda-day-view))
+  #+END_SRC
+- [ ] Write journal
+- [ ] Clock out.

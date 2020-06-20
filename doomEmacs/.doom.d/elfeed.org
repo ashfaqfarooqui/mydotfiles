@@ -1,0 +1,51 @@
+* Blog                                                        :elfeed:
+** Pocket :pocket:
+*** https://getpocket.com/users/ashfaq.farooqui/feed/all
+** Wallabag                                                       :wallabag:
+*** https://app.wallabag.it/feed/ashfaqf/dfrW6PbNo2qG1fW/all
+** Comics                                                           :comics:
+*** http://feeds.feedburner.com/satwcomic
+*** http://phdcomics.com/gradfeed.php
+*** https://existentialcomics.com/rss.xml
+*** https://www.xkcd.com/atom.xml
+** Tech                                                 :tech:
+*** https://irreal.org/blog/?feed=rss2
+*** http://planet.emacsen.org/atom.xml
+*** http://pragmaticemacs.com/feed/
+*** http://sachachua.com/blog/feed/
+*** http://cestlaz.github.io/rss.xml
+*** http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml
+*** https://metaredux.com/feed.xml
+*** http://nullprogram.com/feed
+*** https://two-wrongs.com/feed.xml
+*** https://captnemo.in/atom.xml
+*** https://twobithistory.org/feed.xml
+*** https://geekgonecrazy.com/feed.xml
+** Urdu :Urdu:
+*** https://urduwallahs.wordpress.com/feed/
+** Islam :Islam:
+*** https://ballandalus.wordpress.com/feed/
+*** https://www.joebradford.net/feed/
+*** http://nizami.co.uk/feed
+** General :General:
+*** https://hangingodes.wordpress.com/rss.xml
+*** https://blog.sarvajna.in/feed
+*** https://protesilaos.com/master.xml
+
+** Cooking                                                       :Cooking:
+*** https://egyptianmedievalcookbook.wordpress.com/feed/
+** Productivity
+*** https://radreads.co/rss
+** Scala                                                  :scala:programming:
+*** https://www.lihaoyi.com/feed
+*** https://blog.softwaremill.com/feed
+* Youtube                                                    :elfeed:youtube:
+** Usuli Institute
+*** https://www.youtube.com/feeds/videos.xml?channel_id=UCacZ3k2AOpd5-3tdCxcDmgQ
+** Programming with cats
+*** https://www.youtube.com/playlist?list=PLhgq-BqyZ7i7MTGhUROZy3BOICnVixETS
+* Podcasts                                                           :elfeed:
+** Scala                                                     :scala:podcast:
+*** https://scala.love/feed/sonus-feed
+** Learning Swedish                                        :podcast:Swedish:
+*** https://rss.acast.com/coffeebreakswedish 

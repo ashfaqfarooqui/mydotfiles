@@ -1,0 +1,20 @@
+* %^{Project name}
+DEADLINE: %^t
+:PROPERTIES:
+:STARTDATE: %u
+:path:
+:END:
+%^{OUTCOME}p
+%^{AREA}p
+%?
+- [ ] Add project tags for context (e.g. work, personal)
+- [ ] List specific tasks
+- [ ] Schedule next actions from generated tasks
+- [ ] Create the corresponding folders for the project
+
+  #+name: headline
+  #+BEGIN_SRC emacs-lisp
+  (nth 4 (org-heading-components))
+  #+END_SRC
+
+
