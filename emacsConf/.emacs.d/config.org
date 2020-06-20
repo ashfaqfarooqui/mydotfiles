@@ -3531,7 +3531,7 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
                       (with-selected-frame frame
                         (load-theme 'doom-one t))
                       (setq doom-modeline-icon (display-graphic-p))
-                     (set-face-attribute 'default nil :font "SauceCodePro Nerd Font Medium")
+                     (set-face-attribute 'default nil :font "Mononoki Nerd Font Medium")
 (set-fontset-font t 'latin "Noto Sans")
 ))
         (load-theme 'doom-one t))
@@ -3564,7 +3564,7 @@ _o_: org-cap | _C--_: show less   | _*_: *thing  | _q_: quit hdrs | _j_: jump2ma
 #+begin_src emacs-lisp
 ;cap(set-face-font 'default "SauceCodePro Nerd Font Medium")
 
-(set-face-attribute 'default nil :font "SauceCodePro Nerd Font Medium")
+(set-face-attribute 'default nil :font " Mononoki Nerd Font Medium")
 (set-fontset-font t 'latin "Noto Sans")
 #+end_src
 
