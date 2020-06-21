@@ -7,10 +7,10 @@ allow_bold = true
 dynamic_title = true
 urgent_on_bell = true
 clickable_url = true
-font = SauceCodePro Nerd Font Medium 10
+font = Mononoki Nerd Font 12
 scrollback_lines = 10000
 search_wrap = true
-#icon_name = terminal
+icon_name = terminal
 #geometry = 640x480
 
 # "system", "on" or "off"
@@ -31,11 +31,15 @@ filter_unmatched_urls = true
 # emit escape sequences for extra modified keys
 #modify_other_keys = false
 [colors]
-foreground = #c5c8c6
+#foreground = #c5c8c6
+foreground = #bbc5ff
 foreground_bold = #ffffff
 #foreground_dim = #888888
 #background = #ededed
-background = #1d1f21
+#background = #1d1f21
+background = #292d3e
+
+
 #cursor = #aeafad
 
 # if unset, will reverse foreground and background
