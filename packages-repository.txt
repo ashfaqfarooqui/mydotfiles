@@ -2,6 +2,7 @@
 accountsservice
 acpi
 acpid
+alacritty
 alsa-firmware
 alsa-plugins
 alsa-tools
@@ -59,7 +60,6 @@ cuda
 cython
 darktable
 davfs2
-dcfldd
 dconf-editor
 deluge-gtk
 device-mapper
@@ -76,8 +76,6 @@ docopt
 dosfstools
 downgrade
 e2fsprogs
-eclipse-common
-eclipse-java
 ecryptfs-utils
 efibootmgr
 efitools
@@ -89,6 +87,7 @@ evince
 exfat-utils
 f2fs-tools
 fakeroot
+fd
 feh
 ffmpeg
 ffmpegthumbnailer
@@ -150,6 +149,7 @@ hexchat
 hledger
 hledger-ui
 hledger-web
+hlint
 htop
 i3blocks
 i7z
@@ -170,8 +170,8 @@ isousb
 ispell
 isync
 java-openjfx
-jdk10-openjdk
 jfsutils
+jq
 jre8-openjdk
 jre8-openjdk-headless
 jshon
@@ -198,13 +198,13 @@ lightdm-gtk-greeter
 lightdm-settings
 linux-firmware
 linux-latest
+linux-latest-bbswitch
 linux-latest-headers
 linux-latest-ndiswrapper
+linux-latest-nvidia-440xx
 linux-latest-virtualbox-guest-modules
 linux-latest-virtualbox-host-modules
 linux54-nvidia-440xx
-linux55-bbswitch
-linux55-nvidia-440xx
 linux56-nvidia-440xx
 logrotate
 lollypop
@@ -248,7 +248,7 @@ mencoder
 mesa-demos
 mhwd
 mhwd-db
-microsoft-office-online-jak
+microsoft-office-web-jak
 mkinitcpio-nfs-utils
 mkinitcpio-openswap
 mlocate
@@ -297,7 +297,6 @@ obs-studio
 ocl-icd
 octave
 okular
-open-fuse-iso
 opencl-headers
 opencl-nvidia-440xx
 openresolv
@@ -329,7 +328,6 @@ php-intl
 php-pspell
 php-sqlite
 pidgin
-pinta
 pkgconf
 polkit-gnome
 poppler-data
@@ -340,7 +338,9 @@ pulseaudio-bluetooth
 pulseaudio-ctl
 pulseaudio-zeroconf
 purple-skypeweb
+pygtk
 python-aiohttp
+python-black
 python-decorator
 python-feedparser
 python-ghp-import
@@ -348,8 +348,10 @@ python-matplotlib
 python-numpy
 python-pillow
 python-pip
+python-pipenv
 python-pybtex
 python-pydot
+python-pyflakes
 python-pylint
 python-pytools
 python-sympy
@@ -369,13 +371,11 @@ rdesktop
 redshift
 refind
 reiserfsprogs
-remacs
 remmina
 retroarch
 rofi
 rp-pppoe
 rsync
-rust
 s-nail
 sbt
 sbxkb
@@ -385,6 +385,8 @@ sdparm
 seahorse
 sed
 shadow
+shellcheck
+shotwell
 simple-scan
 slop
 smartmontools
@@ -393,6 +395,7 @@ speedtest-cli
 sqlitebrowser
 squashfs-tools
 st-manjaro
+stalonetray
 steam-manjaro
 stow
 subversion
@@ -479,7 +482,6 @@ xcape
 xclip
 xcursor-chameleon-pearl
 xcursor-maia
-xdg-su
 xdg-user-dirs
 xdg-user-dirs-gtk
 xdg-utils
@@ -497,6 +499,10 @@ xfsprogs
 xfwm4
 xfwm4-themes
 xl2tpd
+xmobar
+xmonad
+xmonad-contrib
+xmonad-utils
 xorg-fonts-100dpi
 xorg-server
 xorg-twm
