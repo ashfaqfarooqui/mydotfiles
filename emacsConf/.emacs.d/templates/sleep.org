@@ -1,0 +1,7 @@
+* %u^{}
+:PROPERTIES:
+:Bedtime: %^{bedtime}p
+:wakeup: %^{wakeup}p
+:total: %^{Time}p
+:END:
+%?
