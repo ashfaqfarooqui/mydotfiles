@@ -438,7 +438,7 @@ archive of finished tasks in =archive.org=.
 
 
 #+END_SRC
-** COMMENT Sequences
+** Sequences
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords '((sequence
                              "TODO(t)"  ; next action
@@ -448,14 +448,14 @@ archive of finished tasks in =archive.org=.
                             (sequence "IDEA"))
 )
 
-  (setq org-todo-keyword-faces
-        (quote (("TODO" :foreground "#cc6666" :weight bold)
-                ("NEXT" :foreground "#8abeb7" :weight bold)
-                ("DONE" :foreground "#b5bd68" :weight bold)
-                ("WAITING" :foreground "#de935f" :weight bold)
-                ("MAYBE" . (:foreground "#b394aa" :weight book))
-                ("SOMEDAY" :foreground "#b294bb" :weight bold)
-                ("CANCELLED" :foreground "#f0c674" :weight bold))))
+  ;; (setq org-todo-keyword-faces
+  ;;       (quote (("TODO" :foreground "#cc6666" :weight bold)
+  ;;               ("NEXT" :foreground "#8abeb7" :weight bold)
+  ;;               ("DONE" :foreground "#b5bd68" :weight bold)
+  ;;               ("WAITING" :foreground "#de935f" :weight bold)
+  ;;               ("MAYBE" . (:foreground "#b394aa" :weight book))
+  ;;               ("SOMEDAY" :foreground "#b294bb" :weight bold)
+  ;;               ("CANCELLED" :foreground "#f0c674" :weight bold))))
 
   (setq org-log-done t)
 
