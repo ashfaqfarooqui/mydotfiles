@@ -31,18 +31,16 @@
 #+end_src
 #+RESULTS:
 : org-mode
-
-
 * Visual  configuration
 ** Fonts
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 24)
-      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 36))
+(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
+      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 40))
 
 #+END_SRC
 
 #+RESULTS:
-: #<font-spec nil nil sans nil nil nil nil nil 13 nil nil nil nil>
+: #<font-spec nil nil Mononoki\ Nerd\ Font nil nil nil nil nil 15 nil nil nil nil>
 ** Rainbow mode
 #+BEGIN_SRC emacs-lisp
 (use-package! rainbow-mode
@@ -132,6 +130,9 @@
     (defalias 'list-buffers 'ibuffer-other-window)
 
 #+END_SRC
+
+#+RESULTS:
+: list-buffers
 
 
 *** hydra ibuf
@@ -238,7 +239,7 @@
 (setq super-save-exclude '(".gpg"))
 (setq super-save-auto-save-when-idle t)
 #+END_SRC
-** TODO COMMENT Swiper, avy, counsel
+** Swiper, avy, counsel
 Look at what we need from here. its mainly the key bindings I require for swiper and avy.
 #+BEGIN_SRC emacs-lisp
 
@@ -246,62 +247,15 @@ Look at what we need from here. its mainly the key bindings I require for swiper
 (setq counsel-grep-base-command
       "rg -i -M 120 --no-heading --line-number --color never %s %s")
 
+;  (setq avy-timeout-seconds 2.0)
 
-  (after! avy
-    :bind
-    (
-     ("M-j" . 'avy-goto-word-1)
-     ("C-j" . 'avy-goto-char-2)
-     ("C-S-j" . 'avy-goto-line)
-     )
-    )
-
-  (setq avy-timeout-seconds 2.0)
-
-
-  (after! swiper
-    :bind (("C-s" . swiper-isearch)
-           ("C-r" . swiper)
-           ("C-c C-r" . ivy-resume)
-           ("M-x" . counsel-M-x)
-           ("C-x C-f" . counsel-find-file))
-    :config
-    (progn
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (setq ivy-display-style 'fancy)
-      (setq enable-recursive-minibuffers t)
-      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-      ))
-#+END_SRC
-
-** Multiple cursors
-Hydra for MC
-#+BEGIN_SRC emacs-lisp
-
-
-(defhydra hydra-multiple-cursors (:hint nil)
-  "
-     ^Up^            ^Down^        ^Other^
-----------------------------------------------
-[_p_]   Next    [_n_]   Next    [_l_] Edit lines
-[_P_]   Skip    [_N_]   Skip    [_a_] Mark all
-[_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp
-^ ^             ^ ^             [_q_] Quit
-"
-  ("l" mc/edit-lines :exit t)
-  ("a" mc/mark-all-like-this :exit t)
-  ("n" mc/mark-next-like-this)
-  ("N" mc/skip-to-next-like-this)
-  ("M-n" mc/unmark-next-like-this)
-  ("p" mc/mark-previous-like-this)
-  ("P" mc/skip-to-previous-like-this)
-  ("M-p" mc/unmark-previous-like-this)
-  ("r" mc/mark-all-in-region-regexp :exit t)
-  ("q" nil))
-
-
-
+;(after! avy
+  (map!
+        :desc "Search swiper-isearch" "C-s" #'swiper-isearch
+        :desc "avy goto char"   "C-j" #'avy-goto-char-2
+        :desc "save draft"    "C-M-j" #'avy-goto-word-1
+        :desc "attach"        "C-S-j" #'avy-goto-line)
+;)
 #+END_SRC
 ** Alert
 #+BEGIN_SRC emacs-lisp
@@ -711,10 +665,8 @@ Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-en
 
 
 
-(global-set-key (kbd "<f2>") 'mu4e)
 
-
-(setq mu4e-compose-signature-auto-include t)
+;(setq mu4e-compose-signature-auto-include t)
 
 
 ;; setup some handy shortcuts
@@ -781,10 +733,10 @@ Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-en
                      (smtpmail-smtp-service . 465)))
 
           ))
-(setq smtpmail-debug-verb t)
+;(setq smtpmail-debug-verb t)
 
 
-(setq mu4e-compose-signature message-signature)
+;(setq mu4e-compose-signature message-signature)
 
 
 )
@@ -1024,6 +976,19 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 #+RESULTS:
 : narrow-or-widen-dwim
 
+* Modes
+#+BEGIN_SRC emacs-lisp
+(use-package! minions)
+
+(minions-mode 1)
+(global-hungry-delete-mode)
+(nyan-mode)
+
+(after! scala-mode
+
+  :mode "\\.s\\(cala\\|bt\\|c\\)$")
+
+#+END_SRC
 * Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")
