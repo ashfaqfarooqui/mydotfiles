@@ -44,8 +44,11 @@
 *** https://www.youtube.com/feeds/videos.xml?channel_id=UCacZ3k2AOpd5-3tdCxcDmgQ
 ** Programming with cats
 *** https://www.youtube.com/playlist?list=PLhgq-BqyZ7i7MTGhUROZy3BOICnVixETS
-* Podcasts                                                           :elfeed:
+* Podcasts :elfeed:
 ** Scala                                                     :scala:podcast:
 *** https://scala.love/feed/sonus-feed
 ** Learning Swedish                                        :podcast:Swedish:
-*** https://rss.acast.com/coffeebreakswedish 
+*** https://rss.acast.com/coffeebreakswedish
+* News :News:elfeed:
+** The Local
+*** https://feeds.thelocal.com/rss/se
