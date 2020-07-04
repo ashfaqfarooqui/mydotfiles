@@ -15,13 +15,14 @@ import System.IO (hPutStrLn)
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
-
+import XMonad.Layout.Tabbed
 --hooks
 import XMonad.Hooks.SetWMName
-import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.DynamicLog (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))
 import XMonad.Hooks.ManageDocks -- (avoidStruts, docksEventHook, manageDocks, ToggleStruts(..))
 import XMonad.Hooks.WorkspaceHistory
-
+import XMonad.Hooks.DynamicBars
+import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat)
     -- Data
 import Data.Char (isSpace)
 import Data.Monoid
@@ -40,12 +41,17 @@ import XMonad.Actions.WindowGo (runOrRaise)
 import XMonad.Actions.WithAll (sinkAll, killAll)
 
 --layouts
+import XMonad.Layout.LimitWindows (limitWindows, increaseLimit, decreaseLimit)
+import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import XMonad.Layout.Gaps
 import XMonad.Layout.Spacing
 import XMonad.Layout.NoBorders
-       
+import XMonad.Layout.Renamed (renamed, Rename(Replace))
+import XMonad.Layout.Spiral
+import XMonad.Layout.SimplestFloat
+
     -- Prompt
 import XMonad.Prompt
 import XMonad.Prompt.Input
@@ -250,6 +256,8 @@ myKeys =
         --, ("M-S-s", windows copyToAll)  
      --   , ("M-C-s", killAllOtherCopies)
 
+
+
         -- Layouts
         , ("M-<Tab>", sendMessage NextLayout)                -- Switch to next layout
     --    , ("M-C-M1-<Up>", sendMessage Arrange)
@@ -264,8 +272,8 @@ myKeys =
 
         , ("M-h", sendMessage Shrink)                       -- Shrink horiz window width
         , ("M-l", sendMessage Expand)                       -- Expand horiz window width
-    --    , ("M-C-j", sendMessage MirrorShrink)               -- Shrink vert window width
-    --    , ("M-C-k", sendMessage MirrorExpand)               -- Exoand vert window width
+       -- , ("M-C-j", sendMessage MirrorShrink)               -- Shrink vert window width
+       -- , ("M-C-k", sendMessage MirrorExpand)               -- Exoand vert window width
 
     -- Workspaces
         , ("M-.", CWS.nextScreen)  -- Switch focus to next monitor
@@ -279,27 +287,39 @@ myKeys =
         
 
     --- My Applications (Super+Alt+Key)
-        , ("M-M1-c", spawn "copyq toggle")
-        , ("M-M1-t", spawn "nautilus")
-        , ("M-M1-g", spawn "emacsclient --alternate-editor='' --no-wait --create-frame")
-        , ("M-M1-w", spawn "firefox")
-  
+        , ("M-c", spawn "copyq toggle")
+        , ("M-S-t", spawn "nautilus")
+        , ("M-g", spawn "emacsclient --alternate-editor='' --no-wait --create-frame")
+        , ("M-w", spawn "firefox")
+
+        , ("M-e b", spawn "emacsclient -c -a '' --eval '(ibuffer)'")         -- list emacs buffers
+        , ("M-e d", spawn "emacsclient -c -a '' --eval '(dired nil)'")       -- dired emacs file manager
+        , ("M-e m", spawn "emacsclient -c -a '' --eval '(mu4e)'")            -- mu4e emacs email client
+        , ("M-e n", spawn "emacsclient -c -a '' --eval '(elfeed)'")          -- elfeed emacs rss client
+        , ("M-e s", spawn "emacsclient -c -a '' --eval '(vterm)'")          -- eshell within emacs
+
         , ("<XF86AudioLowerVolume>", spawn "amixer set Master 5%- unmute")
         , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 5%+ unmute")
         , ("<XF86HomePage>", spawn "firefox")
         , ("<XF86Search>", safeSpawn "firefox" ["https://www.duckduckgo.com/"])
-        , ("<XF86Mail>", runOrRaise "geary" (resource =? "thunderbird"))
-        , ("<XF86Calculator>", runOrRaise "gcalctool" (resource =? "gcalctool"))
-        , ("<XF86Eject>", spawn "toggleeject")
+        , ("XF86MonBrightnessUp", spawn "light -A 10")
+        , ("XF86MonBrightnessDown", spawn "light -U 10")
+    
+    
         , ("<Print>", spawn "scrotd 0")
         ]
+        ++[ (otherModMasks ++ "M-" ++ [key], action tag)
+      | (tag, key)  <- zip myWorkspaces "123456789"
+      , (otherModMasks, action) <- [ ("", windows . W.view) -- was W.greedyView
+                                      , ("S-", windows . W.shift)]
+    ]
+
         -- Appending search engines to keybindings list
       --  ++ [("M-s " ++ k, S.promptSearch dtXPConfig' f) | (k,f) <- searchList ]
       --  ++ [("M-S-s " ++ k, S.selectSearch f) | (k,f) <- searchList ]
-        ++ [("M-px" ++ k, f dtXPConfig) | (k,f) <- promptList ]
+        ++ [("M-p" ++ k, f dtXPConfig) | (k,f) <- promptList ]
           where nonNSP          = CWS.WSIs (return (\ws -> W.tag ws /= "nsp"))
                 nonEmptyNonNSP  = CWS.WSIs (return (\ws -> isJust (W.stack ws) && W.tag ws /= "nsp"))
-
 
 
 ------------------------------------------------------------------------
@@ -321,6 +341,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
     ]
 
+  
 ------------------------------------------------------------------------
 -- Layouts:
 
@@ -332,7 +353,32 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts ( tiled ||| Mirror tiled ||| Full)
+
+monocle  = renamed [Replace "monocle"]
+           $ smartBorders $ limitWindows 20 Full
+
+
+tabs     =smartBorders $ tabbed shrinkText myTabConfig
+  where
+    myTabConfig = def { fontName            = "xft:Mononoki Nerd Font:regular:pixelsize=25"
+                      , activeColor         = "#292d3e"
+                      , inactiveColor       = "#3e445e"
+                      , activeBorderColor   = "#292d3e"
+                      , inactiveBorderColor = "#292d3e"
+                      , activeTextColor     = "#ffffff"
+                      , inactiveTextColor   = "#d0d0d0"
+                      }
+
+spirals  = renamed [Replace "spirals"]
+           $ smartSpacing 4
+           $ spiral (6/7)
+
+
+myLayout = avoidStruts ( tiled
+                         ||| Mirror tiled
+                         ||| tabs
+                         ||| monocle
+                         ||| spirals)
   where
     
      -- default tiling algorithm partitions the screen into two panes
@@ -365,6 +411,7 @@ myLayout = avoidStruts ( tiled ||| Mirror tiled ||| Full)
 myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
+    , className =? "mpv"            --> doFloat
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     , className =? "copyq"          --> doFloat
@@ -409,7 +456,7 @@ myStartupHook = do
           spawnOnce "davmail &"
           spawnOnce "/usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/nitrogen/Wallpapers/DSC_0749-1.jpg"
           
-          spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x292d3e --height 24 &"
+          spawnOnce "trayer --edge top --align right --widthtype request --padding 10 --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x292d3e --height 24 &"
           spawnOnce "emacs --fg-daemon &"
           setWMName "LG3D"
 
@@ -420,7 +467,7 @@ myStartupHook = do
 treeselectA :: TSConfig (X ()) -> X ()
 treeselectA tsDefaultConfig = treeselectAction tsDefaultConfig
    [ Node (TSNode "hello"    "displays hello"      (spawn "xmessage hello!")) []
-   , Node (TSNode "shutdown" "poweroff the system" (spawn "shutdown")) []
+   , Node (TSNode "shutdown" "poweroff the system" (spawn "poweroff")) []
    , Node (TSNode "Restart" "restart the system" (spawn "reboot")) []
    , Node (TSNode "xmonad" "working with xmonad" (return ()))
      [ Node (TSNode "edit xmonad" "edit xmonad" (spawn (myTerminal ++ " -e vim ~/.xmonad/xmonad.hs"))) []
@@ -428,9 +475,9 @@ treeselectA tsDefaultConfig = treeselectAction tsDefaultConfig
      , Node (TSNode "restart xmonad" "restart xmonad" (spawn "xmonad --restart")) []
      ]
    , Node (TSNode "brightness" "Sets screen brightness using xbacklight" (return ()))
-       [ Node (TSNode "bright" "full power"            (spawn "xbacklight -set 100")) []
-       , Node (TSNode "normal" "normal brightness (50%)" (spawn "xbacklight -set 50"))  []
-       , Node (TSNode "dim"    "quite dark"              (spawn "xbacklight -set 10"))  []
+       [ Node (TSNode "bright" "full power"            (spawn "light -S 100")) []
+       , Node (TSNode "normal" "normal brightness (50%)" (spawn "light -S 50"))  []
+       , Node (TSNode "dim"    "quite dark"              (spawn "light -S 10"))  []
        ]
    , Node (TSNode "Monitors" "Define monitor setting using xrandr" (return ()))
        [ Node (TSNode "Laptop only"    "Laptop Only"     (spawn "xrandr  --output eDP-1 --mode 3200x1800 --pos 0x0 --rotate normal --output HDMI-2 --off --output DP-1 --off")) []
@@ -481,7 +528,9 @@ myTreeNavigation = M.fromList
 -- Run xmonad with the settings you specify. No need to modify this.
 --
 main = do
-  xmproc <- spawnPipe "xmobar /home/ashfaqf/.xmobar/xmobarrc"
+  xmproc0 <- spawnPipe "xmobar -x 0 /home/ashfaqf/.xmobar/xmobarrc"
+  xmproc1 <- spawnPipe "xmobar -x 1 /home/ashfaqf/.xmobar/xmobarrc"
+  xmproc2 <- spawnPipe "xmobar -x 2 /home/ashfaqf/.xmobar/xmobarrc"
   xmonad $ docks def {
       -- simple stuff
         terminal           = myTerminal,
@@ -499,15 +548,15 @@ main = do
 
       -- hooks, layouts
         layoutHook         = myLayout,
-        manageHook         = myManageHook <+> manageDocks,
+        manageHook         = ( isFullscreen --> doFullFloat ) <+> myManageHook <+> manageDocks,
         handleEventHook    = myEventHook,
 
-        logHook = workspaceHistoryHook <+> dynamicLogWithPP xmobarPP
-                        { ppOutput = \x -> hPutStrLn xmproc x 
+        logHook = dynamicLogWithPP xmobarPP
+                        { ppOutput = \x -> hPutStrLn xmproc0 x >> hPutStrLn xmproc1 x  >> hPutStrLn xmproc2 x 
                         , ppCurrent = xmobarColor "#c3e88d" "" . wrap "[" "]" -- Current workspace in xmobar
                         , ppVisible = xmobarColor "#c3e88d" ""                -- Visible but not current workspace
                         , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" ""   -- Hidden workspaces in xmobar
-                        -- , ppHiddenNoWindows = xmobarColor "#F07178" ""        -- Hidden workspaces (no windows)
+                        --, ppHiddenNoWindows = xmobarColor "#F07178" ""        -- Hidden workspaces (no windows)
                         , ppHiddenNoWindows= \( _ ) -> ""       -- Only shows visible workspaces. Useful for TreeSelect.
                         , ppTitle = xmobarColor "#d0d0d0" "" . shorten 60     -- Title of active window in xmobar
                         , ppSep =  "<fc=#666666> | </fc>"                     -- Separators in xmobar
