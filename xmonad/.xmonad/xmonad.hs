@@ -374,7 +374,7 @@ spirals  = renamed [Replace "spirals"]
            $ spiral (6/7)
 
 
-myLayout = avoidStruts ( tiled
+myLayout = avoidStruts $ ( tiled
                          ||| Mirror tiled
                          ||| tabs
                          ||| monocle
