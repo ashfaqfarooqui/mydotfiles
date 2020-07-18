@@ -89,6 +89,52 @@
 
 (setq elfeed-db-directory "~/Documents/.elfeed")
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org"))
+
+;taken from https://protesilaos.com/dotemacs/#h:0cd8ddab-55d1-40df-b3db-1234850792ba
+ (defun prot/elfeed-show-eww (&optional link)
+    "Browse current `elfeed' entry link in `eww'.
+Only show the readable part once the website loads.  This can
+fail on poorly-designed websites."
+    (interactive)
+    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                      elfeed-show-entry
+                    (elfeed-search-selected :ignore-region)))
+           (link (if link link (elfeed-entry-link entry))))
+      (eww link)
+      (add-hook 'eww-after-render-hook 'eww-readable nil t)))
+
+
+(defun prot/elfeed-search-other-window (&optional arg)
+    "Browse `elfeed' entry in the other window.
+With \\[universal-argument] browse the entry in `eww' using the
+`prot/elfeed-show-eww' wrapper."
+    (interactive "P")
+    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                      elfeed-show-entry
+                    (elfeed-search-selected :ignore-region)))
+           (link (elfeed-entry-link entry))
+           (win (selected-window)))
+      (with-current-buffer (get-buffer "*elfeed-search*")
+        (unless (one-window-p)              ; experimental
+          (delete-other-windows win))
+        (split-window win (/ (frame-height) 5) 'below)
+        (other-window 1)
+        (if arg
+            (progn
+              (when (eq major-mode 'elfeed-search-mode)
+                (elfeed-search-untag-all-unread))
+              (prot/elfeed-show-eww link))
+          (elfeed-search-show-entry entry)))))
+
+
+(use-package! elfeed
+  :init
+(map! :map elfeed-search-mode-map
+"e" #'prot/elfeed-show-eww
+"o" #'prot/elfeed-search-other-window
+)
+  )
+
 #+END_SRC
 *** TODO Elfeed vidio and podcasts
 ** Ibuffer
