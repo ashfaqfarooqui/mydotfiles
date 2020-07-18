@@ -1,0 +1,122 @@
+#+TITLE: Dotfiles
+
+The packages can be restored using [[stow][https://www.gnu.org/software/stow/]]. Hence ensure to have Stow installed.
+#+BEGIN_SRC sh
+pacman -S stow
+#+END_SRC
+
+* Yay
+
+I have been using [[https://github.com/Jguer/yay][Yay]] since Yauort stopped its support. Install it first:
+#+BEGIN_SRC sh
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+#+END_SRC
+
+* Backup installed program list
+
+A list of all installed packages can be generated using the following commands:
+
+- Installed from the official repo:
+#+BEGIN_SRC sh
+pacman -Qqen > packages-repository.txt
+
+#+END_SRC
+
+
+- Installed from AUR:
+#+BEGIN_SRC sh
+pacman -Qqem > packages-AUR.txt
+#+END_SRC
+
+
+
+* Installing all programs
+
+To install packages from the list use:
+#+BEGIN_SRC sh
+pacman -S - < pkglist.txt
+#+END_SRC
+
+* Emacs
+
+There are currently two emacs configurations found in [[file:emacsConf/][emacsConf]] and [[file:doomEmacs/][doomEmacs]]. The first folder is now abandoned as I have switched over to [[doom-repo:][Doom Emacs]].
+
+Install Doom emacs:
+#+BEGIN_SRC sh
+git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
+~/.emacs.d/bin/doom install
+#+END_SRC
+
+Stow the Doom config folder to place it in the original location. First ensure the folder does not already exist.
+#+BEGIN_SRC sh
+rm -r ~/.doom.d
+stow doomEmacs
+#+END_SRC
+
+* Xmonad
+Currently I am moving away from i3 and embracing Xmonad as my window manager.
+#+BEGIN_SRC sh
+yay -S xmonad xmonad-utils xmonad-contrib xmobar trayer
+
+#+END_SRC
+
+Stow the configuration files:
+#+BEGIN_SRC sh
+stow xmonad
+stow xmobar
+#+END_SRC
+
+* zsh
+Zsh with [[https://ohmyz.sh/][oh-my-zsh]] has been my shell for a long time now.
+
+Install zsh, I guess this is already done at this stage by [[*Installing all programs][Installing all programs]].
+#+BEGIN_SRC sh
+yay -S zsh
+chsh -s $(which zsh)
+#+END_SRC
+
+Install oh-my-zsh
+#+BEGIN_SRC sh
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+#+END_SRC
+
+Install additional plugins I require:
+- auto-suggestions
+#+BEGIN_SRC sh
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+#+END_SRC
+- powerlevel10k theme
+#+BEGIN_SRC sh
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
+#+END_SRC
+- Syntax highlighting
+#+BEGIN_SRC sh
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+#+END_SRC
+
+Stow the config files:
+#+BEGIN_SRC sh
+stow zsh
+#+END_SRC
+Additionally, make sure to update the user name in the [[file:zsh/.zshrc][.zshrc]] file to the correct one.
+
+* Fzf
+
+It might be the case that [[https://github.com/junegunn/fzf][fzf]] needs to be installed separately.
+
+#+BEGIN_SRC sh
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+#+END_SRC
+* Some additional notes:
+The folder [[file:scripts/][scripts]] has some scripts mainly used by the i3 config.
+
+configurations for [[file:cups/][cups]] and [[file:system/etc/krb5.conf][kbr5]] are meant to get printers working at Chalmers.
+
+Ensure to have .authinfo file in the home directory with all the required credential's for things to work. It might also be needed to be added to the Emacs.d folder created by Doom.
+* TODO scala installation
+The scala community has come out with a new tool to install and maintain scala versions. May I need to look into that one for a more stable experience with Scala toolchain.
+https://www.scala-lang.org/2020/06/29/one-click-install.html
