@@ -1,6 +1,3 @@
-mpd/.mpd/mpd.log
-mpd/.mpd/mpdstate
-*.dat
 abbrev_defs
 ashfaq.html
 .smex-items
@@ -13,9 +10,9 @@ emacsConf/.emacs.d/.org-id-locations
 emacsConf/.emacs.d/.python-environments/
 emacsConf/.emacs.d/bookmarks
 *.log
-*.el
 demo.org
 /xmonad/.xmonad/xmonad-x86_64-linux
 /xmonad/.xmonad/xmonad.errors
 /xmonad/.xmonad/xmonad.hi
 /xmonad/.xmonad/xmonad.o
+/doomEmacs/.doom.d/config.el
