@@ -400,6 +400,26 @@ mode
 #+RESULTS:
 : t
 
+** smartparens
+#+BEGIN_SRC emacs-lisp
+
+(use-package! smartparens
+  :init
+  (map! :map smartparens-mode-map
+        "C-M-f" #'sp-forward-sexp
+        "C-M-b" #'sp-backward-sexp
+        "C-M-u" #'sp-backward-up-sexp
+        "C-M-d" #'sp-down-sexp
+        "C-M-p" #'sp-backward-down-sexp
+        "C-M-n" #'sp-up-sexp
+        "C-M-s" #'sp-splice-sexp
+        "C-)" #'sp-forward-slurp-sexp
+        "C-}" #'sp-forward-barf-sexp
+        "C-(" #'sp-backward-slurp-sexp
+        "C-M-)" #'sp-backward-slurp-sexp
+        "C-M-)" #'sp-backward-barf-sexp))
+
+#+END_SRC
 * OrgMode
 ** org habit
 #+BEGIN_SRC emacs-lisp
@@ -694,6 +714,43 @@ Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-en
 #+RESULTS:
 : 51DE2D88
 
+** Org roam
+#+BEGIN_SRC emacs-lisp
+(setq org-roam-directory "~/Orgs/Roam")
+
+(after! org-roam
+        (map! :leader
+            :prefix "n r"
+            :desc "org-roam" "l" #'org-roam
+            :desc "org-roam-insert" "i" #'org-roam-insert
+            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
+            :desc "org-roam-find-file" "f" #'org-roam-find-file
+            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+            :desc "org-roam-insert" "i" #'org-roam-insert
+            :desc "org-roam-capture" "c" #'org-roam-capture))
+
+(require 'company-org-roam)
+    (use-package company-org-roam
+      :when (featurep! :completion company)
+      :after org-roam
+      :config
+      (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
+#+END_SRC
+** org roam server
+#+BEGIN_SRC emacs-lisp
+(use-package! org-roam-server
+  :ensure t
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-network-poll t
+        org-roam-server-network-arrows nil
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20))
+#+END_SRC
 ** COMMENT Keybinds for org
 #+BEGIN_SRC emacs-lisp
 (define-key global-map "\C-cl" 'org-store-link)
@@ -791,7 +848,7 @@ Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-en
 #+RESULTS:
 : t
 
-** MU4e attachements
+** MU4e attachments
 #+BEGIN_SRC emacs-lisp
 
        ;;;Taking the below from [[http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e]]
@@ -1017,6 +1074,12 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 ;  (define-key z-map (kbd "j") 'hydra-dumb-jump/body)
 ;  (define-key z-map (kbd "z") 'hydra-zoom/body)
 ;  (define-key z-map (kbd "n") #'narrow-or-widen-dwim)
+
+
+
+
+;;flyspell
+(define-key global-map "\C-q" 'flyspell-correct-previous)
 #+end_src
 
 #+RESULTS:

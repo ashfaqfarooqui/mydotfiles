@@ -31,7 +31,7 @@
 *** https://hangingodes.wordpress.com/rss.xml
 *** https://blog.sarvajna.in/feed
 *** https://protesilaos.com/master.xml
-
+*** https://petewarden.com/feed/
 ** Cooking                                                       :Cooking:
 *** https://egyptianmedievalcookbook.wordpress.com/feed/
 ** Productivity
@@ -39,6 +39,7 @@
 ** Scala                                                  :scala:programming:
 *** https://www.lihaoyi.com/feed
 *** https://blog.softwaremill.com/feed
+*** https://alexn.org/feed.xml
 * Youtube                                                    :elfeed:youtube:
 ** Usuli Institute
 *** https://www.youtube.com/feeds/videos.xml?channel_id=UCacZ3k2AOpd5-3tdCxcDmgQ

@@ -416,7 +416,7 @@ myManageHook = composeAll
     , resource  =? "kdesktop"       --> doIgnore
     , className =? "copyq"          --> doFloat
     , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
-    , className =? "firefox"     --> doShift ( myWorkspaces !! 2 )
+    , className =? "firefox"     --> doShift "2"
     , className =? "Nautilus"     --> doShift ( myWorkspaces !! 5 )
     , title =? "alsamixer"     --> doFloat
     , title =? "Manjaro Settings Manager"     --> doFloat
@@ -548,7 +548,7 @@ main = do
 
       -- hooks, layouts
         layoutHook         = myLayout,
-        manageHook         = ( isFullscreen --> doFullFloat ) <+> myManageHook <+> manageDocks,
+        manageHook         = (isFullscreen --> doFullFloat) <+> myManageHook <+> manageDocks,
         handleEventHook    = myEventHook,
 
         logHook = dynamicLogWithPP xmobarPP
