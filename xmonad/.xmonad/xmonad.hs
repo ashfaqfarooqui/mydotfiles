@@ -454,7 +454,7 @@ myStartupHook = do
           spawnOnce "nextcloud &"
           spawnOnce "dropbox start &"
           spawnOnce "davmail &"
-          spawnOnce "/usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/nitrogen/Wallpapers/DSC_0749-1.jpg"
+          spawnOnce "/usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/Wallpapers/DSC_0749-1.jpg"
           
           spawnOnce "trayer --edge top --align right --widthtype request --padding 10 --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x292d3e --height 24 &"
           spawnOnce "emacs --fg-daemon &"
