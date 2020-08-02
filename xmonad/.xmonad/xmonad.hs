@@ -121,9 +121,22 @@ myEditor = "emacsclient -c -a emacs "  -- Sets emacs as editor for tree select
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+-- myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 
+xmobarEscape :: String -> String
+xmobarEscape = concatMap doubleLts
+  where
+        doubleLts '<' = "<<"
+        doubleLts x   = [x]
 
+myWorkspaces :: [String]
+myWorkspaces = clickable . (map xmobarEscape)
+               $ ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+               
+  where
+        clickable l = [ "<action=xdotool key super+" ++ show (n) ++ "> " ++ ws ++ " </action>" |
+                      (i,ws) <- zip [1..9] l,
+                      let n = i ]
 
 
 windowCount :: X (Maybe String)
@@ -416,8 +429,9 @@ myManageHook = composeAll
     , resource  =? "kdesktop"       --> doIgnore
     , className =? "copyq"          --> doFloat
     , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
-    , className =? "firefox"     --> doShift "2"
+    , className =? "firefox"     --> doShift (myWorkspaces !! 2)
     , className =? "Nautilus"     --> doShift ( myWorkspaces !! 5 )
+    , className =? "Discord"     --> doShift ( myWorkspaces !! 9 )
     , title =? "alsamixer"     --> doFloat
     , title =? "Manjaro Settings Manager"     --> doFloat
     

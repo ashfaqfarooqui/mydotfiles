@@ -21,6 +21,9 @@
 *** https://captnemo.in/atom.xml
 *** https://twobithistory.org/feed.xml
 *** https://geekgonecrazy.com/feed.xml
+*** https://alexn.org/feed.xml
+*** https://protesilaos.com/codelog.xml
+*** https://alhassy.github.io/rss.xml
 ** Urdu :Urdu:
 *** https://urduwallahs.wordpress.com/feed/
 ** Islam :Islam:
@@ -30,18 +33,19 @@
 ** General :General:
 *** https://hangingodes.wordpress.com/rss.xml
 *** https://blog.sarvajna.in/feed
-*** https://protesilaos.com/master.xml
+# *** https://protesilaos.com/master.xml
 *** https://petewarden.com/feed/
+*** https://protesilaos.com/politics.xml
 ** Cooking                                                       :Cooking:
 *** https://egyptianmedievalcookbook.wordpress.com/feed/
-** Productivity
+** Productivity :Productivity:
 *** https://radreads.co/rss
 ** Scala                                                  :scala:programming:
 *** https://www.lihaoyi.com/feed
 *** https://blog.softwaremill.com/feed
 *** https://alexn.org/feed.xml
 * Youtube                                                    :elfeed:youtube:
-** Usuli Institute
+** Usuli Institute :KAEF:Islam:
 *** https://www.youtube.com/feeds/videos.xml?channel_id=UCacZ3k2AOpd5-3tdCxcDmgQ
 ** Programming with cats
 *** https://www.youtube.com/playlist?list=PLhgq-BqyZ7i7MTGhUROZy3BOICnVixETS
@@ -50,6 +54,9 @@
 *** https://scala.love/feed/sonus-feed
 ** Learning Swedish                                        :podcast:Swedish:
 *** https://rss.acast.com/coffeebreakswedish
+** Search for beauty :KAEF:Islam:podcast:
+**** https://feeds.soundcloud.com/users/soundcloud:users:289900453/sounds.rss
+** Tech
+*** *** https://lexfridman.com/category/ai/feed/
+
 * News :News:elfeed:
-** The Local
-*** https://feeds.thelocal.com/rss/se

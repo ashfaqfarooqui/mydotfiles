@@ -76,9 +76,19 @@
 ** elfeed
 
 #+BEGIN_SRC emacs-lisp
-
-(setq elfeed-db-directory "~/Documents/.elfeed")
+(use-package! elfeed
+:init
+;;(setq elfeed-db-directory "~/Documents/elfeed")
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org"))
+  (setq elfeed-enclosure-default-dir "~/Downloads/")
+  (setq elfeed-search-filter "@4-months-ago +unread")
+  (setq elfeed-sort-order 'descending)
+  (setq elfeed-search-clipboard-type 'CLIPBOARD)
+  (setq elfeed-search-title-max-width 100)
+  (setq elfeed-search-title-min-width 30)
+  (setq elfeed-search-trailing-width 25)
+  (setq elfeed-show-truncate-long-urls t)
+  (setq elfeed-show-unique-buffers t)
 
 ;taken from https://protesilaos.com/dotemacs/#h:0cd8ddab-55d1-40df-b3db-1234850792ba
  (defun prot/elfeed-show-eww (&optional link)
@@ -116,18 +126,81 @@ With \\[universal-argument] browse the entry in `eww' using the
               (prot/elfeed-show-eww link))
           (elfeed-search-show-entry entry)))))
 
+ (defvar prot/elfeed-mpv-hook nil
+    "Hook called before `prot/elfeed-mpv-dwim'.")
 
-(use-package! elfeed
-  :init
+  ;; TODO make this buffer more useful, such as running it in a
+  ;; shell-aware mode.
+  (defun prot/elfeed-mpv-buffer ()
+    "Prepare \"*elfeed-mpv-output*\" buffer.
+For use by `prot/elfeed-mpv-dwim'.  To be called from
+`prot/elfeed-mpv-hook'."
+    (let ((buf (get-buffer "*elfeed-mpv-output*"))
+          (inhibit-read-only t))
+      (with-current-buffer buf
+        (erase-buffer))))
+
+  (defun prot/elfeed-mpv-dwim ()
+    "Play entry link with external `mpv' program.
+When there is an audio enclosure (podcast), play just the audio.
+Else spawn a video player at a resolution that accounts for the
+current monitor's width."
+    (interactive)
+    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                      elfeed-show-entry
+                    (elfeed-search-selected :ignore-region)))
+           (link (elfeed-entry-link entry))
+           (enclosure (elt (car (elfeed-entry-enclosures entry)) 0)) ; fragile?
+           (audio "--no-video")
+           ;; Here the display width checks if I am on the laptop
+           (height (if (<= (display-pixel-width ) 1366) 720 1080))
+           (video (format "--ytdl-format=bestvideo[height<=?%s]+bestaudio/best" height))
+           (buf (pop-to-buffer "*elfeed-mpv-output*")))
+      (run-hooks 'prot/elfeed-mpv-hook)
+      (if enclosure              ; make this its own parametrised function
+          (progn
+            (start-process "audio-mpv" buf "mpv" audio enclosure)
+            (message (concat "Launching MPV for " (propertize enclosure 'face 'success))))
+        (start-process "video-mpv" buf "mpv" video link)
+        (message (concat "Launching MPV for " (propertize link 'face 'success))))))
+
+   (defun prot/elfeed-show-archive ()
+    "Create an archive copy of the current `elfeed' entry."
+    (interactive)
+    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                      elfeed-show-entry
+                    (elfeed-search-selected :ignore-region)))
+           ;; TODO how to cleanly add hyphens instead of spaces?
+           (title (elfeed-entry-title entry))
+           (elfeed-show-truncate-long-urls nil)
+           (archives "~/Documents/feeds/")
+           (file (format "%s%s.org" archives title)))
+      (unless (file-exists-p archives)
+        (make-directory archives t))
+      (when (derived-mode-p 'elfeed-show-mode)
+        ;; Refresh to expand truncated URLs
+        (elfeed-show-refresh)
+        (write-file file t)
+        (message "Saved buffer at %s" file))))
+
+   (add-hook 'prot/elfeed-mpv-hook #'prot/elfeed-mpv-buffer)
+
 (map! :map elfeed-search-mode-map
 "e" #'prot/elfeed-show-eww
 "o" #'prot/elfeed-search-other-window
+"v" #'prot/elfeed-mpv-dwim
+:map elfeed-show-mode-map
+"e" #'prot/elfeed-show-eww
+"v" #'prot/elfeed-mpv-dwim
+"a" #'prot/elfeed-show-archive
 )
-  )
+
+
+)
 
 #+END_SRC
-*** TODO Elfeed vidio and podcasts
-** Ibuffer
+*** TODO Elfeed video and podcasts
+**  Ibuffer
 #+BEGIN_SRC emacs-lisp
   (after! ibuffer
     (progn (setq ibuffer-saved-filter-groups
@@ -300,12 +373,11 @@ Look at what we need from here. its mainly the key bindings I require for swiper
   (if (executable-find "notify-send")
       (setq alert-default-style 'libnotify)))
 #+END_SRC
-** Undo tree
+** COMMENT Undo tree
 #+BEGIN_SRC emacs-lisp
 (after! undo-tree
-  :init
-  (global-undo-tree-mode)
-  :config
+
+
   (setq undo-tree-auto-save-history t)
 
   ;; Compress the history files as .gz files
@@ -318,13 +390,15 @@ Look at what we need from here. its mainly the key bindings I require for swiper
                                    (make-directory dir :parents)
                                    dir))
   (setq undo-tree-history-directory-alist `(("." . ,af/undo-tree-history-dir)))
+
+  (global-undo-tree-mode)
   )
 #+END_SRC
 
 #+RESULTS:
 : t
 
-** Ledger mode
+** COMMENT Ledger mode
 #+BEGIN_SRC emacs-lisp
    (after! ledger-mode
     :init
@@ -353,19 +427,6 @@ Look at what we need from here. its mainly the key bindings I require for swiper
 
 
 #+END_SRC
-** Aggressive indent
-#+begin_src emacs-lisp
-(after! aggressive-indent
-  :hook ((css-mode . aggressive-indent-mode)
-         (emacs-lisp-mode . aggressive-indent-mode)
-         (js-mode . aggressive-indent-mode)
-         (lisp-mode . aggressive-indent-mode))
-  :custom (aggressive-indent-comments-too))
-
-#+end_src
-
-#+RESULTS:
-| aggressive-indent-mode |
 ** Wrap paragraphs automatically
 I dont like =AutoFillMode= which  automatically wraps paragraphs, kinda
 like hitting =M-q=. But i like wrapped paragraphs, hence use visual fill
@@ -376,9 +437,9 @@ mode
       (add-hook 'text-mode-hook 'visual-line-mode)
       (add-hook 'org-mode-hook 'visual-line-mode)
 
-    (use-package visual-fill-column
-      :ensure t
-      :config
+
+(use-package! visual-fill-column
+:config
   (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
   (advice-add 'text-scale-adjust :after
     #'visual-fill-column-adjust)
@@ -433,7 +494,9 @@ Store my org files in =~/Orgs=, define an index file and an
 archive of finished tasks in =archive.org=.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-directory "~/Orgs")
+
+(after! org
+(setq org-directory "~/Orgs")
 
   (defun org-file-path (filename)
     "Return the absolute address of an org file, given its relative name."
@@ -445,12 +508,15 @@ archive of finished tasks in =archive.org=.
   (setq org-index-file (org-file-path "index.org"))
   (setq org-phd-file (concat (org-file-path "PHD/Phd.org")))
 (setq org-basb-main-file (concat (org-file-path "BASB/main.org")))
-
+)
 
 #+END_SRC
-** Sequences
+** Comment Sequences
 #+BEGIN_SRC emacs-lisp
-  (setq org-todo-keywords '((sequence
+
+
+(after! org
+(setq org-todo-keywords '((sequence
                              "TODO(t)"  ; next action
                              "NEXT(n)"
                              "WAITING(w@/!)"
@@ -468,7 +534,7 @@ archive of finished tasks in =archive.org=.
   ;;               ("CANCELLED" :foreground "#f0c674" :weight bold))))
 
   (setq org-log-done t)
-
+)
 #+END_SRC
 
 ** Display preferences
@@ -476,47 +542,46 @@ archive of finished tasks in =archive.org=.
 I like to see an outline of pretty bullets instead of a list of asterisks.
 
 #+BEGIN_SRC emacs-lisp
+(after! org
 (add-hook 'org-mode-hook
             (lambda ()
-              (org-bullets-mode t)))
+              (org-bullets-mode t))))
 #+END_SRC
-
-#+RESULTS:
-
 I like seeing a little downward-pointing arrow instead of the usual ellipsis
 (=...=) that org displays when there's stuff under a header.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-ellipsis "⤵")
+(after! org   (setq org-ellipsis "⤵"))
 #+END_SRC
 
 Use syntax highlighting in source blocks while editing.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-src-fontify-natively t)
+(after! org  (setq org-src-fontify-natively t))
 #+END_SRC
 
 
 some more misc settings
 #+BEGIN_SRC emacs-lisp
+(after! org
 (setq org-pretty-entities          t ; UTF8 all the things!
       org-support-shift-select     t ; holding shift and moving point should select things
       org-M-RET-may-split-line     nil ; M-RET may never split a line
       org-enforce-todo-dependencies t ; can't finish parent before children
       org-enforce-todo-checkbox-dependencies t ; can't finish parent before children
-      org-hide-emphasis-markers t ; make words italic or bold, hide / and *
+;      org-hide-emphasis-markers t ; make words italic or bold, hide / and *
       org-catch-invisible-edits 'error ; don't let me edit things I can't see
       org-startup-indented t) ; start with indentation setup
 (setq org-startup-with-inline-images t) ; show inline images
 (setq org-log-done t)
 (setq org-goto-interface (quote outline-path-completion))
-(use-package htmlize
-  :ensure t)
-(setq org-special-ctrl-a/e t)
+
+(setq org-special-ctrl-a/e t))
 #+END_SRC
 ** Org-tags
 #+BEGIN_SRC emacs-lisp
 ; Tags with fast selection keys
+(after! org
 (setq org-tag-alist (quote ((:startgroup)
                             ("@errand" . ?e)
                             ("@office" . ?o)
@@ -534,7 +599,7 @@ some more misc settings
 
 ; For tag searches ignore tasks with scheduled and deadline dates
 (setq org-agenda-tags-todo-honor-ignore-options t)
-
+)
 #+END_SRC
 
 #+RESULTS:
@@ -542,7 +607,8 @@ some more misc settings
 ** org-agenda
 Use all the files to derive agenda.
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (list org-index-file org-inbox-file org-basb-main-file))
+(after! org
+(setq org-agenda-files (list org-index-file org-inbox-file org-basb-main-file))
                                           ;   (setq org-agenda-include-diary t)
                                           ;   (setq org-agenda-include-all-todo t)
   (setq org-habit-show-habits-only-for-today t)
@@ -557,8 +623,8 @@ Use all the files to derive agenda.
 
 
 
-  (use-package org-super-agenda
-    :ensure t
+  (use-package! org-super-agenda
+    :after org
     :config
     (org-super-agenda-mode t)
     (setq org-super-agenda-groups
@@ -584,7 +650,7 @@ Use all the files to derive agenda.
                  ((todo ""
                         ((org-agenda-overriding-header "\nUnscheduled TODO")
                          (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'todo '("DONE" "CANCELLED" "MAYBE" "WAITING" "SOMEDAY"))))))) t)
-
+)
 #+END_SRC
 
 #+RESULTS:
@@ -600,7 +666,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 - Maintain a reading list in =to-read.org=
 
 #+BEGIN_SRC emacs-lisp
-      (setq org-capture-templates
+   (after! org   (setq org-capture-templates
             (quote (
 
                     ("p" "Protocol" entry (file+headline org-index-file "Links")
@@ -664,34 +730,16 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
                     ))
 
-
+)
 
 #+END_SRC
 
 #+RESULTS:
 : make-capture-frame
 
-Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-entry-for-elfeed/
-#+begin_src emacs-lisp
-;; ---------------------
-;; org capture in elfeed
-;; ---------------------
-(defun private/org-elfeed-entry-store-link ()
-  (when elfeed-show-entry
-    (let* ((link (elfeed-entry-link elfeed-show-entry))
-           (title (elfeed-entry-title elfeed-show-entry)))
-      (org-store-link-props
-       :link link
-       :description title)
-      )))
-
-(add-hook 'org-store-link-functions
-          'private/org-elfeed-entry-store-link)
-#+end_src
-#+RESULTS:
-| private/org-elfeed-entry-store-link |
 ** Encryption
 #+BEGIN_SRC emacs-lisp
+(after! org
 (setq org-crypt-disable-auto-save nil)
 (require 'org-crypt)
 ; Encrypt all entries before saving
@@ -699,6 +747,7 @@ Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-en
 (setq org-tags-exclude-from-inheritance (quote ("crypt")))
 ; GPG key to use for encryption
 (setq org-crypt-key "51DE2D88")
+)
 #+END_SRC
 
 #+RESULTS:
@@ -706,10 +755,11 @@ Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-en
 
 ** Org roam
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-directory "~/Orgs/Roam")
+
 
 (after! org-roam
-        (map! :leader
+(setq org-roam-directory "~/Orgs/Roam")
+  (map! :leader
             :prefix "n r"
             :desc "org-roam" "l" #'org-roam
             :desc "org-roam-insert" "i" #'org-roam-insert
@@ -717,16 +767,16 @@ Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-en
             :desc "org-roam-find-file" "f" #'org-roam-find-file
             :desc "org-roam-show-graph" "g" #'org-roam-show-graph
             :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-roam-capture" "c" #'org-roam-capture))
+            :desc "org-roam-capture" "c" #'org-roam-capture)
 
 (require 'company-org-roam)
     (use-package company-org-roam
       :when (featurep! :completion company)
       :after org-roam
       :config
-      (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
+      (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev))))
 #+END_SRC
-** org roam server
+*** org roam server
 #+BEGIN_SRC emacs-lisp
 (use-package! org-roam-server
   :ensure t
@@ -740,6 +790,154 @@ Capture for elfeed from https://yiming.dev/blog/2016/01/28/add-org-store-link-en
         org-roam-server-network-label-truncate t
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
+#+END_SRC
+** Surround region with emphasis or syntax characters
+Define and bind interactive commands for each of KEYS that surround the region or insert text. Commands are bound in org-mode-map to each of KEYS. If the region is active, commands surround it with the key character, otherwise call org-self-insert-command.
+Taken from: https://github.com/alphapapa/unpackaged.el#surround-region-with-emphasis-or-syntax-characters
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+
+
+(after! org
+(defmacro unpackaged/def-org-maybe-surround (&rest keys)
+  "Define and bind interactive commands for each of KEYS that surround the region or insert text.
+Commands are bound in `org-mode-map' to each of KEYS.  If the
+region is active, commands surround it with the key character,
+otherwise call `org-self-insert-command'."
+  `(progn
+     ,@(cl-loop for key in keys
+                for name = (intern (concat "unpackaged/org-maybe-surround-" key))
+                for docstring = (format "If region is active, surround it with \"%s\", otherwise call `org-self-insert-command'." key)
+                collect `(defun ,name ()
+                           ,docstring
+                           (interactive)
+                           (if (region-active-p)
+                               (let ((beg (region-beginning))
+                                     (end (region-end)))
+                                 (save-excursion
+                                   (goto-char end)
+                                   (insert ,key)
+                                   (goto-char beg)
+                                   (insert ,key)))
+                             (call-interactively #'org-self-insert-command)))
+                collect `(define-key org-mode-map (kbd ,key) #',name))))
+
+(unpackaged/def-org-maybe-surround "~" "=" "*" "/" "+"))
+#+END_SRC
+** COMMENT Org return dwim
+A helpful replacement for org-return. With prefix, call org-return.
+
+On headings, move point to position after entry content. In lists, insert a new item or end the list, with checkbox if appropriate. In tables, insert a new row or end the table.
+
+Inspired by John Kitchin. Taken from: https://github.com/alphapapa/unpackaged.el#org-return-dwim
+#+BEGIN_SRC emacs-lisp
+(defun unpackaged/org-element-descendant-of (type element)
+  "Return non-nil if ELEMENT is a descendant of TYPE.
+TYPE should be an element type, like `item' or `paragraph'.
+ELEMENT should be a list like that returned by `org-element-context'."
+  ;; MAYBE: Use `org-element-lineage'.
+  (when-let* ((parent (org-element-property :parent element)))
+    (or (eq type (car parent))
+        (unpackaged/org-element-descendant-of type parent))))
+
+;;;###autoload
+(defun unpackaged/org-return-dwim (&optional default)
+  "A helpful replacement for `org-return'.  With prefix, call `org-return'.
+
+On headings, move point to position after entry content.  In
+lists, insert a new item or end the list, with checkbox if
+appropriate.  In tables, insert a new row or end the table."
+  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+  (interactive "P")
+  (if default
+      (org-return)
+    (cond
+     ;; Act depending on context around point.
+
+     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
+     ;; followed.
+
+     ;; ((eq 'link (car (org-element-context)))
+     ;;  ;; Link: Open it.
+     ;;  (org-open-at-point-global))
+
+     ((org-at-heading-p)
+      ;; Heading: Move to position after entry content.
+      ;; NOTE: This is probably the most interesting feature of this function.
+      (let ((heading-start (org-entry-beginning-position)))
+        (goto-char (org-entry-end-position))
+        (cond ((and (org-at-heading-p)
+                    (= heading-start (org-entry-beginning-position)))
+               ;; Entry ends on its heading; add newline after
+               (end-of-line)
+               (insert "\n\n"))
+              (t
+               ;; Entry ends after its heading; back up
+               (forward-line -1)
+               (end-of-line)
+               (when (org-at-heading-p)
+                 ;; At the same heading
+                 (forward-line)
+                 (insert "\n")
+                 (forward-line -1))
+               ;; FIXME: looking-back is supposed to be called with more arguments.
+               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
+                 (insert "\n"))
+               (forward-line -1)))))
+
+     ((org-at-item-checkbox-p)
+      ;; Checkbox: Insert new item with checkbox.
+      (org-insert-todo-heading nil))
+
+     ((org-in-item-p)
+      ;; Plain list.  Yes, this gets a little complicated...
+      (let ((context (org-element-context)))
+        (if (or (eq 'plain-list (car context))  ; First item in list
+                (and (eq 'item (car context))
+                     (not (eq (org-element-property :contents-begin context)
+                              (org-element-property :contents-end context))))
+                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
+            ;; Non-empty item: Add new item.
+            (org-insert-item)
+          ;; Empty item: Close the list.
+          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
+          (delete-region (line-beginning-position) (line-end-position))
+          (insert "\n"))))
+
+     ((when (fboundp 'org-inlinetask-in-task-p)
+        (org-inlinetask-in-task-p))
+      ;; Inline task: Don't insert a new heading.
+      (org-return))
+
+     ((org-at-table-p)
+      (cond ((save-excursion
+               (beginning-of-line)
+               ;; See `org-table-next-field'.
+               (cl-loop with end = (line-end-position)
+                        for cell = (org-element-table-cell-parser)
+                        always (equal (org-element-property :contents-begin cell)
+                                      (org-element-property :contents-end cell))
+                        while (re-search-forward "|" end t)))
+             ;; Empty row: end the table.
+             (delete-region (line-beginning-position) (line-end-position))
+             (org-return))
+            (t
+             ;; Non-empty row: call `org-return'.
+             (org-return))))
+     (t
+      ;; All other cases: call `org-return'.
+      (org-return)))))
+
+#+END_SRC
+** COMMENT Deft
+
+#+BEGIN_SRC emacs-lisp
+
+(after! deft
+  (deft-recursive t)
+  (deft-use-filter-string-for-filename t)
+  (deft-default-extension "org")
+  (deft-directory org-roam-directory))
 #+END_SRC
 ** COMMENT Keybinds for org
 #+BEGIN_SRC emacs-lisp
@@ -1023,6 +1221,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 
 * Keycast mode
 #+BEGIN_SRC emacs-lisp
+
 (use-package! keycast
   :commands keycast-mode
   :config
@@ -1041,6 +1240,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
     '(keycast-key :inherit custom-modified
                   :height 1.1
                   :weight bold)))
+
 
 
 #+END_SRC
@@ -1082,12 +1282,18 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 (minions-mode 1)
 (global-hungry-delete-mode)
 (nyan-mode)
-
-(after! scala-mode
-
-  :mode "\\.s\\(cala\\|bt\\|c\\)$")
-
 #+END_SRC
+* Basics
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)                         ; Replace selection when inserting text
+(display-time-mode 1)                             ; Enable time in the mode-line
+(display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
+(global-subword-mode 1)                           ; Iterate through CamelCase words
+(setq initial-major-mode 'org-mode)
+(setq hungry-delete-mode t)
+(show-smartparens-mode)
+#+END_SRC
+
 * Loading complete
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")
