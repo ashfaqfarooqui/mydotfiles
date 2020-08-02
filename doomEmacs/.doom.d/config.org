@@ -3,8 +3,8 @@
 #+AUTHOR: Ashfaq Farooqui
 #+EMAIL: ashfaq@ashfaqfarooqui.me
 #+OPTIONS: toc:3 num:nil
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://thomasf.github.io/solarized-css/solarized-light.min.css" />
-#+Startup: content
+
+
 
 
 * User Details
@@ -12,18 +12,7 @@
      (setq user-full-name "Ashfaq Farooqui")
      (setq user-mail-address "ashfaq@ashfaqfarooqui.me")
 #+end_src
-* Basics
-#+BEGIN_SRC emacs-lisp
-(delete-selection-mode 1)                         ; Replace selection when inserting text
-(display-time-mode 1)                             ; Enable time in the mode-line
-(display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
-(global-subword-mode 1)                           ; Iterate through CamelCase words
-(setq initial-major-mode 'org-mode)
-(setq hungry-delete-mode t)
-(show-smartparens-mode)
-#+END_SRC
-
-** Initialize personal keymap
+* Initialize personal keymap
 #+begin_src emacs-lisp
 (define-prefix-command 'z-map)
 (global-set-key (kbd "C-z") 'z-map) ;; was C-1

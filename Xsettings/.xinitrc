@@ -1,3 +1,3 @@
 source .zprofile
 xmodmap ~/.Xmodmap
-xset r rate 660 25
+#xset r rate 660 25
