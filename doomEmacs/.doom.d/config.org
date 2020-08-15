@@ -3,7 +3,7 @@
 #+AUTHOR: Ashfaq Farooqui
 #+EMAIL: ashfaq@ashfaqfarooqui.me
 #+OPTIONS: toc:3 num:nil
-
+#+startup: overview
 
 
 
@@ -11,6 +11,11 @@
 #+begin_src emacs-lisp
      (setq user-full-name "Ashfaq Farooqui")
      (setq user-mail-address "ashfaq@ashfaqfarooqui.me")
+
+
+(setq auth-sources '("~/.authinfo")
+      )
+
 #+end_src
 * Initialize personal keymap
 #+begin_src emacs-lisp
@@ -23,8 +28,25 @@
 * Visual  configuration
 ** Fonts
 #+BEGIN_SRC emacs-lisp
+;(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
+;       doom-big-font (font-spec :family "Mononoki Nerd Font" :size 40))
+
+
+
+
+
 (setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
-      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 40))
+      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 36)
+      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
+      doom-serif-font (font-spec :family "iA Writer Mono" :weight 'light))
+
+
+
+;(setq doom-font (font-spec :family "iA Writer Quattro S" :size 24)
+;      doom-big-font (font-spec :family "iA Writer Quattro S" :size 36)
+;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
+;      doom-serif-font (font-spec :family "iA Writer Quattro S" :weight 'light))
+
 
 #+END_SRC
 
@@ -200,7 +222,7 @@ current monitor's width."
 
 #+END_SRC
 *** TODO Elfeed video and podcasts
-**  Ibuffer
+** Ibuffer
 #+BEGIN_SRC emacs-lisp
   (after! ibuffer
     (progn (setq ibuffer-saved-filter-groups
@@ -511,41 +533,15 @@ archive of finished tasks in =archive.org=.
 )
 
 #+END_SRC
-** Comment Sequences
-#+BEGIN_SRC emacs-lisp
-
-
-(after! org
-(setq org-todo-keywords '((sequence
-                             "TODO(t)"  ; next action
-                             "NEXT(n)"
-                             "WAITING(w@/!)"
-                             "SOMEDAY(.)" "MAYBE(m)" "|" "DONE(x!)" "CANCELLED(c@)")
-                            (sequence "IDEA"))
-)
-
-  ;; (setq org-todo-keyword-faces
-  ;;       (quote (("TODO" :foreground "#cc6666" :weight bold)
-  ;;               ("NEXT" :foreground "#8abeb7" :weight bold)
-  ;;               ("DONE" :foreground "#b5bd68" :weight bold)
-  ;;               ("WAITING" :foreground "#de935f" :weight bold)
-  ;;               ("MAYBE" . (:foreground "#b394aa" :weight book))
-  ;;               ("SOMEDAY" :foreground "#b294bb" :weight bold)
-  ;;               ("CANCELLED" :foreground "#f0c674" :weight bold))))
-
-  (setq org-log-done t)
-)
-#+END_SRC
-
 ** Display preferences
 
 I like to see an outline of pretty bullets instead of a list of asterisks.
 
 #+BEGIN_SRC emacs-lisp
-(after! org
-(add-hook 'org-mode-hook
-            (lambda ()
-              (org-bullets-mode t))))
+;(after! org
+;(add-hook 'org-mode-hook
+;            (lambda ()
+;              (org-bullets-mode t))))
 #+END_SRC
 I like seeing a little downward-pointing arrow instead of the usual ellipsis
 (=...=) that org displays when there's stuff under a header.
@@ -758,29 +754,53 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 
 (after! org-roam
-(setq org-roam-directory "~/Orgs/Roam")
+  (setq org-roam-directory "~/Orgs/Roam")
   (map! :leader
-            :prefix "n r"
-            :desc "org-roam" "l" #'org-roam
-            :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
-            :desc "org-roam-find-file" "f" #'org-roam-find-file
-            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-            :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-roam-capture" "c" #'org-roam-capture)
+        :prefix "n r"
+        :desc "org-roam" "l" #'org-roam
+        :desc "org-roam-insert" "i" #'org-roam-insert
+        :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
+        :desc "org-roam-find-file" "f" #'org-roam-find-file
+        :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+        :desc "org-roam-insert" "i" #'org-roam-insert
+        :desc "org-roam-capture" "c" #'org-roam-capture)
 
-(require 'company-org-roam)
-    (use-package company-org-roam
-      :when (featurep! :completion company)
-      :after org-roam
-      :config
-      (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev))))
+  (require 'company-org-roam)
+  (use-package! company-org-roam
+    :when (featurep! :completion company)
+    :after org-roam
+    :config
+    (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
+
+  )
+
+(after! org-roam
+  (setq org-roam-capture-ref-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "websites/${slug}"
+           :head "#+TITLE: ${title}
+    #+ROAM_KEY: ${ref}
+
+    - source :: ${ref}"
+           :unnarrowed t)))
+
+(setq org-roam-capture-templates
+        '(("q" "Religion" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "Religion/${slug}"
+           :head "#+title: ${title}\n
+#+roam_alias:"
+           :unnarrowed t)))
+
+  )
+
+
 #+END_SRC
 *** org roam server
 #+BEGIN_SRC emacs-lisp
-(use-package! org-roam-server
-  :ensure t
-  :config
+(after! org-roam
+
   (setq org-roam-server-host "127.0.0.1"
         org-roam-server-port 8080
         org-roam-server-export-inline-images t
@@ -823,121 +843,6 @@ otherwise call `org-self-insert-command'."
                 collect `(define-key org-mode-map (kbd ,key) #',name))))
 
 (unpackaged/def-org-maybe-surround "~" "=" "*" "/" "+"))
-#+END_SRC
-** COMMENT Org return dwim
-A helpful replacement for org-return. With prefix, call org-return.
-
-On headings, move point to position after entry content. In lists, insert a new item or end the list, with checkbox if appropriate. In tables, insert a new row or end the table.
-
-Inspired by John Kitchin. Taken from: https://github.com/alphapapa/unpackaged.el#org-return-dwim
-#+BEGIN_SRC emacs-lisp
-(defun unpackaged/org-element-descendant-of (type element)
-  "Return non-nil if ELEMENT is a descendant of TYPE.
-TYPE should be an element type, like `item' or `paragraph'.
-ELEMENT should be a list like that returned by `org-element-context'."
-  ;; MAYBE: Use `org-element-lineage'.
-  (when-let* ((parent (org-element-property :parent element)))
-    (or (eq type (car parent))
-        (unpackaged/org-element-descendant-of type parent))))
-
-;;;###autoload
-(defun unpackaged/org-return-dwim (&optional default)
-  "A helpful replacement for `org-return'.  With prefix, call `org-return'.
-
-On headings, move point to position after entry content.  In
-lists, insert a new item or end the list, with checkbox if
-appropriate.  In tables, insert a new row or end the table."
-  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
-  (interactive "P")
-  (if default
-      (org-return)
-    (cond
-     ;; Act depending on context around point.
-
-     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
-     ;; followed.
-
-     ;; ((eq 'link (car (org-element-context)))
-     ;;  ;; Link: Open it.
-     ;;  (org-open-at-point-global))
-
-     ((org-at-heading-p)
-      ;; Heading: Move to position after entry content.
-      ;; NOTE: This is probably the most interesting feature of this function.
-      (let ((heading-start (org-entry-beginning-position)))
-        (goto-char (org-entry-end-position))
-        (cond ((and (org-at-heading-p)
-                    (= heading-start (org-entry-beginning-position)))
-               ;; Entry ends on its heading; add newline after
-               (end-of-line)
-               (insert "\n\n"))
-              (t
-               ;; Entry ends after its heading; back up
-               (forward-line -1)
-               (end-of-line)
-               (when (org-at-heading-p)
-                 ;; At the same heading
-                 (forward-line)
-                 (insert "\n")
-                 (forward-line -1))
-               ;; FIXME: looking-back is supposed to be called with more arguments.
-               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
-                 (insert "\n"))
-               (forward-line -1)))))
-
-     ((org-at-item-checkbox-p)
-      ;; Checkbox: Insert new item with checkbox.
-      (org-insert-todo-heading nil))
-
-     ((org-in-item-p)
-      ;; Plain list.  Yes, this gets a little complicated...
-      (let ((context (org-element-context)))
-        (if (or (eq 'plain-list (car context))  ; First item in list
-                (and (eq 'item (car context))
-                     (not (eq (org-element-property :contents-begin context)
-                              (org-element-property :contents-end context))))
-                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
-            ;; Non-empty item: Add new item.
-            (org-insert-item)
-          ;; Empty item: Close the list.
-          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
-          (delete-region (line-beginning-position) (line-end-position))
-          (insert "\n"))))
-
-     ((when (fboundp 'org-inlinetask-in-task-p)
-        (org-inlinetask-in-task-p))
-      ;; Inline task: Don't insert a new heading.
-      (org-return))
-
-     ((org-at-table-p)
-      (cond ((save-excursion
-               (beginning-of-line)
-               ;; See `org-table-next-field'.
-               (cl-loop with end = (line-end-position)
-                        for cell = (org-element-table-cell-parser)
-                        always (equal (org-element-property :contents-begin cell)
-                                      (org-element-property :contents-end cell))
-                        while (re-search-forward "|" end t)))
-             ;; Empty row: end the table.
-             (delete-region (line-beginning-position) (line-end-position))
-             (org-return))
-            (t
-             ;; Non-empty row: call `org-return'.
-             (org-return))))
-     (t
-      ;; All other cases: call `org-return'.
-      (org-return)))))
-
-#+END_SRC
-** COMMENT Deft
-
-#+BEGIN_SRC emacs-lisp
-
-(after! deft
-  (deft-recursive t)
-  (deft-use-filter-string-for-filename t)
-  (deft-default-extension "org")
-  (deft-directory org-roam-directory))
 #+END_SRC
 ** COMMENT Keybinds for org
 #+BEGIN_SRC emacs-lisp
@@ -1087,9 +992,10 @@ appropriate.  In tables, insert a new row or end the table."
 
 ** org-msg
 #+begin_src emacs-lisp
-(use-package! org-msg
-  :after mu4e
-:config
+(after! org-msg
+                                        ;use-package! org-msg
+;  :after mu4e
+;:config
   (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil"
 	org-msg-startup "hidestars indent inlineimages"
 	org-msg-greeting-fmt "\nHi *%s*,\n\n"
@@ -1110,7 +1016,7 @@ Inspired from https://github.com/mwfogleman/.emacs.d/blob/master/michael.org
 ** Projects
 A project is “any outcome that will take more than one action step to complete.” As a result of implementing Tiago Forte’s “PARA” system, I can ensure that I always have an up to date project list.
 #+begin_src emacs-lisp
-(defun go-to-projects ()
+(after! org (defun go-to-projects ()
   (interactive)
   (find-file org-basb-main-file)
   (widen)
@@ -1131,7 +1037,7 @@ A project is “any outcome that will take more than one action step to complete
   (org-narrow-to-subtree)
   (org-sort-entries t ?d)
   (org-columns))
-
+)
 #+end_src
 The concept of Stuck Projects comes from David Allen’s GTD. A stuck project is a project without any action steps or tasks associated with it.
 
@@ -1139,16 +1045,16 @@ Org-Mode has the ability to tell you which subtrees don’t have tasks associate
 
 This function creates an agenda of stuck projects that is restricted to my “Projects” subtree.
 #+begin_src emacs-lisp
-(defun my-org-agenda-list-stuck-projects ()
+(after! org (defun my-org-agenda-list-stuck-projects ()
   (interactive)
   (go-to-projects)
   (org-agenda nil "#" 'subtree))
-
+)
 #+end_src
 
 ** Areas
 #+begin_src emacs-lisp
-(defun go-to-areas ()
+(after! org  (defun go-to-areas ()
     (interactive)
     (find-file org-basb-main-file)
     (widen)
@@ -1161,12 +1067,12 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
     (go-to-areas)
     (org-narrow-to-subtree)
     (org-columns))
-
+)
 #+end_src
 
 ** Reviews
 #+begin_src emacs-lisp
-(defun my-new-daily-review ()
+(after! org (defun my-new-daily-review ()
   (interactive)
   (let ((org-capture-templates '(("d" "Review: Daily Review" entry (file+olp+datetree "/tmp/reviews.org")
                                   (file "~/.doom.d/templates/dailyreviewtemplate.org")))))
@@ -1211,7 +1117,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 
 (f-touch "/tmp/reviews.org")
 
-
+)
 
 
 #+end_src
@@ -1283,6 +1189,21 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 (global-hungry-delete-mode)
 (nyan-mode)
 #+END_SRC
+
+** Lsp mode
+#+BEGIN_SRC emacs-lisp
+
+(after! lsp-mode
+
+  (setq lsp-latex-build-on-save t)
+
+  (setq lsp-log-io t))
+
+#+END_SRC
+
+#+RESULTS:
+: t
+
 * Basics
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode 1)                         ; Replace selection when inserting text
