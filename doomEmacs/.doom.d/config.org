@@ -836,18 +836,28 @@ Define a few common tasks as capture templates. Specifically, I frequently:
            "%?"
            :file-name "websites/${slug}"
            :head "#+TITLE: ${title}
-    #+ROAM_KEY: ${ref}
+,#+ROAM_KEY: ${ref}
 
-    - source :: ${ref}"
+- source :: ${ref}"
            :unnarrowed t)))
 
 (setq org-roam-capture-templates
-        '(("q" "Religion" plain (function org-roam--capture-get-point)
+        '(
+("d" "default" plain (function org-roam--capture-get-point)
+     "%?"
+     :file-name "%(format-time-string \"%Y%m%d%H%M%SZ--${slug}\" (current-time) t)"
+     :head "#+title: ${title}\n"
+     :unnarrowed t)
+
+
+          ("q" "Religion" plain (function org-roam--capture-get-point)
            "%?"
            :file-name "Religion/${slug}"
            :head "#+title: ${title}\n
-#+roam_alias:"
-           :unnarrowed t)))
+,#+roam_alias:"
+           :unnarrowed t)
+
+                    ))
 
   )
 
@@ -1060,9 +1070,9 @@ otherwise call `org-self-insert-command'."
 
 
 
- ,#+begin_signature
+ #+begin_signature
  //Ashfaq
- ,#+end_signature")
+ #+end_signature")
  (org-msg-mode)
 )
 #+end_src
@@ -1260,6 +1270,13 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 #+RESULTS:
 : t
 
+* Languages
+** Rust
+#+BEGIN_SRC emacs-lisp
+
+(setq rustic-lsp-server 'rust-analyzer)
+
+#+END_SRC
 * Basics
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode 1)                         ; Replace selection when inserting text
@@ -1275,4 +1292,3 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 #+BEGIN_SRC emacs-lisp
 (alert "Emacs has started")
 #+END_SRC
-#+RESULTS:
