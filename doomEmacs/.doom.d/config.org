@@ -26,6 +26,62 @@
 #+RESULTS:
 : org-mode
 * Visual  configuration
+** Theme
+#+BEGIN_SRC emacs-lisp
+(after! modus-operandi-theme
+  :init
+  ;; NOTE: Everything is disabled by default.
+  (setq modus-operandi-theme-slanted-constructs t
+        modus-operandi-theme-bold-constructs t
+        modus-operandi-theme-fringes 'intense ; {nil,'subtle,'intense}
+        modus-operandi-theme-3d-modeline t
+        modus-operandi-theme-faint-syntax t
+        modus-operandi-theme-intense-hl-line t
+        modus-operandi-theme-intense-paren-match t
+        modus-operandi-theme-prompts 'subtle ; {nil,'subtle,'intense}
+        modus-operandi-theme-completions 'moderate ; {nil,'moderate,'opinionated}
+        modus-operandi-theme-diffs 'nil ; {nil,'desaturated,'fg-only}
+        modus-operandi-theme-org-blocks 'rainbow ; {nil,'greyscale,'rainbow}
+        modus-operandi-theme-variable-pitch-headings t
+        modus-operandi-theme-rainbow-headings t
+        modus-operandi-theme-section-headings t
+        modus-operandi-theme-scale-headings t
+        modus-operandi-theme-scale-1 1.05
+        modus-operandi-theme-scale-2 1.1
+        modus-operandi-theme-scale-3 1.15
+        modus-operandi-theme-scale-4 1.2
+        modus-operandi-theme-scale-5 1.3))
+
+
+(after! modus-vivendi-theme
+  :init
+  ;; NOTE: Everything is disabled by default.
+  (setq modus-vivendi-theme-slanted-constructs t
+        modus-vivendi-theme-bold-constructs t
+        modus-vivendi-theme-fringes 'intense ; {nil,'subtle,'intense}
+        modus-vivendi-theme-3d-modeline t
+        modus-vivendi-theme-faint-syntax nil
+        modus-vivendi-theme-intense-hl-line t
+        modus-vivendi-theme-intense-paren-match t
+        modus-vivendi-theme-prompts 'subtle ; {nil,'subtle,'intense}
+        modus-vivendi-theme-completions 'moderate ; {nil,'moderate,'opinionated}
+        modus-vivendi-theme-diffs 'nil ; {nil,'desaturated,'fg-only}
+        modus-vivendi-theme-org-blocks 'rainbow ; {nil,'greyscale,'rainbow}
+        modus-vivendi-theme-variable-pitch-headings t
+        modus-vivendi-theme-rainbow-headings t
+        modus-vivendi-theme-section-headings t
+        modus-vivendi-theme-scale-headings t
+        modus-vivendi-theme-scale-1 1.05
+        modus-vivendi-theme-scale-2 1.1
+        modus-vivendi-theme-scale-3 1.15
+        modus-vivendi-theme-scale-4 1.2
+        modus-vivendi-theme-scale-5 1.3))
+
+#+END_SRC
+
+#+RESULTS:
+: 1.3
+
 ** Fonts
 #+BEGIN_SRC emacs-lisp
 ;(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
@@ -33,12 +89,12 @@
 
 
 
-
+(setq doom-theme 'modus-vivendi)
 
 (setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
       doom-big-font (font-spec :family "Mononoki Nerd Font" :size 36)
       doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
-      doom-serif-font (font-spec :family "iA Writer Mono" :weight 'light))
+)
 
 
 
@@ -51,7 +107,7 @@
 #+END_SRC
 
 #+RESULTS:
-: #<font-spec nil nil Mononoki\ Nerd\ Font nil nil nil nil nil 15 nil nil nil nil>
+: #<font-spec nil nil iA\ Writer\ Quattro\ S nil nil nil nil nil 24 nil nil nil nil>
 ** Rainbow mode
 #+BEGIN_SRC emacs-lisp
 (use-package! rainbow-mode
@@ -81,8 +137,8 @@
   :init
   (setq heaven-and-hell-theme-type 'dark) ;; Omit to use light by default
   (setq heaven-and-hell-themes
-        '((light . doom-solarized-light)
-          (dark . doom-one))) ;; Themes can be the list: (dark . (tsdh-dark wombat))
+        '((light . modus-operandi)
+          (dark . modus-vivendi))) ;; Themes can be the list: (dark . (tsdh-dark wombat))
   ;; Optionall, load themes without asking for confirmation.
   (setq heaven-and-hell-load-theme-no-confirm t)
 

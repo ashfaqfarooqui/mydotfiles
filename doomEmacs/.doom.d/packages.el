@@ -75,3 +75,5 @@
 ;;(package! deft)
 (package! visual-fill-column)
 (package! htmlize)
+(package! modus-operandi-theme)
+(package! modus-vivendi-theme)
