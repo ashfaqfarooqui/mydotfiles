@@ -1346,6 +1346,20 @@ is already narrowed."
 #+RESULTS:
 : t
 
+* Calibre
+#+BEGIN_SRC emacs-lisp
+
+        (after! calibredb
+
+  :init
+  (autoload 'calibredb "calibredb")
+  :config
+  (setq calibredb-root-dir "~/CalibreLibrary")
+  (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
+  (setq calibredb-library-alist '(("~/CalibreLibrary")
+                                  )))
+
+#+END_SRC
 * Languages
 ** Rust
 #+BEGIN_SRC emacs-lisp
