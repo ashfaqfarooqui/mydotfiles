@@ -77,3 +77,7 @@
 (package! htmlize)
 (package! modus-operandi-theme)
 (package! modus-vivendi-theme)
+(package! calibredb)
+(package! xkcd)
+(package! theme-magic)
+(package! flyspell-lazy)
