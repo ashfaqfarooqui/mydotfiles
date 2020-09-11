@@ -17,7 +17,7 @@
       )
 
 #+end_src
-* Initialize personal keymap
+* Initialize personal key map
 #+begin_src emacs-lisp
 (define-prefix-command 'z-map)
 (global-set-key (kbd "C-z") 'z-map) ;; was C-1
@@ -28,18 +28,19 @@
 * Visual  configuration
 ** Theme
 #+BEGIN_SRC emacs-lisp
+
 (after! modus-operandi-theme
   :init
   ;; NOTE: Everything is disabled by default.
   (setq modus-operandi-theme-slanted-constructs t
         modus-operandi-theme-bold-constructs t
         modus-operandi-theme-fringes 'intense ; {nil,'subtle,'intense}
-        modus-operandi-theme-3d-modeline t
+        modus-operandi-theme-modeline t
         modus-operandi-theme-faint-syntax t
         modus-operandi-theme-intense-hl-line t
         modus-operandi-theme-intense-paren-match t
         modus-operandi-theme-prompts 'subtle ; {nil,'subtle,'intense}
-        modus-operandi-theme-completions 'moderate ; {nil,'moderate,'opinionated}
+        modus-operandi-theme-completions 'opinionated ; {nil,'moderate,'opinionated}
         modus-operandi-theme-diffs 'nil ; {nil,'desaturated,'fg-only}
         modus-operandi-theme-org-blocks 'rainbow ; {nil,'greyscale,'rainbow}
         modus-operandi-theme-variable-pitch-headings t
@@ -59,7 +60,7 @@
   (setq modus-vivendi-theme-slanted-constructs t
         modus-vivendi-theme-bold-constructs t
         modus-vivendi-theme-fringes 'intense ; {nil,'subtle,'intense}
-        modus-vivendi-theme-3d-modeline t
+        modus-vivendi-theme-modeline t
         modus-vivendi-theme-faint-syntax nil
         modus-vivendi-theme-intense-hl-line t
         modus-vivendi-theme-intense-paren-match t
@@ -77,6 +78,7 @@
         modus-vivendi-theme-scale-4 1.2
         modus-vivendi-theme-scale-5 1.3))
 
+
 #+END_SRC
 
 #+RESULTS:
@@ -84,17 +86,31 @@
 
 ** Fonts
 #+BEGIN_SRC emacs-lisp
-;(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
-;       doom-big-font (font-spec :family "Mononoki Nerd Font" :size 40))
 
-
-
-(setq doom-theme 'modus-vivendi)
 
 (setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
-      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 36)
-      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
-)
+       doom-big-font (font-spec :family "Mononoki Nerd Font" :size 40))
+
+
+
+
+;(setq doom-font (font-spec :family "mononoki Nerd Font" :size 12 :weight 'semi-light)
+;      doom-variable-pitch-font (font-spec :family "mononoki Nerd Font") ; inherits `doom-font''s :size
+;      doom-big-font (font-spec :family "mononoki Nerd Font" :size 19))
+
+
+
+
+;(setq doom-font (font-spec :family "mononoki Nerd Font" :size 12 :weight 'semi-light)
+;      doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
+;      doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 12)
+;      doom-big-font (font-spec :family "Fira Mono" :size 19))
+
+
+;(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
+;      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 36)
+;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
+;)
 
 
 
@@ -1191,7 +1207,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 #+RESULTS:
 : t
 
-* Keycast mode
+* Key cast mode
 #+BEGIN_SRC emacs-lisp
 
 (use-package! keycast
@@ -1287,8 +1303,14 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 (setq hungry-delete-mode t)
 (show-smartparens-mode)
 #+END_SRC
+** flyspell
+#+BEGIN_SRC emacs-lisp
+(after! flyspell (require 'flyspell-lazy) (flyspell-lazy-mode 1))
+
+#+END_SRC
 
 * Loading complete
 #+BEGIN_SRC emacs-lisp
+
 (alert "Emacs has started")
 #+END_SRC
