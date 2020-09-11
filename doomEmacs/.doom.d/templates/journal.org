@@ -1,0 +1,26 @@
+** %(format-time-string org-journal-time-format) Daily Routine%i%?
+
+*** Rules & constraints
+# Define rules that I must follow and constraints for the day. Usually this is a static thing to help me read and reinforce my ideas. Rarely will I edit this on a day to day basis.
++ limited use of social media
++ Exercise.
+*** Gratitude
+# Reflect on what I am grateful for. Remind myself about death and that I may die today. What do I want to achieve in the day. Plus I can use this at the end of the day to reflect on what I was grateful for.
+     +
+     + REmind oneself of death, and life in amazing
+*** Goals
+# Reminder for my goals and to ensure I am on track.
+       + Long term goals - 5 years
+       + Short term goals - 6 months - 1 year archival
+*** Visualize the day
+# Spell out how I want to spend the day and what I want to do.
+*** Core principles
+
+# Set of principles I want to be reminded of everyday, and those thatI want to live by.
+**** Questions I want to think about
+- meaning of life
+- what is my essence
+- what do i want to be remembered for? What is my contribution
+
+     Remind oneself of the core principles to live by.
+     compassion, empathy,...[I can fill these from the halaqas I am listening to] -  ethics and moralit
