@@ -308,8 +308,8 @@ myKeys =
         , ("M-e b", spawn "emacsclient -c -a '' --eval '(ibuffer)'")         -- list emacs buffers
         , ("M-e d", spawn "emacsclient -c -a '' --eval '(dired nil)'")       -- dired emacs file manager
         , ("M-e m", spawn "emacsclient -c -a '' --eval '(mu4e)'")            -- mu4e emacs email client
-        , ("M-e n", spawn "emacsclient -c -a '' --eval '(elfeed)'")          -- elfeed emacs rss client
-        , ("M-e s", spawn "emacsclient -c -a '' --eval '(vterm)'")          -- eshell within emacs
+        , ("M-e e", spawn "emacsclient -c -a '' --eval '(elfeed)'")          -- elfeed emacs rss client
+        , ("M-e t", spawn "emacsclient -c -a '' --eval '(vterm)'")          -- eshell within emacs
 
         , ("<XF86AudioLowerVolume>", spawn "amixer set Master 5%- unmute")
         , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 5%+ unmute")
@@ -492,10 +492,11 @@ treeselectA tsDefaultConfig = treeselectAction tsDefaultConfig
        [ Node (TSNode "bright" "full power"            (spawn "light -S 100")) []
        , Node (TSNode "normal" "normal brightness (50%)" (spawn "light -S 50"))  []
        , Node (TSNode "dim"    "quite dark"              (spawn "light -S 10"))  []
+       , Node (TSNode "darkest"    "value 1"              (spawn "light -S 1"))  []
        ]
    , Node (TSNode "Monitors" "Define monitor setting using xrandr" (return ()))
        [ Node (TSNode "Laptop only"    "Laptop Only"     (spawn "xrandr  --output eDP-1 --mode 3200x1800 --pos 0x0 --rotate normal --output HDMI-2 --off --output DP-1 --off")) []
-       , Node (TSNode "Home" "Configuration for home" (spawn "xrandr --output HDMI-2 --mode 2560x1440 --scale 1.7x1.7 --pos 3200x0 --rotate normal --output eDP-1 --mode 3200x1800 --pos 0x0 --rotate normal")) []
+       , Node (TSNode "Home" "Configuration for home" (spawn "xrandr --output HDMI-2 --mode 2560x1440 --scale 2x2 --pos 0x0 --rotate normal --output eDP-1 --mode 3200x1800 --pos 5120x0 --rotate normal")) []
        , Node (TSNode "Office"    "3 monitor config"  (spawn  "xrandr --output HDMI-2 --mode 1680x1050 --scale 2x2 --pos 6560x0 --rotate normal --output DP-1 --mode 1680x1050 --scale 2x2 --pos 3200x0 --rotate normal --output eDP-1 --mode 3200x1800 --pos 0x0 --rotate normal")) []
        ]
    ]
@@ -503,13 +504,13 @@ treeselectA tsDefaultConfig = treeselectAction tsDefaultConfig
 tsDefaultConfig :: TSConfig a
 tsDefaultConfig = TSConfig { ts_hidechildren = True
                               , ts_background   = 0xdd292d3e
-                              , ts_font         = "xft:Mononoki Nerd Font:bold:pixelsize=13"
+                              , ts_font         = "xft:mononoki Nerd Font:bold"
                               , ts_node         = (0xffd0d0d0, 0xff202331)
                               , ts_nodealt      = (0xffd0d0d0, 0xff292d3e)
                               , ts_highlight    = (0xffffffff, 0xff755999)
                               , ts_extra        = 0xffd0d0d0
-                              , ts_node_width   = 200
-                              , ts_node_height  = 20
+                              , ts_node_width   = 800
+                              , ts_node_height  = 40
                               , ts_originX      = 0
                               , ts_originY      = 0
                               , ts_indent       = 80
