@@ -565,7 +565,35 @@ mode
         "C-M-)" #'sp-backward-barf-sexp))
 
 #+END_SRC
-* OrgMode
+** dubcaps mode
+#+BEGIN_SRC emacs-lisp
+(defun dcaps-to-scaps ()
+  "Convert word in DOuble CApitals to Single Capitals."
+  (interactive)
+  (and (= ?w (char-syntax (char-before)))
+       (save-excursion
+         (let ((end (point)))
+           (and (if (called-interactively-p)
+                    (skip-syntax-backward "w")
+                  (= -3 (skip-syntax-backward "w")))
+                (let (case-fold-search)
+                  (looking-at "\\b[[:upper:]]\\{2\\}[[:lower:]]"))
+                (capitalize-region (point) end))))))
+(add-hook 'post-self-insert-hook #'dcaps-to-scaps nil 'local)
+
+        (define-minor-mode dubcaps-mode
+  "Toggle `dubcaps-mode'.  Converts words in DOuble CApitals to
+Single Capitals as you type."
+  :init-value nil
+  :lighter (" DC")
+  (if dubcaps-mode
+      (add-hook 'post-self-insert-hook #'dcaps-to-scaps nil 'local)
+    (remove-hook 'post-self-insert-hook #'dcaps-to-scaps 'local)))
+
+
+        (add-hook 'text-mode-hook #'dubcaps-mode)
+#+END_SRC
+* Org Mode
 ** org habit
 #+BEGIN_SRC emacs-lisp
 (after! org
@@ -1233,25 +1261,57 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 
 #+END_SRC
 
-* Personal keymap
+* Narrow widen
+Taken from https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+#+BEGIN_SRC emacs-lisp
+
+        (defun narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or
+defun, whichever applies first. Narrowing to
+org-src-block actually calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer
+is already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning)
+                           (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing
+         ;; command. Remove this first conditional if
+         ;; you don't want it.
+         (cond ((ignore-errors (org-edit-src-code) t)
+                (delete-other-windows))
+               ((ignore-errors (org-narrow-to-block) t))
+               (t (org-narrow-to-subtree))))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+        (t (narrow-to-defun))))
+
+
+#+END_SRC
+* Personal key map
 #+begin_src emacs-lisp
   ;; set up my own map
-  (define-key z-map (kbd "g") 'magit-status)
+  (define-key z-map (kbd "g") 'magit-status) ;
   (define-key z-map (kbd "e") 'elfeed)
   (define-key z-map (kbd "m") 'mu4e)
 ;  (define-key z-map (kbd "h p") 'hydra-pdftools/body)
 ;  (define-key z-map (kbd "w") 'hydra-frame-window/body)
 ;  (define-key z-map (kbd "h o") 'hydra-global-org/body)
 ;  (define-key z-map (kbd "p") 'hydra-projectile/body)
-  (define-key z-map (kbd "h c") 'hydra-multiple-cursors/body)
+;  (define-key z-map (kbd "h c") 'hydra-multiple-cursors/body)
 ;  (define-key z-map (kbd "h g") 'hydra-git-gutter/body)
-;  (define-key z-map (kbd "h m") 'hydra-mu4e-headers/body)
+  (define-key z-map (kbd "h m") 'hydra-mu4e-headers/body)
 ;  (define-key z-map (kbd "h i") 'hydra-ivy/body)
 ;  (define-key z-map (kbd "a") 'hydra-avy/body)
-  (define-key z-map (kbd "l") 'hydra-lsp/body)
+;  (define-key z-map (kbd "l") 'hydra-lsp/body)
 ;  (define-key z-map (kbd "j") 'hydra-dumb-jump/body)
 ;  (define-key z-map (kbd "z") 'hydra-zoom/body)
-;  (define-key z-map (kbd "n") #'narrow-or-widen-dwim)
+(define-key z-map (kbd "n") #'narrow-or-widen-dwim)
 
 
 
