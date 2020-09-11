@@ -762,6 +762,20 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 - Maintain a reading list in =to-read.org=
 
 #+BEGIN_SRC emacs-lisp
+(defun org-journal-find-location ()
+  ;; Open today's journal, but specify a non-nil prefix argument in order to
+  ;; inhibit inserting the heading; org-capture will insert the heading.
+  (org-journal-new-entry t)
+  ;; Position point on the journal's top-level heading so that org-capture
+  ;; will add the new entry as a child entry.
+  (goto-char (point-min)))
+
+#+END_SRC
+
+#+RESULTS:
+: org-journal-find-location
+
+#+BEGIN_SRC emacs-lisp
    (after! org   (setq org-capture-templates
             (quote (
 
@@ -813,7 +827,11 @@ Define a few common tasks as capture templates. Specifically, I frequently:
                     ("jp" "Personal Journal" entry (file+olp+datetree "~/Orgs/jrl/journal.org")
                      "** %(format-time-string \"%R\") %? \n")
 
-                     ("c" "cooking")
+                    ("jm" "Routine Journal" entry (function org-journal-find-location)
+                     (file "~/.doom.d/templates/journal.org") :empty-lines 1)
+
+
+                    ("c" "cooking")
                     ("cr" "Cookbook" entry (file "~/Orgs/BASB/Reference/Cookbook/cookbook.org")
                      "%(org-chef-get-recipe-from-url)"
                      :empty-lines 1)
@@ -831,7 +849,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 #+END_SRC
 
 #+RESULTS:
-: make-capture-frame
+| p | Protocol | entry | (file+headline org-index-file Links) | * %^{Title} |
 
 ** Encryption
 #+BEGIN_SRC emacs-lisp
@@ -954,6 +972,14 @@ otherwise call `org-self-insert-command'."
 
 (unpackaged/def-org-maybe-surround "~" "=" "*" "/" "+"))
 #+END_SRC
+** Org journal
+#+BEGIN_SRC emacs-lisp
+
+(after! org-journal
+  (setq org-journal-date-prefix "#+TITLE: "
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-carryover-items nil))
+#+END_SRC
 ** COMMENT Keybinds for org
 #+BEGIN_SRC emacs-lisp
 (define-key global-map "\C-cl" 'org-store-link)
@@ -989,7 +1015,7 @@ otherwise call `org-self-insert-command'."
 
 
 
-(require 'starttls)
+
 (setq mu4e-enable-mode-line t)
 (setq mu4e-contexts
       `(, (make-mu4e-context
