@@ -24,6 +24,8 @@
 *** https://alexn.org/feed.xml
 *** https://protesilaos.com/codelog.xml
 *** https://alhassy.github.io/rss.xml
+*** https://jeremykun.com/feed/
+*** http://blog.acolyer.org/feed/
 ** Urdu :Urdu:
 *** https://urduwallahs.wordpress.com/feed/
 ** Islam :Islam:
@@ -48,8 +50,6 @@
 * Youtube                                                    :elfeed:youtube:
 ** Usuli Institute :KAEF:Islam:
 *** https://www.youtube.com/feeds/videos.xml?channel_id=UCacZ3k2AOpd5-3tdCxcDmgQ
-** Programming with cats
-*** https://www.youtube.com/playlist?list=PLhgq-BqyZ7i7MTGhUROZy3BOICnVixETS
 * Podcasts :elfeed:
 ** Scala                                                     :scala:podcast:
 *** https://scala.love/feed/sonus-feed
@@ -61,3 +61,5 @@
 *** *** https://lexfridman.com/category/ai/feed/
 
 * News :News:elfeed:
+** Jobs :Jobs:
+*** https://uu.varbi.com/what:rssfeed/
