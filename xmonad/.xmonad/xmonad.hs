@@ -304,7 +304,7 @@ myKeys =
         , ("M-S-t", spawn "nautilus")
         , ("M-g", spawn "emacsclient --alternate-editor='' --no-wait --create-frame")
         , ("M-w", spawn "firefox")
-
+        , ("M-s", spawn "gopass ls --flat | dmenu | xargs --no-run-if-empty gopass show -c")
         , ("M-e b", spawn "emacsclient -c -a '' --eval '(ibuffer)'")         -- list emacs buffers
         , ("M-e d", spawn "emacsclient -c -a '' --eval '(dired nil)'")       -- dired emacs file manager
         , ("M-e m", spawn "emacsclient -c -a '' --eval '(mu4e)'")            -- mu4e emacs email client
