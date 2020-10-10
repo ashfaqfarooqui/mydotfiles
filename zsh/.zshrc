@@ -138,3 +138,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 bindkey -e
+if [ -e /home/ashfaqf/.nix-profile/etc/profile.d/nix.sh ]; then . /home/ashfaqf/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+# Path to dictionaries
+export STARDICT_DATA_DIR="$HOME/.stardic/dic"
