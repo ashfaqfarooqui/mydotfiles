@@ -81,3 +81,17 @@
 (package! xkcd)
 (package! theme-magic)
 (package! flyspell-lazy)
+(package! elfeed-goodies)
+(package! lexic :recipe (:local-repo "lisp/lexic"))
+(package! info-colors)
+
+
+(package! org-fragtog)
+(package! org-pretty-tags)
+(package! gif-screencast)
+
+
+
+(package! org-pretty-table-mode
+  :recipe (:host github :repo "Fuco1/org-pretty-table"))
+(package! org-ref)
