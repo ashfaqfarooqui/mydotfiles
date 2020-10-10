@@ -10,3 +10,6 @@
 [submodule "emacsConf/.emacs.d/vendor/youtube-dl-emacs"]
 	path = emacsConf/.emacs.d/vendor/youtube-dl-emacs
 	url = git@github.com:skeeto/youtube-dl-emacs.git
+[submodule "doomEmacs/.doom.d/lisp/lexic"]
+	path = doomEmacs/.doom.d/lisp/lexic
+	url = git@github.com:tecosaur/lexic.git
