@@ -288,12 +288,6 @@ We also like ~org-fragtog~, and that wants a hook.
   :after rainbow-delimiter
 :init (rainbow-mode))
 
-(after! rainbow-delimiters
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-(add-hook 'text-mode-hook #'rainbow-delimiters-mode)
-(add-hook 'org-mode-hook #'rainbow-delimiters-mode)
-)
-
 #+END_SRC
 
 ** nyan mode
