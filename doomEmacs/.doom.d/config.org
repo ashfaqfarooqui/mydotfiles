@@ -31,6 +31,28 @@
 #+RESULTS:
 : org-mode
 * Visual  configuration
+** Buffer Name
+#+BEGIN_SRC emacs-lisp
+
+(setq doom-fallback-buffer-name "► Doom"
+      +doom-dashboard-name "► Doom")
+
+(setq frame-title-format
+      '(""
+        (:eval
+         (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+             (replace-regexp-in-string ".*/[0-9]*-?" "🢔 " buffer-file-name)
+           "%b"))
+        (:eval
+         (let ((project-name (projectile-project-name)))
+           (unless (string= "-" project-name)
+             (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
+
+#+END_SRC
+
+#+RESULTS:
+|   | (:eval (if (s-contains-p org-roam-directory (or buffer-file-name )) (replace-regexp-in-string .*/[0-9]*-? 🢔  buffer-file-name) %b)) | (:eval (let ((project-name (projectile-project-name))) (unless (string= - project-name) (format (if (buffer-modified-p)  ◉ %s   ●  %s) project-name)))) |
+
 ** Theme
 #+BEGIN_SRC emacs-lisp
 
@@ -331,7 +353,7 @@ We also like ~org-fragtog~, and that wants a hook.
   (elfeed-org)
   (use-package! elfeed-link)
 
-  (setq elfeed-search-filter "@1-week-ago +unread"
+  (setq elfeed-search-filter "@4-week-ago +unread"
         elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
         elfeed-search-title-min-width 80
         elfeed-show-entry-switch #'pop-to-buffer
@@ -883,7 +905,7 @@ Single Capitals as you type."
                (ansi-color-apply-on-region (point-min) (point-max)))))
 
 #+END_SRC
-** Gif screencast
+** COMMENT Gif screencast
 Taken from https://tecosaur.github.io/emacs-config/config.html#package-loading
 #+BEGIN_SRC emacs-lisp
 
@@ -956,26 +978,6 @@ archive of finished tasks in =archive.org=.
 #+END_SRC
 ** Display preferences
 
-I like to see an outline of pretty bullets instead of a list of asterisks.
-
-#+BEGIN_SRC emacs-lisp
-;(after! org
-;(add-hook 'org-mode-hook
-;            (lambda ()
-;              (org-bullets-mode t))))
-#+END_SRC
-I like seeing a little downward-pointing arrow instead of the usual ellipsis
-(=...=) that org displays when there's stuff under a header.
-
-#+BEGIN_SRC emacs-lisp
-(after! org   (setq org-ellipsis "⤵"))
-#+END_SRC
-
-Use syntax highlighting in source blocks while editing.
-
-#+BEGIN_SRC emacs-lisp
-(after! org  (setq org-src-fontify-natively t))
-#+END_SRC
 
 
 some more misc settings
