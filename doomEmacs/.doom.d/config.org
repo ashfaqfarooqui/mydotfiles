@@ -22,6 +22,42 @@
 
 
 #+end_src
+* Magit
+#+BEGIN_SRC emacs-lisp
+;;; :tools magit
+
+(after! magit
+
+ (setq magit-repository-directories '(("~/Code" . 2) ("~/Papers" . 2))
+      magit-save-repository-buffers nil
+      ;; Don't restore the wconf after quitting magit, it's jarring
+      magit-inhibit-save-previous-winconf t
+      transient-values '((magit-commit "--gpg-sign=7A804BCB51DE2D88")
+                         (magit-rebase "--autosquash" "--gpg-sign=7A804BCB51DE2D88")
+                         (magit-pull "--rebase" "--gpg-sign=7A804BCB51DE2D88")))
+
+ (setq magit-repolist-columns
+      '(("Name"    25 magit-repolist-column-ident                  ())
+        ("Version" 25 magit-repolist-column-version                ())
+        ("D"        1 magit-repolist-column-dirty                  ())
+        ("Branch"  10 magit-repolist-column-branch                () )
+        ("L<U"      3 magit-repolist-column-unpulled-from-upstream ((:right-align t)))
+        ("L>U"      3 magit-repolist-column-unpushed-to-upstream   ((:right-align t)))
+        ("Path"    99 magit-repolist-column-path                   ())))
+
+
+)
+#+END_SRC
+
+#+RESULTS:
+| Name    | 25 | magit-repolist-column-ident                  | nil                |
+| Version | 25 | magit-repolist-column-version                | nil                |
+| D       |  1 | magit-repolist-column-dirty                  | nil                |
+| B       | 10 | magit-repolist-column-branch                 | nil                |
+| L<U     |  3 | magit-repolist-column-unpulled-from-upstream | ((:right-align t)) |
+| L>U     |  3 | magit-repolist-column-unpushed-to-upstream   | ((:right-align t)) |
+| Path    | 99 | magit-repolist-column-path                   | nil                |
+
 * Initialize personal key map
 #+begin_src emacs-lisp
 (define-prefix-command 'z-map)
@@ -268,7 +304,7 @@ We also like ~org-fragtog~, and that wants a hook.
 
 
 (setq doom-font (font-spec :family "SauceCodePro Nerd Font Mono" :size 30)
-       doom-big-font (font-spec :family "SauceCodePro Nerd Font Mono" :size 40)
+       doom-big-font (font-spec :family "SauceCodePro Nerd Font Mono" :size 30)
       doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24))
 
 
@@ -359,7 +395,7 @@ We also like ~org-fragtog~, and that wants a hook.
         elfeed-show-entry-switch #'pop-to-buffer
         elfeed-show-entry-delete #'+rss/delete-pane
         elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
-        shr-max-image-proportion 0.6)
+        shr-max-image-proportion 0.4)
 
   (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
   (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
@@ -988,7 +1024,7 @@ some more misc settings
       org-M-RET-may-split-line     nil ; M-RET may never split a line
       org-enforce-todo-dependencies t ; can't finish parent before children
       org-enforce-todo-checkbox-dependencies t ; can't finish parent before children
-;      org-hide-emphasis-markers t ; make words italic or bold, hide / and *
+      org-hide-emphasis-markers nil ; make words italic or bold, hide / and *
       org-catch-invisible-edits 'error ; don't let me edit things I can't see
       org-startup-indented t) ; start with indentation setup
 (setq org-startup-with-inline-images t) ; show inline images
@@ -1205,16 +1241,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
         :desc "org-roam-show-graph" "g" #'org-roam-show-graph
         :desc "org-roam-insert" "i" #'org-roam-insert
         :desc "org-roam-capture" "c" #'org-roam-capture)
-
-  (require 'company-org-roam)
-  (use-package! company-org-roam
-    :when (featurep! :completion company)
-    :after org-roam
-    :config
-    (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
-
-  )
-
+)
 (after! org-roam
   (setq org-roam-capture-ref-templates
         '(("r" "ref" plain (function org-roam-capture--get-point)
@@ -1333,7 +1360,12 @@ the final documents.
   :config
   (setq org-ref-completion-library 'org-ref-ivy-cite))
 
+(setq reftex-default-bibliography '("~/References/AshfaqRef.bib"))
 
+;; see org-ref for use of these variables
+(setq org-ref-bibliography-notes "~/References/notes.org"
+      org-ref-default-bibliography '("~/References/AshfaqRef.bib")
+      org-ref-pdf-directory "~/References/")
 
 #+END_SRC
 * Mail setup
@@ -1841,6 +1873,21 @@ is already narrowed."
   (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
   (setq calibredb-library-alist '(("~/CalibreLibrary")
                                   )))
+
+#+END_SRC
+* Ivy-bibtex
+#+BEGIN_SRC emacs-lisp
+(after! ivy-bibtex
+  
+  :config
+  (setq bibtex-completion-bibliography 
+        '("/home/ashfaqf/References/AshfaqRef.bib"))
+  (setq bibtex-completion-library-path 
+        '("/home/ashfaqf/References"))
+
+  ;; using bibtex path reference to pdf file
+  (setq bibtex-completion-pdf-field "File")
+)
 
 #+END_SRC
 * Languages

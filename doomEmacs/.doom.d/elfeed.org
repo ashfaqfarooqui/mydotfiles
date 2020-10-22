@@ -26,6 +26,7 @@
 *** https://alhassy.github.io/rss.xml
 *** https://jeremykun.com/feed/
 *** http://blog.acolyer.org/feed/
+*** https://raghavian.github.io/feed.xml
 ** Urdu :Urdu:
 *** https://urduwallahs.wordpress.com/feed/
 ** Islam :Islam:
