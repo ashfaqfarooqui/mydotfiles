@@ -67,8 +67,50 @@
 #+RESULTS:
 : org-mode
 * Visual  configuration
+** posframe
+#+BEGIN_SRC emacs-lisp
+(after! ivy-posframe
+  (setf (alist-get t ivy-posframe-display-functions-alist)
+        #'ivy-posframe-display-at-frame-top-center)
+  (setf (alist-get 'swiper ivy-posframe-display-functions-alist)
+        #'ivy-posframe-display-at-frame-top-center)
+  (setq ivy-posframe-border-width 10
+        ivy-posframe-parameters (append ivy-posframe-parameters '((min-width . 120)
+                                                                  (left-fringe . 3)
+                                                                  (right-fringe . 3)))))
+
+
+(setq ivy-posframe-width 120)
+
+
+(setq posframe-arghandler
+      (lambda (_buffer-or-name key value)
+        (or (eq key :lines-truncate)
+            value)))
+#+END_SRC
+
+#+RESULTS:
+| lambda | (_buffer-or-name key value) | (or (eq key :lines-truncate) value) |
+
 ** Buffer Name
 #+BEGIN_SRC emacs-lisp
+
+
+
+
+(defadvice! doom-modeline--reformat-roam (orig-fun)
+  :around #'doom-modeline-buffer-file-name
+  (message "Reformat?")
+  (message (buffer-file-name))
+  (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+      (replace-regexp-in-string
+       "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
+       "🢔(\\1-\\2-\\3) "
+       (funcall orig-fun))
+    (funcall orig-fun)))
+
+
+
 
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")

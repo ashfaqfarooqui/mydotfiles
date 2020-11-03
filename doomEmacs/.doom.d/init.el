@@ -26,7 +26,7 @@
        (ivy
         +prescient
         ;;+fuzzy
-        ;;+childframe
+        +childframe
         +icons
         )               ; a search engine for love and life
 
@@ -87,7 +87,8 @@
        vterm             ; the best terminal emulation in Emacs
 
        :checkers
-       syntax              ; tasing you for every semicolon you forget
+       (syntax
+        +childframe)              ; tasing you for every semicolon you forget
        (spell
         +flyspell
         +everywhere
