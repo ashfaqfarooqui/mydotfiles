@@ -125,7 +125,6 @@
          (let ((project-name (projectile-project-name)))
            (unless (string= "-" project-name)
              (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
-
 #+END_SRC
 
 #+RESULTS:
@@ -1331,6 +1330,56 @@ Define a few common tasks as capture templates. Specifically, I frequently:
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
 #+END_SRC
+** Roam bibtex
+#+BEGIN_SRC emacs-lisp
+ (use-package! org-roam-bibtex
+  :after (org-roam)
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (setq org-roam-bibtex-preformat-keywords
+   '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
+  (setq orb-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           ""
+           :file-name "Papers/${slug}"
+           :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}\n#+ROAM_TAGS:
+
+- keywords :: ${keywords}
+
+\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
+
+           :unnarrowed t))))
+
+#+END_SRC
+** org noter
+#+BEGIN_SRC emacs-lisp
+
+        (after! org
+          (setq
+           org_notes (concat (getenv "HOME") "/Orgs/Roam/Papers/")
+           zot_bib (concat (getenv "HOME") "/References/AshfaqRef.bib")
+           )
+          )
+
+        (use-package! org-noter
+          :after (:any org pdf-view)
+          :config
+          (setq
+           ;; The WM can handle splits
+           org-noter-notes-window-location 'other-frame
+           ;; Please stop opening frames
+           org-noter-always-create-frame nil
+           ;; I want to see the whole file
+           org-noter-hide-other nil
+           ;; Everything is relative to the main notes file
+           org-noter-notes-search-path (list org_notes)
+           )
+          )
+#+END_SRC
+
+#+RESULTS:
+: t
+
 ** Surround region with emphasis or syntax characters
 Define and bind interactive commands for each of KEYS that surround the region or insert text. Commands are bound in org-mode-map to each of KEYS. If the region is active, commands surround it with the key character, otherwise call org-self-insert-command.
 Taken from: https://github.com/alphapapa/unpackaged.el#surround-region-with-emphasis-or-syntax-characters
@@ -1393,21 +1442,36 @@ the final documents.
 (define-key global-map "\C-cc" 'org-capture)
 #+END_SRC
 
-** citation
+** Reference Management
 #+BEGIN_SRC emacs-lisp
 
 
 (use-package! org-ref
   :after org
   :config
-  (setq org-ref-completion-library 'org-ref-ivy-cite))
+  (setq org-ref-completion-library 'org-ref-ivy-cite)
 
 (setq reftex-default-bibliography '("~/References/AshfaqRef.bib"))
 
 ;; see org-ref for use of these variables
 (setq org-ref-bibliography-notes "~/References/notes.org"
       org-ref-default-bibliography '("~/References/AshfaqRef.bib")
-      org-ref-pdf-directory "~/References/")
+      org-ref-pdf-directory "~/References/"))
+
+#+END_SRC
+*** Ivy-bibtex
+#+BEGIN_SRC emacs-lisp
+(after! ivy-bibtex
+
+  :config
+  (setq bibtex-completion-bibliography
+        '("/home/ashfaqf/References/AshfaqRef.bib"))
+  (setq bibtex-completion-library-path
+        '("/home/ashfaqf/References"))
+
+  ;; using bibtex path reference to pdf file
+  (setq bibtex-completion-pdf-field "File")
+)
 
 #+END_SRC
 * Mail setup
@@ -1570,6 +1634,12 @@ the final documents.
 )
 #+end_src
 
+* lexic
+#+BEGIN_SRC emacs-lisp
+(use-package! lexic
+  :commands lexic-search lexic-list-dictionary
+)
+#+END_SRC
 * GTD and PARA
 Inspired from https://github.com/mwfogleman/.emacs.d/blob/master/michael.org
 ** Projects
@@ -1853,9 +1923,9 @@ is already narrowed."
 #+END_SRC
 * Modes
 #+BEGIN_SRC emacs-lisp
-
+(after! doom
 (global-hungry-delete-mode)
-(nyan-mode)
+(nyan-mode))
 #+END_SRC
 
 ** Lsp mode
@@ -1917,28 +1987,23 @@ is already narrowed."
                                   )))
 
 #+END_SRC
-* Ivy-bibtex
-#+BEGIN_SRC emacs-lisp
-(after! ivy-bibtex
-  
-  :config
-  (setq bibtex-completion-bibliography 
-        '("/home/ashfaqf/References/AshfaqRef.bib"))
-  (setq bibtex-completion-library-path 
-        '("/home/ashfaqf/References"))
 
-  ;; using bibtex path reference to pdf file
-  (setq bibtex-completion-pdf-field "File")
-)
-
-#+END_SRC
 * Languages
 ** Rust
 #+BEGIN_SRC emacs-lisp
 
-(setq rustic-lsp-server 'rust-analyzer)
+;(setq rustic-lsp-server 'rust-analyzer)
 
 #+END_SRC
+* iedit
+#+begin_src emacs-lisp
+
+        (after! iedit
+          :config
+          (set-face-background 'iedit-occurrence "Magenta")
+          :bind
+          ("C-;" . iedit-mode))
+#+end_src
 * Basics
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode 1)                         ; Replace selection when inserting text

@@ -35,7 +35,7 @@
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       fill-column       ; a `fill-column' indicator
+       ;fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        (hydra +hydra/window-nav/body
               +hydra/text-zoom/body)
@@ -72,7 +72,8 @@
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired +icons)             ; making dired pretty [functional]
+       (dired
+        +icons)             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
        (ibuffer
         +icons)         ; interactive buffer management
@@ -150,7 +151,7 @@
        ;;kotlin            ; a better, slicker Java(Script)
        (latex
         +latexmk
-        +lsp
+        ;+lsp
         +cdlatex
         +fold)             ; writing papers in Emacs has never been so fun
        ;;lean
@@ -159,9 +160,11 @@
        ;;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;;nix               ; I hereby declare "nix geht mehr!"
+       nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org
+        +noter
+        +pomodoro
         +hugo
         +journal
         +pretty

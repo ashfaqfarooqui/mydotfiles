@@ -95,3 +95,5 @@
 (package! org-pretty-table-mode
   :recipe (:host github :repo "Fuco1/org-pretty-table"))
 (package! org-ref)
+(package! org-roam-bibtex)
+(package! iedit)
