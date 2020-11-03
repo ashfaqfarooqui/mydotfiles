@@ -115,7 +115,7 @@ ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
 NPM_PACKAGES="${HOME}/.npm-packages"
 
-PATH="$NPM_PACKAGES/bin:$PATH"
+PATH="$HOME/.emacs.d/bin:$NPM_PACKAGES/bin:$PATH"
 
 
 ##Cups config, replaces .cups/client.conf...
