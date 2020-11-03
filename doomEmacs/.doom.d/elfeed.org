@@ -14,19 +14,19 @@
 *** http://pragmaticemacs.com/feed/
 *** http://sachachua.com/blog/feed/
 *** http://cestlaz.github.io/rss.xml
-*** http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml
+*** https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-and-content.xml
 *** https://metaredux.com/feed.xml
 *** http://nullprogram.com/feed
 *** https://two-wrongs.com/feed.xml
 *** https://captnemo.in/atom.xml
 *** https://twobithistory.org/feed.xml
 *** https://geekgonecrazy.com/feed.xml
-*** https://alexn.org/feed.xml
 *** https://protesilaos.com/codelog.xml
 *** https://alhassy.github.io/rss.xml
 *** https://jeremykun.com/feed/
 *** http://blog.acolyer.org/feed/
 *** https://raghavian.github.io/feed.xml
+
 ** Urdu :Urdu:
 *** https://urduwallahs.wordpress.com/feed/
 ** Islam :Islam:
