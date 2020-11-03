@@ -193,7 +193,10 @@ taken from https://tecosaur.github.io/emacs-config/config.html#font-display
 *** Font Display
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+begin_src emacs-lisp
+
 (add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
+(setq mixed-pitch-variable-pitch-cursor nil)
+
 #+end_src
 
 #+RESULTS:
@@ -337,17 +340,19 @@ We also like ~org-fragtog~, and that wants a hook.
 ** In latex editor
 #+BEGIN_SRC emacs-lisp
 
-(add-hook 'LaTeX-mode-hook #'mixed-pitch-mode)
+;(add-hook 'LaTeX-mode-hook #'mixed-pitch-mode)
 
 #+END_SRC
 ** Fonts
 #+BEGIN_SRC emacs-lisp
 
 
-(setq doom-font (font-spec :family "SauceCodePro Nerd Font Mono" :size 30)
-       doom-big-font (font-spec :family "SauceCodePro Nerd Font Mono" :size 30)
-      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24))
-
+(setq doom-font (font-spec :family "Fira Code" :size 30)
+      doom-big-font (font-spec :family "Fira Code" :size 30)
+      doom-variable-pitch-font (font-spec :family "ubuntu" :size 24))
+(after! doom-theme
+  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic))
 
 
 
@@ -441,7 +446,7 @@ We also like ~org-fragtog~, and that wants a hook.
   (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
   (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
 
-  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.5)))
+  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.8)))
     "title face in elfeed show buffer"
     :group 'elfeed)
   (defface elfeed-show-author-face `((t (:weight light)))
@@ -459,7 +464,7 @@ We also like ~org-fragtog~, and that wants a hook.
           (inhibit-modification-hooks t))
       (setq-local truncate-lines nil)
       (setq-local shr-width 120)
-      (setq-local line-spacing 0.2)
+      (setq-local line-spacing 0.0)
       (setq-local visual-fill-column-center-text t)
       (visual-fill-column-mode)
       ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
@@ -801,9 +806,10 @@ current monitor's width."
 ** Supersave
 #+begin_src emacs-lisp
 (after! super-save
-(super-save-mode +1))
+(super-save-mode 1)
 (setq super-save-exclude '(".gpg"))
 (setq super-save-auto-save-when-idle t)
+)
 #+END_SRC
 ** Swiper, avy, counsel
 Look at what we need from here. its mainly the key bindings I require for swiper and avy.
@@ -892,20 +898,28 @@ like hitting =M-q=. But i like wrapped paragraphs, hence use visual fill
 mode
 
 #+BEGIN_SRC emacs-lisp
-      (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-      (add-hook 'text-mode-hook 'visual-line-mode)
-      (add-hook 'org-mode-hook 'visual-line-mode)
 
+        (add-hook! org-mode :append
+                   #'visual-line-mode
+                   #'variable-pitch-mode)
+
+        (add-hook! text-mode :append
+                   #'visual-line-mode
+                   #'variable-pitch-mode)
+
+        (add-hook! latex-mode :append
+                   #'visual-line-mode
+                   #'variable-pitch-mode)
 
 (use-package! visual-fill-column
-:config
-  (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
-  (advice-add 'text-scale-adjust :after
-    #'visual-fill-column-adjust)
-  (setq visual-fill-column-width 100)
-  (setq-default fill-column 100)
-   (setq visual-fill-column-center-text t)
-   )
+          :config
+          (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
+          (advice-add 'text-scale-adjust :after
+                      #'visual-fill-column-adjust)
+          (setq visual-fill-column-width 100)
+          (setq-default fill-column 100)
+          (setq visual-fill-column-center-text t)
+          )
 #+END_SRC
 #+RESULTS:
 : t
@@ -1031,6 +1045,15 @@ Taken from https://tecosaur.github.io/emacs-config/config.html#package-loading
 
 #+END_SRC
 
+** special keys
+Use the special C-a, C-e and C-k definitions for Org, which enable some special behavior in headings.
+#+begin_src emacs-lisp
+
+        (after! org
+  (setq org-special-ctrl-a/e t)
+  (setq org-special-ctrl-k t))
+
+#+end_src
 ** Directory setup
 Store my org files in =~/Orgs=, define an index file and an
 archive of finished tasks in =archive.org=.
@@ -1784,33 +1807,34 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 Taken from https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 #+BEGIN_SRC emacs-lisp
 
-        (defun narrow-or-widen-dwim (p)
-  "Widen if buffer is narrowed, narrow-dwim otherwise.
+(after! org
+  (defun narrow-or-widen-dwim (p)
+    "Widen if buffer is narrowed, narrow-dwim otherwise.
 Dwim means: region, org-src-block, org-subtree, or
 defun, whichever applies first. Narrowing to
 org-src-block actually calls `org-edit-src-code'.
 
 With prefix P, don't widen, just narrow even if buffer
 is already narrowed."
-  (interactive "P")
-  (declare (interactive-only))
-  (cond ((and (buffer-narrowed-p) (not p)) (widen))
-        ((region-active-p)
-         (narrow-to-region (region-beginning)
-                           (region-end)))
-        ((derived-mode-p 'org-mode)
-         ;; `org-edit-src-code' is not a real narrowing
-         ;; command. Remove this first conditional if
-         ;; you don't want it.
-         (cond ((ignore-errors (org-edit-src-code) t)
-                (delete-other-windows))
-               ((ignore-errors (org-narrow-to-block) t))
-               (t (org-narrow-to-subtree))))
-        ((derived-mode-p 'latex-mode)
-         (LaTeX-narrow-to-environment))
-        (t (narrow-to-defun))))
+    (interactive "P")
+    (declare (interactive-only))
+    (cond ((and (buffer-narrowed-p) (not p)) (widen))
+          ((region-active-p)
+           (narrow-to-region (region-beginning)
+                             (region-end)))
+          ((derived-mode-p 'org-mode)
+           ;; `org-edit-src-code' is not a real narrowing
+           ;; command. Remove this first conditional if
+           ;; you don't want it.
+           (cond ((ignore-errors (org-edit-src-code) t)
+                  (delete-other-windows))
+                 ((ignore-errors (org-narrow-to-block) t))
+                 (t (org-narrow-to-subtree))))
+          ((derived-mode-p 'latex-mode)
+           (LaTeX-narrow-to-environment))
+          (t (narrow-to-defun))))
 
-
+  )
 #+END_SRC
 * Personal key map
 
@@ -1823,7 +1847,7 @@ is already narrowed."
   (define-key z-map (kbd "m") 'mu4e)
    (define-key z-map (kbd "h c") 'hydra-multiple-cursors/body)
 ;;  (define-key z-map (kbd "h m") 'hydra-mu4e-headers/body)
-(define-key z-map (kbd "l") 'hydra-lsp/body)
+(define-key z-map (kbd "L") 'hydra-lsp/body)
 (define-key z-map (kbd "n") #'narrow-or-widen-dwim)
 
 ;;flyspell
