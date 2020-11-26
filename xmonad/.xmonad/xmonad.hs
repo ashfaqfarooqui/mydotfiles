@@ -429,9 +429,12 @@ myManageHook = composeAll
     , resource  =? "kdesktop"       --> doIgnore
     , className =? "copyq"          --> doFloat
     , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
+    , (className =? "zoom" <&&> title =? "Chat") --> doFloat
+    , (className =? "zoom" <&&> title =? "") --> doFloat
+    , className =? "zoom"     --> doShift (myWorkspaces !! 8)
     , className =? "firefox"     --> doShift (myWorkspaces !! 2)
-    , className =? "Nautilus"     --> doShift ( myWorkspaces !! 5 )
-    , className =? "Discord"     --> doShift ( myWorkspaces !! 9 )
+    , className =? "Nautilus"     --> doShift (myWorkspaces !! 5 )
+    , className =? "Discord"     --> doShift (myWorkspaces !! 9 )
     , title =? "alsamixer"     --> doFloat
     , title =? "Manjaro Settings Manager"     --> doFloat
     
