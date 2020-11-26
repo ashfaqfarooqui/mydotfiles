@@ -323,7 +323,7 @@ myKeys =
         ]
         ++[ (otherModMasks ++ "M-" ++ [key], action tag)
       | (tag, key)  <- zip myWorkspaces "123456789"
-      , (otherModMasks, action) <- [ ("", windows . W.view) -- was W.greedyView
+      , (otherModMasks, action) <- [ ("", windows . W.greedyView) -- was W.greedyView
                                       , ("S-", windows . W.shift)]
     ]
 
