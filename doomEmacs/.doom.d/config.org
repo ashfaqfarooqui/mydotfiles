@@ -356,36 +356,33 @@ We also like ~org-fragtog~, and that wants a hook.
 
 
 
-;(setq doom-font (font-spec :family "mononoki Nerd Font" :size 12 :weight 'semi-light)
-;      doom-variable-pitch-font (font-spec :family "mononoki Nerd Font") ; inherits `doom-font''s :size
-;      doom-big-font (font-spec :family "mononoki Nerd Font" :size 19))
+                                        ;(setq doom-font (font-spec :family "mononoki Nerd Font" :size 12 :weight 'semi-light)
+                                        ;      doom-variable-pitch-font (font-spec :family "mononoki Nerd Font") ; inherits `doom-font''s :size
+                                        ;      doom-big-font (font-spec :family "mononoki Nerd Font" :size 19))
 
 
 
 
-;(setq doom-font (font-spec :family "mononoki Nerd Font" :size 12 :weight 'semi-light)
-;      doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
-;      doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 12)
-;      doom-big-font (font-spec :family "Fira Mono" :size 19))
+                                        ;(setq doom-font (font-spec :family "mononoki Nerd Font" :size 12 :weight 'semi-light)
+                                        ;      doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
+                                        ;      doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 12)
+                                        ;      doom-big-font (font-spec :family "Fira Mono" :size 19))
 
 
-;(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
-;      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 36)
-;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
-;)
+                                        ;(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
+                                        ;      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 36)
+                                        ;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
+                                        ;)
 
 
 
-;(setq doom-font (font-spec :family "iA Writer Quattro S" :size 24)
-;      doom-big-font (font-spec :family "iA Writer Quattro S" :size 36)
-;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
-;      doom-serif-font (font-spec :family "iA Writer Quattro S" :weight 'light))
-
-
+                                        ;(setq doom-font (font-spec :family "iA Writer Quattro S" :size 24)
+                                        ;      doom-big-font (font-spec :family "iA Writer Quattro S" :size 36)
+                                        ;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
+                                        ;      doom-serif-font (font-spec :family "iA Writer Quattro S" :weight 'light))
 #+END_SRC
 
 #+RESULTS:
-: #<font-spec nil nil iA\ Writer\ Quattro\ S nil nil nil nil nil 24 nil nil nil nil>
 ** Rainbow mode
 #+BEGIN_SRC emacs-lisp
 (use-package! rainbow-mode
