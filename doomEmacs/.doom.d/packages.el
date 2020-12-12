@@ -62,7 +62,7 @@
 (package! company-box)
 ;(package! org-msg)
 (package! mu4e-conversation)
-(package! heaven-and-hell)
+
 (package! rg)
 (package! keycast)
 ;(package! org-bullets)
@@ -75,8 +75,10 @@
 ;;(package! deft)
 (package! visual-fill-column)
 (package! htmlize)
-(package! modus-operandi-theme)
-(package! modus-vivendi-theme)
+(package! moody)
+(package! modus-themes
+  :recipe (:host gitlab :repo "protesilaos/modus-themes"))
+
 (package! calibredb)
 (package! xkcd)
 (package! theme-magic)
@@ -97,3 +99,5 @@
 (package! org-ref)
 (package! org-roam-bibtex)
 (package! iedit)
+(package! ob-ammonite)
+(package! lorem-ipsum)
