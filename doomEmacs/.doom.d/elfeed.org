@@ -18,6 +18,7 @@
 *** https://metaredux.com/feed.xml
 *** https://www.berkhanberkdemir.com/feed.xml
 *** https://jvns.ca/atom.xml
+*** https://rakhim.org/index.xml
 *** http://nullprogram.com/feed
 *** https://two-wrongs.com/feed.xml
 *** https://captnemo.in/atom.xml
