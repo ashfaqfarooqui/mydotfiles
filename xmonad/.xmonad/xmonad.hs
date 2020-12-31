@@ -434,7 +434,7 @@ myManageHook = composeAll
     , className =? "zoom"     --> doShift (myWorkspaces !! 8)
     , className =? "firefox"     --> doShift (myWorkspaces !! 2)
     , className =? "Nautilus"     --> doShift (myWorkspaces !! 5 )
-    , className =? "Discord"     --> doShift (myWorkspaces !! 9 )
+    , className =? "discord"     --> doShift (myWorkspaces !! 8 )
     , title =? "alsamixer"     --> doFloat
     , title =? "Manjaro Settings Manager"     --> doFloat
     
@@ -474,7 +474,7 @@ myStartupHook = do
           spawnOnce "/usr/bin/feh --bg-scale /home/ashfaqf/mydotfiles/Wallpapers/DSC_0749-1.jpg"
           
           spawnOnce "trayer --edge top --align right --widthtype request --padding 10 --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x292d3e --height 24 &"
-          spawnOnce "emacs --fg-daemon &"
+          spawnOnce "emacs --daemon &"
           setWMName "LG3D"
 
 
