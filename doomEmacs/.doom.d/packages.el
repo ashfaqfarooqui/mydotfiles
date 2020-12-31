@@ -86,8 +86,18 @@
 (package! elfeed-goodies)
 (package! lexic :recipe (:local-repo "lisp/lexic"))
 (package! info-colors)
-
-
+(package! nov)
+;; Testing the org fold branch
+ (package! org-mode
+  :recipe (:host github
+           :repo "yantar92/org"
+           :branch "feature/org-fold"
+           :files ("*.el" "lisp/*.el" "contrib/lisp/*.el")
+           :build (with-temp-file (expand-file-name "org-version.el" (straight--repos-dir "org"))
+                    (insert "(fset 'org-release (lambda () \"9.5\"))\n"
+                            "(fset 'org-git-version #'ignore)\n"
+                            "(provide 'org-version)\n")))
+  :shadow 'org)
 (package! org-fragtog)
 (package! org-pretty-tags)
 (package! gif-screencast)
