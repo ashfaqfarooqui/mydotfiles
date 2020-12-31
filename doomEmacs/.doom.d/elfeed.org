@@ -8,6 +8,8 @@
 *** http://phdcomics.com/gradfeed.php
 *** https://existentialcomics.com/rss.xml
 *** https://www.xkcd.com/atom.xml
+** Academia :academia:
+*** https://veronikach.com/rss
 ** Tech                                                 :tech:
 *** https://irreal.org/blog/?feed=rss2
 *** http://planet.emacsen.org/atom.xml
@@ -20,6 +22,7 @@
 *** https://jvns.ca/atom.xml
 *** https://rakhim.org/index.xml
 *** http://nullprogram.com/feed
+*** https://blog.vero.site/index.xml
 *** https://two-wrongs.com/feed.xml
 *** https://captnemo.in/atom.xml
 *** https://twobithistory.org/feed.xml
