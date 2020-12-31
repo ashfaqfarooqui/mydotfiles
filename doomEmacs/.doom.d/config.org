@@ -22,50 +22,6 @@
 
 
 #+end_src
-* Magit
-#+BEGIN_SRC emacs-lisp
-;;; :tools magit
-
-(after! magit
-
- (setq magit-repository-directories '(("~/Code" . 2) ("~/Papers" . 2))
-      magit-save-repository-buffers nil
-      ;; Don't restore the wconf after quitting magit, it's jarring
-      magit-inhibit-save-previous-winconf t
-      transient-values '((magit-commit "--gpg-sign=7A804BCB51DE2D88")
-                         (magit-rebase "--autosquash" "--gpg-sign=7A804BCB51DE2D88")
-                         (magit-pull "--rebase" "--gpg-sign=7A804BCB51DE2D88")))
-
- (setq magit-repolist-columns
-      '(("Name"    25 magit-repolist-column-ident                  ())
-        ("Version" 25 magit-repolist-column-version                ())
-        ("D"        1 magit-repolist-column-dirty                  ())
-        ("Branch"  10 magit-repolist-column-branch                () )
-        ("L<U"      3 magit-repolist-column-unpulled-from-upstream ((:right-align t)))
-        ("L>U"      3 magit-repolist-column-unpushed-to-upstream   ((:right-align t)))
-        ("Path"    99 magit-repolist-column-path                   ())))
-
-
-)
-#+END_SRC
-
-#+RESULTS:
-| Name    | 25 | magit-repolist-column-ident                  | nil                |
-| Version | 25 | magit-repolist-column-version                | nil                |
-| D       |  1 | magit-repolist-column-dirty                  | nil                |
-| B       | 10 | magit-repolist-column-branch                 | nil                |
-| L<U     |  3 | magit-repolist-column-unpulled-from-upstream | ((:right-align t)) |
-| L>U     |  3 | magit-repolist-column-unpushed-to-upstream   | ((:right-align t)) |
-| Path    | 99 | magit-repolist-column-path                   | nil                |
-
-* Initialize personal key map
-#+begin_src emacs-lisp
-;(define-prefix-command 'z-map)
-;(global-set-key (kbd "C-z") 'z-map) ;; was C-1
-
-#+end_src
-#+RESULTS:
-: org-mode
 * Visual  configuration
 ** posframe
 #+BEGIN_SRC emacs-lisp
@@ -288,7 +244,7 @@ We also like ~org-fragtog~, and that wants a hook.
 
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 30)
       doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 50)
-      doom-variable-pitch-font (font-spec :family "JetBrainsMono Nerd Font" :size 24))
+      doom-variable-pitch-font (font-spec :family "FiraGO" :size 30))
 (after! doom-theme
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
@@ -320,8 +276,6 @@ We also like ~org-fragtog~, and that wants a hook.
                                         ;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
                                         ;      doom-serif-font (font-spec :family "iA Writer Quattro S" :weight 'light))
 #+END_SRC
-
-#+RESULTS:
 ** Rainbow mode
 #+BEGIN_SRC emacs-lisp
 (use-package! rainbow-mode
@@ -338,387 +292,11 @@ We also like ~org-fragtog~, and that wants a hook.
 
 
 #+END_SRC
-* Stuff
-** elfeed
-
-
-
-
-#+BEGIN_SRC emacs-lisp
-
-        (after! elfeed
-
-  (elfeed-org)
-  (use-package! elfeed-link)
-
-  (setq elfeed-search-filter "@4-week-ago +unread"
-        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
-        elfeed-search-title-min-width 80
-        elfeed-show-entry-switch #'pop-to-buffer
-        elfeed-show-entry-delete #'+rss/delete-pane
-        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
-        shr-max-image-proportion 0.4)
-
-  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
-  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
-
-  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.8)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (defface elfeed-show-author-face `((t (:weight light)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (set-face-attribute 'elfeed-search-title-face nil
-                      :foreground 'nil
-                      :weight 'light)
-
-  (defadvice! +rss-elfeed-wrap-h-nicer ()
-    "Enhances an elfeed entry's readability by wrapping it to a width of
-`fill-column' and centering it with `visual-fill-column-mode'."
-    :override #'+rss-elfeed-wrap-h
-    (let ((inhibit-read-only t)
-          (inhibit-modification-hooks t))
-      (setq-local truncate-lines nil)
-      (setq-local shr-width 120)
-      (setq-local line-spacing 0.0)
-      (setq-local visual-fill-column-center-text t)
-      (visual-fill-column-mode)
-      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
-      (set-buffer-modified-p nil)))
-
-  (defun +rss/elfeed-search-print-entry (entry)
-    "Print ENTRY to the buffer."
-    (let* ((elfeed-goodies/tag-column-width 40)
-           (elfeed-goodies/feed-source-column-width 30)
-           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
-           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
-           (feed (elfeed-entry-feed entry))
-           (feed-title
-            (when feed
-              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
-           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
-           (tags-str (concat (mapconcat 'identity tags ",")))
-           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
-                           elfeed-goodies/tag-column-width 4))
-
-           (tag-column (elfeed-format-column
-                        tags-str (elfeed-clamp (length tags-str)
-                                               elfeed-goodies/tag-column-width
-                                               elfeed-goodies/tag-column-width)
-                        :left))
-           (feed-column (elfeed-format-column
-                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width)
-                         :left)))
-
-      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
-      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
-      (insert (propertize title 'face title-faces 'kbd-help title))
-      (setq-local line-spacing 0.2)))
-
-  (defun +rss/elfeed-show-refresh--better-style ()
-    "Update the buffer to match the selected entry, using a mail-style."
-    (interactive)
-    (let* ((inhibit-read-only t)
-           (title (elfeed-entry-title elfeed-show-entry))
-           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
-           (author (elfeed-meta elfeed-show-entry :author))
-           (link (elfeed-entry-link elfeed-show-entry))
-           (tags (elfeed-entry-tags elfeed-show-entry))
-           (tagsstr (mapconcat #'symbol-name tags ", "))
-           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
-           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
-           (type (elfeed-entry-content-type elfeed-show-entry))
-           (feed (elfeed-entry-feed elfeed-show-entry))
-           (feed-title (elfeed-feed-title feed))
-           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
-      (erase-buffer)
-      (insert "\n")
-      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
-      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
-      (when (and author elfeed-show-entry-author)
-        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
-      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
-      (when tags
-        (insert (format "%s\n"
-                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
-      ;; (insert (propertize "Link: " 'face 'message-header-name))
-      ;; (elfeed-insert-link link link)
-      ;; (insert "\n")
-      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
-               do (insert (propertize "Enclosure: " 'face 'message-header-name))
-               do (elfeed-insert-link (car enclosure))
-               do (insert "\n"))
-      (insert "\n")
-      (if content
-          (if (eq type 'html)
-              (elfeed-insert-html content base)
-            (insert content))
-        (insert (propertize "(empty)\n" 'face 'italic)))
-      (goto-char (point-min))))
-
-  )
-(after! elfeed-org
-:config
-(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-(setq elfeed-db-directory "~/Documents/elfeed")
-(setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org"))
-
-;taken from https://protesilaos.com/dotemacs/#h:0cd8ddab-55d1-40df-b3db-1234850792ba
- (defun prot/elfeed-show-eww (&optional link)
-    "Browse current `elfeed' entry link in `eww'.
-Only show the readable part once the website loads.  This can
-fail on poorly-designed websites."
-    (interactive)
-    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                      elfeed-show-entry
-                    (elfeed-search-selected :ignore-region)))
-           (link (if link link (elfeed-entry-link entry))))
-      (eww link)
-      (add-hook 'eww-after-render-hook 'eww-readable nil t)))
-
-
-(defun prot/elfeed-search-other-window (&optional arg)
-    "Browse `elfeed' entry in the other window.
-With \\[universal-argument] browse the entry in `eww' using the
-`prot/elfeed-show-eww' wrapper."
-    (interactive "P")
-    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                      elfeed-show-entry
-                    (elfeed-search-selected :ignore-region)))
-           (link (elfeed-entry-link entry))
-           (win (selected-window)))
-      (with-current-buffer (get-buffer "*elfeed-search*")
-        (unless (one-window-p)              ; experimental
-          (delete-other-windows win))
-        (split-window win (/ (frame-height) 5) 'below)
-        (other-window 1)
-        (if arg
-            (progn
-              (when (eq major-mode 'elfeed-search-mode)
-                (elfeed-search-untag-all-unread))
-              (prot/elfeed-show-eww link))
-          (elfeed-search-show-entry entry)))))
-
- (defvar prot/elfeed-mpv-hook nil
-    "Hook called before `prot/elfeed-mpv-dwim'.")
-
-  ;; TODO make this buffer more useful, such as running it in a
-  ;; shell-aware mode.
-  (defun prot/elfeed-mpv-buffer ()
-    "Prepare \"*elfeed-mpv-output*\" buffer.
-For use by `prot/elfeed-mpv-dwim'.  To be called from
-`prot/elfeed-mpv-hook'."
-    (let ((buf (get-buffer "*elfeed-mpv-output*"))
-          (inhibit-read-only t))
-      (with-current-buffer buf
-        (erase-buffer))))
-
-  (defun prot/elfeed-mpv-dwim ()
-    "Play entry link with external `mpv' program.
-When there is an audio enclosure (podcast), play just the audio.
-Else spawn a video player at a resolution that accounts for the
-current monitor's width."
-    (interactive)
-    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                      elfeed-show-entry
-                    (elfeed-search-selected :ignore-region)))
-           (link (elfeed-entry-link entry))
-           (enclosure (elt (car (elfeed-entry-enclosures entry)) 0)) ; fragile?
-           (audio "--no-video")
-           ;; Here the display width checks if I am on the laptop
-           (height (if (<= (display-pixel-width ) 1366) 720 1080))
-           (video (format "--ytdl-format=bestvideo[height<=?%s]+bestaudio/best" height))
-           (buf (pop-to-buffer "*elfeed-mpv-output*")))
-      (run-hooks 'prot/elfeed-mpv-hook)
-      (if enclosure              ; make this its own parametrised function
-          (progn
-            (start-process "audio-mpv" buf "mpv" audio enclosure)
-            (message (concat "Launching MPV for " (propertize enclosure 'face 'success))))
-        (start-process "video-mpv" buf "mpv" video link)
-        (message (concat "Launching MPV for " (propertize link 'face 'success))))))
-
-   (defun prot/elfeed-show-archive ()
-    "Create an archive copy of the current `elfeed' entry."
-    (interactive)
-    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                      elfeed-show-entry
-                    (elfeed-search-selected :ignore-region)))
-           ;; TODO how to cleanly add hyphens instead of spaces?
-           (title (elfeed-entry-title entry))
-           (elfeed-show-truncate-long-urls nil)
-           (archives "~/Documents/feeds/")
-           (file (format "%s%s.org" archives title)))
-      (unless (file-exists-p archives)
-        (make-directory archives t))
-      (when (derived-mode-p 'elfeed-show-mode)
-        ;; Refresh to expand truncated URLs
-        (elfeed-show-refresh)
-        (write-file file t)
-        (message "Saved buffer at %s" file))))
-
-   (add-hook 'prot/elfeed-mpv-hook #'prot/elfeed-mpv-buffer)
-
-(map! :map elfeed-search-mode-map
-"e" #'prot/elfeed-show-eww
-"o" #'prot/elfeed-search-other-window
-"v" #'prot/elfeed-mpv-dwim
-:map elfeed-show-mode-map
-"e" #'prot/elfeed-show-eww
-"v" #'prot/elfeed-mpv-dwim
-"a" #'prot/elfeed-show-archive
-)
-
-
-)
-
-#+END_SRC
-
-#+RESULTS:
-
-*** TODO Elfeed video and podcasts
-** COMMENT Ibuffer
-#+BEGIN_SRC emacs-lisp
-  (after! ibuffer
-    (progn (setq ibuffer-saved-filter-groups
-                 (quote (("default"
-                          ("dired" (mode . dired-mode))
-                          ("org" (name . "^.*org$"))
-                          ("web" (or (mode . web-mode) (mode . js2-mode)))
-                          ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
-                          ("latex" (or (mode . latex-mode)
-                                       (name . "^.*tex$")
-                                       (filename . "ShareLaTeX") ))
-                          ("mu4e" (or
-                                   (mode . mu4e-compose-mode)
-                                   (name . "\*mu4e\*")
-                                   ))
-                          ("programming" (or
-                                          (mode . python-mode)
-                                          (mode . c++-mode)
-                                          (mode . scala-mode)
-                                          (mode . haskell-mode)))
-                          ("Magit" (name . "\\*magit\\*"))
-                          ("emacs-config" (or (filename . ".doom.d")
-                                              (filename . "emacs-config")))
-
-                          ("emacs" (or
-                                    (name . "^\\*scratch\\*$")
-                                    (name . "^\\*Messages\\*$")))
-                          ))))
-           (add-hook 'ibuffer-mode-hook
-                     (lambda ()
-                       (ibuffer-auto-mode 1)
-                       (ibuffer-switch-to-saved-filter-groups "default"))))
-    (setq ibuffer-show-empty-filter-groups nil)
-
-    )
-    (defalias 'list-buffers 'ibuffer-other-window)
-
-#+END_SRC
-
-#+RESULTS:
-: list-buffers
-
-
-*** COMMENT hydra ibuf
-#+BEGIN_SRC emacs-lisp
-  (defhydra hydra-ibuffer-main (:color pink :hint nil)
-    "
-   ^Navigation^ | ^Mark^        | ^Actions^        | ^View^
-  -^----------^-+-^----^--------+-^-------^--------+-^----^-------
-    _k_:    ʌ   | _m_: mark     | _D_: delete      | _g_: refresh
-   _RET_: visit | _u_: unmark   | _S_: save        | _s_: sort
-    _j_:    v   | _*_: specific | _a_: all actions | _/_: filter
-  -^----------^-+-^----^--------+-^-------^--------+-^----^-------
-  "
-    ("j" ibuffer-forward-line)
-    ("RET" ibuffer-visit-buffer :color blue)
-    ("k" ibuffer-backward-line)
-
-    ("m" ibuffer-mark-forward)
-    ("u" ibuffer-unmark-forward)
-    ("*" hydra-ibuffer-mark/body :color blue)
-
-    ("D" ibuffer-do-delete)
-    ("S" ibuffer-do-save)
-    ("a" hydra-ibuffer-action/body :color blue)
-
-    ("g" ibuffer-update)
-    ("s" hydra-ibuffer-sort/body :color blue)
-    ("/" hydra-ibuffer-filter/body :color blue)
-
-    ("o" ibuffer-visit-buffer-other-window "other window" :color blue)
-    ("q" quit-window "quit ibuffer" :color blue)
-    ("." nil "toggle hydra" :color blue))
-
-  (defhydra hydra-ibuffer-mark (:color teal :columns 5
-                                :after-exit (hydra-ibuffer-main/body))
-    "Mark"
-    ("*" ibuffer-unmark-all "unmark all")
-    ("M" ibuffer-mark-by-mode "mode")
-    ("m" ibuffer-mark-modified-buffers "modified")
-    ("u" ibuffer-mark-unsaved-buffers "unsaved")
-    ("s" ibuffer-mark-special-buffers "special")
-    ("r" ibuffer-mark-read-only-buffers "read-only")
-    ("/" ibuffer-mark-dired-buffers "dired")
-    ("e" ibuffer-mark-dissociated-buffers "dissociated")
-    ("h" ibuffer-mark-help-buffers "help")
-    ("z" ibuffer-mark-compressed-file-buffers "compressed")
-    ("b" hydra-ibuffer-main/body "back" :color blue))
-
-  (defhydra hydra-ibuffer-action (:color teal :columns 4
-                                  :after-exit
-                                  (if (eq major-mode 'ibuffer-mode)
-                                      (hydra-ibuffer-main/body)))
-    "Action"
-    ("A" ibuffer-do-view "view")
-    ("E" ibuffer-do-eval "eval")
-    ("F" ibuffer-do-shell-command-file "shell-command-file")
-    ("I" ibuffer-do-query-replace-regexp "query-replace-regexp")
-    ("H" ibuffer-do-view-other-frame "view-other-frame")
-    ("N" ibuffer-do-shell-command-pipe-replace "shell-cmd-pipe-replace")
-    ("M" ibuffer-do-toggle-modified "toggle-modified")
-    ("O" ibuffer-do-occur "occur")
-    ("P" ibuffer-do-print "print")
-    ("Q" ibuffer-do-query-replace "query-replace")
-    ("R" ibuffer-do-rename-uniquely "rename-uniquely")
-    ("T" ibuffer-do-toggle-read-only "toggle-read-only")
-    ("U" ibuffer-do-replace-regexp "replace-regexp")
-    ("V" ibuffer-do-revert "revert")
-    ("W" ibuffer-do-view-and-eval "view-and-eval")
-    ("X" ibuffer-do-shell-command-pipe "shell-command-pipe")
-    ("b" nil "back"))
-
-  (defhydra hydra-ibuffer-sort (:color amaranth :columns 3)
-    "Sort"
-    ("i" ibuffer-invert-sorting "invert")
-    ("a" ibuffer-do-sort-by-alphabetic "alphabetic")
-    ("v" ibuffer-do-sort-by-recency "recently used")
-    ("s" ibuffer-do-sort-by-size "size")
-    ("f" ibuffer-do-sort-by-filename/process "filename")
-    ("m" ibuffer-do-sort-by-major-mode "mode")
-    ("b" hydra-ibuffer-main/body "back" :color blue))
-
-  (defhydra hydra-ibuffer-filter (:color amaranth :columns 4)
-    "Filter"
-    ("m" ibuffer-filter-by-used-mode "mode")
-    ("M" ibuffer-filter-by-derived-mode "derived mode")
-    ("n" ibuffer-filter-by-name "name")
-    ("c" ibuffer-filter-by-content "content")
-    ("e" ibuffer-filter-by-predicate "predicate")
-    ("f" ibuffer-filter-by-filename "filename")
-    (">" ibuffer-filter-by-size-gt "size")
-    ("<" ibuffer-filter-by-size-lt "size")
-    ("/" ibuffer-filter-disable "disable")
-    ("b" hydra-ibuffer-main/body "back" :color blue))
-
-
-  (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
-(add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
-#+END_SRC
-
+*
+* My Defaults
+#+begin_src emacs-lisp
+(setq display-line-numbers-type 'relative)
+#+end_src
 ** Supersave
 #+begin_src emacs-lisp
 (after! super-save
@@ -737,8 +315,8 @@ Look at what we need from here. its mainly the key bindings I require for swiper
 
                                         ;  (setq avy-timeout-seconds 2.0)
 
-  (map!
-   :desc "Search swiper-isearch" "C-s" #'swiper-isearch)
+  ;(map!
+  ; :desc "Search swiper-isearch" "C-s" #'swiper-isearch) ;
 
 
                                         ;(define-key global-map "\C-zb" 'swiper-isearch)
@@ -746,13 +324,6 @@ Look at what we need from here. its mainly the key bindings I require for swiper
                                         ;(define-key global-map "\C-zw" 'avy-goto-word)
                                         ;(define-key global-map "\C-zl" 'avy-goto-line)
   )
-#+END_SRC
-** Alert
-#+BEGIN_SRC emacs-lisp
-(after! alert
-  :config
-  (if (executable-find "notify-send")
-      (setq alert-default-style 'libnotify)))
 #+END_SRC
 ** Wrap paragraphs automatically
 I dont like =AutoFillMode= which  automatically wraps paragraphs, kinda
@@ -853,7 +424,82 @@ Single Capitals as you type."
              (with-silent-modifications
                (ansi-color-apply-on-region (point-min) (point-max)))))
 
+#+END_SEC
+
+
+** Greedily run on daemon load
+#+begin_src emacs-lisp
+
+(defun greedily-do-daemon-setup ()
+  (require 'org)
+  (when (require 'mu4e nil t)
+    (setq mu4e-confirm-quit t)
+    (setq +mu4e-lock-greedy t)
+    (setq +mu4e-lock-relaxed t)
+    (+mu4e-lock-add-watcher)
+    (when (+mu4e-lock-available t)
+      (mu4e~start)))
+  (when (require 'elfeed nil t)
+    (run-at-time nil (* 8 60 60) #'elfeed-update)))
+
+(when (daemonp)
+  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup))
+#+end_src
+** Modes
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)                         ; Replace selection when inserting text
+(display-time-mode 1)                             ; Enable time in the mode-line
+(display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
+(global-subword-mode 1)                           ; Iterate through CamelCase words
+(setq initial-major-mode 'org-mode)
+(setq hungry-delete-mode t)
+(show-smartparens-mode)
+(global-hungry-delete-mode)
+(nyan-mode)
 #+END_SRC
+
+* Company
+#+begin_src emacs-lisp
+(after! company
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 2)
+  (setq company-show-numbers t)
+  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
+
+#+end_src
+* Writeroom
+#+begin_src emacs-lisp
+(after! writeroom-mode
+
+(setq +zen-text-scale 0.6)
+
+
+
+  (add-hook 'writeroom-mode-hook
+            (defun +zen-cleaner-org ()
+              (when (and (eq major-mode 'org-mode) writeroom-mode)
+                (setq-local -display-line-numbers display-line-numbers
+                            display-line-numbers nil)
+                (setq-local -org-indent-mode org-indent-mode)
+                (org-indent-mode -1)
+                (when (featurep 'org-superstar)
+                  (setq-local -org-superstar-headline-bullets-list org-superstar-headline-bullets-list
+                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                              org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
+                              -org-superstar-remove-leading-stars org-superstar-remove-leading-stars
+                              org-superstar-remove-leading-stars t)
+                  (org-superstar-restart)))))
+  (add-hook 'writeroom-mode-disable-hook
+            (defun +zen-dirty-org ()
+              (when (eq major-mode 'org-mode)
+                (setq-local display-line-numbers -display-line-numbers)
+                (when -org-indent-mode
+                  (org-indent-mode 1))
+                (when (featurep 'org-superstar)
+                  (setq-local org-superstar-headline-bullets-list -org-superstar-headline-bullets-list
+                              org-superstar-remove-leading-stars -org-superstar-remove-leading-stars)
+                  (org-superstar-restart))))))
+#+end_src
 * Org Mode
 ** org habit
 #+BEGIN_SRC emacs-lisp
@@ -872,7 +518,7 @@ Single Capitals as you type."
 
 #+END_SRC
 
-** special keys
+** COMMENT special keys
 Use the special C-a, C-e and C-k definitions for Org, which enable some special behavior in headings.
 #+begin_src emacs-lisp
 
@@ -910,19 +556,20 @@ archive of finished tasks in =archive.org=.
 some more misc settings
 #+BEGIN_SRC emacs-lisp
 (after! org
-(setq org-pretty-entities          t ; UTF8 all the things!
-      org-support-shift-select     t ; holding shift and moving point should select things
-      org-M-RET-may-split-line     nil ; M-RET may never split a line
-      org-enforce-todo-dependencies t ; can't finish parent before children
-      org-enforce-todo-checkbox-dependencies t ; can't finish parent before children
-      org-hide-emphasis-markers nil ; make words italic or bold, hide / and *
-      org-catch-invisible-edits 'error ; don't let me edit things I can't see
-      org-startup-indented t) ; start with indentation setup
-(setq org-startup-with-inline-images t) ; show inline images
-(setq org-log-done t)
-(setq org-goto-interface (quote outline-path-completion))
+  (setq org-pretty-entities          t ; UTF8 all the things!
+        org-support-shift-select     t ; holding shift and moving point should select things
+        org-M-RET-may-split-line     nil ; M-RET may never split a line
+        org-enforce-todo-dependencies t ; can't finish parent before children
+        org-enforce-todo-checkbox-dependencies t ; can't finish parent before children
+        org-hide-emphasis-markers nil ; make words italic or bold, hide / and *
+        org-fold-catch-invisible-edits 'smart
+                                        ;org-catch-invisible-edits 'error ; don't let me edit things I can't see
+        org-startup-indented t) ; start with indentation setup
+  (setq org-startup-with-inline-images t) ; show inline images
+  (setq org-log-done t)
+  (setq org-goto-interface (quote outline-path-completion))
 
-(setq org-special-ctrl-a/e t))
+  (setq org-special-ctrl-a/e t))
 #+END_SRC
 ** Org-tags
 #+BEGIN_SRC emacs-lisp
@@ -998,10 +645,6 @@ Use all the files to derive agenda.
                          (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'todo '("DONE" "CANCELLED" "MAYBE" "WAITING" "SOMEDAY"))))))) t)
 )
 #+END_SRC
-
-#+RESULTS:
-| n | Agenda and all TODOs | ((agenda ) (alltodo ))                 |
-| u | Unscheduled TODOs    | ((todo  ((org-agenda-overriding-header |
 ** Capturing
 
 Define a few common tasks as capture templates. Specifically, I frequently:
@@ -1317,8 +960,668 @@ the final documents.
 )
 
 #+END_SRC
-* Mail setup
-** Mu4e
+* Narrow widen
+Taken from https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+#+BEGIN_SRC emacs-lisp
+
+(after! org
+  (defun narrow-or-widen-dwim (p)
+    "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or
+defun, whichever applies first. Narrowing to
+org-src-block actually calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer
+is already narrowed."
+    (interactive "P")
+    (declare (interactive-only))
+    (cond ((and (buffer-narrowed-p) (not p)) (widen))
+          ((region-active-p)
+           (narrow-to-region (region-beginning)
+                             (region-end)))
+          ((derived-mode-p 'org-mode)
+           ;; `org-edit-src-code' is not a real narrowing
+           ;; command. Remove this first conditional if
+           ;; you don't want it.
+           (cond ((ignore-errors (org-edit-src-code) t)
+                  (delete-other-windows))
+                 ((ignore-errors (org-narrow-to-block) t))
+                 (t (org-narrow-to-subtree))))
+          ((derived-mode-p 'latex-mode)
+           (LaTeX-narrow-to-environment))
+          (t (narrow-to-defun))))
+
+  )
+#+END_SRC
+* treemacs
+#+BEGIN_SRC emacs-lisp
+(after! treemacs
+  (defvar treemacs-file-ignore-extensions '()
+    "File extension which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-globs '()
+    "Globs which will are transformed to `treemacs-file-ignore-regexps' which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-regexps '()
+    "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
+  (defun treemacs-file-ignore-generate-regexps ()
+    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
+    (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
+  (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
+  (defun treemacs-ignore-filter (file full-path)
+    "Ignore files specified by `treemacs-file-ignore-extensions', and `treemacs-file-ignore-regexps'"
+    (or (member (file-name-extension file) treemacs-file-ignore-extensions)
+        (let ((ignore-file nil))
+          (dolist (regexp treemacs-file-ignore-regexps ignore-file)
+            (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
+  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
+
+        (setq treemacs-file-ignore-extensions
+      '(;; LaTeX
+        "aux"
+        "ptc"
+        "fdb_latexmk"
+        "fls"
+        "synctex.gz"
+        "toc"
+        ;; LaTeX - glossary
+        "glg"
+        "glo"
+        "gls"
+        "glsdefs"
+        "ist"
+        "acn"
+        "acr"
+        "alg"
+        ;; LaTeX - pgfplots
+        "mw"
+        ;; LaTeX - pdfx
+        "pdfa.xmpi"
+        ))
+(setq treemacs-file-ignore-globs
+      '(;; LaTeX
+        "*/_minted-*"
+        ;; AucTeX
+        "*/.auctex-auto"
+        "*/_region_.log"
+        "*/_region_.tex"))
+
+#+END_SRC
+
+* Applications
+
+** Magit
+#+BEGIN_SRC emacs-lisp
+;;; :tools magit
+
+(after! magit
+
+ (setq magit-repository-directories '(("~/Code" . 2) ("~/Papers" . 2))
+      magit-save-repository-buffers nil
+      ;; Don't restore the wconf after quitting magit, it's jarring
+      magit-inhibit-save-previous-winconf t
+      transient-values '((magit-commit "--gpg-sign=7A804BCB51DE2D88")
+                         (magit-rebase "--autosquash" "--gpg-sign=7A804BCB51DE2D88")
+                         (magit-pull "--rebase" "--gpg-sign=7A804BCB51DE2D88")))
+
+ (setq magit-repolist-columns
+      '(("Name"    25 magit-repolist-column-ident                  ())
+        ("Version" 25 magit-repolist-column-version                ())
+        ("D"        1 magit-repolist-column-dirty                  ())
+        ("Branch"  10 magit-repolist-column-branch                () )
+        ("L<U"      3 magit-repolist-column-unpulled-from-upstream ((:right-align t)))
+        ("L>U"      3 magit-repolist-column-unpushed-to-upstream   ((:right-align t)))
+        ("Path"    99 magit-repolist-column-path                   ())))
+
+
+)
+#+END_SRC
+
+#+RESULTS:
+| Name    | 25 | magit-repolist-column-ident                  | nil                |
+| Version | 25 | magit-repolist-column-version                | nil                |
+| D       |  1 | magit-repolist-column-dirty                  | nil                |
+| B       | 10 | magit-repolist-column-branch                 | nil                |
+| L<U     |  3 | magit-repolist-column-unpulled-from-upstream | ((:right-align t)) |
+| L>U     |  3 | magit-repolist-column-unpushed-to-upstream   | ((:right-align t)) |
+| Path    | 99 | magit-repolist-column-path                   | nil                |
+
+** ebooks
+*** Calibre
+#+BEGIN_SRC emacs-lisp
+
+ (after! calibredb
+
+  :init
+  (autoload 'calibredb "calibredb")
+  :config
+  (setq calibredb-root-dir "~/CalibreLibrary")
+  (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
+  (setq calibredb-library-alist '(("~/CalibreLibrary")))
+
+  (map! :map calibredb-show-mode-map
+        :ne "?" #'calibredb-entry-dispatch
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "e" #'calibredb-export-dispatch
+        :ne "q" #'calibredb-entry-quit
+        :ne "." #'calibredb-open-dired
+        :ne [tab] #'calibredb-toggle-view-at-point
+        :ne "M-t" #'calibredb-set-metadata--tags
+        :ne "M-a" #'calibredb-set-metadata--author_sort
+        :ne "M-A" #'calibredb-set-metadata--authors
+        :ne "M-T" #'calibredb-set-metadata--title
+        :ne "M-c" #'calibredb-set-metadata--comments)
+  (map! :map calibredb-search-mode-map
+        :ne [mouse-3] #'calibredb-search-mouse
+        :ne "RET" #'calibredb-find-file
+        :ne "?" #'calibredb-dispatch
+        :ne "a" #'calibredb-add
+        :ne "A" #'calibredb-add-dir
+        :ne "c" #'calibredb-clone
+        :ne "d" #'calibredb-remove
+        :ne "D" #'calibredb-remove-marked-items
+        :ne "j" #'calibredb-next-entry
+        :ne "k" #'calibredb-previous-entry
+        :ne "l" #'calibredb-virtual-library-list
+        :ne "L" #'calibredb-library-list
+        :ne "n" #'calibredb-virtual-library-next
+        :ne "N" #'calibredb-library-next
+        :ne "p" #'calibredb-virtual-library-previous
+        :ne "P" #'calibredb-library-previous
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "S" #'calibredb-switch-library
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "v" #'calibredb-view
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne "." #'calibredb-open-dired
+        :ne "b" #'calibredb-catalog-bib-dispatch
+        :ne "e" #'calibredb-export-dispatch
+        :ne "r" #'calibredb-search-refresh-and-clear-filter
+        :ne "R" #'calibredb-search-clear-filter
+        :ne "q" #'calibredb-search-quit
+        :ne "m" #'calibredb-mark-and-forward
+        :ne "f" #'calibredb-toggle-favorite-at-point
+        :ne "x" #'calibredb-toggle-archive-at-point
+        :ne "h" #'calibredb-toggle-highlight-at-point
+        :ne "u" #'calibredb-unmark-and-forward
+        :ne "i" #'calibredb-edit-annotation
+        :ne "DEL" #'calibredb-unmark-and-backward
+        :ne [backtab] #'calibredb-toggle-view
+        :ne [tab] #'calibredb-toggle-view-at-point
+        :ne "M-n" #'calibredb-show-next-entry
+        :ne "M-p" #'calibredb-show-previous-entry
+        :ne "/" #'calibredb-search-live-filter
+        :ne "M-t" #'calibredb-set-metadata--tags
+        :ne "M-a" #'calibredb-set-metadata--author_sort
+        :ne "M-A" #'calibredb-set-metadata--authors
+        :ne "M-T" #'calibredb-set-metadata--title
+        :ne "M-c" #'calibredb-set-metadata--comments)
+  )
+
+#+END_SRC
+
+*** Nov
+#+begin_src emacs-lisp
+
+(use-package! nov
+  :mode ("\\.epub\\'" . nov-mode)
+  :config
+  (map! :map nov-mode-map
+        :n "RET" #'nov-scroll-up)
+
+  (defun doom-modeline-segment--nov-info ()
+    (concat
+     " "
+     (propertize
+      (cdr (assoc 'creator nov-metadata))
+      'face 'doom-modeline-project-parent-dir)
+     " "
+     (cdr (assoc 'title nov-metadata))
+     " "
+     (propertize
+      (format "%d/%d"
+              (1+ nov-documents-index)
+              (length nov-documents))
+      'face 'doom-modeline-info)))
+
+  (advice-add 'nov-render-title :override #'ignore)
+
+  (defun +nov-mode-setup ()
+    (face-remap-add-relative 'variable-pitch
+                             :family "Merriweather"
+                             :height 1.4
+                             :width 'semi-expanded)
+    (face-remap-add-relative 'default :height 1.3)
+    (setq-local line-spacing 0.2
+                next-screen-context-lines 4
+                shr-use-colors nil)
+    (require 'visual-fill-column nil t)
+    (setq-local visual-fill-column-center-text t
+                visual-fill-column-width 80
+                nov-text-width 80)
+    (visual-fill-column-mode 1)
+    (hl-line-mode -1)
+
+    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
+
+    (setq-local mode-line-format
+                `((:eval
+                   (doom-modeline-segment--workspace-name))
+                  (:eval
+                   (doom-modeline-segment--window-number))
+                  (:eval
+                   (doom-modeline-segment--nov-info))
+                  ,(propertize
+                    " %P "
+                    'face 'doom-modeline-buffer-minor-mode)
+                  ,(propertize
+                    " "
+                    'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
+                    'display `((space
+                                :align-to
+                                (- (+ right right-fringe right-margin)
+                                   ,(* (let ((width (doom-modeline--font-width)))
+                                         (or (and (= width 1) 1)
+                                             (/ width (frame-char-width) 1.0)))
+                                       (string-width
+                                        (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
+                  (:eval (doom-modeline-segment--major-mode)))))
+
+  (add-hook 'nov-mode-hook #'+nov-mode-setup))
+#+end_src
+** lexic
+#+BEGIN_SRC emacs-lisp
+(use-package! lexic
+  :commands lexic-search lexic-list-dictionary
+)
+#+END_SRC
+** elfeed
+
+*** Keybindings
+#+begin_src emacs-lisp
+(map! :map elfeed-search-mode-map
+      :after elfeed-search
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :n "q" #'+rss/quit
+      :n "e" #'elfeed-update
+      :n "r" #'elfeed-search-untag-all-unread
+      :n "u" #'elfeed-search-tag-all-unread
+      :n "s" #'elfeed-search-live-filter
+      :n "RET" #'elfeed-search-show-entry
+      :n "p" #'elfeed-show-pdf
+      :n "+" #'elfeed-search-tag-all
+      :n "-" #'elfeed-search-untag-all
+      :n "S" #'elfeed-search-set-filter
+      :n "b" #'elfeed-search-browse-url
+      :n "y" #'elfeed-search-yank
+      :n "e" #'prot/elfeed-show-eww
+      :n "o" #'prot/elfeed-search-other-window
+      :n "v" #'prot/elfeed-mpv-dwim
+        )
+
+(map! :map elfeed-show-mode-map
+      :after elfeed-show
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :nm "q" #'+rss/delete-pane
+      :nm "o" #'ace-link-elfeed
+      :nm "RET" #'org-ref-elfeed-add
+      :nm "n" #'elfeed-show-next
+      :nm "N" #'elfeed-show-prev
+      :nm "p" #'elfeed-show-pdf
+      :nm "+" #'elfeed-show-tag
+      :nm "-" #'elfeed-show-untag
+      :nm "s" #'elfeed-show-new-live-search
+      :nm "y" #'elfeed-show-yank
+      :nm "e" #'prot/elfeed-show-eww
+      :nm "v" #'prot/elfeed-mpv-dwim
+      :nm "a" #'prot/elfeed-show-archive
+        )
+
+
+#+end_src
+
+*** Visual
+#+BEGIN_SRC emacs-lisp
+
+        (after! elfeed
+
+          (elfeed-org)
+          (use-package! elfeed-link)
+
+          (setq elfeed-search-filter "@4-week-ago +unread"
+                                                ;                elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
+                elfeed-search-title-min-width 80
+                elfeed-show-entry-switch #'pop-to-buffer
+                elfeed-show-entry-delete #'+rss/delete-pane
+                elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
+                shr-max-image-proportion 0.4)
+
+          (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
+          (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
+
+          (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.8)))
+            "title face in elfeed show buffer"
+            :group 'elfeed)
+          (defface elfeed-show-author-face `((t (:weight light)))
+            "title face in elfeed show buffer"
+            :group 'elfeed)
+          (set-face-attribute 'elfeed-search-title-face nil
+                              :foreground 'nil
+                              :weight 'light)
+
+          (defadvice! +rss-elfeed-wrap-h-nicer ()
+            "Enhances an elfeed entry's readability by wrapping it to a width of
+        `fill-column' and centering it with `visual-fill-column-mode'."
+            :override #'+rss-elfeed-wrap-h
+            (let ((inhibit-read-only t)
+                  (inhibit-modification-hooks t))
+              (setq-local truncate-lines nil)
+              (setq-local shr-width 120)
+              (setq-local line-spacing 0.0)
+              (setq-local visual-fill-column-center-text t)
+              (visual-fill-column-mode)
+              ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
+              (set-buffer-modified-p nil)))
+
+          (defun +rss/elfeed-search-print-entry (entry)
+            "Print ENTRY to the buffer."
+            (let* ((elfeed-goodies/tag-column-width 40)
+                   (elfeed-goodies/feed-source-column-width 30)
+                   (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+                   (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+                   (feed (elfeed-entry-feed entry))
+                   (feed-title
+                    (when feed
+                      (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+                   (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+                   (tags-str (concat (mapconcat 'identity tags ",")))
+                   (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                                   elfeed-goodies/tag-column-width 4))
+
+                   (tag-column (elfeed-format-column
+                                tags-str (elfeed-clamp (length tags-str)
+                                                       elfeed-goodies/tag-column-width
+                                                       elfeed-goodies/tag-column-width)
+                                :left))
+                   (feed-column (elfeed-format-column
+                                 feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
+                                                          elfeed-goodies/feed-source-column-width
+                                                          elfeed-goodies/feed-source-column-width)
+                                 :left)))
+
+              (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
+              (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
+              (insert (propertize title 'face title-faces 'kbd-help title))
+              (setq-local line-spacing 0.2)))
+
+          (defun +rss/elfeed-show-refresh--better-style ()
+            "Update the buffer to match the selected entry, using a mail-style."
+            (interactive)
+            (let* ((inhibit-read-only t)
+                   (title (elfeed-entry-title elfeed-show-entry))
+                   (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
+                   (author (elfeed-meta elfeed-show-entry :author))
+                   (link (elfeed-entry-link elfeed-show-entry))
+                   (tags (elfeed-entry-tags elfeed-show-entry))
+                   (tagsstr (mapconcat #'symbol-name tags ", "))
+                   (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
+                   (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
+                   (type (elfeed-entry-content-type elfeed-show-entry))
+                   (feed (elfeed-entry-feed elfeed-show-entry))
+                   (feed-title (elfeed-feed-title feed))
+                   (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
+              (erase-buffer)
+              (insert "\n")
+              (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
+              (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
+              (when (and author elfeed-show-entry-author)
+                (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
+              (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
+              (when tags
+                (insert (format "%s\n"
+                                (propertize tagsstr 'face 'elfeed-search-tag-face))))
+              ;; (insert (propertize "Link: " 'face 'message-header-name))
+              ;; (elfeed-insert-link link link)
+              ;; (insert "\n")
+              (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
+                       do (insert (propertize "Enclosure: " 'face 'message-header-name))
+                       do (elfeed-insert-link (car enclosure))
+                       do (insert "\n"))
+              (insert "\n")
+              (if content
+                  (if (eq type 'html)
+                      (elfeed-insert-html content base)
+                    (insert content))
+                (insert (propertize "(empty)\n" 'face 'italic)))
+              (goto-char (point-min))))
+
+          )
+        (after! elfeed-org
+          :config
+          (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+          (setq elfeed-db-directory "~/Documents/elfeed")
+          (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org"))
+
+                                                ;taken from https://protesilaos.com/dotemacs/#h:0cd8ddab-55d1-40df-b3db-1234850792ba
+          (defun prot/elfeed-show-eww (&optional link)
+            "Browse current `elfeed' entry link in `eww'.
+        Only show the readable part once the website loads.  This can
+        fail on poorly-designed websites."
+            (interactive)
+            (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                              elfeed-show-entry
+                            (elfeed-search-selected :ignore-region)))
+                   (link (if link link (elfeed-entry-link entry))))
+              (eww link)
+              (add-hook 'eww-after-render-hook 'eww-readable nil t)))
+
+
+          (defun prot/elfeed-search-other-window (&optional arg)
+            "Browse `elfeed' entry in the other window.
+        With \\[universal-argument] browse the entry in `eww' using the
+        `prot/elfeed-show-eww' wrapper."
+            (interactive "P")
+            (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                              elfeed-show-entry
+                            (elfeed-search-selected :ignore-region)))
+                   (link (elfeed-entry-link entry))
+                   (win (selected-window)))
+              (with-current-buffer (get-buffer "*elfeed-search*")
+                (unless (one-window-p)              ; experimental
+                  (delete-other-windows win))
+                (split-window win (/ (frame-height) 5) 'below)
+                (other-window 1)
+                (if arg
+                    (progn
+                      (when (eq major-mode 'elfeed-search-mode)
+                        (elfeed-search-untag-all-unread))
+                      (prot/elfeed-show-eww link))
+                  (elfeed-search-show-entry entry)))))
+
+          (defvar prot/elfeed-mpv-hook nil
+            "Hook called before `prot/elfeed-mpv-dwim'.")
+
+          ;; TODO make this buffer more useful, such as running it in a
+          ;; shell-aware mode.
+          (defun prot/elfeed-mpv-buffer ()
+            "Prepare \"*elfeed-mpv-output*\" buffer.
+        For use by `prot/elfeed-mpv-dwim'.  To be called from
+        `prot/elfeed-mpv-hook'."
+            (let ((buf (get-buffer "*elfeed-mpv-output*"))
+                  (inhibit-read-only t))
+              (with-current-buffer buf
+                (erase-buffer))))
+
+          (defun prot/elfeed-mpv-dwim ()
+            "Play entry link with external `mpv' program.
+        When there is an audio enclosure (podcast), play just the audio.
+        Else spawn a video player at a resolution that accounts for the
+        current monitor's width."
+            (interactive)
+            (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                              elfeed-show-entry
+                            (elfeed-search-selected :ignore-region)))
+                   (link (elfeed-entry-link entry))
+                   (enclosure (elt (car (elfeed-entry-enclosures entry)) 0)) ; fragile?
+                   (audio "--no-video")
+                   ;; Here the display width checks if I am on the laptop
+                   (height (if (<= (display-pixel-width ) 1366) 720 1080))
+                   (video (format "--ytdl-format=bestvideo[height<=?%s]+bestaudio/best" height))
+                   (buf (pop-to-buffer "*elfeed-mpv-output*")))
+              (run-hooks 'prot/elfeed-mpv-hook)
+              (if enclosure              ; make this its own parametrised function
+                  (progn
+                    (start-process "audio-mpv" buf "mpv" audio enclosure)
+                    (message (concat "Launching MPV for " (propertize enclosure 'face 'success))))
+                (start-process "video-mpv" buf "mpv" video link)
+                (message (concat "Launching MPV for " (propertize link 'face 'success))))))
+
+          (defun prot/elfeed-show-archive ()
+            "Create an archive copy of the current `elfeed' entry."
+            (interactive)
+            (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                              elfeed-show-entry
+                            (elfeed-search-selected :ignore-region)))
+                   ;; TODO how to cleanly add hyphens instead of spaces?
+                   (title (elfeed-entry-title entry))
+                   (elfeed-show-truncate-long-urls nil)
+                   (archives "~/Documents/feeds/")
+                   (file (format "%s%s.org" archives title)))
+              (unless (file-exists-p archives)
+                (make-directory archives t))
+              (when (derived-mode-p 'elfeed-show-mode)
+                ;; Refresh to expand truncated URLs
+                (elfeed-show-refresh)
+                (write-file file t)
+                (message "Saved buffer at %s" file))))
+
+          (add-hook 'prot/elfeed-mpv-hook #'prot/elfeed-mpv-buffer)
+
+
+
+          )
+#+END_SRC
+
+
+** GTD and PARA
+Inspired from https://github.com/mwfogleman/.emacs.d/blob/master/michael.org
+*** Projects
+A project is “any outcome that will take more than one action step to complete.” As a result of implementing Tiago Forte’s “PARA” system, I can ensure that I always have an up to date project list.
+#+begin_src emacs-lisp
+(after! org (defun go-to-projects ()
+  (interactive)
+  (find-file org-basb-main-file)
+  (widen)
+  (beginning-of-buffer)
+  (re-search-forward "* Projects")
+  (beginning-of-line))
+
+(defun project-overview ()
+  (interactive)
+  (go-to-projects)
+  (org-narrow-to-subtree)
+  (org-sort-entries t ?p)
+  (org-columns))
+
+(defun project-deadline-overview ()
+  (interactive)
+  (go-to-projects)
+  (org-narrow-to-subtree)
+  (org-sort-entries t ?d)
+  (org-columns))
+)
+#+end_src
+The concept of Stuck Projects comes from David Allen’s GTD. A stuck project is a project without any action steps or tasks associated with it.
+
+Org-Mode has the ability to tell you which subtrees don’t have tasks associated with them. You can also configure what it recognizes as a stuck project. Unfortunately, by default, this functionality picks up a lot of noise.
+
+This function creates an agenda of stuck projects that is restricted to my “Projects” subtree.
+#+begin_src emacs-lisp
+(after! org (defun my-org-agenda-list-stuck-projects ()
+  (interactive)
+  (go-to-projects)
+  (org-agenda nil "#" 'subtree))
+)
+#+end_src
+
+*** Areas
+#+begin_src emacs-lisp
+(after! org  (defun go-to-areas ()
+    (interactive)
+    (find-file org-basb-main-file)
+    (widen)
+    (beginning-of-buffer)
+    (re-search-forward "* Areas")
+    (beginning-of-line))
+
+(defun areas-overview ()
+    (interactive)
+    (go-to-areas)
+    (org-narrow-to-subtree)
+    (org-columns))
+)
+#+end_src
+
+*** Reviews
+#+begin_src emacs-lisp
+(after! org (defun my-new-daily-review ()
+  (interactive)
+  (let ((org-capture-templates '(("d" "Review: Daily Review" entry (file+olp+datetree "/tmp/reviews.org")
+                                  (file "~/.doom.d/templates/dailyreviewtemplate.org")))))
+    (progn
+      (org-capture nil "d")
+      (org-capture-finalize t)
+      (org-speed-move-safe 'outline-up-heading)
+      (org-narrow-to-subtree)
+      (fetch-calendar)
+      (org-clock-in))))
+
+(defun my-new-weekly-review ()
+  (interactive)
+  (let ((org-capture-templates '(("w" "Review: Weekly Review" entry (file+olp+datetree "/tmp/reviews.org")
+                                  (file "~/.doom.d/templates/weeklyreviewtemplate.org")))))
+    (progn
+      (org-capture nil "w")
+      (org-capture-finalize t)
+      (org-speed-move-safe 'outline-up-heading)
+      (org-narrow-to-subtree)
+      (fetch-calendar)
+      (org-clock-in))))
+
+(defun my-new-monthly-review ()
+  (interactive)
+  (let ((org-capture-templates '(("m" "Review: Monthly Review" entry (file+olp+datetree "/tmp/reviews.org")
+                                  (file "~/.doom.d/templates/monthlyreviewtemplate.org")))))
+    (progn
+      (org-capture nil "m")
+      (org-capture-finalize t)
+      (org-speed-move-safe 'outline-up-heading)
+      (org-narrow-to-subtree)
+      (fetch-calendar)
+      (org-clock-in))))
+
+
+;(bind-keys :prefix-map review-map
+;           :prefix "C-z d"
+;           ("d" . my-new-daily-review)
+;           ("w" . my-new-weekly-review)
+;           ("m" . my-new-monthly-review))
+
+(f-touch "/tmp/reviews.org")
+
+)
+
+
+#+end_src
+
+** Mail setup
+*** Mu4e
 #+BEGIN_SRC emacs-lisp
 
 (after! mu4e
@@ -1405,9 +1708,7 @@ the final documents.
   )
 #+END_SRC
 
-#+RESULTS:
-
-** MU4e attachments
+*** MU4e attachments
 #+BEGIN_SRC emacs-lisp
 
        ;;;Taking the below from [[http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e]]
@@ -1456,7 +1757,7 @@ the final documents.
 )
 #+END_SRC
 
-** org-msg
+*** org-msg
 #+begin_src emacs-lisp
 (after! org-msg
                                         ;use-package! org-msg
@@ -1476,318 +1777,3 @@ the final documents.
   )
 #+end_src
 
-* lexic
-#+BEGIN_SRC emacs-lisp
-(use-package! lexic
-  :commands lexic-search lexic-list-dictionary
-)
-#+END_SRC
-* GTD and PARA
-Inspired from https://github.com/mwfogleman/.emacs.d/blob/master/michael.org
-** Projects
-A project is “any outcome that will take more than one action step to complete.” As a result of implementing Tiago Forte’s “PARA” system, I can ensure that I always have an up to date project list.
-#+begin_src emacs-lisp
-(after! org (defun go-to-projects ()
-  (interactive)
-  (find-file org-basb-main-file)
-  (widen)
-  (beginning-of-buffer)
-  (re-search-forward "* Projects")
-  (beginning-of-line))
-
-(defun project-overview ()
-  (interactive)
-  (go-to-projects)
-  (org-narrow-to-subtree)
-  (org-sort-entries t ?p)
-  (org-columns))
-
-(defun project-deadline-overview ()
-  (interactive)
-  (go-to-projects)
-  (org-narrow-to-subtree)
-  (org-sort-entries t ?d)
-  (org-columns))
-)
-#+end_src
-The concept of Stuck Projects comes from David Allen’s GTD. A stuck project is a project without any action steps or tasks associated with it.
-
-Org-Mode has the ability to tell you which subtrees don’t have tasks associated with them. You can also configure what it recognizes as a stuck project. Unfortunately, by default, this functionality picks up a lot of noise.
-
-This function creates an agenda of stuck projects that is restricted to my “Projects” subtree.
-#+begin_src emacs-lisp
-(after! org (defun my-org-agenda-list-stuck-projects ()
-  (interactive)
-  (go-to-projects)
-  (org-agenda nil "#" 'subtree))
-)
-#+end_src
-
-** Areas
-#+begin_src emacs-lisp
-(after! org  (defun go-to-areas ()
-    (interactive)
-    (find-file org-basb-main-file)
-    (widen)
-    (beginning-of-buffer)
-    (re-search-forward "* Areas")
-    (beginning-of-line))
-
-(defun areas-overview ()
-    (interactive)
-    (go-to-areas)
-    (org-narrow-to-subtree)
-    (org-columns))
-)
-#+end_src
-
-** Reviews
-#+begin_src emacs-lisp
-(after! org (defun my-new-daily-review ()
-  (interactive)
-  (let ((org-capture-templates '(("d" "Review: Daily Review" entry (file+olp+datetree "/tmp/reviews.org")
-                                  (file "~/.doom.d/templates/dailyreviewtemplate.org")))))
-    (progn
-      (org-capture nil "d")
-      (org-capture-finalize t)
-      (org-speed-move-safe 'outline-up-heading)
-      (org-narrow-to-subtree)
-      (fetch-calendar)
-      (org-clock-in))))
-
-(defun my-new-weekly-review ()
-  (interactive)
-  (let ((org-capture-templates '(("w" "Review: Weekly Review" entry (file+olp+datetree "/tmp/reviews.org")
-                                  (file "~/.doom.d/templates/weeklyreviewtemplate.org")))))
-    (progn
-      (org-capture nil "w")
-      (org-capture-finalize t)
-      (org-speed-move-safe 'outline-up-heading)
-      (org-narrow-to-subtree)
-      (fetch-calendar)
-      (org-clock-in))))
-
-(defun my-new-monthly-review ()
-  (interactive)
-  (let ((org-capture-templates '(("m" "Review: Monthly Review" entry (file+olp+datetree "/tmp/reviews.org")
-                                  (file "~/.doom.d/templates/monthlyreviewtemplate.org")))))
-    (progn
-      (org-capture nil "m")
-      (org-capture-finalize t)
-      (org-speed-move-safe 'outline-up-heading)
-      (org-narrow-to-subtree)
-      (fetch-calendar)
-      (org-clock-in))))
-
-
-;(bind-keys :prefix-map review-map
-;           :prefix "C-z d"
-;           ("d" . my-new-daily-review)
-;           ("w" . my-new-weekly-review)
-;           ("m" . my-new-monthly-review))
-
-(f-touch "/tmp/reviews.org")
-
-)
-
-
-#+end_src
-
-* Key cast mode
-#+BEGIN_SRC emacs-lisp
-
-(after! keycast
-  :commands keycast-mode
-  :config
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-        (progn
-          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
-      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
-      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
-  (custom-set-faces!
-    '(keycast-command :inherit doom-modeline-debug
-                      :height 0.9)
-    '(keycast-key :inherit custom-modified
-                  :height 1.1
-                  :weight bold)))
-
-
-
-#+END_SRC
-
-* Narrow widen
-Taken from https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
-#+BEGIN_SRC emacs-lisp
-
-(after! org
-  (defun narrow-or-widen-dwim (p)
-    "Widen if buffer is narrowed, narrow-dwim otherwise.
-Dwim means: region, org-src-block, org-subtree, or
-defun, whichever applies first. Narrowing to
-org-src-block actually calls `org-edit-src-code'.
-
-With prefix P, don't widen, just narrow even if buffer
-is already narrowed."
-    (interactive "P")
-    (declare (interactive-only))
-    (cond ((and (buffer-narrowed-p) (not p)) (widen))
-          ((region-active-p)
-           (narrow-to-region (region-beginning)
-                             (region-end)))
-          ((derived-mode-p 'org-mode)
-           ;; `org-edit-src-code' is not a real narrowing
-           ;; command. Remove this first conditional if
-           ;; you don't want it.
-           (cond ((ignore-errors (org-edit-src-code) t)
-                  (delete-other-windows))
-                 ((ignore-errors (org-narrow-to-block) t))
-                 (t (org-narrow-to-subtree))))
-          ((derived-mode-p 'latex-mode)
-           (LaTeX-narrow-to-environment))
-          (t (narrow-to-defun))))
-
-  )
-#+END_SRC
-* treemacs
-#+BEGIN_SRC emacs-lisp
-(after! treemacs
-  (defvar treemacs-file-ignore-extensions '()
-    "File extension which `treemacs-ignore-filter' will ensure are ignored")
-  (defvar treemacs-file-ignore-globs '()
-    "Globs which will are transformed to `treemacs-file-ignore-regexps' which `treemacs-ignore-filter' will ensure are ignored")
-  (defvar treemacs-file-ignore-regexps '()
-    "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
-  (defun treemacs-file-ignore-generate-regexps ()
-    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
-    (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
-  (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
-  (defun treemacs-ignore-filter (file full-path)
-    "Ignore files specified by `treemacs-file-ignore-extensions', and `treemacs-file-ignore-regexps'"
-    (or (member (file-name-extension file) treemacs-file-ignore-extensions)
-        (let ((ignore-file nil))
-          (dolist (regexp treemacs-file-ignore-regexps ignore-file)
-            (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
-  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
-
-        (setq treemacs-file-ignore-extensions
-      '(;; LaTeX
-        "aux"
-        "ptc"
-        "fdb_latexmk"
-        "fls"
-        "synctex.gz"
-        "toc"
-        ;; LaTeX - glossary
-        "glg"
-        "glo"
-        "gls"
-        "glsdefs"
-        "ist"
-        "acn"
-        "acr"
-        "alg"
-        ;; LaTeX - pgfplots
-        "mw"
-        ;; LaTeX - pdfx
-        "pdfa.xmpi"
-        ))
-(setq treemacs-file-ignore-globs
-      '(;; LaTeX
-        "*/_minted-*"
-        ;; AucTeX
-        "*/.auctex-auto"
-        "*/_region_.log"
-        "*/_region_.tex"))
-
-#+END_SRC
-* Modes
-#+BEGIN_SRC emacs-lisp
-(delete-selection-mode 1)                         ; Replace selection when inserting text
-(display-time-mode 1)                             ; Enable time in the mode-line
-(display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
-(global-subword-mode 1)                           ; Iterate through CamelCase words
-(setq initial-major-mode 'org-mode)
-(setq hungry-delete-mode t)
-(show-smartparens-mode)
-(global-hungry-delete-mode)
-(nyan-mode)
-#+END_SRC
-
-* Lsp mode
-#+BEGIN_SRC emacs-lisp
-
-(after! lsp-mode
-
-  (setq lsp-latex-build-on-save t)
-
-  (setq lsp-log-io t))
-
-#+END_SRC
-
-** Hydra
-#+BEGIN_SRC emacs-lisp
-
-(after! lsp-mode
- (defhydra hydra-lsp (:exit t :hint nil)
-  "
- Buffer^^               Server^^                   Symbol
--------------------------------------------------------------------------------------
- [_f_] format           [_M-r_] restart            [_d_] declaration  [_i_] implementation  [_o_] documentation
- [_m_] imenu            [_S_]   shutdown           [_D_] definition   [_t_] type            [_r_] rename
- [_x_] execute action   [_M-s_] describe session   [_R_] references   [_s_] signature"
-  ("d" lsp-find-declaration)
-  ("D" lsp-ui-peek-find-definitions)
-  ("R" lsp-ui-peek-find-references)
-  ("i" lsp-ui-peek-find-implementation)
-  ("t" lsp-find-type-definition)
-  ("s" lsp-signature-help)
-  ("o" lsp-describe-thing-at-point)
-  ("r" lsp-rename)
-
-  ("f" lsp-format-buffer)
-  ("m" lsp-ui-imenu)
-  ("x" lsp-execute-code-action)
-
-  ("M-s" lsp-describe-session)
-  ("M-r" lsp-restart-workspace)
-  ("S" lsp-shutdown-workspace))
-
-)
-#+END_SRC
-
-#+RESULTS:
-: t
-
-* Calibre
-#+BEGIN_SRC emacs-lisp
-
-        (after! calibredb
-
-  :init
-  (autoload 'calibredb "calibredb")
-  :config
-  (setq calibredb-root-dir "~/CalibreLibrary")
-  (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
-  (setq calibredb-library-alist '(("~/CalibreLibrary")
-                                  )))
-
-#+END_SRC
-
-* COMMENT iedit
-#+begin_src emacs-lisp
-
-        (after! iedit
-          :config
-          (set-face-background 'iedit-occurrence "Magenta")
-          :bind
-          ("C-;" . iedit-mode))
-#+end_src
-* Loading complete
-#+BEGIN_SRC emacs-lisp
-
-(alert "Emacs has started")
-#+END_SRC
