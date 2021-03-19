@@ -27,7 +27,7 @@
         (ivy
          +prescient
          ;;+fuzzy
-         +childframe
+         ;;+childframe
          +icons
          )
                                         ; a search engine for love and life
@@ -37,20 +37,20 @@
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       fill-column       ; a `fill-column' indicator
-       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+;       fill-column       ; a `fill-column' indicator
+       hl-todo                          ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        (hydra +hydra/window-nav/body
               +hydra/text-zoom/body)
  ;      indent-guides     ; highlighted indent columns
        ;;minimap           ; show a map of the code on the side
-       modeline          ; snazzy, Atom-inspired modeline, plus API
-       nav-flash         ; blink cursor line after big motions
+       (modeline)
+                                        ; snazzy, Atom-inspired modeline, plus API
+      nav-flash         ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
-       ophints           ; highlight the region an operation acts on
+      ophints           ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
-      ;; pretty-code       ; ligatures or substitute text with pretty symbols
        (ligatures +extra)
-       ;;tabs              ; an tab bar for Emacs
+      ;; tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
        unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
@@ -95,7 +95,8 @@
        (spell
         +flyspell
         +everywhere
-        +aspell)             ; tasing you for misspelling mispelling
+        +aspell
+        +hunspell)             ; tasing you for misspelling mispelling
        grammar           ; tasing grammar mistake every you make
 
        :tools
@@ -153,7 +154,7 @@
        ;;kotlin            ; a better, slicker Java(Script)
        (latex
         +latexmk
-        ;+lsp
+        +lsp
         +cdlatex
         +fold)             ; writing papers in Emacs has never been so fun
        ;;lean
@@ -162,14 +163,14 @@
        ;;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       nix               ; I hereby declare "nix geht mehr!"
+       ;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org
         +present
         +noter
         +pomodoro
         +hugo
-        +journal
+       ; +journal
         +pretty
         +pandoc
         +roam
@@ -202,9 +203,9 @@
 
        :app
        ;;calendar
-       irc               ; how neckbeards socialize
+      ;; irc               ; how neckbeards socialize
        (rss +org)        ; emacs as an RSS reader
-       twitter           ; twitter client https://twitter.com/vnought
+      ;; twitter           ; twitter client https://twitter.com/vnought
 
        :config
        literate

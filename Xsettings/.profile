@@ -1,4 +1,3 @@
-
 #!/bin/sh
 # Profile file. Runs on login.
 
@@ -6,7 +5,7 @@
 export PATH="$PATH:$(du "$HOME/.scripts/" | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
 export EDITOR="emacs"
 export TERMINAL="termite"
-export BROWSER="firefox"
+export BROWSER="brave"
 export READER="evince"
 export FILE="ranger"
 #export SUDO_ASKPASS="$HOME/.scripts/tools/dmenupass"

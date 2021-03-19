@@ -55,7 +55,7 @@
 (package! try)
 (package! super-save)
 (package! org-super-agenda)
-(package! flyspell-correct-ivy)
+;;(package! flyspell-correct-ivy)
 (package! alert)
 ;(package! undo-tree)
 ;(package! company-lsp)
@@ -69,8 +69,8 @@
 (package! flycheck-ledger)
 (package! aggressive-indent)
 (package! nyan-mode)
-(package! rg)
-(package! minions)
+;;(package! rg)
+;;(package! minions)
 (package! org-roam-server)
 ;;(package! deft)
 (package! visual-fill-column)
@@ -80,24 +80,16 @@
   :recipe (:host gitlab :repo "protesilaos/modus-themes"))
 
 (package! calibredb)
-(package! xkcd)
+;;(package! xkcd)
 (package! theme-magic)
-(package! flyspell-lazy)
-(package! elfeed-goodies)
+;;(package! flyspell-lazy)
+;;(package! elfeed-goodies)
 (package! lexic :recipe (:local-repo "lisp/lexic"))
+
+(package! holy-books :recipe (:local-repo "lisp/holy-books"))
 (package! info-colors)
 (package! nov)
 ;; Testing the org fold branch
- (package! org-mode
-  :recipe (:host github
-           :repo "yantar92/org"
-           :branch "feature/org-fold"
-           :files ("*.el" "lisp/*.el" "contrib/lisp/*.el")
-           :build (with-temp-file (expand-file-name "org-version.el" (straight--repos-dir "org"))
-                    (insert "(fset 'org-release (lambda () \"9.5\"))\n"
-                            "(fset 'org-git-version #'ignore)\n"
-                            "(provide 'org-version)\n")))
-  :shadow 'org)
 (package! org-fragtog)
 (package! org-pretty-tags)
 (package! gif-screencast)
@@ -109,5 +101,7 @@
 (package! org-ref)
 (package! org-roam-bibtex)
 (package! iedit)
-(package! ob-ammonite)
+;(package! ob-ammonite)
 (package! lorem-ipsum)
+;(package! flycheck-grammarly)
+(package! org-appear :recipe (:host github :repo "awth13/org-appear"))

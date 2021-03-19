@@ -23,7 +23,8 @@
 
 #+end_src
 * Visual  configuration
-** posframe
+
+** COMMENT posframe
 #+BEGIN_SRC emacs-lisp
 (after! ivy-posframe
   (setf (alist-get t ivy-posframe-display-functions-alist)
@@ -44,9 +45,6 @@
         (or (eq key :lines-truncate)
             value)))
 #+END_SRC
-
-#+RESULTS:
-| lambda | (_buffer-or-name key value) | (or (eq key :lines-truncate) value) |
 
 ** Buffer Name
 #+BEGIN_SRC emacs-lisp
@@ -118,7 +116,7 @@
         modus-themes-scale-4 1.27
         modus-themes-scale-5 1.33)
   )
-(setq doom-theme 'modus-vivendi)
+(setq doom-theme 'doom-one)
 #+END_SRC
 
 #+RESULTS:
@@ -232,19 +230,27 @@ We also like ~org-fragtog~, and that wants a hook.
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
 
-** In latex editor
+** In mixed pitch mode in editor
 #+BEGIN_SRC emacs-lisp
 
-;(add-hook 'LaTeX-mode-hook #'mixed-pitch-mode)
+(add-hook 'text-mode-hook #'mixed-pitch-mode)
 
+(add-hook 'org-mode-hook #'mixed-pitch-mode)
 #+END_SRC
+
+#+RESULTS:
+| mixed-pitch-mode | er/add-text-mode-expansions | +spell-remove-run-together-switch-for-aspell-h | dubcaps-mode | (lambda (&rest _) (let* ((modified (buffer-modified-p)) (buffer-undo-list t) (inhibit-read-only t) (inhibit-modification-hooks t)) (unwind-protect (progn (ansi-color-apply-on-region (point-min) (point-max))) (if modified nil (restore-buffer-modified-p nil))))) | +word-wrap-mode | yas-minor-mode-on | display-line-numbers-mode | vi-tilde-fringe-mode | text-mode-hook-identify | visual-line-mode |
+
 ** Fonts
 #+BEGIN_SRC emacs-lisp
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 30)
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 36)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 30)
-      doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 50)
-      doom-variable-pitch-font (font-spec :family "FiraGO" :size 30))
+                                        ;(setq doom-font (font-spec :family "Overpass" :size 30)
+                                        ;  doom-big-font (font-spec :family "fira code retina" :size 50)
+                                        ;doom-variable-pitch-font (font-spec :family "Overpass" :size 33))
 (after! doom-theme
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
@@ -276,6 +282,7 @@ We also like ~org-fragtog~, and that wants a hook.
                                         ;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
                                         ;      doom-serif-font (font-spec :family "iA Writer Quattro S" :weight 'light))
 #+END_SRC
+
 ** Rainbow mode
 #+BEGIN_SRC emacs-lisp
 (use-package! rainbow-mode
@@ -297,6 +304,14 @@ We also like ~org-fragtog~, and that wants a hook.
 #+begin_src emacs-lisp
 (setq display-line-numbers-type 'relative)
 #+end_src
+** flyspell
+#+begin_src emacs-lisp
+(define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-wrapper)
+#+end_src
+
+#+RESULTS:
+: flyspell-correct-wrapper
+
 ** Supersave
 #+begin_src emacs-lisp
 (after! super-save
@@ -326,7 +341,7 @@ Look at what we need from here. its mainly the key bindings I require for swiper
   )
 #+END_SRC
 ** Wrap paragraphs automatically
-I dont like =AutoFillMode= which  automatically wraps paragraphs, kinda
+I don't like =AutoFillMode= which  automatically wraps paragraphs, kinda
 like hitting =M-q=. But i like wrapped paragraphs, hence use visual fill
 mode
 
@@ -341,7 +356,8 @@ mode
         (add-hook! latex-mode :append
                    #'visual-line-mode)
 
-(use-package! visual-fill-column
+        (use-package! visual-fill-column
+          :defer t
           :config
           (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
           (advice-add 'text-scale-adjust :after
@@ -407,14 +423,12 @@ Single Capitals as you type."
 #+BEGIN_SRC emacs-lisp
 
 (use-package! info-colors
+  :defer t
   :commands (info-colors-fontify-node))
 
 (add-hook 'Info-selection-hook 'info-colors-fontify-node)
 
-;(add-hook 'Info-mode-hook #'mixed-pitch-mode)
-
-
-
+                                        ;(add-hook 'Info-mode-hook #'mixed-pitch-mode)
 #+END_SRC
 ** Plaintext ascii colors
 #+BEGIN_SRC emacs-lisp
@@ -424,9 +438,13 @@ Single Capitals as you type."
              (with-silent-modifications
                (ansi-color-apply-on-region (point-min) (point-max)))))
 
-#+END_SEC
+#+END_SrC
 
+** Spell check
+#+begin_src emacs-lisp
 
+(setq ispell-dictionary "en")
+#+end_src
 ** Greedily run on daemon load
 #+begin_src emacs-lisp
 
@@ -457,8 +475,21 @@ Single Capitals as you type."
 (global-hungry-delete-mode)
 (nyan-mode)
 #+END_SRC
+** Modeline
+#+begin_src emacs-lisp
+(defun doom-modeline-conditional-buffer-encoding ()
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
 
-* Company
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+#+end_src
+
+#+RESULTS:
+| doom-modeline-conditional-buffer-encoding | global-evil-surround-mode-enable-in-buffers | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | solaire-global-mode-enable-in-buffers | +ligatures-init-buffer-h | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | ws-butler-global-mode-enable-in-buffers | global-undo-tree-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | doom-modeline-update-buffer-file-icon | global-hungry-delete-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | +format-enable-on-save-maybe-h | doom--setq-evil-shift-width-for-after-change-major-mode-h | doom-run-local-var-hooks-maybe-h | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | which-func-ff-hook | doom-highlight-non-default-indentation-h | +company-init-backends-h |
+
+* COMMENT Company
 #+begin_src emacs-lisp
 (after! company
   (setq company-idle-delay 0.5
@@ -501,6 +532,19 @@ Single Capitals as you type."
                   (org-superstar-restart))))))
 #+end_src
 * Org Mode
+** Org appear
+#+begin_src emacs-lisp
+
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-fragments'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-fragments))
+#+end_src
 ** org habit
 #+BEGIN_SRC emacs-lisp
 (after! org
@@ -937,13 +981,12 @@ the final documents.
   :config
   (setq org-ref-completion-library 'org-ref-ivy-cite)
 
-(setq reftex-default-bibliography '("~/References/AshfaqRef.bib"))
+  ;;(setq reftex-default-bibliography '("~/References/AshfaqRef.bib"))
 
-;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "~/References/notes.org"
-      org-ref-default-bibliography '("~/References/AshfaqRef.bib")
-      org-ref-pdf-directory "~/References/"))
-
+  ;; see org-ref for use of these variables
+  (setq org-ref-bibliography-notes "~/References/notes.org"
+        org-ref-default-bibliography '("~/References/AshfaqRef.bib")
+        org-ref-pdf-directory "~/References/"))
 #+END_SRC
 *** Ivy-bibtex
 #+BEGIN_SRC emacs-lisp
@@ -1166,6 +1209,7 @@ is already narrowed."
 #+begin_src emacs-lisp
 
 (use-package! nov
+  :defer t
   :mode ("\\.epub\\'" . nov-mode)
   :config
   (map! :map nov-mode-map
@@ -1231,13 +1275,231 @@ is already narrowed."
 
   (add-hook 'nov-mode-hook #'+nov-mode-setup))
 #+end_src
-** lexic
-#+BEGIN_SRC emacs-lisp
-(use-package! lexic
-  :commands lexic-search lexic-list-dictionary
-)
-#+END_SRC
 ** elfeed
+
+*** Visual
+#+BEGIN_SRC emacs-lisp
+(after! elfeed
+
+  (elfeed-org)
+  (use-package! elfeed-link
+    :defer t
+    )
+
+  (setq elfeed-search-filter "@4-week-ago +unread"
+                                        ;                elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
+        elfeed-search-title-min-width 80
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
+        shr-max-image-proportion 0.4)
+
+  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
+  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
+
+  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.8)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (defface elfeed-show-author-face `((t (:weight light)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (set-face-attribute 'elfeed-search-title-face nil
+                      :foreground 'nil
+                      :weight 'light)
+
+  (defadvice! +rss-elfeed-wrap-h-nicer ()
+    "Enhances an elfeed entry's readability by wrapping it to a width of
+        `fill-column' and centering it with `visual-fill-column-mode'."
+    :override #'+rss-elfeed-wrap-h
+    (let ((inhibit-read-only t)
+          (inhibit-modification-hooks t))
+      (setq-local truncate-lines nil)
+      (setq-local shr-width 120)
+      (setq-local line-spacing 0.0)
+      (setq-local visual-fill-column-center-text t)
+      (visual-fill-column-mode)
+      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
+      (set-buffer-modified-p nil)))
+
+  (defun +rss/elfeed-search-print-entry (entry)
+    "Print ENTRY to the buffer."
+    (let* ((elfeed-goodies/tag-column-width 40)
+           (elfeed-goodies/feed-source-column-width 30)
+           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+           (feed (elfeed-entry-feed entry))
+           (feed-title
+            (when feed
+              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+           (tags-str (concat (mapconcat 'identity tags ",")))
+           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                           elfeed-goodies/tag-column-width 4))
+
+           (tag-column (elfeed-format-column
+                        tags-str (elfeed-clamp (length tags-str)
+                                               elfeed-goodies/tag-column-width
+                                               elfeed-goodies/tag-column-width)
+                        :left))
+           (feed-column (elfeed-format-column
+                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width)
+                         :left)))
+
+      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
+      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
+      (insert (propertize title 'face title-faces 'kbd-help title))
+      (setq-local line-spacing 0.2)))
+
+  (defun +rss/elfeed-show-refresh--better-style ()
+    "Update the buffer to match the selected entry, using a mail-style."
+    (interactive)
+    (let* ((inhibit-read-only t)
+           (title (elfeed-entry-title elfeed-show-entry))
+           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
+           (author (elfeed-meta elfeed-show-entry :author))
+           (link (elfeed-entry-link elfeed-show-entry))
+           (tags (elfeed-entry-tags elfeed-show-entry))
+           (tagsstr (mapconcat #'symbol-name tags ", "))
+           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
+           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
+           (type (elfeed-entry-content-type elfeed-show-entry))
+           (feed (elfeed-entry-feed elfeed-show-entry))
+           (feed-title (elfeed-feed-title feed))
+           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
+      (erase-buffer)
+      (insert "\n")
+      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
+      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
+      (when (and author elfeed-show-entry-author)
+        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
+      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
+      (when tags
+        (insert (format "%s\n"
+                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
+      ;; (insert (propertize "Link: " 'face 'message-header-name))
+      ;; (elfeed-insert-link link link)
+      ;; (insert "\n")
+      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
+               do (insert (propertize "Enclosure: " 'face 'message-header-name))
+               do (elfeed-insert-link (car enclosure))
+               do (insert "\n"))
+      (insert "\n")
+      (if content
+          (if (eq type 'html)
+              (elfeed-insert-html content base)
+            (insert content))
+        (insert (propertize "(empty)\n" 'face 'italic)))
+      (goto-char (point-min))))
+
+  )
+(after! elfeed-org
+  :config
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+  (setq elfeed-db-directory "~/Documents/elfeed")
+  (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org"))
+
+                                        ;taken from https://protesilaos.com/dotemacs/#h:0cd8ddab-55d1-40df-b3db-1234850792ba
+  (defun prot/elfeed-show-eww (&optional link)
+    "Browse current `elfeed' entry link in `eww'.
+        Only show the readable part once the website loads.  This can
+        fail on poorly-designed websites."
+    (interactive)
+    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                      elfeed-show-entry
+                    (elfeed-search-selected :ignore-region)))
+           (link (if link link (elfeed-entry-link entry))))
+      (eww link)
+      (add-hook 'eww-after-render-hook 'eww-readable nil t)))
+
+
+  (defun prot/elfeed-search-other-window (&optional arg)
+    "Browse `elfeed' entry in the other window.
+        With \\[universal-argument] browse the entry in `eww' using the
+        `prot/elfeed-show-eww' wrapper."
+    (interactive "P")
+    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                      elfeed-show-entry
+                    (elfeed-search-selected :ignore-region)))
+           (link (elfeed-entry-link entry))
+           (win (selected-window)))
+      (with-current-buffer (get-buffer "*elfeed-search*")
+        (unless (one-window-p)              ; experimental
+          (delete-other-windows win))
+        (split-window win (/ (frame-height) 5) 'below)
+        (other-window 1)
+        (if arg
+            (progn
+              (when (eq major-mode 'elfeed-search-mode)
+                (elfeed-search-untag-all-unread))
+              (prot/elfeed-show-eww link))
+          (elfeed-search-show-entry entry)))))
+
+  (defvar prot/elfeed-mpv-hook nil
+    "Hook called before `prot/elfeed-mpv-dwim'.")
+
+  ;; TODO make this buffer more useful, such as running it in a
+  ;; shell-aware mode.
+  (defun prot/elfeed-mpv-buffer ()
+    "Prepare \"*elfeed-mpv-output*\" buffer.
+        For use by `prot/elfeed-mpv-dwim'.  To be called from
+        `prot/elfeed-mpv-hook'."
+    (let ((buf (get-buffer "*elfeed-mpv-output*"))
+          (inhibit-read-only t))
+      (with-current-buffer buf
+        (erase-buffer))))
+
+  (defun prot/elfeed-mpv-dwim ()
+    "Play entry link with external `mpv' program.
+        When there is an audio enclosure (podcast), play just the audio.
+        Else spawn a video player at a resolution that accounts for the
+        current monitor's width."
+    (interactive)
+    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                      elfeed-show-entry
+                    (elfeed-search-selected :ignore-region)))
+           (link (elfeed-entry-link entry))
+           (enclosure (elt (car (elfeed-entry-enclosures entry)) 0)) ; fragile?
+           (audio "--no-video")
+           ;; Here the display width checks if I am on the laptop
+           (height (if (<= (display-pixel-width ) 1366) 720 1080))
+           (video (format "--ytdl-format=bestvideo[height<=?%s]+bestaudio/best" height))
+           (buf (pop-to-buffer "*elfeed-mpv-output*")))
+      (run-hooks 'prot/elfeed-mpv-hook)
+      (if enclosure              ; make this its own parametrised function
+          (progn
+            (start-process "audio-mpv" buf "mpv" audio enclosure)
+            (message (concat "Launching MPV for " (propertize enclosure 'face 'success))))
+        (start-process "video-mpv" buf "mpv" video link)
+        (message (concat "Launching MPV for " (propertize link 'face 'success))))))
+
+  (defun prot/elfeed-show-archive ()
+    "Create an archive copy of the current `elfeed' entry."
+    (interactive)
+    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                      elfeed-show-entry
+                    (elfeed-search-selected :ignore-region)))
+           ;; TODO how to cleanly add hyphens instead of spaces?
+           (title (elfeed-entry-title entry))
+           (elfeed-show-truncate-long-urls nil)
+           (archives "~/Documents/feeds/")
+           (file (format "%s%s.org" archives title)))
+      (unless (file-exists-p archives)
+        (make-directory archives t))
+      (when (derived-mode-p 'elfeed-show-mode)
+        ;; Refresh to expand truncated URLs
+        (elfeed-show-refresh)
+        (write-file file t)
+        (message "Saved buffer at %s" file))))
+
+  (add-hook 'prot/elfeed-mpv-hook #'prot/elfeed-mpv-buffer)
+
+
+
+  )
+#+END_SRC
+
 
 *** Keybindings
 #+begin_src emacs-lisp
@@ -1285,229 +1547,6 @@ is already narrowed."
 
 
 #+end_src
-
-*** Visual
-#+BEGIN_SRC emacs-lisp
-
-        (after! elfeed
-
-          (elfeed-org)
-          (use-package! elfeed-link)
-
-          (setq elfeed-search-filter "@4-week-ago +unread"
-                                                ;                elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
-                elfeed-search-title-min-width 80
-                elfeed-show-entry-switch #'pop-to-buffer
-                elfeed-show-entry-delete #'+rss/delete-pane
-                elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
-                shr-max-image-proportion 0.4)
-
-          (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
-          (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
-
-          (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.8)))
-            "title face in elfeed show buffer"
-            :group 'elfeed)
-          (defface elfeed-show-author-face `((t (:weight light)))
-            "title face in elfeed show buffer"
-            :group 'elfeed)
-          (set-face-attribute 'elfeed-search-title-face nil
-                              :foreground 'nil
-                              :weight 'light)
-
-          (defadvice! +rss-elfeed-wrap-h-nicer ()
-            "Enhances an elfeed entry's readability by wrapping it to a width of
-        `fill-column' and centering it with `visual-fill-column-mode'."
-            :override #'+rss-elfeed-wrap-h
-            (let ((inhibit-read-only t)
-                  (inhibit-modification-hooks t))
-              (setq-local truncate-lines nil)
-              (setq-local shr-width 120)
-              (setq-local line-spacing 0.0)
-              (setq-local visual-fill-column-center-text t)
-              (visual-fill-column-mode)
-              ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
-              (set-buffer-modified-p nil)))
-
-          (defun +rss/elfeed-search-print-entry (entry)
-            "Print ENTRY to the buffer."
-            (let* ((elfeed-goodies/tag-column-width 40)
-                   (elfeed-goodies/feed-source-column-width 30)
-                   (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
-                   (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
-                   (feed (elfeed-entry-feed entry))
-                   (feed-title
-                    (when feed
-                      (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
-                   (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
-                   (tags-str (concat (mapconcat 'identity tags ",")))
-                   (title-width (- (window-width) elfeed-goodies/feed-source-column-width
-                                   elfeed-goodies/tag-column-width 4))
-
-                   (tag-column (elfeed-format-column
-                                tags-str (elfeed-clamp (length tags-str)
-                                                       elfeed-goodies/tag-column-width
-                                                       elfeed-goodies/tag-column-width)
-                                :left))
-                   (feed-column (elfeed-format-column
-                                 feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
-                                                          elfeed-goodies/feed-source-column-width
-                                                          elfeed-goodies/feed-source-column-width)
-                                 :left)))
-
-              (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
-              (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
-              (insert (propertize title 'face title-faces 'kbd-help title))
-              (setq-local line-spacing 0.2)))
-
-          (defun +rss/elfeed-show-refresh--better-style ()
-            "Update the buffer to match the selected entry, using a mail-style."
-            (interactive)
-            (let* ((inhibit-read-only t)
-                   (title (elfeed-entry-title elfeed-show-entry))
-                   (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
-                   (author (elfeed-meta elfeed-show-entry :author))
-                   (link (elfeed-entry-link elfeed-show-entry))
-                   (tags (elfeed-entry-tags elfeed-show-entry))
-                   (tagsstr (mapconcat #'symbol-name tags ", "))
-                   (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
-                   (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
-                   (type (elfeed-entry-content-type elfeed-show-entry))
-                   (feed (elfeed-entry-feed elfeed-show-entry))
-                   (feed-title (elfeed-feed-title feed))
-                   (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
-              (erase-buffer)
-              (insert "\n")
-              (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
-              (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
-              (when (and author elfeed-show-entry-author)
-                (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
-              (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
-              (when tags
-                (insert (format "%s\n"
-                                (propertize tagsstr 'face 'elfeed-search-tag-face))))
-              ;; (insert (propertize "Link: " 'face 'message-header-name))
-              ;; (elfeed-insert-link link link)
-              ;; (insert "\n")
-              (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
-                       do (insert (propertize "Enclosure: " 'face 'message-header-name))
-                       do (elfeed-insert-link (car enclosure))
-                       do (insert "\n"))
-              (insert "\n")
-              (if content
-                  (if (eq type 'html)
-                      (elfeed-insert-html content base)
-                    (insert content))
-                (insert (propertize "(empty)\n" 'face 'italic)))
-              (goto-char (point-min))))
-
-          )
-        (after! elfeed-org
-          :config
-          (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-          (setq elfeed-db-directory "~/Documents/elfeed")
-          (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org"))
-
-                                                ;taken from https://protesilaos.com/dotemacs/#h:0cd8ddab-55d1-40df-b3db-1234850792ba
-          (defun prot/elfeed-show-eww (&optional link)
-            "Browse current `elfeed' entry link in `eww'.
-        Only show the readable part once the website loads.  This can
-        fail on poorly-designed websites."
-            (interactive)
-            (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                              elfeed-show-entry
-                            (elfeed-search-selected :ignore-region)))
-                   (link (if link link (elfeed-entry-link entry))))
-              (eww link)
-              (add-hook 'eww-after-render-hook 'eww-readable nil t)))
-
-
-          (defun prot/elfeed-search-other-window (&optional arg)
-            "Browse `elfeed' entry in the other window.
-        With \\[universal-argument] browse the entry in `eww' using the
-        `prot/elfeed-show-eww' wrapper."
-            (interactive "P")
-            (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                              elfeed-show-entry
-                            (elfeed-search-selected :ignore-region)))
-                   (link (elfeed-entry-link entry))
-                   (win (selected-window)))
-              (with-current-buffer (get-buffer "*elfeed-search*")
-                (unless (one-window-p)              ; experimental
-                  (delete-other-windows win))
-                (split-window win (/ (frame-height) 5) 'below)
-                (other-window 1)
-                (if arg
-                    (progn
-                      (when (eq major-mode 'elfeed-search-mode)
-                        (elfeed-search-untag-all-unread))
-                      (prot/elfeed-show-eww link))
-                  (elfeed-search-show-entry entry)))))
-
-          (defvar prot/elfeed-mpv-hook nil
-            "Hook called before `prot/elfeed-mpv-dwim'.")
-
-          ;; TODO make this buffer more useful, such as running it in a
-          ;; shell-aware mode.
-          (defun prot/elfeed-mpv-buffer ()
-            "Prepare \"*elfeed-mpv-output*\" buffer.
-        For use by `prot/elfeed-mpv-dwim'.  To be called from
-        `prot/elfeed-mpv-hook'."
-            (let ((buf (get-buffer "*elfeed-mpv-output*"))
-                  (inhibit-read-only t))
-              (with-current-buffer buf
-                (erase-buffer))))
-
-          (defun prot/elfeed-mpv-dwim ()
-            "Play entry link with external `mpv' program.
-        When there is an audio enclosure (podcast), play just the audio.
-        Else spawn a video player at a resolution that accounts for the
-        current monitor's width."
-            (interactive)
-            (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                              elfeed-show-entry
-                            (elfeed-search-selected :ignore-region)))
-                   (link (elfeed-entry-link entry))
-                   (enclosure (elt (car (elfeed-entry-enclosures entry)) 0)) ; fragile?
-                   (audio "--no-video")
-                   ;; Here the display width checks if I am on the laptop
-                   (height (if (<= (display-pixel-width ) 1366) 720 1080))
-                   (video (format "--ytdl-format=bestvideo[height<=?%s]+bestaudio/best" height))
-                   (buf (pop-to-buffer "*elfeed-mpv-output*")))
-              (run-hooks 'prot/elfeed-mpv-hook)
-              (if enclosure              ; make this its own parametrised function
-                  (progn
-                    (start-process "audio-mpv" buf "mpv" audio enclosure)
-                    (message (concat "Launching MPV for " (propertize enclosure 'face 'success))))
-                (start-process "video-mpv" buf "mpv" video link)
-                (message (concat "Launching MPV for " (propertize link 'face 'success))))))
-
-          (defun prot/elfeed-show-archive ()
-            "Create an archive copy of the current `elfeed' entry."
-            (interactive)
-            (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                              elfeed-show-entry
-                            (elfeed-search-selected :ignore-region)))
-                   ;; TODO how to cleanly add hyphens instead of spaces?
-                   (title (elfeed-entry-title entry))
-                   (elfeed-show-truncate-long-urls nil)
-                   (archives "~/Documents/feeds/")
-                   (file (format "%s%s.org" archives title)))
-              (unless (file-exists-p archives)
-                (make-directory archives t))
-              (when (derived-mode-p 'elfeed-show-mode)
-                ;; Refresh to expand truncated URLs
-                (elfeed-show-refresh)
-                (write-file file t)
-                (message "Saved buffer at %s" file))))
-
-          (add-hook 'prot/elfeed-mpv-hook #'prot/elfeed-mpv-buffer)
-
-
-
-          )
-#+END_SRC
-
 
 ** GTD and PARA
 Inspired from https://github.com/mwfogleman/.emacs.d/blob/master/michael.org
@@ -1620,14 +1659,53 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 
 #+end_src
 
+** lexic
+#+BEGIN_SRC emacs-lisp
+(use-package! lexic
+  :defer t
+  :commands lexic-search lexic-list-dictionary
+  )
+#+END_SRC
+
+#+RESULTS:
+
 ** Mail setup
 *** Mu4e
 #+BEGIN_SRC emacs-lisp
 
 (after! mu4e
+
+
+  (setq mu4e-headers-fields
+        '((:flags . 6)
+          (:account-stripe . 2)
+          (:from-or-to . 25)
+          (:folder . 10)
+          (:recipnum . 2)
+          (:subject . 80)
+          (:human-date . 8))
+        +mu4e-min-header-frame-width 142
+        mu4e-headers-date-format "%d/%m/%y"
+        mu4e-headers-time-format "⧖ %H:%M"
+        mu4e-headers-results-limit 1000
+        mu4e-index-cleanup t)
+
+  (add-to-list 'mu4e-bookmarks
+               '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
+
+  (defvar +mu4e-header--folder-colors nil)
+  (appendq! mu4e-header-info-custom
+            '((:folder .
+               (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
+                (lambda (msg)
+                  (+mu4e-colorize-str
+                   (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
+                   '+mu4e-header--folder-colors))))))
+
+
   ;; spell check
   (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
-
+  (setq mu4e-update-interval 600)
 
 
 
@@ -1635,9 +1713,6 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 
 
   ;; setup some handy shortcuts
-  ;; you can quickly switch to your Inbox -- press ``ji''
-  ;; then, when you want archive some messages, move them to
-  ;; the 'All Mail' folder by pressing ``ma''.
   (setq mu4e-maildir-shortcuts
         '( ("/Chalmers/Inbox"               . ?i)
            ("/Personal/Inbox"   . ?p)
@@ -1776,4 +1851,3 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
  #+end_signature")
   )
 #+end_src
-

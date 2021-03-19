@@ -119,8 +119,8 @@ PATH="$HOME/.emacs.d/bin:$NPM_PACKAGES/bin:$PATH"
 
 
 ##Cups config, replaces .cups/client.conf...
-CUPS_GSSSERVICENAME=HTTP
-CUPS_SERVER=print.chalmers.se
+#CUPS_GSSSERVICENAME=HTTP
+#CUPS_SERVER=print.chalmers.se
 
 # Unset manpath so we can inherit from /etc/manpath via the `manpath` command
 unset MANPATH # delete if you already modified MANPATH elsewhere in your config
@@ -142,3 +142,10 @@ if [ -e /home/ashfaqf/.nix-profile/etc/profile.d/nix.sh ]; then . /home/ashfaqf/
 
 # Path to dictionaries
 export STARDICT_DATA_DIR="$HOME/.stardic/dic"
+
+
+##For scala Cousier
+export PATH="$PATH:/home/ashfaqf/.local/share/coursier/bin"
+
+# star ship font
+#eval "$(starship init zsh)"

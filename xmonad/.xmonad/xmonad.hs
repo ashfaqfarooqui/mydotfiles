@@ -260,7 +260,7 @@ myKeys =
         , ("M-m", windows W.focusMaster)     -- Move focus to the master window
         , ("M-j", windows W.focusDown)       -- Move focus to the next window
         , ("M-k", windows W.focusUp)         -- Move focus to the prev window
-        --, ("M-S-m", windows W.swapMaster)    -- Swap the focused window and the master window
+        , ("M-S-m", windows W.swapMaster)    -- Swap the focused window and the master window
         , ("M-S-j", windows W.swapDown)      -- Swap focused window with next window
         , ("M-S-k", windows W.swapUp)        -- Swap focused window with prev window
      --   , ("M-<Backspace>", promote)    -- Moves focused window to master, others maintain order
@@ -303,7 +303,7 @@ myKeys =
         , ("M-c", spawn "copyq toggle")
         , ("M-S-t", spawn "nautilus")
         , ("M-g", spawn "emacsclient --alternate-editor='' --no-wait --create-frame")
-        , ("M-w", spawn "firefox")
+        , ("M-w", spawn "brave")
         , ("M-s", spawn "gopass ls --flat | dmenu | xargs --no-run-if-empty gopass show -c")
         , ("M-e b", spawn "emacsclient -c -a '' --eval '(ibuffer)'")         -- list emacs buffers
         , ("M-e d", spawn "emacsclient -c -a '' --eval '(dired nil)'")       -- dired emacs file manager
@@ -314,7 +314,7 @@ myKeys =
         , ("<XF86AudioLowerVolume>", spawn "amixer set Master 5%- unmute")
         , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 5%+ unmute")
         , ("<XF86HomePage>", spawn "firefox")
-        , ("<XF86Search>", safeSpawn "firefox" ["https://www.duckduckgo.com/"])
+        , ("<XF86Search>", safeSpawn "brave" ["https://www.duckduckgo.com/"])
         , ("XF86MonBrightnessUp", spawn "light -A 10")
         , ("XF86MonBrightnessDown", spawn "light -U 10")
     
@@ -429,10 +429,12 @@ myManageHook = composeAll
     , resource  =? "kdesktop"       --> doIgnore
     , className =? "copyq"          --> doFloat
     , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
+    , (className =? "brave-browser" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
     , (className =? "zoom" <&&> title =? "Chat") --> doFloat
     , (className =? "zoom" <&&> title =? "") --> doFloat
     , className =? "zoom"     --> doShift (myWorkspaces !! 8)
     , className =? "firefox"     --> doShift (myWorkspaces !! 2)
+    , className =? "brave-browser"     --> doShift (myWorkspaces !! 2)
     , className =? "Nautilus"     --> doShift (myWorkspaces !! 5 )
     , className =? "discord"     --> doShift (myWorkspaces !! 8 )
     , title =? "alsamixer"     --> doFloat

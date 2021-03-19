@@ -12,11 +12,7 @@
 *** https://veronikach.com/rss
 ** Tech                                                 :tech:
 *** https://irreal.org/blog/?feed=rss2
-*** http://planet.emacsen.org/atom.xml
-*** http://pragmaticemacs.com/feed/
-*** http://sachachua.com/blog/feed/
 *** http://cestlaz.github.io/rss.xml
-*** https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml
 *** https://metaredux.com/feed.xml
 *** https://www.berkhanberkdemir.com/feed.xml
 *** https://jvns.ca/atom.xml
@@ -33,12 +29,19 @@
 *** http://blog.acolyer.org/feed/
 *** https://raghavian.github.io/feed.xml
 *** https://buttondown.email/hillelwayne/rss
+*** Emacs :EMACS:
+**** https://oremacs.com/atom.xml
+**** http://sachachua.com/blog/feed/
+**** http://planet.emacsen.org/atom.xml
+**** http://pragmaticemacs.com/feed/
+**** https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml
 ** Urdu :Urdu:
 *** https://urduwallahs.wordpress.com/feed/
 ** Islam :Islam:
 *** https://ballandalus.wordpress.com/feed/
 *** https://www.joebradford.net/feed/
 *** http://nizami.co.uk/feed
+*** http://elgamal.blogspot.com/atom.xml
 ** General :General:
 *** https://hangingodes.wordpress.com/rss.xml
 *** https://blog.sarvajna.in/feed
@@ -48,6 +51,8 @@
 ** Cooking                                                       :Cooking:
 *** https://egyptianmedievalcookbook.wordpress.com/feed/
 ** Productivity :Productivity:
+*** https://nesslabs.com/rss
+*** https://perell.com/rss
 *** https://radreads.co/rss
 ** Scala                                                  :scala:programming:
 *** https://www.lihaoyi.com/feed
@@ -65,8 +70,9 @@
 ** Search for beauty :KAEF:Islam:podcast:
 **** https://feeds.soundcloud.com/users/soundcloud:users:289900453/sounds.rss
 ** Tech
-*** *** https://lexfridman.com/category/ai/feed/
+*** https://lexfridman.com/category/ai/feed/
 
 * News :News:elfeed:
 ** Jobs :Jobs:
-*** https://uu.varbi.com/what:rssfeed/
+** Nix :Nix:
+https://weekly.nixos.org/feeds/all.rss.xml
