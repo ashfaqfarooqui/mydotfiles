@@ -24,19 +24,20 @@
        ;(helm
        ; +childframe)              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-        (ivy
-         +prescient
+       ;; (ivy
+       ;;  +prescient
          ;;+fuzzy
          ;;+childframe
-         +icons
-         )
-                                        ; a search engine for love and life
+       ;;  +icons
+        ;; )
+        (vertico +icons)                               ; a search engine for love and life
 
        :ui
        deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
+(emoji +unicode)
 ;       fill-column       ; a `fill-column' indicator
        hl-todo                          ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        (hydra +hydra/window-nav/body
@@ -49,7 +50,8 @@
        ;;neotree           ; a project drawer, like NERDTree for vim
       ophints           ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
-       (ligatures +extra)
+       (ligatures
+                  +extra)
       ;; tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
        unicode           ; extended unicode support for various languages
@@ -126,7 +128,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
-       ;;cc                ; C/C++/Obj-C madness
+       (cc +lsp)               ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -154,7 +156,6 @@
        ;;kotlin            ; a better, slicker Java(Script)
        (latex
         +latexmk
-        +lsp
         +cdlatex
         +fold)             ; writing papers in Emacs has never been so fun
        ;;lean
@@ -163,7 +164,7 @@
        ;;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;nix               ; I hereby declare "nix geht mehr!"
+       nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org
         +present
@@ -173,7 +174,7 @@
        ; +journal
         +pretty
         +pandoc
-        +roam
+        +roam2
         +dragndrop)              ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more

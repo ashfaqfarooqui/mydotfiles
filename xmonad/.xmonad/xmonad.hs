@@ -148,7 +148,7 @@ windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace
 ------------------------------------------------------------------------
 dtXPConfig :: XPConfig
 dtXPConfig = def
-      { font                = "xft:Mononoki Nerd Font:size=9"
+      { font                = "xft:JetBrains Mono:size=9"
       , bgColor             = "#292d3e"
       , fgColor             = "#d0d0d0"
       , bgHLight            = "#c792ea"
@@ -373,7 +373,7 @@ monocle  = renamed [Replace "monocle"]
 
 tabs     =smartBorders $ tabbed shrinkText myTabConfig
   where
-    myTabConfig = def { fontName            = "xft:Mononoki Nerd Font:regular:pixelsize=25"
+    myTabConfig = def { fontName            = "xft:JetBrains Mono:regular:pixelsize=25"
                       , activeColor         = "#292d3e"
                       , inactiveColor       = "#3e445e"
                       , activeBorderColor   = "#292d3e"
@@ -502,14 +502,14 @@ treeselectA tsDefaultConfig = treeselectAction tsDefaultConfig
    , Node (TSNode "Monitors" "Define monitor setting using xrandr" (return ()))
        [ Node (TSNode "Laptop only"    "Laptop Only"     (spawn "xrandr  --output eDP-1 --mode 3200x1800 --pos 0x0 --rotate normal --output HDMI-2 --off --output DP-1 --off")) []
        , Node (TSNode "Home" "Configuration for home" (spawn "xrandr --output HDMI-2 --mode 2560x1440 --scale 2x2 --pos 0x0 --rotate normal --output eDP-1 --mode 3200x1800 --pos 5120x0 --rotate normal")) []
-       , Node (TSNode "Office"    "3 monitor config"  (spawn  "xrandr --output HDMI-2 --mode 1680x1050 --scale 2x2 --pos 6560x0 --rotate normal --output DP-1 --mode 1680x1050 --scale 2x2 --pos 3200x0 --rotate normal --output eDP-1 --mode 3200x1800 --pos 0x0 --rotate normal")) []
+       , Node (TSNode "Office"    "2 monitor config"  (spawn  "❯ xrandr --output HDMI-2 --mode 1680x1050 --scale 2x2 --pos 3200x0 --rotate normal --output eDP-1 --mode 3200x1800 --pos 0x0 --rotate normal")) []
        ]
    ]
 
 tsDefaultConfig :: TSConfig a
 tsDefaultConfig = TSConfig { ts_hidechildren = True
                               , ts_background   = 0xdd292d3e
-                              , ts_font         = "xft:mononoki Nerd Font:bold"
+                              , ts_font         = "xft:JetBrains Mono:bold"
                               , ts_node         = (0xffd0d0d0, 0xff202331)
                               , ts_nodealt      = (0xffd0d0d0, 0xff292d3e)
                               , ts_highlight    = (0xffffffff, 0xff755999)

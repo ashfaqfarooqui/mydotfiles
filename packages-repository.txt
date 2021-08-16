@@ -6,18 +6,11 @@ alsa-firmware
 alsa-plugins
 alsa-tools
 alsa-utils
-android-tools
-android-udev
 ant
 arandr
 arc-maia-icon-theme
 arp-scan
-artwork-i3
 aspell-en
-at
-atom
-audacious-plugins
-audacity
 autoconf
 automake
 avahi
@@ -249,7 +242,6 @@ mencoder
 mesa-demos
 mhwd
 mhwd-db
-microsoft-office-web-jak
 mill
 mkinitcpio-nfs-utils
 mkinitcpio-openswap
@@ -260,7 +252,6 @@ modemmanager
 morc_menu
 mousepad
 mousetweaks
-mpd
 mpv
 mutt
 nano

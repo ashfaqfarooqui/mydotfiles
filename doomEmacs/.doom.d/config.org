@@ -12,14 +12,8 @@
      (setq user-full-name "Ashfaq Farooqui")
      (setq user-mail-address "ashfaq@ashfaqfarooqui.me")
 
-
-
-
-
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil) ; default is 7200 (2h)
-
-
 
 #+end_src
 * Visual  configuration
@@ -48,10 +42,6 @@
 
 ** Buffer Name
 #+BEGIN_SRC emacs-lisp
-
-
-
-
 (defadvice! doom-modeline--reformat-roam (orig-fun)
   :around #'doom-modeline-buffer-file-name
   (message "Reformat?")
@@ -62,9 +52,6 @@
        "🢔(\\1-\\2-\\3) "
        (funcall orig-fun))
     (funcall orig-fun)))
-
-
-
 
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
@@ -83,44 +70,6 @@
 
 #+RESULTS:
 |   | (:eval (if (s-contains-p org-roam-directory (or buffer-file-name )) (replace-regexp-in-string .*/[0-9]*-? 🢔  buffer-file-name) %b)) | (:eval (let ((project-name (projectile-project-name))) (unless (string= - project-name) (format (if (buffer-modified-p)  ◉ %s   ●  %s) project-name)))) |
-
-** Theme
-#+BEGIN_SRC emacs-lisp
-;; Set customization options to values of your choice
-(after! modus-themes
-  (setq modus-themes-slanted-constructs t
-        modus-themes-bold-constructs t
-        modus-themes-fringes 'subtle ; {nil,'subtle,'intense}
-        modus-themes-mode-line '3d ; {nil,'3d,'moody}
-        modus-themes-syntax 'alt-syntax ; Lots of options---continue reading the manual {nil,faint,'yellow-comments,'green-strings,'yellow-comments-green-strings,'alt-syntax,'alt-syntax-yellow-comments}
-
-        modus-themes-intense-hl-line t
-        modus-themes-paren-match 'intense-bold ; {nil,'subtle-bold,'intense,'intense-bold}
-        modus-themes-links 'faint ; Lots of options---continue reading the manual
-        modus-themes-no-mixed-fonts t
-        modus-themes-prompts 'subtle ; {nil,'subtle,'intense}
-        modus-themes-completions'moderate ; {nil,'moderate,'opinionated}
-        modus-themes-region 'bg-only-no-extend ; {nil,'no-extend,'bg-only,'bg-only-no-extend}
-        modus-themes-diffs nil ; {nil,'desaturated,'fg-only,'bg-only}
-        modus-themes-org-blocks 'grayscale ; {nil,'grayscale,'rainbow}
-        modus-themes-headings ; Lots of options---continue reading the manual
-        '((1 . section)
-          (2 . section-no-bold)
-          (3 . rainbow-line)
-          (t . rainbow-line-no-bold))
-        modus-themes-variable-pitch-headings t
-        modus-themes-scale-headings t
-        modus-themes-scale-1 1.1
-        modus-themes-scale-2 1.15
-        modus-themes-scale-3 1.21
-        modus-themes-scale-4 1.27
-        modus-themes-scale-5 1.33)
-  )
-(setq doom-theme 'doom-one)
-#+END_SRC
-
-#+RESULTS:
-: 1.3
 
 ** In editor
 taken from https://tecosaur.github.io/emacs-config/config.html#font-display
@@ -230,12 +179,34 @@ We also like ~org-fragtog~, and that wants a hook.
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
 
-** In mixed pitch mode in editor
+** COMMENT In mixed pitch mode in editor
+Taking more stuff from Teco
+#+begin_src emacs-lisp
+(autoload #'mixed-pitch-serif-mode "mixed-pitch"
+  "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
+
+(after! mixed-pitch
+  (defface variable-pitch-serif
+    '((t (:family "serif")))
+    "A variable-pitch face with serifs."
+    :group 'basic-faces)
+  (setq mixed-pitch-set-height t)
+  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 30))
+  (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
+  (defun mixed-pitch-serif-mode (&optional arg)
+    "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
+    (interactive)
+    (let ((mixed-pitch-face 'variable-pitch-serif))
+      (mixed-pitch-mode (or arg 'toggle)))))
+
+
+(set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
+(set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
+#+end_src
 #+BEGIN_SRC emacs-lisp
 
-(add-hook 'text-mode-hook #'mixed-pitch-mode)
 
-(add-hook 'org-mode-hook #'mixed-pitch-mode)
+(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
 #+END_SRC
 
 #+RESULTS:
@@ -244,8 +215,8 @@ We also like ~org-fragtog~, and that wants a hook.
 ** Fonts
 #+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 30)
-      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 36)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 35)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 30)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
                                         ;(setq doom-font (font-spec :family "Overpass" :size 30)
@@ -282,6 +253,48 @@ We also like ~org-fragtog~, and that wants a hook.
                                         ;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
                                         ;      doom-serif-font (font-spec :family "iA Writer Quattro S" :weight 'light))
 #+END_SRC
+
+** COMMENT Detect missing fonts
+#+name: detect-missing-fonts
+#+begin_src emacs-lisp :tangle no
+(defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather" "Alegreya"))
+
+(defvar available-fonts
+  (delete-dups (or (font-family-list)
+                   (split-string (shell-command-to-string "fc-list : family")
+                                 "[,\n]"))))
+
+(defvar missing-fonts
+  (delq nil (mapcar
+             (lambda (font)
+               (unless (delq nil (mapcar (lambda (f)
+                                           (string-match-p (format "^%s$" font) f))
+                                         available-fonts))
+                 font))
+             required-fonts)))
+
+(if missing-fonts
+    (pp-to-string
+     `(unless noninteractive
+        (add-hook! 'doom-init-ui-hook
+          (run-at-time nil nil
+                       (lambda ()
+                         (message "%s missing the following fonts: %s"
+                                  (propertize "Warning!" 'face '(bold warning))
+                                  (mapconcat (lambda (font)
+                                               (propertize font 'face 'font-lock-variable-name-face))
+                                             ',missing-fonts
+                                             ", "))
+                         (sleep-for 0.5))))))
+  ";; No missing fonts detected")
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export
+<<detect-missing-fonts()>>
+#+end_src
+
+#+RESULTS:
+| (lambda (&rest _) (run-at-time nil nil (lambda nil (message %s missing the following fonts: %s (propertize Warning! 'face '(bold warning)) (mapconcat (lambda (font) (propertize font 'face 'font-lock-variable-name-face)) '(Merriweather Alegreya) , )) (sleep-for 0.5)))) | +doom-dashboard-init-h | window-divider-mode | +unicode-init-fonts-h | +popup-mode | +ligatures-init-h |
 
 ** Rainbow mode
 #+BEGIN_SRC emacs-lisp
@@ -320,26 +333,6 @@ We also like ~org-fragtog~, and that wants a hook.
 (setq super-save-auto-save-when-idle t)
 )
 #+END_SRC
-** Swiper, avy, counsel
-Look at what we need from here. its mainly the key bindings I require for swiper and avy.
-#+BEGIN_SRC emacs-lisp
-
-(after! ivy
-  (setq counsel-grep-base-command
-        "rg -i -M 120 --no-heading --line-number --color never %s %s")
-
-                                        ;  (setq avy-timeout-seconds 2.0)
-
-  ;(map!
-  ; :desc "Search swiper-isearch" "C-s" #'swiper-isearch) ;
-
-
-                                        ;(define-key global-map "\C-zb" 'swiper-isearch)
-                                        ;(define-key global-map "\C-zc" 'avy-goto-char-2)
-                                        ;(define-key global-map "\C-zw" 'avy-goto-word)
-                                        ;(define-key global-map "\C-zl" 'avy-goto-line)
-  )
-#+END_SRC
 ** Wrap paragraphs automatically
 I don't like =AutoFillMode= which  automatically wraps paragraphs, kinda
 like hitting =M-q=. But i like wrapped paragraphs, hence use visual fill
@@ -357,7 +350,6 @@ mode
                    #'visual-line-mode)
 
         (use-package! visual-fill-column
-          :defer t
           :config
           (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
           (advice-add 'text-scale-adjust :after
@@ -486,53 +478,64 @@ Single Capitals as you type."
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 #+end_src
 
-#+RESULTS:
-| doom-modeline-conditional-buffer-encoding | global-evil-surround-mode-enable-in-buffers | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | solaire-global-mode-enable-in-buffers | +ligatures-init-buffer-h | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | ws-butler-global-mode-enable-in-buffers | global-undo-tree-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | doom-modeline-update-buffer-file-icon | global-hungry-delete-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | +format-enable-on-save-maybe-h | doom--setq-evil-shift-width-for-after-change-major-mode-h | doom-run-local-var-hooks-maybe-h | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | which-func-ff-hook | doom-highlight-non-default-indentation-h | +company-init-backends-h |
 
-* COMMENT Company
+* COMMENT Writeroom
 #+begin_src emacs-lisp
-(after! company
-  (setq company-idle-delay 0.5
-        company-minimum-prefix-length 2)
-  (setq company-show-numbers t)
-  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 
-#+end_src
-* Writeroom
-#+begin_src emacs-lisp
+(setq +zen-text-scale 0.8)
+(defvar +zen-serif-p t
+  "Whether to use a serifed font with `mixed-pitch-mode'.")
 (after! writeroom-mode
-
-(setq +zen-text-scale 0.6)
-
-
-
-  (add-hook 'writeroom-mode-hook
-            (defun +zen-cleaner-org ()
-              (when (and (eq major-mode 'org-mode) writeroom-mode)
-                (setq-local -display-line-numbers display-line-numbers
-                            display-line-numbers nil)
-                (setq-local -org-indent-mode org-indent-mode)
-                (org-indent-mode -1)
-                (when (featurep 'org-superstar)
-                  (setq-local -org-superstar-headline-bullets-list org-superstar-headline-bullets-list
-                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                              org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
-                              -org-superstar-remove-leading-stars org-superstar-remove-leading-stars
-                              org-superstar-remove-leading-stars t)
-                  (org-superstar-restart)))))
-  (add-hook 'writeroom-mode-disable-hook
-            (defun +zen-dirty-org ()
+  (defvar-local +zen--original-org-indent-mode-p nil)
+  (defvar-local +zen--original-mixed-pitch-mode-p nil)
+  (defvar-local +zen--original-solaire-mode-p nil)
+  (defvar-local +zen--original-org-pretty-table-mode-p nil)
+  (defun +zen-enable-mixed-pitch-mode-h ()
+    "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
+    (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
+      (if writeroom-mode
+          (progn
+            (setq +zen--original-solaire-mode-p solaire-mode)
+            (solaire-mode -1)
+            (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
+            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
+        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1))
+        (when +zen--original-solaire-mode-p (solaire-mode 1)))))
+  (pushnew! writeroom--local-variables
+            'display-line-numbers
+            'visual-fill-column-width
+            'org-adapt-indentation
+            'org-superstar-headline-bullets-list
+            'org-superstar-remove-leading-stars)
+  (add-hook 'writeroom-mode-enable-hook
+            (defun +zen-prose-org-h ()
+              "Reformat the current Org buffer appearance for prose."
               (when (eq major-mode 'org-mode)
-                (setq-local display-line-numbers -display-line-numbers)
-                (when -org-indent-mode
-                  (org-indent-mode 1))
+                (setq display-line-numbers nil
+                      visual-fill-column-width 60
+                      org-adapt-indentation nil)
                 (when (featurep 'org-superstar)
-                  (setq-local org-superstar-headline-bullets-list -org-superstar-headline-bullets-list
-                              org-superstar-remove-leading-stars -org-superstar-remove-leading-stars)
-                  (org-superstar-restart))))))
+                  (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
+                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                              org-superstar-remove-leading-stars t)
+                  (org-superstar-restart))
+                (setq
+                 +zen--original-org-indent-mode-p org-indent-mode
+                 +zen--original-org-pretty-table-mode-p (bound-and-true-p org-pretty-table-mode))
+                (org-indent-mode -1)
+                (org-pretty-table-mode 1))))
+  (add-hook 'writeroom-mode-disable-hook
+            (defun +zen-nonprose-org-h ()
+              "Reverse the effect of `+zen-prose-org'."
+              (when (eq major-mode 'org-mode)
+                (when (featurep 'org-superstar)
+                  (org-superstar-restart))
+                (when +zen--original-org-indent-mode-p (org-indent-mode 1))
+                ;; (unless +zen--original-org-pretty-table-mode-p (org-pretty-table-mode -1))
+                ))))
 #+end_src
 * Org Mode
-** Org appear
+** COMMENT Org appear
 #+begin_src emacs-lisp
 
 (use-package! org-appear
@@ -584,12 +587,10 @@ archive of finished tasks in =archive.org=.
     "Return the absolute address of an org file, given its relative name."
     (concat (file-name-as-directory org-directory) filename))
 
-  (setq org-inbox-file
+  (setq org-inbox-orgzly-file
         (concat (org-file-path "inbox-orgzly.org")))
-  (setq org-personal-file (org-file-path "personal.org"))
-  (setq org-index-file (org-file-path "index.org"))
-  (setq org-phd-file (concat (org-file-path "PHD/Phd.org")))
-(setq org-basb-main-file (concat (org-file-path "BASB/main.org")))
+  (setq org-inbox-file (org-file-path "inbox.org"))
+(setq org-basb-main-file (concat (org-file-path "Roam/index.org")))
 )
 
 #+END_SRC
@@ -691,12 +692,7 @@ Use all the files to derive agenda.
 #+END_SRC
 ** Capturing
 
-Define a few common tasks as capture templates. Specifically, I frequently:
 
-- Record ideas for future blog posts in =blog-ideas.org=,
-- Record everything related to Phd stuff in =~/Phd Notebook.org=, and
-- Maintain a todo list in =to-do.org=.
-- Maintain a reading list in =to-read.org=
 
 #+BEGIN_SRC emacs-lisp
 (defun org-journal-find-location ()
@@ -724,20 +720,20 @@ Define a few common tasks as capture templates. Specifically, I frequently:
                     ("P" "Project" entry (file+headline org-basb-main-file "Projects")
                      (file "~/.doom.d/templates/newProjecttemplate.org") :empty-lines 1)
 
-                    ("s" "Someday" entry (file+headline "~/Orgs/BASB/somedaymaybe.org" "Someday / Maybe")
-                     "* SOMEDAY %?\n")
-                    ("m" "Maybe" entry (file+headline "~/Orgs/BASB/somedaymaybe.org" "Someday / Maybe")
-                     "* MAYBE %?\n")
+                    ("s" "Someday" entry (file+headline (concat (org-file-path "BASB/somedaymaybe.org" "Someday")))
+                     "* %?\n")
+                    ("m" "Maybe" entry (file+headline (concat (org-file-path "BASB/somedaymaybe.org" "Maybe")))
+                     "* %?\n")
 
 
                     ("n" "Notes"
                      entry
-                     (file+headline org-index-file "Notes")
+                     (file+headline org-inbox-file "Notes")
                      "* %u %? :NOTE:\n")
 
                     ("t" "Task"
                      entry
-                     (file+headline org-index-file "Tasks")
+                     (file+headline org-inbox-file "Tasks")
                      "* TODO %?\n")
 
                      ("h" "health log")
@@ -758,10 +754,10 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 
                      ("j" "Journal")
-                    ("ji" "Inaya Journal" entry (file+olp+datetree "~/Orgs/BASB/Areas/Parenting/Journal.org")
+                    ("ji" "Inaya Journal" entry (file+olp+datetree (concat (org-file-path "BASB/Areas/Parenting/Journal.org")) )
                      "** %(format-time-string \"%R\") %?  \n")
 
-                    ("jp" "Personal Journal" entry (file+olp+datetree "~/Orgs/jrl/journal.org")
+                    ("jp" "Personal Journal" entry (file+olp+datetree (concat (org-file-path "jrl/journal.org")))
                      "** %(format-time-string \"%R\") %? \n")
 
                     ("jm" "Routine Journal" entry (function org-journal-find-location)
@@ -769,11 +765,11 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 
                     ("c" "cooking")
-                    ("cr" "Cookbook" entry (file "~/Orgs/BASB/Reference/Cookbook/cookbook.org")
+                    ("cr" "Cookbook" entry (file (concat (org-file-path  "BASB/Reference/Cookbook/cookbook.org")))
                      "%(org-chef-get-recipe-from-url)"
                      :empty-lines 1)
 
-                    ("cm" "Manual Cookbook" entry (file "~/Orgs/BASB/Reference/Cookbook/cookbook.org")
+                    ("cm" "Manual Cookbook" entry (file (concat (org-file-path "BASB/Reference/Cookbook/cookbook.org")))
                      "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
 
               )
@@ -809,114 +805,46 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 
 
 (after! org-roam
-  (setq org-roam-directory "~/Orgs/Roam")
-  (map! :leader
-        :prefix "n r"
-        :desc "org-roam" "l" #'org-roam
-        :desc "org-roam-insert" "i" #'org-roam-insert
-        :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
-        :desc "org-roam-find-file" "f" #'org-roam-find-file
-        :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-        :desc "org-roam-insert" "i" #'org-roam-insert
-        :desc "org-roam-capture" "c" #'org-roam-capture)
-)
-(after! org-roam
-  (setq org-roam-capture-ref-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "websites/${slug}"
-           :head "#+TITLE: ${title}
-,#+ROAM_KEY: ${ref}
-
-- source :: ${ref}"
-           :unnarrowed t)))
-
-(setq org-roam-capture-templates
-        '(
-("d" "default" plain (function org-roam--capture-get-point)
-     "%?"
-     :file-name "%(format-time-string \"%Y%m%d%H%M%SZ--${slug}\" (current-time) t)"
-     :head "#+title: ${title}\n"
-     :unnarrowed t)
-
-
-          ("q" "Religion" plain (function org-roam--capture-get-point)
-           "%?"
-           :file-name "Religion/${slug}"
-           :head "#+title: ${title}\n
-,#+roam_alias:"
+  (setq org-roam-directory (concat (org-directory "/Roam")))
+  (setq org-roam-capture-templates
+        '(("d" "default" plain "%?"
+           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+Date: %t")
+           :unnarrowed t)
+          ("i" "Religion")
+          ("in" "note" plain "%?"
+           :if-new (file+head) "Religion/%<%Y%m%d%H%M%S>-${slug}.org"
+                               "#title: ${title}\n"
            :unnarrowed t)
 
-                    ))
+          ("ik" "Kuthbah" plain "%?"
+           :if-new (file+head) "Religion/Khutbas/%<%Y%m%d%H%M%S>-${slug}.org" "#title: ${title}\n#+Date: %(org-read-date nil nil nil)")
+          )
 
+        )
   )
-
-
 #+END_SRC
-*** org roam server
-#+BEGIN_SRC emacs-lisp
-(after! org-roam
+*** org roam ui
+#+begin_src emacs-lisp
+(use-package! websocket
+    :after org-roam)
 
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-network-poll t
-        org-roam-server-network-arrows nil
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
-#+END_SRC
-** Roam bibtex
-#+BEGIN_SRC emacs-lisp
- (use-package! org-roam-bibtex
-  :after (org-roam)
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :config
-  (setq org-roam-bibtex-preformat-keywords
-   '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
-  (setq orb-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           ""
-           :file-name "Papers/${slug}"
-           :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}\n#+ROAM_TAGS:
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+    :hook
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 
-- keywords :: ${keywords}
 
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
 
-           :unnarrowed t))))
-
-#+END_SRC
-** org noter
-#+BEGIN_SRC emacs-lisp
-
-        (after! org
-          (setq
-           org_notes (concat (getenv "HOME") "/Orgs/Roam/Papers/")
-           zot_bib (concat (getenv "HOME") "/References/AshfaqRef.bib")
-           )
-          )
-
-        (use-package! org-noter
-          :after (:any org pdf-view)
-          :config
-          (setq
-           ;; The WM can handle splits
-           org-noter-notes-window-location 'other-frame
-           ;; Please stop opening frames
-           org-noter-always-create-frame nil
-           ;; I want to see the whole file
-           org-noter-hide-other nil
-           ;; Everything is relative to the main notes file
-           org-noter-notes-search-path (list org_notes)
-           )
-          )
-#+END_SRC
-
-#+RESULTS:
-: t
-
+#+end_src
 ** Surround region with emphasis or syntax characters
 Define and bind interactive commands for each of KEYS that surround the region or insert text. Commands are bound in org-mode-map to each of KEYS. If the region is active, commands surround it with the key character, otherwise call org-self-insert-command.
 Taken from: https://github.com/alphapapa/unpackaged.el#surround-region-with-emphasis-or-syntax-characters
@@ -1118,163 +1046,6 @@ is already narrowed."
 )
 #+END_SRC
 
-#+RESULTS:
-| Name    | 25 | magit-repolist-column-ident                  | nil                |
-| Version | 25 | magit-repolist-column-version                | nil                |
-| D       |  1 | magit-repolist-column-dirty                  | nil                |
-| B       | 10 | magit-repolist-column-branch                 | nil                |
-| L<U     |  3 | magit-repolist-column-unpulled-from-upstream | ((:right-align t)) |
-| L>U     |  3 | magit-repolist-column-unpushed-to-upstream   | ((:right-align t)) |
-| Path    | 99 | magit-repolist-column-path                   | nil                |
-
-** ebooks
-*** Calibre
-#+BEGIN_SRC emacs-lisp
-
- (after! calibredb
-
-  :init
-  (autoload 'calibredb "calibredb")
-  :config
-  (setq calibredb-root-dir "~/CalibreLibrary")
-  (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
-  (setq calibredb-library-alist '(("~/CalibreLibrary")))
-
-  (map! :map calibredb-show-mode-map
-        :ne "?" #'calibredb-entry-dispatch
-        :ne "o" #'calibredb-find-file
-        :ne "O" #'calibredb-find-file-other-frame
-        :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "s" #'calibredb-set-metadata-dispatch
-        :ne "e" #'calibredb-export-dispatch
-        :ne "q" #'calibredb-entry-quit
-        :ne "." #'calibredb-open-dired
-        :ne [tab] #'calibredb-toggle-view-at-point
-        :ne "M-t" #'calibredb-set-metadata--tags
-        :ne "M-a" #'calibredb-set-metadata--author_sort
-        :ne "M-A" #'calibredb-set-metadata--authors
-        :ne "M-T" #'calibredb-set-metadata--title
-        :ne "M-c" #'calibredb-set-metadata--comments)
-  (map! :map calibredb-search-mode-map
-        :ne [mouse-3] #'calibredb-search-mouse
-        :ne "RET" #'calibredb-find-file
-        :ne "?" #'calibredb-dispatch
-        :ne "a" #'calibredb-add
-        :ne "A" #'calibredb-add-dir
-        :ne "c" #'calibredb-clone
-        :ne "d" #'calibredb-remove
-        :ne "D" #'calibredb-remove-marked-items
-        :ne "j" #'calibredb-next-entry
-        :ne "k" #'calibredb-previous-entry
-        :ne "l" #'calibredb-virtual-library-list
-        :ne "L" #'calibredb-library-list
-        :ne "n" #'calibredb-virtual-library-next
-        :ne "N" #'calibredb-library-next
-        :ne "p" #'calibredb-virtual-library-previous
-        :ne "P" #'calibredb-library-previous
-        :ne "s" #'calibredb-set-metadata-dispatch
-        :ne "S" #'calibredb-switch-library
-        :ne "o" #'calibredb-find-file
-        :ne "O" #'calibredb-find-file-other-frame
-        :ne "v" #'calibredb-view
-        :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "." #'calibredb-open-dired
-        :ne "b" #'calibredb-catalog-bib-dispatch
-        :ne "e" #'calibredb-export-dispatch
-        :ne "r" #'calibredb-search-refresh-and-clear-filter
-        :ne "R" #'calibredb-search-clear-filter
-        :ne "q" #'calibredb-search-quit
-        :ne "m" #'calibredb-mark-and-forward
-        :ne "f" #'calibredb-toggle-favorite-at-point
-        :ne "x" #'calibredb-toggle-archive-at-point
-        :ne "h" #'calibredb-toggle-highlight-at-point
-        :ne "u" #'calibredb-unmark-and-forward
-        :ne "i" #'calibredb-edit-annotation
-        :ne "DEL" #'calibredb-unmark-and-backward
-        :ne [backtab] #'calibredb-toggle-view
-        :ne [tab] #'calibredb-toggle-view-at-point
-        :ne "M-n" #'calibredb-show-next-entry
-        :ne "M-p" #'calibredb-show-previous-entry
-        :ne "/" #'calibredb-search-live-filter
-        :ne "M-t" #'calibredb-set-metadata--tags
-        :ne "M-a" #'calibredb-set-metadata--author_sort
-        :ne "M-A" #'calibredb-set-metadata--authors
-        :ne "M-T" #'calibredb-set-metadata--title
-        :ne "M-c" #'calibredb-set-metadata--comments)
-  )
-
-#+END_SRC
-
-*** Nov
-#+begin_src emacs-lisp
-
-(use-package! nov
-  :defer t
-  :mode ("\\.epub\\'" . nov-mode)
-  :config
-  (map! :map nov-mode-map
-        :n "RET" #'nov-scroll-up)
-
-  (defun doom-modeline-segment--nov-info ()
-    (concat
-     " "
-     (propertize
-      (cdr (assoc 'creator nov-metadata))
-      'face 'doom-modeline-project-parent-dir)
-     " "
-     (cdr (assoc 'title nov-metadata))
-     " "
-     (propertize
-      (format "%d/%d"
-              (1+ nov-documents-index)
-              (length nov-documents))
-      'face 'doom-modeline-info)))
-
-  (advice-add 'nov-render-title :override #'ignore)
-
-  (defun +nov-mode-setup ()
-    (face-remap-add-relative 'variable-pitch
-                             :family "Merriweather"
-                             :height 1.4
-                             :width 'semi-expanded)
-    (face-remap-add-relative 'default :height 1.3)
-    (setq-local line-spacing 0.2
-                next-screen-context-lines 4
-                shr-use-colors nil)
-    (require 'visual-fill-column nil t)
-    (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 80
-                nov-text-width 80)
-    (visual-fill-column-mode 1)
-    (hl-line-mode -1)
-
-    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
-
-    (setq-local mode-line-format
-                `((:eval
-                   (doom-modeline-segment--workspace-name))
-                  (:eval
-                   (doom-modeline-segment--window-number))
-                  (:eval
-                   (doom-modeline-segment--nov-info))
-                  ,(propertize
-                    " %P "
-                    'face 'doom-modeline-buffer-minor-mode)
-                  ,(propertize
-                    " "
-                    'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
-                    'display `((space
-                                :align-to
-                                (- (+ right right-fringe right-margin)
-                                   ,(* (let ((width (doom-modeline--font-width)))
-                                         (or (and (= width 1) 1)
-                                             (/ width (frame-char-width) 1.0)))
-                                       (string-width
-                                        (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
-                  (:eval (doom-modeline-segment--major-mode)))))
-
-  (add-hook 'nov-mode-hook #'+nov-mode-setup))
-#+end_src
 ** elfeed
 
 *** Visual
@@ -1282,10 +1053,6 @@ is already narrowed."
 (after! elfeed
 
   (elfeed-org)
-  (use-package! elfeed-link
-    :defer t
-    )
-
   (setq elfeed-search-filter "@4-week-ago +unread"
                                         ;                elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
         elfeed-search-title-min-width 80
@@ -1394,112 +1161,7 @@ is already narrowed."
       (goto-char (point-min))))
 
   )
-(after! elfeed-org
-  :config
-  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-  (setq elfeed-db-directory "~/Documents/elfeed")
-  (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org"))
-
-                                        ;taken from https://protesilaos.com/dotemacs/#h:0cd8ddab-55d1-40df-b3db-1234850792ba
-  (defun prot/elfeed-show-eww (&optional link)
-    "Browse current `elfeed' entry link in `eww'.
-        Only show the readable part once the website loads.  This can
-        fail on poorly-designed websites."
-    (interactive)
-    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                      elfeed-show-entry
-                    (elfeed-search-selected :ignore-region)))
-           (link (if link link (elfeed-entry-link entry))))
-      (eww link)
-      (add-hook 'eww-after-render-hook 'eww-readable nil t)))
-
-
-  (defun prot/elfeed-search-other-window (&optional arg)
-    "Browse `elfeed' entry in the other window.
-        With \\[universal-argument] browse the entry in `eww' using the
-        `prot/elfeed-show-eww' wrapper."
-    (interactive "P")
-    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                      elfeed-show-entry
-                    (elfeed-search-selected :ignore-region)))
-           (link (elfeed-entry-link entry))
-           (win (selected-window)))
-      (with-current-buffer (get-buffer "*elfeed-search*")
-        (unless (one-window-p)              ; experimental
-          (delete-other-windows win))
-        (split-window win (/ (frame-height) 5) 'below)
-        (other-window 1)
-        (if arg
-            (progn
-              (when (eq major-mode 'elfeed-search-mode)
-                (elfeed-search-untag-all-unread))
-              (prot/elfeed-show-eww link))
-          (elfeed-search-show-entry entry)))))
-
-  (defvar prot/elfeed-mpv-hook nil
-    "Hook called before `prot/elfeed-mpv-dwim'.")
-
-  ;; TODO make this buffer more useful, such as running it in a
-  ;; shell-aware mode.
-  (defun prot/elfeed-mpv-buffer ()
-    "Prepare \"*elfeed-mpv-output*\" buffer.
-        For use by `prot/elfeed-mpv-dwim'.  To be called from
-        `prot/elfeed-mpv-hook'."
-    (let ((buf (get-buffer "*elfeed-mpv-output*"))
-          (inhibit-read-only t))
-      (with-current-buffer buf
-        (erase-buffer))))
-
-  (defun prot/elfeed-mpv-dwim ()
-    "Play entry link with external `mpv' program.
-        When there is an audio enclosure (podcast), play just the audio.
-        Else spawn a video player at a resolution that accounts for the
-        current monitor's width."
-    (interactive)
-    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                      elfeed-show-entry
-                    (elfeed-search-selected :ignore-region)))
-           (link (elfeed-entry-link entry))
-           (enclosure (elt (car (elfeed-entry-enclosures entry)) 0)) ; fragile?
-           (audio "--no-video")
-           ;; Here the display width checks if I am on the laptop
-           (height (if (<= (display-pixel-width ) 1366) 720 1080))
-           (video (format "--ytdl-format=bestvideo[height<=?%s]+bestaudio/best" height))
-           (buf (pop-to-buffer "*elfeed-mpv-output*")))
-      (run-hooks 'prot/elfeed-mpv-hook)
-      (if enclosure              ; make this its own parametrised function
-          (progn
-            (start-process "audio-mpv" buf "mpv" audio enclosure)
-            (message (concat "Launching MPV for " (propertize enclosure 'face 'success))))
-        (start-process "video-mpv" buf "mpv" video link)
-        (message (concat "Launching MPV for " (propertize link 'face 'success))))))
-
-  (defun prot/elfeed-show-archive ()
-    "Create an archive copy of the current `elfeed' entry."
-    (interactive)
-    (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                      elfeed-show-entry
-                    (elfeed-search-selected :ignore-region)))
-           ;; TODO how to cleanly add hyphens instead of spaces?
-           (title (elfeed-entry-title entry))
-           (elfeed-show-truncate-long-urls nil)
-           (archives "~/Documents/feeds/")
-           (file (format "%s%s.org" archives title)))
-      (unless (file-exists-p archives)
-        (make-directory archives t))
-      (when (derived-mode-p 'elfeed-show-mode)
-        ;; Refresh to expand truncated URLs
-        (elfeed-show-refresh)
-        (write-file file t)
-        (message "Saved buffer at %s" file))))
-
-  (add-hook 'prot/elfeed-mpv-hook #'prot/elfeed-mpv-buffer)
-
-
-
-  )
 #+END_SRC
-
 
 *** Keybindings
 #+begin_src emacs-lisp
@@ -1521,8 +1183,6 @@ is already narrowed."
       :n "b" #'elfeed-search-browse-url
       :n "y" #'elfeed-search-yank
       :n "e" #'prot/elfeed-show-eww
-      :n "o" #'prot/elfeed-search-other-window
-      :n "v" #'prot/elfeed-mpv-dwim
         )
 
 (map! :map elfeed-show-mode-map
@@ -1540,9 +1200,6 @@ is already narrowed."
       :nm "-" #'elfeed-show-untag
       :nm "s" #'elfeed-show-new-live-search
       :nm "y" #'elfeed-show-yank
-      :nm "e" #'prot/elfeed-show-eww
-      :nm "v" #'prot/elfeed-mpv-dwim
-      :nm "a" #'prot/elfeed-show-archive
         )
 
 
@@ -1851,3 +1508,21 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
  #+end_signature")
   )
 #+end_src
+
+
+* Lsp
+#+begin_src emacs-lisp
+
+(setq lsp-clients-clangd-args '("-j=3"
+                                "--background-index"
+                                "--clang-tidy"
+                                "--completion-style=detailed"
+                                "--header-insertion=never"
+                                "--header-insertion-decorators=0"))
+(after! lsp-clangd (set-lsp-priority! 'clangd 2))
+
+
+#+end_src
+
+#+RESULTS:
+: 2

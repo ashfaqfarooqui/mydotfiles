@@ -149,3 +149,5 @@ export PATH="$PATH:/home/ashfaqf/.local/share/coursier/bin"
 
 # star ship font
 #eval "$(starship init zsh)"
+
+eval "$(atuin init zsh)"

@@ -42,16 +42,13 @@ optimus-manager-qt
 pdftk-bin
 pinta
 python-wheel-inspect
-remacs
 scalafmt-native-bin
 sky
 skypeforlinux-stable-bin
 slack-desktop
 spotify
 stardict-wordnet
-teiler-git
 ttf-symbola
-ulauncher
 virtualbox-ext-oracle
 vlc-plugin-fluidsynth
 wordnet-cli

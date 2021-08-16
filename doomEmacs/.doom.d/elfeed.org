@@ -8,9 +8,7 @@
 *** http://phdcomics.com/gradfeed.php
 *** https://existentialcomics.com/rss.xml
 *** https://www.xkcd.com/atom.xml
-** Academia :academia:
-*** https://veronikach.com/rss
-** Tech                                                 :tech:
+** Tech :tech:
 *** https://irreal.org/blog/?feed=rss2
 *** http://cestlaz.github.io/rss.xml
 *** https://metaredux.com/feed.xml
@@ -38,6 +36,7 @@
 ** Urdu :Urdu:
 *** https://urduwallahs.wordpress.com/feed/
 ** Islam :Islam:
+*** https://us17.campaign-archive.com/feed?u=4af61eff227661020f2d96a46&id=a7623715ce
 *** https://ballandalus.wordpress.com/feed/
 *** https://www.joebradford.net/feed/
 *** http://nizami.co.uk/feed
@@ -59,9 +58,13 @@
 *** https://blog.softwaremill.com/feed
 *** https://alexn.org/feed.xml
 *** https://rockthejvm.com/blog/rss
-* Youtube                                                    :elfeed:youtube:
+** Like stories of old :essays:
+https://s3.amazonaws.com/revue/accounts/rss_feeds/000/117/741/original/rss_feed_117741.xml?1616932803
+* Youtube :elfeed:youtube:
 ** Usuli Institute :KAEF:Islam:
 *** https://www.youtube.com/feeds/videos.xml?channel_id=UCacZ3k2AOpd5-3tdCxcDmgQ
+** Like Stories of  old :essays:
+https://www.youtube.com/feeds/videos.xml?channel_id=UCs7nPQIEba0T3tGOWWsZpJQ
 * Podcasts :elfeed:
 ** Scala                                                     :scala:podcast:
 *** https://scala.love/feed/sonus-feed
