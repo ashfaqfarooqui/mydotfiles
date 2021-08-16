@@ -178,40 +178,6 @@ We also like ~org-fragtog~, and that wants a hook.
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
-
-** COMMENT In mixed pitch mode in editor
-Taking more stuff from Teco
-#+begin_src emacs-lisp
-(autoload #'mixed-pitch-serif-mode "mixed-pitch"
-  "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
-
-(after! mixed-pitch
-  (defface variable-pitch-serif
-    '((t (:family "serif")))
-    "A variable-pitch face with serifs."
-    :group 'basic-faces)
-  (setq mixed-pitch-set-height t)
-  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 30))
-  (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
-  (defun mixed-pitch-serif-mode (&optional arg)
-    "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
-    (interactive)
-    (let ((mixed-pitch-face 'variable-pitch-serif))
-      (mixed-pitch-mode (or arg 'toggle)))))
-
-
-(set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
-(set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
-#+end_src
-#+BEGIN_SRC emacs-lisp
-
-
-(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
-#+END_SRC
-
-#+RESULTS:
-| mixed-pitch-mode | er/add-text-mode-expansions | +spell-remove-run-together-switch-for-aspell-h | dubcaps-mode | (lambda (&rest _) (let* ((modified (buffer-modified-p)) (buffer-undo-list t) (inhibit-read-only t) (inhibit-modification-hooks t)) (unwind-protect (progn (ansi-color-apply-on-region (point-min) (point-max))) (if modified nil (restore-buffer-modified-p nil))))) | +word-wrap-mode | yas-minor-mode-on | display-line-numbers-mode | vi-tilde-fringe-mode | text-mode-hook-identify | visual-line-mode |
-
 ** Fonts
 #+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 30)
@@ -253,48 +219,6 @@ Taking more stuff from Teco
                                         ;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
                                         ;      doom-serif-font (font-spec :family "iA Writer Quattro S" :weight 'light))
 #+END_SRC
-
-** COMMENT Detect missing fonts
-#+name: detect-missing-fonts
-#+begin_src emacs-lisp :tangle no
-(defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather" "Alegreya"))
-
-(defvar available-fonts
-  (delete-dups (or (font-family-list)
-                   (split-string (shell-command-to-string "fc-list : family")
-                                 "[,\n]"))))
-
-(defvar missing-fonts
-  (delq nil (mapcar
-             (lambda (font)
-               (unless (delq nil (mapcar (lambda (f)
-                                           (string-match-p (format "^%s$" font) f))
-                                         available-fonts))
-                 font))
-             required-fonts)))
-
-(if missing-fonts
-    (pp-to-string
-     `(unless noninteractive
-        (add-hook! 'doom-init-ui-hook
-          (run-at-time nil nil
-                       (lambda ()
-                         (message "%s missing the following fonts: %s"
-                                  (propertize "Warning!" 'face '(bold warning))
-                                  (mapconcat (lambda (font)
-                                               (propertize font 'face 'font-lock-variable-name-face))
-                                             ',missing-fonts
-                                             ", "))
-                         (sleep-for 0.5))))))
-  ";; No missing fonts detected")
-#+end_src
-
-#+begin_src emacs-lisp :noweb no-export
-<<detect-missing-fonts()>>
-#+end_src
-
-#+RESULTS:
-| (lambda (&rest _) (run-at-time nil nil (lambda nil (message %s missing the following fonts: %s (propertize Warning! 'face '(bold warning)) (mapconcat (lambda (font) (propertize font 'face 'font-lock-variable-name-face)) '(Merriweather Alegreya) , )) (sleep-for 0.5)))) | +doom-dashboard-init-h | window-divider-mode | +unicode-init-fonts-h | +popup-mode | +ligatures-init-h |
 
 ** Rainbow mode
 #+BEGIN_SRC emacs-lisp
@@ -479,61 +403,6 @@ Single Capitals as you type."
 #+end_src
 
 
-* COMMENT Writeroom
-#+begin_src emacs-lisp
-
-(setq +zen-text-scale 0.8)
-(defvar +zen-serif-p t
-  "Whether to use a serifed font with `mixed-pitch-mode'.")
-(after! writeroom-mode
-  (defvar-local +zen--original-org-indent-mode-p nil)
-  (defvar-local +zen--original-mixed-pitch-mode-p nil)
-  (defvar-local +zen--original-solaire-mode-p nil)
-  (defvar-local +zen--original-org-pretty-table-mode-p nil)
-  (defun +zen-enable-mixed-pitch-mode-h ()
-    "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
-    (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
-      (if writeroom-mode
-          (progn
-            (setq +zen--original-solaire-mode-p solaire-mode)
-            (solaire-mode -1)
-            (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
-            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
-        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1))
-        (when +zen--original-solaire-mode-p (solaire-mode 1)))))
-  (pushnew! writeroom--local-variables
-            'display-line-numbers
-            'visual-fill-column-width
-            'org-adapt-indentation
-            'org-superstar-headline-bullets-list
-            'org-superstar-remove-leading-stars)
-  (add-hook 'writeroom-mode-enable-hook
-            (defun +zen-prose-org-h ()
-              "Reformat the current Org buffer appearance for prose."
-              (when (eq major-mode 'org-mode)
-                (setq display-line-numbers nil
-                      visual-fill-column-width 60
-                      org-adapt-indentation nil)
-                (when (featurep 'org-superstar)
-                  (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
-                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                              org-superstar-remove-leading-stars t)
-                  (org-superstar-restart))
-                (setq
-                 +zen--original-org-indent-mode-p org-indent-mode
-                 +zen--original-org-pretty-table-mode-p (bound-and-true-p org-pretty-table-mode))
-                (org-indent-mode -1)
-                (org-pretty-table-mode 1))))
-  (add-hook 'writeroom-mode-disable-hook
-            (defun +zen-nonprose-org-h ()
-              "Reverse the effect of `+zen-prose-org'."
-              (when (eq major-mode 'org-mode)
-                (when (featurep 'org-superstar)
-                  (org-superstar-restart))
-                (when +zen--original-org-indent-mode-p (org-indent-mode 1))
-                ;; (unless +zen--original-org-pretty-table-mode-p (org-pretty-table-mode -1))
-                ))))
-#+end_src
 * Org Mode
 ** COMMENT Org appear
 #+begin_src emacs-lisp

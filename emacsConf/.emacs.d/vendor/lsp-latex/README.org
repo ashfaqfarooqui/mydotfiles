@@ -1,0 +1,29 @@
+[[https://github.com/ROCKTAKEY/lsp-latex][https://img.shields.io/github/tag/ROCKTAKEY/lsp-latex.svg?style=flat-square]]
+[[file:LICENSE][https://img.shields.io/github/license/ROCKTAKEY/lsp-latex.svg?style=flat-square]]
+[[https://github.com/ROCKTAKEY/lsp-latex/actions][https://img.shields.io/github/workflow/status/ROCKTAKEY/lsp-latex/CI/master.svg?style=flat-square]]
+* lsp-mode client for LaTeX.
+* How to Use?
+  - First, you have to install ~texlab~.
+    Please install this [[https://github.com/latex-lsp/texlab/releases][here]].
+  - Next, you should make ~lsp-mode~ available. See [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
+  - Now, you can use Language Server Protocol (LSP) on (la)tex-mode or yatex-mode just to evaluate this:
+
+#+BEGIN_SRC emacs-lisp -n
+  (add-to-list 'load-path "/path/to/lsp-latex")
+  (require 'lsp-latex)
+  ;; "texlab" must be located at a directory contained in `exec-path'.
+  ;; If you want to put "texlab" somewhere else,
+  ;; you can specify the path to "texlab" as follows:
+  ;; (setq lsp-latex-texlab-executable "/path/to/texlab")
+
+  (with-eval-after-load "tex-mode"
+   (add-hook 'tex-mode-hook 'lsp)
+   (add-hook 'latex-mode-hook 'lsp))
+
+  ;; For YaTeX
+  (with-eval-after-load "yatex"
+   (add-hook 'yatex-mode-hook 'lsp))
+#+END_SRC
+
+* License
+  This package is licensed by GPLv3. See [[file:LICENSE][LICENSE]].
