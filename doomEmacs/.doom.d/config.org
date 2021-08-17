@@ -18,28 +18,6 @@
 #+end_src
 * Visual  configuration
 
-** COMMENT posframe
-#+BEGIN_SRC emacs-lisp
-(after! ivy-posframe
-  (setf (alist-get t ivy-posframe-display-functions-alist)
-        #'ivy-posframe-display-at-frame-top-center)
-  (setf (alist-get 'swiper ivy-posframe-display-functions-alist)
-        #'ivy-posframe-display-at-frame-top-center)
-  (setq ivy-posframe-border-width 10
-        ivy-posframe-parameters (append ivy-posframe-parameters '((min-width . 120)
-                                                                  (left-fringe . 3)
-                                                                  (right-fringe . 3)))))
-
-
-(setq ivy-posframe-width 120)
-
-
-(setq posframe-arghandler
-      (lambda (_buffer-or-name key value)
-        (or (eq key :lines-truncate)
-            value)))
-#+END_SRC
-
 ** Buffer Name
 #+BEGIN_SRC emacs-lisp
 (defadvice! doom-modeline--reformat-roam (orig-fun)
@@ -434,15 +412,6 @@ Single Capitals as you type."
 
 #+END_SRC
 
-** COMMENT special keys
-Use the special C-a, C-e and C-k definitions for Org, which enable some special behavior in headings.
-#+begin_src emacs-lisp
-
-        (after! org
-  (setq org-special-ctrl-a/e t)
-  (setq org-special-ctrl-k t))
-
-#+end_src
 ** Directory setup
 Store my org files in =~/Orgs=, define an index file and an
 archive of finished tasks in =archive.org=.

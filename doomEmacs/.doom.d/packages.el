@@ -55,9 +55,13 @@
 ;(package! try)
 (package! super-save)
 (package! org-super-agenda)
+;;(package! flyspell-correct-ivy)
 (package! alert)
 ;(package! undo-tree)
+;(package! company-lsp)
 (package! company-box)
+;(package! org-msg)
+;(package! mu4e-conversation)
 
 (package! rg)
 (package! keycast)
@@ -78,6 +82,7 @@
 ;;(package! elfeed-goodies)
 (package! lexic)
 
+;(package! holy-books :recipe (:local-repo "lisp/holy-books"))
 (package! info-colors)
 ;; Testing the org fold branch
 (package! org-fragtog)
@@ -91,6 +96,9 @@
 (package! org-ref)
 (package! org-roam-bibtex)
 (package! iedit)
+;(package! ob-ammonite)
+;(package! flycheck-grammarly)
+;(package! mixed-pitch :recipe (:local-repo "lisp/mixed-pitch") :pin nil)
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 (package! websocket)
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
