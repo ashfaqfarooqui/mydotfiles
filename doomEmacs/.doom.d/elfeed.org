@@ -9,6 +9,7 @@
 *** https://existentialcomics.com/rss.xml
 *** https://www.xkcd.com/atom.xml
 ** Tech :tech:
+*** https://www.fosskers.ca/en/rss
 *** https://irreal.org/blog/?feed=rss2
 *** http://cestlaz.github.io/rss.xml
 *** https://metaredux.com/feed.xml

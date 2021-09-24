@@ -102,3 +102,4 @@
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 (package! websocket)
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+(unpin! org-roam)

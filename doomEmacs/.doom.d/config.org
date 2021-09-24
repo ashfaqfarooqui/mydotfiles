@@ -6,9 +6,16 @@
 #+startup: overview
 
 
+* Lexical binding
+This is requried for the org roam stuff
+#+begin_src emacs-lisp
 
+;; -*- lexical-binding: t; -*-
+
+#+end_src
 * User Details
 #+begin_src emacs-lisp
+
      (setq user-full-name "Ashfaq Farooqui")
      (setq user-mail-address "ashfaq@ashfaqfarooqui.me")
 
@@ -219,6 +226,12 @@ We also like ~org-fragtog~, and that wants a hook.
 #+begin_src emacs-lisp
 (setq display-line-numbers-type 'relative)
 #+end_src
+** Evil
+#+begin_src emacs-lisp
+(setq evil-move-cursor-back nil)
+
+
+#+end_src
 ** flyspell
 #+begin_src emacs-lisp
 (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-wrapper)
@@ -355,7 +368,9 @@ Single Capitals as you type."
     (run-at-time nil (* 8 60 60) #'elfeed-update)))
 
 (when (daemonp)
-  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup))
+  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
+(add-hook! 'server-after-make-frame-hook (switch-to-buffer +doom-dashboard-name))
+                        )
 #+end_src
 ** Modes
 #+BEGIN_SRC emacs-lisp
@@ -419,7 +434,7 @@ archive of finished tasks in =archive.org=.
 #+BEGIN_SRC emacs-lisp
 
 (after! org
-(setq org-directory "~/Orgs")
+(setq org-directory "~/Docs")
 
   (defun org-file-path (filename)
     "Return the absolute address of an org file, given its relative name."
@@ -432,6 +447,17 @@ archive of finished tasks in =archive.org=.
 )
 
 #+END_SRC
+*** Open main file
+#+begin_src emacs-lisp
+(defun my/open-main-file ()
+  (interactive)
+(org-open-file org-basb-main-file)
+                        )
+#+end_src
+
+#+RESULTS:
+: my/open-main-file
+
 ** Display preferences
 
 
@@ -458,17 +484,18 @@ some more misc settings
 #+BEGIN_SRC emacs-lisp
 ; Tags with fast selection keys
 (after! org
-(setq org-tag-alist (quote ((:startgroup)
-                            ("@errand" . ?e)
-                            ("@office" . ?o)
-                            ("@home" . ?H)
-                            (:endgroup)
-                      ("Challenge" . ?1)
-                      ("Average" . ?2)
-                      ("Easy" . ?3)
-                            ("crypt" . ?E)
-                            ("NOTE" . ?n)
-)))
+
+;  (setq org-tag-alist (quote ((:startgroup)
+;                            ("@errand" . ?e)
+;                            ("@office" . ?o)
+;                            ("@home" . ?H)
+;                            (:endgroup)
+;                      ("Challenge" . ?1)
+;                      ("Average" . ?2)
+;                      ("Easy" . ?3)
+;                            ("crypt" . ?E)
+;                            ("NOTE" . ?n)
+;)))
 
 ; Allow setting single tags without the menu
 (setq org-fast-tag-selection-single-key (quote expert))
@@ -480,54 +507,6 @@ some more misc settings
 
 #+RESULTS:
 : t
-** org-agenda
-Use all the files to derive agenda.
-#+BEGIN_SRC emacs-lisp
-(after! org
-(setq org-agenda-files (list org-index-file org-inbox-file org-basb-main-file))
-                                          ;   (setq org-agenda-include-diary t)
-                                          ;   (setq org-agenda-include-all-todo t)
-  (setq org-habit-show-habits-only-for-today t)
-
-
-  ;; Do not dim blocked tasks
-  (setq org-agenda-dim-blocked-tasks nil)
-
-  ;; Compact the block agenda view
-  (setq org-agenda-compact-blocks t)
-
-
-
-
-  (use-package! org-super-agenda
-    :after org
-    :config
-    (org-super-agenda-mode t)
-    (setq org-super-agenda-groups
-          '(
-            (:name "Today\n"
-                   :time-grid t
-                   :and(:scheduled today :not (:habit t))
-                   )
-            (:name "Important"
-                   :priority "A")
-            (:name "Overdue"
-                   :deadline past)
-            (:name "Habits\n"
-                   :habit t)
-            (:name "To Scheduled\n"
-                   :scheduled nil)
-            )  ;; end setq superagenda block
-          )) ;; end whole super agenda block
-
-
-  (add-to-list 'org-agenda-custom-commands
-               '("u" "Unscheduled TODOs"
-                 ((todo ""
-                        ((org-agenda-overriding-header "\nUnscheduled TODO")
-                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'todo '("DONE" "CANCELLED" "MAYBE" "WAITING" "SOMEDAY"))))))) t)
-)
-#+END_SRC
 ** Capturing
 
 
@@ -550,9 +529,9 @@ Use all the files to derive agenda.
    (after! org   (setq org-capture-templates
             (quote (
 
-                    ("p" "Protocol" entry (file+headline org-index-file "Links")
+                    ("p" "Protocol" entry (file+headline org-inbox-file "Links")
                      "* %^{Title}\nCaptured On: %U\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-                    ("L" "Protocol Link" entry (file+headline org-index-file "Links")
+                    ("L" "Protocol Link" entry (file+headline org-inbox-file "Links")
                      "* %? [[%:link][%:description]] \nCaptured On: %U")
 
                     ("P" "Project" entry (file+headline org-basb-main-file "Projects")
@@ -582,24 +561,13 @@ Use all the files to derive agenda.
                      (file "~/.doom.d/templates/sleep.org") :empty-lines 1)
 
 
-                    ("e" "Email" entry (file+headline org-index-file "Mail")
+                    ("e" "Email" entry (file+headline org-inbox-file "Mail")
                      "* TODO %? email |- %:from: %:subject :EMAIL:\n:PROPERTIES:\n:CREATED: %U\n:EMAIL-SOURCE: %l\n:END:\n%U\n" )
 
 
 
-                    ("H" "Habit" entry (file org-index-file)
+                    ("H" "Habit" entry (file org-inbox-file)
                      "* TODO %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:END:\n")
-
-
-                     ("j" "Journal")
-                    ("ji" "Inaya Journal" entry (file+olp+datetree (concat (org-file-path "BASB/Areas/Parenting/Journal.org")) )
-                     "** %(format-time-string \"%R\") %?  \n")
-
-                    ("jp" "Personal Journal" entry (file+olp+datetree (concat (org-file-path "jrl/journal.org")))
-                     "** %(format-time-string \"%R\") %? \n")
-
-                    ("jm" "Routine Journal" entry (function org-journal-find-location)
-                     (file "~/.doom.d/templates/journal.org") :empty-lines 1)
 
 
                     ("c" "cooking")
@@ -643,25 +611,165 @@ Use all the files to derive agenda.
 
 
 (after! org-roam
-  (setq org-roam-directory (concat (org-directory "/Roam")))
+  (setq org-roam-directory "~/Docs/Roam/")
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
            :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n#+Date: %t")
            :unnarrowed t)
+          ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Project")
+           :unnarrowed t)
+          ("c" "Cooking" plain "%?"
+           :if-new (file+head "$Areas/Cooking/%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n#+Date: %t")
+           :unnarrowed t)
+          ("p" "People" plain "%?"
+           :if-new (file+head "References/People/${slug}.org"
+                              "#+title: ${title}\n")
+           :unnarrowed t)
           ("i" "Religion")
           ("in" "note" plain "%?"
-           :if-new (file+head) "Religion/%<%Y%m%d%H%M%S>-${slug}.org"
-                               "#title: ${title}\n"
+           :if-new (file+head "Areas/Religion/%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#title: ${title}\n")
            :unnarrowed t)
 
           ("ik" "Kuthbah" plain "%?"
-           :if-new (file+head) "Religion/Khutbas/%<%Y%m%d%H%M%S>-${slug}.org" "#title: ${title}\n#+Date: %(org-read-date nil nil nil)")
+           :if-new (file+head) "Areas/Religion/Khutba/%<%Y%m%d%H%M%S>-${slug}.org" "#title: ${title}\n#+Date: %(org-read-date nil nil nil)")
           )
 
         )
+
+
   )
+
 #+END_SRC
+*** some additions from system crafters
+#+begin_src emacs-lisp
+  ;; Taking things from system crafters
+  (after! org-roam
+    (require 'org-roam-dailies) ;; Ensure the keymap is available
+
+    (defun org-roam-node-insert-immediate (arg &rest args)
+      (interactive "P")
+      (let ((args (push arg args))
+            (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                      '(:immediate-finish t)))))
+        (apply #'org-roam-node-insert args)))
+
+    (defun my/org-roam-filter-by-tag (tag-name)
+      (lambda (node)
+        (member tag-name (org-roam-node-tags node))))
+
+    (defun my/org-roam-list-notes-by-tag (tag-name)
+      (mapcar #'org-roam-node-file
+              (seq-filter
+               (my/org-roam-filter-by-tag tag-name)
+               (org-roam-node-list))))
+
+    (defun my/org-roam-refresh-agenda-list ()
+      (interactive)
+      (setq org-agenda-files (my/org-roam-list-notes-by-tag "Project")))
+
+    ;; Build the agenda list the first time for the session
+    (my/org-roam-refresh-agenda-list)
+
+    (defun my/org-roam-project-finalize-hook ()
+      "Adds the captured project file to `org-agenda-files' if the
+  capture was not aborted."
+      ;; Remove the hook since it was added temporarily
+      (remove-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
+
+      ;; Add project file to the agenda list if the capture was confirmed
+      (unless org-note-abort
+        (with-current-buffer (org-capture-get :buffer)
+          (add-to-list 'org-agenda-files (buffer-file-name)))))
+
+    (defun my/org-roam-find-area ()
+      (interactive)
+      ;; Add the project file to the agenda after capture is finished
+      (add-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
+
+      ;; Select a project file to open, creating it if necessary
+      (org-roam-node-find
+       nil
+       nil
+       (my/org-roam-filter-by-tag "Area")
+       :templates
+       '(("a" "area" plain "\n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Area")
+          :unnarrowed t))))
+
+
+    (defun my/org-roam-find-project ()
+      (interactive)
+      ;; Add the project file to the agenda after capture is finished
+      (add-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
+
+      ;; Select a project file to open, creating it if necessary
+      (org-roam-node-find
+       nil
+       nil
+       (my/org-roam-filter-by-tag "Project")
+       :templates
+       '(("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Project")
+          :unnarrowed t))))
+
+    (defun my/org-roam-capture-inbox ()
+      (interactive)
+      (org-roam-capture- :node (org-roam-node-create)
+                         :templates '(("i" "inbox" plain "* %?"
+                                       :if-new (file+head "Inbox.org" "#+title: Inbox\n")))))
+
+    (defun my/org-roam-capture-task ()
+      (interactive)
+      ;; Add the project file to the agenda after capture is finished
+      (add-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
+
+      ;; Capture the new task, creating the project file if necessary
+      (org-roam-capture- :node (org-roam-node-read
+                                nil
+                                (my/org-roam-filter-by-tag "Project"))
+                         :templates '(("p" "project" plain "** TODO %?"
+                                       :if-new (file+head+olp "%<%Y%m%d%H%M%S>-${slug}.org"
+                                                              "#+title: ${title}\n#+category: ${title}\n#+filetags: Project"
+                                                              ("Tasks"))))))
+
+    (defun my/org-roam-copy-todo-to-today ()
+      (interactive)
+      (let ((org-refile-keep t) ;; Set this to nil to delete the original!
+            (org-roam-dailies-capture-templates
+             '(("t" "tasks" entry "%?"
+                :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Tasks")))))
+            (org-after-refile-insert-hook #'save-buffer)
+            today-file
+            pos)
+        (save-window-excursion
+          (org-roam-dailies--capture (current-time) t)
+          (setq today-file (buffer-file-name))
+          (setq pos (point)))
+
+        ;; Only refile if the target file is different than the current file
+        (unless (equal (file-truename today-file)
+                       (file-truename (buffer-file-name)))
+          (org-refile nil nil (list "Tasks" today-file nil pos)))))
+
+    (add-to-list 'org-after-todo-state-change-hook
+                 (lambda ()
+                   (when (equal org-state "DONE")
+                     (my/org-roam-copy-todo-to-today))))
+
+    )
+  (map! :leader
+        (:prefix-map ("r" . "personal")
+         "a" #'my/org-roam-find-area
+         "p" #'my/org-roam-find-project
+         "t" #'my/org-roam-capture-task
+         "b" #'my/org-roam-capture-inbox
+         ))
+#+end_src
+
 *** org roam ui
 #+begin_src emacs-lisp
 (use-package! websocket
@@ -669,7 +777,7 @@ Use all the files to derive agenda.
 
 (use-package! org-roam-ui
     :after org-roam ;; or :after org
-    :hook
+;;    :hook
 ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
 ;;         a hookable mode anymore, you're advised to pick something yourself
 ;;         if you don't care about startup time, use
@@ -683,6 +791,14 @@ Use all the files to derive agenda.
 
 
 #+end_src
+
+** Deft
+#+begin_src emacs-lisp
+
+(setq deft-directory org-roam-directory)
+
+#+end_src
+
 ** Surround region with emphasis or syntax characters
 Define and bind interactive commands for each of KEYS that surround the region or insert text. Commands are bound in org-mode-map to each of KEYS. If the region is active, commands surround it with the key character, otherwise call org-self-insert-command.
 Taken from: https://github.com/alphapapa/unpackaged.el#surround-region-with-emphasis-or-syntax-characters
@@ -716,14 +832,6 @@ otherwise call `org-self-insert-command'."
 
 (unpackaged/def-org-maybe-surround "~" "=" "*" "/" "+"))
 #+END_SRC
-** Org journal
-#+BEGIN_SRC emacs-lisp
-
-(after! org-journal
-  (setq org-journal-date-prefix "#+TITLE: "
-        org-journal-file-format "%Y-%m-%d.org"
-        org-journal-carryover-items nil))
-#+END_SRC
 ** Exporting (general)
 #+begin_src emacs-lisp
 (after! org (setq org-export-headline-levels 5)) ; I like nesting
@@ -738,37 +846,6 @@ the final documents.
   (require 'ox-extra)
   (ox-extras-activate '(ignore-headlines)))
 #+end_src
-** Reference Management
-#+BEGIN_SRC emacs-lisp
-
-
-(use-package! org-ref
-  :after org
-  :config
-  (setq org-ref-completion-library 'org-ref-ivy-cite)
-
-  ;;(setq reftex-default-bibliography '("~/References/AshfaqRef.bib"))
-
-  ;; see org-ref for use of these variables
-  (setq org-ref-bibliography-notes "~/References/notes.org"
-        org-ref-default-bibliography '("~/References/AshfaqRef.bib")
-        org-ref-pdf-directory "~/References/"))
-#+END_SRC
-*** Ivy-bibtex
-#+BEGIN_SRC emacs-lisp
-(after! ivy-bibtex
-
-  :config
-  (setq bibtex-completion-bibliography
-        '("/home/ashfaqf/References/AshfaqRef.bib"))
-  (setq bibtex-completion-library-path
-        '("/home/ashfaqf/References"))
-
-  ;; using bibtex path reference to pdf file
-  (setq bibtex-completion-pdf-field "File")
-)
-
-#+END_SRC
 * Narrow widen
 Taken from https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 #+BEGIN_SRC emacs-lisp
@@ -891,114 +968,20 @@ is already narrowed."
 (after! elfeed
 
   (elfeed-org)
+
   (setq elfeed-search-filter "@4-week-ago +unread"
                                         ;                elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
         elfeed-search-title-min-width 80
-        elfeed-show-entry-switch #'pop-to-buffer
-        elfeed-show-entry-delete #'+rss/delete-pane
-        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
-        shr-max-image-proportion 0.4)
-
-  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
-  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
-
-  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.8)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (defface elfeed-show-author-face `((t (:weight light)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (set-face-attribute 'elfeed-search-title-face nil
-                      :foreground 'nil
-                      :weight 'light)
-
-  (defadvice! +rss-elfeed-wrap-h-nicer ()
-    "Enhances an elfeed entry's readability by wrapping it to a width of
-        `fill-column' and centering it with `visual-fill-column-mode'."
-    :override #'+rss-elfeed-wrap-h
-    (let ((inhibit-read-only t)
-          (inhibit-modification-hooks t))
-      (setq-local truncate-lines nil)
-      (setq-local shr-width 120)
-      (setq-local line-spacing 0.0)
-      (setq-local visual-fill-column-center-text t)
-      (visual-fill-column-mode)
-      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
-      (set-buffer-modified-p nil)))
-
-  (defun +rss/elfeed-search-print-entry (entry)
-    "Print ENTRY to the buffer."
-    (let* ((elfeed-goodies/tag-column-width 40)
-           (elfeed-goodies/feed-source-column-width 30)
-           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
-           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
-           (feed (elfeed-entry-feed entry))
-           (feed-title
-            (when feed
-              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
-           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
-           (tags-str (concat (mapconcat 'identity tags ",")))
-           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
-                           elfeed-goodies/tag-column-width 4))
-
-           (tag-column (elfeed-format-column
-                        tags-str (elfeed-clamp (length tags-str)
-                                               elfeed-goodies/tag-column-width
-                                               elfeed-goodies/tag-column-width)
-                        :left))
-           (feed-column (elfeed-format-column
-                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width)
-                         :left)))
-
-      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
-      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
-      (insert (propertize title 'face title-faces 'kbd-help title))
-      (setq-local line-spacing 0.2)))
-
-  (defun +rss/elfeed-show-refresh--better-style ()
-    "Update the buffer to match the selected entry, using a mail-style."
-    (interactive)
-    (let* ((inhibit-read-only t)
-           (title (elfeed-entry-title elfeed-show-entry))
-           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
-           (author (elfeed-meta elfeed-show-entry :author))
-           (link (elfeed-entry-link elfeed-show-entry))
-           (tags (elfeed-entry-tags elfeed-show-entry))
-           (tagsstr (mapconcat #'symbol-name tags ", "))
-           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
-           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
-           (type (elfeed-entry-content-type elfeed-show-entry))
-           (feed (elfeed-entry-feed elfeed-show-entry))
-           (feed-title (elfeed-feed-title feed))
-           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
-      (erase-buffer)
-      (insert "\n")
-      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
-      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
-      (when (and author elfeed-show-entry-author)
-        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
-      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
-      (when tags
-        (insert (format "%s\n"
-                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
-      ;; (insert (propertize "Link: " 'face 'message-header-name))
-      ;; (elfeed-insert-link link link)
-      ;; (insert "\n")
-      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
-               do (insert (propertize "Enclosure: " 'face 'message-header-name))
-               do (elfeed-insert-link (car enclosure))
-               do (insert "\n"))
-      (insert "\n")
-      (if content
-          (if (eq type 'html)
-              (elfeed-insert-html content base)
-            (insert content))
-        (insert (propertize "(empty)\n" 'face 'italic)))
-      (goto-char (point-min))))
-
+        )
   )
+
+
+
+(after! elfeed-org
+  :config
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+  (setq elfeed-db-directory "~/Documents/elfeed")
+  (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org")))
 #+END_SRC
 
 *** Keybindings
@@ -1278,6 +1261,9 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
   )
 #+END_SRC
 
+#+RESULTS:
+| #s(mu4e-context w ashfaqf@chalmers.se (lambda nil (mu4e-message Enter ashfaqf@chalmers.se context)) (lambda nil (mu4e-message Leave ashfaqf@chalmers.se context)) (lambda (msg) (when msg (mu4e-message-contact-field-matches msg :to ashfaqf@chalmers.se))) ((user-mail-address . ashfaqf@chalmers.se) (user-full-name . Ashfaq Farooqui) (mu4e-drafts-folder . /Chalmers/Drafts) (mu4e-sent-folder . /Chalmers/Sent) (mu4e-trash-folder . /Chalmers/Trash) (mu4e-attachment-dir . ~/Documents/MailAttachments/Chalmers) (setq mu4e-sent-messages-behavior 'delete) (smtpmail-smtp-server . localhost) (smtpmail-stream-type) (smtpmail-smtp-service . 1025))) | #s(mu4e-context p ashfaq@ashfaqfarooqui.me (lambda nil (mu4e-message Enter ashfaq@ashfaqfarooqui.me context)) nil (lambda (msg) (when msg (mu4e-message-contact-field-matches msg :to ashfaq@ashfaqfarooqui.me))) ((user-mail-address . ashfaq@ashfaqfarooqui.me) (user-full-name . Ashfaq Farooqui) (smtpmail-smtp-user . ashfaq.farooqui@mailbox.org) (mu4e-sent-messages-behavior . sent) (mu4e-attachment-dir . ~/Documents/MailAttachments/Personal) (mu4e-drafts-folder . /Personal/Drafts) (mu4e-sent-folder . /Personal/Sent) (mu4e-trash-folder . /Personal/Trash) (mu4e-refile-folder . /Personal/Archive) (smtpmail-smtp-server . smtp.mailbox.org) (smtpmail-stream-type . ssl) (smtpmail-smtp-service . 465))) |
+
 *** MU4e attachments
 #+BEGIN_SRC emacs-lisp
 
@@ -1349,8 +1335,9 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 
 
 * Lsp
+** C++
 #+begin_src emacs-lisp
-
+(after! lsp-mode
 (setq lsp-clients-clangd-args '("-j=3"
                                 "--background-index"
                                 "--clang-tidy"
@@ -1360,7 +1347,22 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 (after! lsp-clangd (set-lsp-priority! 'clangd 2))
 
 
+                            (require 'dap-cpptools)
+(setq dap-auto-configure-features '(sessions locals controls tooltip))
+
+)
+
 #+end_src
 
 #+RESULTS:
 : 2
+** Nix
+#+begin_src emacs-lisp
+(after! lsp-mode
+(add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
+(lsp-register-client
+ (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
+                  :major-modes '(nix-mode)
+                  :server-id 'nix))
+)
+#+end_src
