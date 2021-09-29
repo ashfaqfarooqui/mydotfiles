@@ -16,8 +16,8 @@ Account chalmers
 
 MaildirStore chalmers-local
 # The trailing "/" is important
-Path ~/mail/Chalmers/
-Inbox ~/mail/Chalmers/Inbox
+Path ~/mail/chalmers.se/
+Inbox ~/mail/chalmers.se/Inbox
 SubFolders Verbatim
 
 Channel chalmers
@@ -49,8 +49,8 @@ Account personal
 
 MaildirStore personal-local
 SubFolders Verbatim
-Path ~/mail/Personal/
-Inbox ~/mail/Personal/Inbox/
+Path ~/mail/ashfaqfarooqui.me/
+Inbox ~/mail/ashfaqfarooqui.me/Inbox/
 
 Channel personal
 Master :personal-remote:

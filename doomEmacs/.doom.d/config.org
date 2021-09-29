@@ -1190,68 +1190,44 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
                                         ;(setq mu4e-compose-signature-auto-include t)
 
 
-  ;; setup some handy shortcuts
-  (setq mu4e-maildir-shortcuts
-        '( ("/Chalmers/Inbox"               . ?i)
-           ("/Personal/Inbox"   . ?p)
-           ("/Chalmers/Drafts" . ?d)
-           ("/Personal/Drafts". ?D)
-           ("/Chalmers/Trash"       . ?t)
-           ("/Chalmers/All Mail"    . ?a)))
-
-
 
 
   (setq mu4e-enable-mode-line t)
-  (setq mu4e-contexts
-        `(, (make-mu4e-context
-             :name "w ashfaqf@chalmers.se"
-             :enter-func (lambda () (mu4e-message "Enter ashfaqf@chalmers.se context"))
-             :leave-func (lambda () (mu4e-message "Leave ashfaqf@chalmers.se context"))
-             ;; we match based on the contact-fields of the message (that we are replying to)
-             ;; https://www.djcbsoftware.nl/code/mu/mu4e/What-are-contexts.html#What-are-contexts
-             :match-func (lambda (msg)
-                           (when msg
-                             (mu4e-message-contact-field-matches msg
-                                                                 :to "ashfaqf@chalmers.se")))
-             :vars '( ( user-mail-address      . "ashfaqf@chalmers.se"  )
-                      ( user-full-name         . "Ashfaq Farooqui" )
-                      ( mu4e-drafts-folder .  "/Chalmers/Drafts")
-                      ( mu4e-sent-folder  . "/Chalmers/Sent")
-                      ( mu4e-trash-folder . "/Chalmers/Trash")
-                      ( mu4e-attachment-dir . "~/Documents/MailAttachments/Chalmers")
-                      ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-                      (setq mu4e-sent-messages-behavior 'delete)
-                      ( smtpmail-smtp-server   . "localhost" )
-                      (smtpmail-stream-type . nil )
-                      ( smtpmail-smtp-service . 1025)
-                      ;;      ( mu4e-compose-signature .
-                      ;;                              "//Ashfaq")
-                      ))
 
-            ,(make-mu4e-context
-              :name "p ashfaq@ashfaqfarooqui.me"
-              :enter-func (lambda () (mu4e-message "Enter ashfaq@ashfaqfarooqui.me context"))
-              ;; no leave-func
-              ;; we match based on the contact-fields of the message
-              :match-func (lambda (msg)
-                            (when msg
-                              (mu4e-message-contact-field-matches msg
-                                                                  :to "ashfaq@ashfaqfarooqui.me")))
-              :vars '( ( user-mail-address       . "ashfaq@ashfaqfarooqui.me" )
-                       ( user-full-name          . "Ashfaq Farooqui" )
-                       (smtpmail-smtp-user . "ashfaq.farooqui@mailbox.org")
-                       (mu4e-sent-messages-behavior . sent)
-                       (mu4e-attachment-dir . "~/Documents/MailAttachments/Personal")
-                       ( mu4e-drafts-folder . "/Personal/Drafts")
-                       ( mu4e-sent-folder  . "/Personal/Sent")
-                       ( mu4e-trash-folder . "/Personal/Trash")
-                       (mu4e-refile-folder . "/Personal/Archive")
-                       (smtpmail-smtp-server . "smtp.mailbox.org")
-                       (smtpmail-stream-type . ssl )
-                       (smtpmail-smtp-service . 465)))
+  (set-email-account! "ashfaqfarooqui.me"
+                      '(
+                        ( user-mail-address      . "ashfaq@ashfaqfarooqui.me"  )
+                        ( user-full-name         . "Ashfaq Farooqui" )
+                        (mu4e-sent-folder       . "/ashfaqfarooqui.me/Sent Mail")
+                        (mu4e-drafts-folder     . "/ashfaqfarooqui.me/Drafts")
+                        (mu4e-trash-folder      . "/ashfaqfarooqui.me/Trash")
+                        (mu4e-refile-folder     . "/ashfaqfarooqui.me/All Mail")
+                        (smtpmail-smtp-user     . "ashfaq.farooqui@mailbox.org")
+                        ;;    (user-mail-address      . "ashfaq@ashfaqfarooqui.me")    ;; only needed for mu < 1.4
+                        (mu4e-attachment-dir . "~/Documents/MailAttachments/Personal")
+                        (smtpmail-smtp-server . "smtp.mailbox.org")
+                        (smtpmail-stream-type . ssl )
+                        (smtpmail-smtp-service . 465)
+                        (mu4e-compose-signature . "---\nAshfaq Farooqui"))
+                      t)
+  (set-email-account! "chalmers.se"
+                      '(
+                        ( user-mail-address      . "ashfaqf@chalmers.se"  )
+                        ( user-full-name         . "Ashfaq Farooqui" )
+                        (mu4e-sent-folder       . "/chalmers.se/Sent Mail")
+                        (mu4e-drafts-folder     . "/chalmers.se/Drafts")
+                        (mu4e-trash-folder      . "/chalmers.se/Trash")
+                        (mu4e-refile-folder     . "/chalmers.se/All Mail")
+                        (smtpmail-smtp-user     . "ashfaqf@chalmers.se")
+                        ;;    (user-mail-address      . "ashfaq@ashfaqfarooqui.me")    ;; only needed for mu < 1.4
+                        (mu4e-attachment-dir . "~/Documents/MailAttachments/Chalmers")
+                        (mu4e-compose-signature . "//Ashfaq Farooqui")
+                        ( smtpmail-smtp-server   . "localhost" )
+                        (smtpmail-stream-type . nil )
+                        ( smtpmail-smtp-service . 1025)
+                        )
+                      t)
 
-            ))
                                         ;(setq smtpmail-debug-verb t)
 
 
