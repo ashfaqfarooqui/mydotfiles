@@ -1,39 +1,39 @@
-IMAPAccount chalmers
-# Address to connect to
-Host localhost
-Port 1143
-user ashfaqf
-PassCmd "gopass show -o Account/webmail.chalmers.se"
-# "gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine localhost login ashfaqf/ {print $NF}'"
-# To store the password in an encrypted file use PassCmd instead of Pass
-# PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mailpass.gpg"
+# IMAPAccount chalmers
+# # Address to connect to
+# Host localhost
+# Port 1143
+# user ashfaqf
+# PassCmd "gopass show -o Account/webmail.chalmers.se"
+# # "gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine localhost login ashfaqf/ {print $NF}'"
+# # To store the password in an encrypted file use PassCmd instead of Pass
+# # PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mailpass.gpg"
+# #
+# AuthMechs LOGIN
+# SSLType None
 #
-AuthMechs LOGIN
-SSLType None
-
-IMAPStore chalmers-remote
-Account chalmers
-
-MaildirStore chalmers-local
-# The trailing "/" is important
-Path ~/mail/chalmers.se/
-Inbox ~/mail/chalmers.se/Inbox
-SubFolders Verbatim
-
-Channel chalmers
-Master :chalmers-remote:
-Slave :chalmers-local:
-Patterns INBOX Sent Trash 
-# Automatically create missing mailboxes, both locally and on the server
-Create Slave
-# Save the synchronization state files in the relevant directory
-SyncState *
-Sync All
-Expunge Both
-CopyArrivalDate yes
-
-
-
+# IMAPStore chalmers-remote
+# Account chalmers
+#
+# MaildirStore chalmers-local
+# # The trailing "/" is important
+# Path ~/mail/chalmers.se/
+# Inbox ~/mail/chalmers.se/Inbox
+# SubFolders Verbatim
+#
+# Channel chalmers
+# Master :chalmers-remote:
+# Slave :chalmers-local:
+# Patterns INBOX Sent Trash
+# # Automatically create missing mailboxes, both locally and on the server
+# Create Slave
+# # Save the synchronization state files in the relevant directory
+# SyncState *
+# Sync All
+# Expunge Both
+# CopyArrivalDate yes
+#
+#
+#
 # Personal: ashfaqfarooqui.me
 IMAPAccount personal
 Host imap.mailbox.org
@@ -55,6 +55,35 @@ Inbox ~/mail/ashfaqfarooqui.me/Inbox/
 Channel personal
 Master :personal-remote:
 Slave :personal-local:
+Patterns "INBOX" "*"
+Create Slave
+Sync All
+Expunge Both
+SyncState *
+CopyArrivalDate yes
+
+
+# Personal: ashfaqfarooqui.me
+IMAPAccount rise
+Host localhost
+Port 1143
+User ashfaq.farooqui@ri.se
+PassCmd "gopass show -o websites/ri.se/ashfaq.farooqui@ri.se"
+AuthMechs LOGIN
+SSLType NONE
+Timeout 200
+
+IMAPStore rise-remote
+Account rise
+
+MaildirStore rise-local
+SubFolders Verbatim
+Path ~/mail/ri.se/
+Inbox ~/mail/ri.se/Inbox/
+
+Channel rise
+Master :rise-remote:
+Slave :rise-local:
 Patterns "INBOX" "*"
 Create Slave
 Sync All

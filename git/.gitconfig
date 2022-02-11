@@ -8,9 +8,9 @@
 	ui = auto
 [commit]
 	gpgsign = true
-[credential "https://git.overleaf.com"]
-       username = ashfaqf@chalmers.se
 [credential "https://github.com"]
        username = ashfaq@ashfaqfarooqui.me
 [github]
 	user = ashfaqfarooqui
+[gpg]
+	program = gpg2
