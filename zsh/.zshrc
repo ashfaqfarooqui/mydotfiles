@@ -1,3 +1,4 @@
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -66,10 +67,7 @@ zsh-autosuggestions
 zsh-syntax-highlighting
 python
 cp
-wd
 colorize
-sbt
-scala
 sudo
 )
 
@@ -118,34 +116,27 @@ NPM_PACKAGES="${HOME}/.npm-packages"
 PATH="$HOME/.emacs.d/bin:$NPM_PACKAGES/bin:$PATH"
 
 
-##Cups config, replaces .cups/client.conf...
-#CUPS_GSSSERVICENAME=HTTP
-#CUPS_SERVER=print.chalmers.se
 
-# Unset manpath so we can inherit from /etc/manpath via the `manpath` command
-unset MANPATH # delete if you already modified MANPATH elsewhere in your config
-export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
-# added by travis gem
-[ -f /home/ashfaqf/.travis/travis.sh ] && source /home/ashfaqf/.travis/travis.sh
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-bindkey -e
-if [ -e /home/ashfaqf/.nix-profile/etc/profile.d/nix.sh ]; then . /home/ashfaqf/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 # Path to dictionaries
 export STARDICT_DATA_DIR="$HOME/.stardic/dic"
 
 
-##For scala Cousier
-export PATH="$PATH:/home/ashfaqf/.local/share/coursier/bin"
 
-# star ship font
-#eval "$(starship init zsh)"
+source /usr/share/nvm/init-nvm.sh
+
+
+export GPG_TTY=$(tty)
+unset SSH_AGENT_PID
+if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+  export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+fi
+

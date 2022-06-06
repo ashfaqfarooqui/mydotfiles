@@ -120,3 +120,21 @@ Ensure to have .authinfo file in the home directory with all the required creden
 * TODO scala installation
 The scala community has come out with a new tool to install and maintain scala versions. May I need to look into that one for a more stable experience with Scala toolchain.
 https://www.scala-lang.org/2020/06/29/one-click-install.html
+
+* Gopass
+dependencies
+#+begin_src shell
+pacman -S gnupg2 git rng-tools
+#+end_src
+install zsh auto completions
+#+begin_src shell
+ gopass completion zsh > ~/_gopass
+ sudo mv ~/_gopass /usr/share/zsh/site-functions/_gopass
+ rm -i ${ZDOTDIR:-${HOME:?No ZDOTDIR or HOME}}/.zcompdump && compinit
+
+#+end_src
+
+frontend
+#+begin_src shell
+pacman -S qtpass
+#+end_src

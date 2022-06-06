@@ -1,0 +1,7 @@
+* %u^{}
+:PROPERTIES:
+:Distance: %^{Distance}p
+:pace: %^{pace}p
+:Time: %^{Time}p
+:END:
+%?
