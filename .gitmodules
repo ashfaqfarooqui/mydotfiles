@@ -4,7 +4,7 @@
 [submodule "emacsConf/.emacs.d/vendor/maple-minibuffer"]
 	path = emacsConf/.emacs.d/vendor/maple-minibuffer
 	url = https://github.com/honmaple/emacs-maple-minibuffer
-[submodule "emacsConf/.emacs.d/vendor/promela-mode"]
+[submodule "doom/.doom.d/lisp/promela-mode"]
 	path = doom/.doom.d/lisp/promela-mode
 	url = https://github.com/ashfaqfarooqui/promela-mode
 [submodule "emacsConf/.emacs.d/vendor/youtube-dl-emacs"]
