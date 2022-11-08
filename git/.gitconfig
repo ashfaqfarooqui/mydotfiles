@@ -1,15 +1,13 @@
 [user]
 	email = ashfaq@ashfaqfarooqui.me
 	name = Ashfaq Farooqui
-	signingkey =37E46ECB369B40C36463E7147A804BCB51DE2D88 
+	signingkey = 7A804BCB51DE2D88
 [mergetool]
 	keepBackup = false
 [color]
 	ui = auto
 [commit]
 	gpgsign = false 
-[credential "https://github.com"]
-       username = ashfaq@ashfaqfarooqui.me
 [github]
 	user = ashfaqfarooqui
 [gpg]
