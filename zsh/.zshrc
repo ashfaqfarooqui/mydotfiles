@@ -131,8 +131,6 @@ export STARDICT_DATA_DIR="$HOME/.stardic/dic"
 
 
 
-source /usr/share/nvm/init-nvm.sh
-
 
 export GPG_TTY=$(tty)
 unset SSH_AGENT_PID
