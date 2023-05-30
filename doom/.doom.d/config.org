@@ -130,9 +130,9 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 We also like ~org-fragtog~, and that wants a hook.
 #+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'org-fragtog-mode)
+;(add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
-** Fonts
+** COMMENT Fonts
 #+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 24)
       doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 35)
@@ -201,13 +201,6 @@ We also like ~org-fragtog~, and that wants a hook.
 
 
 #+end_src
-** flyspell
-#+begin_src emacs-lisp
-(define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-wrapper)
-#+end_src
-
-#+RESULTS:
-: flyspell-correct-wrapper
 
 ** Supersave
 #+begin_src emacs-lisp
@@ -365,238 +358,6 @@ Single Capitals as you type."
 #+end_src
 
 
-* Org Mode
-** COMMENT Org appear
-#+begin_src emacs-lisp
-
-(use-package! org-appear
-  :after org
-  :hook (org-mode . org-appear-mode)
-  :config
-  (setq org-appear-autoemphasis t
-        org-appear-autosubmarkers t
-        org-appear-autolinks nil)
-  ;; for proper first-time setup, `org-appear--set-fragments'
-  ;; needs to be run after other hooks have acted.
-  (run-at-time nil nil #'org-appear--set-fragments))
-#+end_src
-
-** Directory setup
-Store my org files in =~/Orgs=, define an index file and an
-archive of finished tasks in =archive.org=.
-
-#+BEGIN_SRC emacs-lisp
-
-(after! org
-(setq org-directory "~/Nextcloud/Docs")
-(setq org-id-locations-file (expand-file-name ".orgids" org-directory))
-
-  (defun org-file-path (filename)
-    "Return the absolute address of an org file, given its relative name."
-    (concat (file-name-as-directory org-directory) filename))
-
-  (setq org-inbox-orgzly-file
-        (concat (org-file-path "inbox-orgzly.org")))
-  (setq org-inbox-file (org-file-path "inbox.org"))
-(setq org-basb-main-file (concat (org-file-path "Roam/pages/index.org")))
-)
-
-#+END_SRC
-
-#+RESULTS:
-: ~/Nextcloud/Docs/Roam/pages/index.org
-
-*** Open main file
-#+begin_src emacs-lisp
-(after! org
-(defun my/open-main-file ()
-  (interactive)
-(org-open-file org-basb-main-file)
-                        )
-)
-#+end_src
-
-#+RESULTS:
-: my/open-main-file
-
-** Display preferences
-
-
-
-some more misc settings
-#+BEGIN_SRC emacs-lisp
-(after! org
-  (setq org-pretty-entities          t ; UTF8 all the things!
-        org-support-shift-select     t ; holding shift and moving point should select things
-        org-M-RET-may-split-line     nil ; M-RET may never split a line
-        org-enforce-todo-dependencies t ; can't finish parent before children
-        org-enforce-todo-checkbox-dependencies t ; can't finish parent before children
-        org-hide-emphasis-markers nil ; make words italic or bold, hide / and *
-        org-fold-catch-invisible-edits 'smart
-                                        ;org-catch-invisible-edits 'error ; don't let me edit things I can't see
-        org-startup-indented t) ; start with indentation setup
-  (setq org-startup-with-inline-images t) ; show inline images
-  (setq org-log-done t)
-  (setq org-goto-interface (quote outline-path-completion))
-
-  (setq org-special-ctrl-a/e t))
-#+END_SRC
-** Org-keywords
-#+begin_src emacs-lisp
-(after! org
-
-    (setq org-todo-keywords
-        '((sequence
-           "TODO(t)"  ; A task that needs doing & is ready to do
-           "PROJ(p)"  ; A project, which usually contains other tasks
-           "LOOP(r)"  ; A recurring task
-           "NEXT(n)"  ; A task that is in progress
-           "WAIT(w)"  ; Something external is holding up this task
-           "HOLD(h)"  ; This task is paused/on hold because of me
-           "IDEA(i)"  ; An unconfirmed and unapproved task or notion
-           "|"
-           "DONE(d)"  ; Task successfully completed
-           "KILL(k)") ; Task was cancelled, aborted or is no longer applicable
-          (sequence
-           "[ ](T)"   ; A task that needs doing
-           "[-](S)"   ; Task is in progress
-           "[?](W)"   ; Task is being held up or paused
-           "|"
-           "[X](D)")  ; Task was completed
-          (sequence
-           "|"
-           "OKAY(o)"
-           "YES(y)"
-           "NO(n)")
-          (sequence
-           "MEETING(m)"))
-        org-todo-keyword-faces
-        '(("[-]"  . +org-todo-active)
-          ("NEXT" . +org-todo-active)
-          ("MEETING" . +org-todo-active)
-          ("[?]"  . +org-todo-onhold)
-          ("WAIT" . +org-todo-onhold)
-          ("HOLD" . +org-todo-onhold)
-          ("PROJ" . +org-todo-project)
-          ("NO"   . +org-todo-cancel)
-          ("KILL" . +org-todo-cancel)))
-
-  )
-#+end_src
-
-#+RESULTS:
-: ((APT . +org-todo-active) ((APT . +org-todo-active)) ([-] . +org-todo-active) (STRT . +org-todo-active) ([?] . +org-todo-onhold) (WAIT . +org-todo-onhold) (HOLD . +org-todo-onhold) (PROJ . +org-todo-project) (NO . +org-todo-cancel) (KILL . +org-todo-cancel))
-** Folding
-#+begin_src emacs-lisp
-(setq org-startup-folded 'content)
-
-#+end_src
-** Org-tags
-#+BEGIN_SRC emacs-lisp
-; Tags with fast selection keys
-(after! org
-
-;  (setq org-tag-alist (quote ((:startgroup)
-;                            ("@errand" . ?e)
-;                            ("@office" . ?o)
-;                            ("@home" . ?H)
-;                            (:endgroup)
-;                      ("Challenge" . ?1)
-;                      ("Average" . ?2)
-;                      ("Easy" . ?3)
-;                            ("crypt" . ?E)
-;                            ("NOTE" . ?n)
-;)))
-
-; Allow setting single tags without the menu
-(setq org-fast-tag-selection-single-key (quote expert))
-
-; For tag searches ignore tasks with scheduled and deadline dates
-(setq org-agenda-tags-todo-honor-ignore-options t)
-)
-#+END_SRC
-
-#+RESULTS:
-: t
-** COMMENT Capturing
-
-
-
-#+BEGIN_SRC emacs-lisp
-(defun org-journal-find-location ()
-  ;; Open today's journal, but specify a non-nil prefix argument in order to
-  ;; inhibit inserting the heading; org-capture will insert the heading.
-  (org-journal-new-entry t)
-  ;; Position point on the journal's top-level heading so that org-capture
-  ;; will add the new entry as a child entry.
-  (goto-char (point-min)))
-
-#+END_SRC
-
-#+RESULTS:
-: org-journal-find-location
-
-#+BEGIN_SRC emacs-lisp
-   (after! org   (setq org-capture-templates
-                       (quote (
-
-                               ("p" "Protocol" entry (file+headline org-inbox-file "Links")
-                                "* %^{Title}\nCaptured On: %U\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-                               ("L" "Protocol Link" entry (file+headline org-inbox-file "Links")
-                                "* %? [[%:link][%:description]] \nCaptured On: %U")
-                               ("l" "link" entry (file+headline  org-inbox-file "Links")
-                                "* TODO %(org-cliplink-capture)" :immediate-finish t)
-                               ("i" "Inbox"
-                                entry
-                                (file org-inbox-file)
-                                "* %u %? \n :\n:PROPERTIES:\n:CREATED: %U\n:END:")
-
-                               ("t" "Task"
-                                entry
-                                (file+headline org-inbox-file "Tasks")
-                                "* TODO %? \n :PROPERTIES:\n:CREATED: %U\n:END:")
-;
-;                               ("h" "health log")
-;                               ("hr" "Running" entry (file+headline  "~/Orgs/BASB/Areas/Health/log.org" "Running")
-;                                (file "~/.doom.d/templates/running.org") :empty-lines 1)
-;
-;                               ("hs" "Sleep" entry (file+headline  "~/Orgs/BASB/Areas/Health/log.org" "Sleep")
-;                                (file "~/.doom.d/templates/sleep.org") :empty-lines 1)
-
-                               ("e" "Email" entry (file+headline org-inbox-file "Reply to Mail")
-                                "* TODO Process email |- %:from: :: %:subject :EMAIL:\n:PROPERTIES:\n:CREATED: %U\n:EMAIL-SOURCE: %l\n:END:\n\n
-   ,#+begin_quote \n
-   %i
-   ,#+end_quote\n
-
-   %?
-                " )
-
-
-
-
-                               ("H" "Habit" entry (file org-inbox-file)
-                                "* TODO %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:END:\n")
-
-
-                               ("c" "cooking")
-                               ("cr" "Cookbook" entry (file (concat (org-file-path  "BASB/Resource/Cookbook/cookbook.org")))
-                                "%(org-chef-get-recipe-from-url)"
-                                :empty-lines 1)
-
-                               ("cm" "Manual Cookbook" entry (file (concat (org-file-path "BASB/Resource/Cookbook/cookbook.org")))
-                                "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
-
-                               )
-
-
-                              ))
-
-     )
-#+END_SRC
-
-#+RESULTS:
-| p | Protocol | entry | (file+headline org-inbox-file Links) | * %^{Title} |
 
 ** Encryption
 #+BEGIN_SRC emacs-lisp
@@ -623,204 +384,7 @@ some more misc settings
 #+RESULTS:
 : scrot -s %s
 
-** COMMENT Org roam
-*** Capture templates
-#+BEGIN_SRC emacs-lisp
 
-
-(after! org-roam
-  (setq org-roam-directory "~/Nextcloud/Docs/Roam/")
-    (setq org-roam-dailies-directory "journals/")
-  (setq org-roam-capture-templates
-        '(("d" "default" plain "%?"
-           :if-new (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org"
-                              "#+title: ${title}\n#+Date: %t")
-           :unnarrowed t)
-          ("p" "project" plain (file "templates/newProjectTemplate.org")
-           :if-new (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Project")
-           :unnarrowed t)
-         ("i" "Religion")
-          ("in" "note" plain "%?"
-           :if-new (file+head "pages/Islam/%<%Y%m%d%H%M%S>-${slug}.org"
-                              "#title: ${title}\n")
-           :unnarrowed t)
-
-          ("ik" "Kuthbah" plain "%?"
-           :if-new (file+head) "pages/Islam/Khutba/%<%Y%m%d%H%M%S>-${slug}.org" "#title: ${title}\n#+Date: %(org-read-date nil nil nil)")
-          )
-
-        )
-
-
-  )
-#+END_SRC
-
-#+RESULTS:
-| d | default | plain | %? | :if-new | (file+head %<%Y%m%d%H%M%S>-${slug}.org #+title: ${title} |
-
-*** some additions from system crafters
-#+begin_src emacs-lisp
-  ;; Taking things from system crafters
-  (after! org-roam
-    (require 'org-roam-dailies) ;; Ensure the keymap is available
-
-    ;;(add-to-list 'org-tags-exclude-from-inheritance "Project")
-
-    (defun my/roam-filter-by-tag (ta)
-      "Return a list of note files containing tag." ;
-      (seq-uniq
-       (seq-map
-        #'car
-        (org-roam-db-query
-         [:select [nodes:file]
-          :from tags
-          :left-join nodes
-          :on (= tags:node-id nodes:id)
-          :where (like tag $s1)] ta )))
-      )
-
-
-    (defun my/roam-get-project-files ()
-      "Return a list of note files containing project tag." ;
-      (my/roam-filter-by-tag "Project"))
-
-    (defun my/roam-get-area-files ()
-      "Return a list of note files containing area tag." ;
-
-      (my/roam-filter-by-tag "Area"))
-
-
-
-    (defun org-roam-node-insert-immediate (arg &rest args)
-      (interactive "P")
-      (let ((args (push arg args))
-            (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                      '(:immediate-finish t)))))
-        (apply #'org-roam-node-insert args)))
-
-    (defun my/org-roam-filter-by-tag (tag-name)
-      (lambda (node)
-        (member tag-name (org-roam-node-tags node))))
-
-    (defun my/org-roam-list-notes-by-tag (tag-name)
-      (mapcar #'org-roam-node-file
-              (seq-filter
-               (my/org-roam-filter-by-tag tag-name)
-               (org-roam-node-list))))
-
-
-   (defun my/org-roam-project-finalize-hook ()
-      "Adds the captured project file to `org-agenda-files' if the
-  capture was not aborted."
-      ;; Remove the hook since it was added temporarily
-      (remove-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
-
-      ;; Add project file to the agenda list if the capture was confirmed
-      (unless org-note-abort
-        (with-current-buffer (org-capture-get :buffer)
-          (add-to-list 'org-agenda-files (buffer-file-name)))))
-
-    (defun my/org-roam-find-area ()
-      (interactive)
-      ;; Add the project file to the agenda after capture is finished
-      (add-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
-
-      ;; Select a project file to open, creating it if necessary
-      (org-roam-node-find
-       nil
-       nil
-       (my/org-roam-filter-by-tag "Area")
-       :templates
-       '(("a" "area" plain "\n"
-          :if-new (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Area")
-          :unnarrowed t))))
-
-
-    (defun my/org-roam-find-project ()
-      (interactive)
-      ;; Add the project file to the agenda after capture is finished
-      (add-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
-
-      ;; Select a project file to open, creating it if necessary
-      (org-roam-node-find
-       nil
-       nil
-       (my/org-roam-filter-by-tag "Project")
-       :templates
-       '(("p" "project" plain (file "~/.doom.d/templates/newProjecttemplate.org")
-          :if-new (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Project")
-          :unnarrowed t))))
-
-    (defun my/org-roam-copy-todo-to-today ()
-      (interactive)
-      (let ((org-refile-keep t) ;; Set this to nil to delete the original!
-            (org-roam-dailies-capture-templates
-             '(("t" "tasks" entry "%?"
-                :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Tasks")))))
-            (org-after-refile-insert-hook #'save-buffer)
-            today-file
-            pos)
-        (save-window-excursion
-          (org-roam-dailies--capture (current-time) t)
-          (setq today-file (buffer-file-name))
-          (setq pos (point)))
-
-        ;; Only refile if the target file is different than the current file
-        (unless (equal (file-truename today-file)
-                       (file-truename (buffer-file-name)))
-          (org-refile nil nil (list "Tasks" today-file nil pos)))))
-
-    (add-to-list 'org-after-todo-state-change-hook
-                 (lambda ()
-                   (when (equal org-state "DONE")
-                     (my/org-roam-copy-todo-to-today))))
-
-    )
-  (map! :leader
-        (:prefix-map ("r" . "personal")
-         "a" #'my/org-roam-find-area
-         "p" #'my/org-roam-find-project
-         "t" #'my/org-roam-capture-task
-         "b" #'my/org-roam-capture-inbox
-         ))
-#+end_src
-
-#+RESULTS:
-: my/org-roam-capture-inbox
-*** org roam ui
-#+begin_src emacs-lisp
-(use-package! websocket
-    :after org-roam)
-
-(use-package! org-roam-ui
-    :after org-roam ;; or :after org
-;;    :hook
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-
-
-
-#+end_src
-
-** COMMENT Deft
-#+begin_src emacs-lisp
-
-  (setq deft-default-extension "org")
-(setq deft-directory org-roam-directory
-          deft-recursive t
-          deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
-          deft-use-filename-as-title t)
-#+end_src
-
-#+RESULTS:
-: t
 
 ** Surround region with emphasis or syntax characters
 Define and bind interactive commands for each of KEYS that surround the region or insert text. Commands are bound in org-mode-map to each of KEYS. If the region is active, commands surround it with the key character, otherwise call org-self-insert-command.
@@ -885,12 +449,7 @@ the final documents.
 
 #+end_src
 
-#+begin_src emacs-lisp
-
-(use-package! org-pandoc-import :after org)
-
-#+end_src
-* Promela mode
+* COMMENT Promela mode
 #+begin_src emacs-lisp
 (add-to-list 'load-path "~/.doom.d/lisp/promela-mode")
 (require 'promela-mode)
@@ -905,7 +464,7 @@ the final documents.
        auto-mode-alist))
 
 #+end_src
-* Narrow widen
+* COMMENT Narrow widen
 Taken from https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 #+BEGIN_SRC emacs-lisp
 
@@ -1012,7 +571,7 @@ Taking inspiration from [[https://github.com/rougier/emacs-gtd][GitHub - rougier
 )
 #+end_src
 
-*** agenda
+*** COMMENT agenda
 #+begin_src emacs-lisp
 (after! org
   (defun my/style-org-agenda()
@@ -1091,7 +650,7 @@ Taking inspiration from [[https://github.com/rougier/emacs-gtd][GitHub - rougier
 #+END_SRC
 
 
-** GTD and PARA
+** COMMENT GTD and PARA
 Inspired from https://github.com/mwfogleman/.emacs.d/blob/master/michael.org
 *** Projects
 A project is “any outcome that will take more than one action step to complete.” As a result of implementing Tiago Forte’s “PARA” system, I can ensure that I always have an up to date project list.
@@ -1132,7 +691,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 )
 #+end_src
 
-*** Areas
+*** COMMENT Areas
 #+begin_src emacs-lisp
 (after! org  (defun go-to-areas ()
     (interactive)
@@ -1150,7 +709,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 )
 #+end_src
 
-*** Reviews
+*** COMMENT Reviews
 #+begin_src emacs-lisp
 (after! org (defun my-new-daily-review ()
   (interactive)
@@ -1202,7 +761,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 
 #+end_src
 
-** lexic
+** COMMENT lexic
 #+BEGIN_SRC emacs-lisp
 (use-package! lexic
   :defer t
@@ -1212,8 +771,8 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 
 #+RESULTS:
 
-** Mail setup
-*** Mu4e
+** COMMENT Mail setup
+*** COMMENT Mu4e
 #+BEGIN_SRC emacs-lisp
 
 (after! mu4e
@@ -1304,7 +863,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
   )
 #+END_SRC
 
-*** MU4e attachments
+*** COMMENT MU4e attachments
 #+BEGIN_SRC emacs-lisp
 
        ;;;Taking the below from [[http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e]]
@@ -1353,7 +912,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 )
 #+END_SRC
 
-*** org-msg
+*** COMMENT org-msg
 #+begin_src emacs-lisp
 (after! org-msg
                                         ;use-package! org-msg
@@ -1374,40 +933,4 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 #+end_src
 
 
-*** capture
-#+begin_src emacs-lisp
-(setq +org-capture-emails-file "inbox.org")
-
-#+end_src
-
 * Lsp
-** C++
-#+begin_src emacs-lisp
-(after! lsp-mode
-(setq lsp-clients-clangd-args '("-j=3"
-                                "--background-index"
-                                "--clang-tidy"
-                                "--completion-style=detailed"
-                                "--header-insertion=never"
-                                "--header-insertion-decorators=0"))
-(after! lsp-clangd (set-lsp-priority! 'clangd 2))
-
-
-;                            (require 'dap-cpptools)
-;(setq dap-auto-configure-features '(sessions locals controls tooltip))
-
-)
-
-#+end_src
-
-#+RESULTS:
-** Nix
-#+begin_src emacs-lisp
-(after! lsp-mode
-(add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
-(lsp-register-client
- (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
-                  :major-modes '(nix-mode)
-                  :server-id 'nix))
-)
-#+end_src

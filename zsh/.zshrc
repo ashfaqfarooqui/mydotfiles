@@ -111,7 +111,6 @@ alias et="emacsclient -t"
 ef() { fzf | xargs -r -I % $EDITOR % ;}
 ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
-NPM_PACKAGES="${HOME}/.npm-packages"
 
 PATH="$HOME/.emacs.d/bin:$NPM_PACKAGES/bin:$PATH"
 
@@ -138,3 +137,4 @@ if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
   export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 fi
 
+export GPG_TTY=$(tty)

@@ -51,10 +51,10 @@
 
 (package! hungry-delete)
 (package! rainbow-mode)
-(package! org-chef)
+;(package! org-chef)
 ;(package! try)
 (package! super-save)
-(package! org-super-agenda)
+;(package! org-super-agenda)
 ;;(package! flyspell-correct-ivy)
 (package! alert)
 ;(package! undo-tree)
@@ -74,26 +74,34 @@
 ;(package! org-roam-server)
 ;;(package! deft)
 (package! visual-fill-column)
-(package! htmlize)
+;(package! htmlize)
 ;(package! modus-themes
 ;  :recipe (:host gitlab :repo "protesilaos/modus-themes"))
 (package! pretty-hydra)  ;; dependency
-(package! org-media-note :recipe (:host github :repo "yuchen-lea/org-media-note"))
+;(package! org-media-note :recipe (:host github :repo "yuchen-lea/org-media-note"))
 
 ;;(package! flyspell-lazy)
 ;;(package! elfeed-goodies)
 (package! lexic)
-(package! holy-books)
+;(package! holy-books)
 (package! info-colors)
 ;; Testing the org fold branch
-(package! org-fragtog)
+;(package! org-fragtog)
 (package! org-pretty-tags)
-(package! gif-screencast)
+;(package! gif-screencast)
 
+; From https://github.com/iyefrat/doom-emacs/commit/bd944dc318efe2dfb00c1107ca6d70797dad1331
+; Due to https://github.com/doomemacs/doomemacs/issues/7191
+(package! code-review :recipe (:files ("graphql" "code-review*.el"))
+    :pin "26f426e99221a1f9356aabf874513e9105b68140")
+    ; HACK closql c3b34a6 breaks code-review wandersoncferreira/code-review#245,
+    ; and the current forge commit (but forge does have an upstream fix),
+    ; pinned as a temporary measure to prevent user breakages
+(package! closql :pin "0a7226331ff1f96142199915c0ac7940bac4afdd")
 
 (package! org-pretty-table-mode
   :recipe (:host github :repo "Fuco1/org-pretty-table"))
-(package! org-ref)
+;(package! org-ref)
 ;(package! org-roam-bibtex)
 (package! iedit)
 ;(package! ob-ammonite)
@@ -111,9 +119,5 @@
 ;           :branch "main"
 ;           :files ("*.el")))
 (package! org-web-tools)
-(package! org-pandoc-import
-  :recipe (:host github
-           :repo "tecosaur/org-pandoc-import"
-           :files ("*.el" "filters" "preprocessors")))
 
 ;; $DOOMDIR/config.el
