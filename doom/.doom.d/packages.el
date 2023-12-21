@@ -89,7 +89,8 @@
 ;(package! org-fragtog)
 (package! org-pretty-tags)
 ;(package! gif-screencast)
-
+(package! request)
+(package! activity-watch-mode)
 ; From https://github.com/iyefrat/doom-emacs/commit/bd944dc318efe2dfb00c1107ca6d70797dad1331
 ; Due to https://github.com/doomemacs/doomemacs/issues/7191
 (package! code-review :recipe (:files ("graphql" "code-review*.el"))

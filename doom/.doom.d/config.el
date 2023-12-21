@@ -289,6 +289,18 @@ otherwise call `org-self-insert-command'."
                              (format "pandoc -f markdown -t org -o %s"
                                      (concat (file-name-sans-extension (buffer-file-name)) ".org"))))
 
+(add-to-list 'load-path "~/.doom.d/lisp/promela-mode")
+(require 'promela-mode)
+                (autoload 'promela-mode "promela-mode" "PROMELA mode" nil t)
+(setq auto-mode-alist
+      (append
+       (list (cons "\\.promela$"  'promela-mode)
+     (cons "\\.spin$"     'promela-mode)
+     (cons "\\.pml$"      'promela-mode)
+ (cons "\\.other-extensions$"     'promela-mode)
+     )
+       auto-mode-alist))
+
 (after! treemacs
   (defvar treemacs-file-ignore-extensions '()
     "File extension which `treemacs-ignore-filter' will ensure are ignored")
@@ -360,3 +372,6 @@ otherwise call `org-self-insert-command'."
 
 
 )
+
+(after! activity-watch-mode
+  (global-activity-watch-mode))

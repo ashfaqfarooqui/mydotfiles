@@ -449,7 +449,7 @@ the final documents.
 
 #+end_src
 
-* COMMENT Promela mode
+* Promela mode
 #+begin_src emacs-lisp
 (add-to-list 'load-path "~/.doom.d/lisp/promela-mode")
 (require 'promela-mode)
@@ -932,5 +932,11 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
   )
 #+end_src
 
+** Activity watcher
+#+begin_src emacs-lisp
+(after! activity-watch-mode
+  (global-activity-watch-mode))
+
+#+end_src
 
 * Lsp
