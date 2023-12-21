@@ -73,7 +73,6 @@ sudo
 
 # User configuration
 
-export PATH="/home/ashfaqf/.npm-packages/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/activemq/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -112,10 +111,6 @@ ef() { fzf | xargs -r -I % $EDITOR % ;}
 ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
 
-PATH="$HOME/.emacs.d/bin:$NPM_PACKAGES/bin:$PATH"
-
-
-
 
 
 
@@ -123,10 +118,6 @@ PATH="$HOME/.emacs.d/bin:$NPM_PACKAGES/bin:$PATH"
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-
-# Path to dictionaries
-export STARDICT_DATA_DIR="$HOME/.stardic/dic"
 
 
 
