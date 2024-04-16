@@ -7,7 +7,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Path to your oh-my-zsh installation.
-  export ZSH=/home/ashfaqf/.oh-my-zsh
+  export ZSH=~/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -59,6 +59,7 @@ HYPHEN_INSENSITIVE="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(jsontools
+	poetry
 git
 extract
 archlinux
@@ -69,11 +70,13 @@ python
 cp
 colorize
 sudo
+zsh-bat
+fd
+fzf
 )
 
 # User configuration
 
-export PATH="/home/ashfaqf/.npm-packages/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/activemq/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -112,7 +115,6 @@ ef() { fzf | xargs -r -I % $EDITOR % ;}
 ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
 
-PATH="$HOME/.emacs.d/bin:$NPM_PACKAGES/bin:$PATH"
 
 
 
@@ -125,8 +127,6 @@ PATH="$HOME/.emacs.d/bin:$NPM_PACKAGES/bin:$PATH"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 
-# Path to dictionaries
-export STARDICT_DATA_DIR="$HOME/.stardic/dic"
 
 
 
@@ -138,3 +138,13 @@ if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
 fi
 
 export GPG_TTY=$(tty)
+
+# argcomplete for ros2 & colcon
+eval "$(register-python-argcomplete3 ros2)"
+eval "$(register-python-argcomplete3 colcon)"
+
+export UE4_ROOT=~/carlaSrcInstall/UnrealEngine_4.26
+export CARLA_ROOT=/home/ashfaqfa/carla15-dirty/
+export PYTHONPATH=$PYTHONPATH:$CARLA_ROOT/PythonAPI/carla/dist/carla-py3.10-linux-x86_64.egg:$CARLA_ROOT/PythonAPI/carla
+source /opt/ros/humble/setup.zsh 
+source /home/ashfaqfa/ros2_ws/install/setup.zsh

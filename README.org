@@ -96,7 +96,10 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
 #+END_SRC
-
+- cat Bat
+  #+begin_src sh
+git clone https://github.com/fdellwing/zsh-bat.git $ZSH_CUSTOM/plugins/zsh-bat
+  #+end_src
 Stow the config files:
 #+BEGIN_SRC sh
 stow zsh
