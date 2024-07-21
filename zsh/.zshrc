@@ -66,6 +66,7 @@ archlinux
 command-not-found
 zsh-autosuggestions
 zsh-syntax-highlighting
+nix-zsh-completions
 python
 cp
 colorize
@@ -73,6 +74,7 @@ sudo
 zsh-bat
 fd
 fzf
+poetry
 )
 
 # User configuration
@@ -131,4 +133,8 @@ fi
 
 export GPG_TTY=$(tty)
 
+prompt_nix_shell_setup
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
