@@ -72,7 +72,6 @@ cp
 colorize
 sudo
 zsh-bat
-fd
 fzf
 poetry
 )
