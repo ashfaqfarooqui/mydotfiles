@@ -3,7 +3,6 @@
 -- Add any additional options here
 --
 --
-
 vim.o.clipboard = "unnamedplus" -- Sync clipboard between OS and Neovim. (default: '')
 vim.o.undofile = true -- Save undo history (default: false)
 vim.o.wrap = true

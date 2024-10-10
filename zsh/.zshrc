@@ -59,14 +59,12 @@ HYPHEN_INSENSITIVE="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(jsontools
-	poetry
 git
 extract
 archlinux
 command-not-found
 zsh-autosuggestions
 zsh-syntax-highlighting
-nix-zsh-completions
 python
 cp
 colorize
@@ -84,7 +82,7 @@ source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
-export ALTERNATE_EDITOR=""
+export ALTERNATE_EDITOR="nvim"
 
 
 
@@ -112,6 +110,8 @@ export SSH_KEY_PATH="~/.ssh/id_rsa"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias e="emacsclient -c -a emacs"   
 alias et="emacsclient -t"
+alias v="nvim"
+alias s="kitten ssh"
 ef() { fzf | xargs -r -I % $EDITOR % ;}
 ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
@@ -132,8 +132,15 @@ fi
 
 export GPG_TTY=$(tty)
 
-prompt_nix_shell_setup
+#prompt_nix_shell_setup
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+
+
+
+
+setxkbmap -layout se -option ctrl:swapcaps

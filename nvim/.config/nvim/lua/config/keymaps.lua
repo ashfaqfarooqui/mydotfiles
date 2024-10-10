@@ -11,8 +11,3 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
 -- Find and center
 vim.keymap.set("n", "n", "nzzzv", opts)
 vim.keymap.set("n", "N", "Nzzzv", opts)
-
-vim.keymap.set("n", "C-h", ":TmuxNavigateLeft<CR>")
-vim.keymap.set("n", "C-j", ":TmuxNavigateDown<CR>")
-vim.keymap.set("n", "C-k", ":TmuxNavigateUp<CR>")
-vim.keymap.set("n", "C-l", ":TmuxNavigateRight<CR>")
