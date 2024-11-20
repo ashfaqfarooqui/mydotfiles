@@ -11,3 +11,5 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
 -- Find and center
 vim.keymap.set("n", "n", "nzzzv", opts)
 vim.keymap.set("n", "N", "Nzzzv", opts)
+
+vim.opt.guifont = "NerdFont"
