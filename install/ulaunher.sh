@@ -5,7 +5,6 @@ sudo apt install -y ulauncher
 
 # Start ulauncher to have it populate config before we overwrite
 mkdir -p ~/.config/autostart/
-cp ~/.local/share/omakub/configs/ulauncher.desktop ~/.config/autostart/ulauncher.desktop
 gtk-launch ulauncher.desktop >/dev/null 2>&1
 
 cat <<EOF >~/.config/autostart/ulauncher.desktop

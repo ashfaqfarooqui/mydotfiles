@@ -121,29 +121,7 @@ keybinds {
             SwitchToMode "Normal"
         }
     }
-    tmux {
-        bind "[" { SwitchToMode "Scroll"; }
-        bind "Ctrl b" { Write 2; SwitchToMode "Normal"; }
-        bind "\"" { NewPane "Down"; SwitchToMode "Normal"; }
-        bind "%" { NewPane "Right"; SwitchToMode "Normal"; }
-        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
-        bind "c" { NewTab; SwitchToMode "Normal"; }
-        bind "," { SwitchToMode "RenameTab"; }
-        bind "p" { GoToPreviousTab; SwitchToMode "Normal"; }
-        bind "n" { GoToNextTab; SwitchToMode "Normal"; }
-        bind "Left" { MoveFocus "Left"; SwitchToMode "Normal"; }
-        bind "Right" { MoveFocus "Right"; SwitchToMode "Normal"; }
-        bind "Down" { MoveFocus "Down"; SwitchToMode "Normal"; }
-        bind "Up" { MoveFocus "Up"; SwitchToMode "Normal"; }
-        bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
-        bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
-        bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
-        bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
-        bind "o" { FocusNextPane; }
-        bind "d" { Detach; }
-        bind "Space" { NextSwapLayout; }
-        bind "x" { CloseFocus; SwitchToMode "Normal"; }
-    }
+
     shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
         bind "Ctrl q" { Quit; }
@@ -205,7 +183,7 @@ plugins {
 //   - detach (Default)
 //   - quit
 //
-// on_force_close "quit"
+on_force_close "quit"
 
 //  Send a request for a simplified ui (without arrow fonts) to plugins
 //  Options:
@@ -279,12 +257,12 @@ plugins {
 // Choose the theme that is specified in the themes section.
 // Default: default
 //
-// theme "default"
+theme "catppuccin"
 
 // The name of the default layout to load on startup
 // Default: "default"
 //
-// default_layout "compact"
+default_layout "compact"
 
 // Choose the mode that zellij uses when starting up.
 // Default: normal

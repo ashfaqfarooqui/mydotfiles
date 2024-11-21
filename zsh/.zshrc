@@ -113,6 +113,17 @@ alias et="emacsclient -t"
 alias v="nvim"
 alias s="kitten ssh"
 alias vim="nvim"
+alias ff=fzf --preview 'batcat --style=numbers --color=always {}'
+alias cd="z"
+alias ls='eza -lh --group-directories-first --icons'
+alias lsa='ls -a'
+alias lt='eza --tree --level=2 --long --icons --git'
+alias lta='lt -a'
+alias fd='fdfind'
+alias du="dust"
+alias top="btop"
+alias df="duf"
+alias proc="procs"
 ef() { fzf | xargs -r -I % $EDITOR % ;}
 ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
@@ -169,9 +180,4 @@ export NVM_DIR="$HOME/.nvm"
 # Set up fzf key bindings and fuzzy completion
 #eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
-alias cd="z"
-alias du="dust"
-alias ls="eza --icons=always"
-alias top="btop"
-alias df="duf"
-alias proc="procs"
+

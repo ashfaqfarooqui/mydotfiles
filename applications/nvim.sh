@@ -6,7 +6,7 @@ Comment=Edit text files
 Exec=kitty  --class=Neovim --title=Neovim -e nvim %F
 Terminal=false
 Type=Application
-Icon=nvim
+Icon=Neovim
 Categories=Utilities;TextEditor;
 StartupNotify=false
 EOF
