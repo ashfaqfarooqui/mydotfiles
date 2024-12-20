@@ -39,7 +39,7 @@ IMAPAccount personal
 Host imap.mailbox.org
 Port 143
 User ashfaq.farooqui@mailbox.org
-PassCmd "gopass show -o Account/register.mailbox.org"
+PassCmd "bw get password 61bcd478-4e24-47a5-84c3-ae6000caf8e5 "
 AuthMechs PLAIN
 SSLType STARTTLS
 
@@ -68,7 +68,7 @@ IMAPAccount rise
 Host localhost
 Port 1143
 User ashfaq.farooqui@ri.se
-PassCmd "gopass show -o websites/ri.se/ashfaq.farooqui@ri.se"
+PassCmd "gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/mailpass.gpg"
 AuthMechs LOGIN
 SSLType NONE
 Timeout 200

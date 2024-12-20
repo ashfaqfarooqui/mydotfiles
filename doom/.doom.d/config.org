@@ -449,7 +449,7 @@ the final documents.
 
 #+end_src
 
-* Promela mode
+* COMMENT Promela mode
 #+begin_src emacs-lisp
 (add-to-list 'load-path "~/.doom.d/lisp/promela-mode")
 (require 'promela-mode)
@@ -650,131 +650,11 @@ Taking inspiration from [[https://github.com/rougier/emacs-gtd][GitHub - rougier
 #+END_SRC
 
 
-** COMMENT GTD and PARA
-Inspired from https://github.com/mwfogleman/.emacs.d/blob/master/michael.org
-*** Projects
-A project is “any outcome that will take more than one action step to complete.” As a result of implementing Tiago Forte’s “PARA” system, I can ensure that I always have an up to date project list.
-#+begin_src emacs-lisp
-(after! org (defun go-to-projects ()
-  (interactive)
-  (find-file org-basb-main-file)
-  (widen)
-  (beginning-of-buffer)
-  (re-search-forward "* Projects")
-  (beginning-of-line))
-
-(defun project-overview ()
-  (interactive)
-  (go-to-projects)
-  (org-narrow-to-subtree)
-  (org-sort-entries t ?p)
-  (org-columns))
-
-(defun project-deadline-overview ()
-  (interactive)
-  (go-to-projects)
-  (org-narrow-to-subtree)
-  (org-sort-entries t ?d)
-  (org-columns))
-)
-#+end_src
-The concept of Stuck Projects comes from David Allen’s GTD. A stuck project is a project without any action steps or tasks associated with it.
-
-Org-Mode has the ability to tell you which subtrees don’t have tasks associated with them. You can also configure what it recognizes as a stuck project. Unfortunately, by default, this functionality picks up a lot of noise.
-
-This function creates an agenda of stuck projects that is restricted to my “Projects” subtree.
-#+begin_src emacs-lisp
-(after! org (defun my-org-agenda-list-stuck-projects ()
-  (interactive)
-  (go-to-projects)
-  (org-agenda nil "#" 'subtree))
-)
-#+end_src
-
-*** COMMENT Areas
-#+begin_src emacs-lisp
-(after! org  (defun go-to-areas ()
-    (interactive)
-    (find-file org-basb-main-file)
-    (widen)
-    (beginning-of-buffer)
-    (re-search-forward "* Areas")
-    (beginning-of-line))
-
-(defun areas-overview ()
-    (interactive)
-    (go-to-areas)
-    (org-narrow-to-subtree)
-    (org-columns))
-)
-#+end_src
-
-*** COMMENT Reviews
-#+begin_src emacs-lisp
-(after! org (defun my-new-daily-review ()
-  (interactive)
-  (let ((org-capture-templates '(("d" "Review: Daily Review" entry (file+olp+datetree "/tmp/reviews.org")
-                                  (file "~/.doom.d/templates/dailyreviewtemplate.org")))))
-    (progn
-      (org-capture nil "d")
-      (org-capture-finalize t)
-      (org-speed-move-safe 'outline-up-heading)
-      (org-narrow-to-subtree)
-      (fetch-calendar)
-      (org-clock-in))))
-
-(defun my-new-weekly-review ()
-  (interactive)
-  (let ((org-capture-templates '(("w" "Review: Weekly Review" entry (file+olp+datetree "/tmp/reviews.org")
-                                  (file "~/.doom.d/templates/weeklyreviewtemplate.org")))))
-    (progn
-      (org-capture nil "w")
-      (org-capture-finalize t)
-      (org-speed-move-safe 'outline-up-heading)
-      (org-narrow-to-subtree)
-      (fetch-calendar)
-      (org-clock-in))))
-
-(defun my-new-monthly-review ()
-  (interactive)
-  (let ((org-capture-templates '(("m" "Review: Monthly Review" entry (file+olp+datetree "/tmp/reviews.org")
-                                  (file "~/.doom.d/templates/monthlyreviewtemplate.org")))))
-    (progn
-      (org-capture nil "m")
-      (org-capture-finalize t)
-      (org-speed-move-safe 'outline-up-heading)
-      (org-narrow-to-subtree)
-      (fetch-calendar)
-      (org-clock-in))))
-
-
-;(bind-keys :prefix-map review-map
-;           :prefix "C-z d"
-;           ("d" . my-new-daily-review)
-;           ("w" . my-new-weekly-review)
-;           ("m" . my-new-monthly-review))
-
-(f-touch "/tmp/reviews.org")
-
-)
-
-
-#+end_src
-
-** COMMENT lexic
-#+BEGIN_SRC emacs-lisp
-(use-package! lexic
-  :defer t
-  :commands lexic-search lexic-list-dictionary
-  )
-#+END_SRC
-
-#+RESULTS:
-
-** COMMENT Mail setup
-*** COMMENT Mu4e
+** Mail setup
+*** Mu4e
 #+BEGIN_SRC emacs-lisp
 
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/elpa-src/mu4e-1.10.8")
 (after! mu4e
   (setq mu4e-maildir-shortcuts
         '( ("/ri.se/Inbox"               . ?i)
@@ -863,7 +743,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
   )
 #+END_SRC
 
-*** COMMENT MU4e attachments
+***  MU4e attachments
 #+BEGIN_SRC emacs-lisp
 
        ;;;Taking the below from [[http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e]]
@@ -912,7 +792,7 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
 )
 #+END_SRC
 
-*** COMMENT org-msg
+*** org-msg
 #+begin_src emacs-lisp
 (after! org-msg
                                         ;use-package! org-msg
@@ -930,13 +810,6 @@ This function creates an agenda of stuck projects that is restricted to my “Pr
  //Ashfaq
  #+end_signature")
   )
-#+end_src
-
-** Activity watcher
-#+begin_src emacs-lisp
-(after! activity-watch-mode
-  (global-activity-watch-mode))
-
 #+end_src
 
 * Lsp

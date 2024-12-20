@@ -3,10 +3,10 @@ cat <<EOF >~/.local/share/applications/Neovim.desktop
 Version=1.0
 Name=Neovim
 Comment=Edit text files
-Exec=kitty  --class=Neovim --title=Neovim -e nvim %F
+Exec=kitty --class=Neovim --title=Neovim -e nvim %F
 Terminal=false
 Type=Application
-Icon=Neovim
+Icon=nvim
 Categories=Utilities;TextEditor;
 StartupNotify=false
 EOF

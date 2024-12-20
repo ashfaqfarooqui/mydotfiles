@@ -7,3 +7,6 @@ cd -
 
 sudo apt update -y
 sudo apt install -y code
+
+code --install-extension catppuccin.catppuccin-vsc
+code --install-extension catppuccin.catppuccin-vsc-icons

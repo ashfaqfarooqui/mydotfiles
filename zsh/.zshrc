@@ -106,7 +106,7 @@ export SSH_KEY_PATH="~/.ssh/id_rsa"
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
+alias zshconfig="nvim ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias e="emacsclient -c -a emacs"   
 alias et="emacsclient -t"
@@ -121,7 +121,7 @@ alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
 alias fd='fdfind'
 alias du="dust"
-alias top="btop"
+alias htop="btop"
 alias df="duf"
 alias proc="procs"
 ef() { fzf | xargs -r -I % $EDITOR % ;}
