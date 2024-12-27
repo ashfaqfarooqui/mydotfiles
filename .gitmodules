@@ -13,3 +13,9 @@
 [submodule "doomEmacs/.doom.d/lisp/lexic"]
 	path = doomEmacs/.doom.d/lisp/lexic
 	url = git@github.com:tecosaur/lexic.git
+[submodule "hypr/.config/hypr/catppuccinTheme"]
+	path = hypr/.config/hypr/catppuccinTheme
+	url = https://github.com/catppuccin/hyprland.git
+[submodule "mechabar"]
+	path = mechabar
+	url = https://github.com/sejjy/mechabar.git
