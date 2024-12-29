@@ -11,7 +11,6 @@
 # time that oh-my-zsh is loaded.
 #ZSH_THEME="powerlevel10k/powerlevel10k"
 
-eval "$(starship init zsh)"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -82,6 +81,7 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 export ALTERNATE_EDITOR="nvim"
 
+export EDITOR='nvim'
 
 
 
@@ -165,16 +165,8 @@ fi
 
 export GPG_TTY=$(tty)
 
-#prompt_nix_shell_setup
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-
-
-
 # Set up fzf key bindings and fuzzy completion
-#eval "$(fzf --zsh)"
+eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
 
+eval "$(starship init zsh)"
