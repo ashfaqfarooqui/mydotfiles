@@ -1,7 +1,7 @@
 {
   "layer": "top",
   "position": "top",
-  // "height": 24, // Uncomment to set a fixed height
+  "height": 29, // Uncomment to set a fixed height
   // Note: The layout may break if height is greater than 24
   "mode": "dock",
   "reload_style_on_change": true,
@@ -249,6 +249,7 @@
     "on-click": "~/.config/waybar/scripts/volume-control.sh -o m",
     "on-scroll-up": "~/.config/waybar/scripts/volume-control.sh -o i",
     "on-scroll-down": "~/.config/waybar/scripts/volume-control.sh -o d",
+    "on-click-right": "pavucontrol",
     "min-length": 6,
     "max-length": 6
   },
