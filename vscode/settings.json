@@ -27,5 +27,6 @@
   "git.openRepositoryInParentFolders": "always",
   "explorer.confirmDelete": false,
   "extensions.ignoreRecommendations": true,
-  "window.titleBarStyle": "custom"
+  "window.titleBarStyle": "custom",
+  "terminal.external.linuxExec": "kitty"
 }

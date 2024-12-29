@@ -26,7 +26,7 @@ while IFS= read -r package; do
 
   # Attempt to install the package
   echo "Installing: $package"
-  if yay -S --noconfirm $package; then
+  if yay -S --needed --noconfirm $package; then
     echo "Successfully installed: $package"
   else
     echo "Failed to install: $package" >>"$FAILED_LOG"
