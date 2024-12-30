@@ -84,6 +84,15 @@ ttf-fira-code
 ttf-firacode-nerd
 nwg-dock-hyprland
 
+xwaylandvideobridge
+grim
+slurp
+bitwarden
+emacs-wayland
+calibre
+hledger
+zellij
+aspell
 betterbird
 yazi
 fzf
