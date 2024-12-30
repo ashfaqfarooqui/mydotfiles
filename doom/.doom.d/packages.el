@@ -59,7 +59,7 @@
 (package! alert)
                                         ;(package! undo-tree)
                                         ;(package! company-lsp)
-(package! company-box)
+;;(package! company-box)
                                         ;(package! org-msg)
                                         ;(package! mu4e-conversation)
 
@@ -82,21 +82,21 @@
 
 ;;(package! flyspell-lazy)
 ;;(package! elfeed-goodies)
-(package! lexic)
+;(package! lexic)
                                         ;(package! holy-books)
 (package! info-colors)
 ;; Testing the org fold branch
                                         ;(package! org-fragtog)
 (package! org-pretty-tags)
                                         ;(package! gif-screencast)
-(package! request)
+;(package! request)
                                         ;(package! activity-watch-mode)
 
-(package! org-pretty-table-mode
-  :recipe (:host github :repo "Fuco1/org-pretty-table"))
+;(package! org-pretty-table-mode
+;  :recipe (:host github :repo "Fuco1/org-pretty-table"))
                                         ;(package! org-ref)
                                         ;(package! org-roam-bibtex)
-(package! iedit)
+;(package! iedit)
                                         ;(package! ob-ammonite)
                                         ;(package! flycheck-grammarly)
                                         ;(package! mixed-pitch :recipe (:local-repo "lisp/mixed-pitch") :pin nil)
@@ -111,6 +111,6 @@
                                         ;           :repo "nobiot/org-transclusion"
                                         ;           :branch "main"
                                         ;           :files ("*.el")))
-(package! org-web-tools)
+;(package! org-web-tools)
 
 ;; $DOOMDIR/config.el

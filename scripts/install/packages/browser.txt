@@ -1,3 +1,0 @@
-"firefox"
-"chromium"
-"zen-browser-bin"

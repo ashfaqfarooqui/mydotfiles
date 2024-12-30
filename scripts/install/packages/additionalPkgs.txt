@@ -1,0 +1,6 @@
+tp_smpi-dkms
+zotero
+davmail
+mu
+mbsync
+zotero
