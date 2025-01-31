@@ -55,7 +55,9 @@ HYPHEN_INSENSITIVE="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(jsontools
+plugins=(
+fzf-tab
+    jsontools
 git
 extract
 archlinux
@@ -104,6 +106,7 @@ export SSH_KEY_PATH="~/.ssh/id_rsa"
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
+alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
 alias zshconfig="nvim ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias e="emacsclient -c -a emacs"   
@@ -111,6 +114,7 @@ alias et="emacsclient -t"
 alias v="nvim"
 alias s="kitten ssh"
 alias vim="nvim"
+alias vi="nvim"
 alias ff=fzf --preview 'cat --style=numbers --color=always {}'
 alias cd="z"
 alias ls='eza -lh --group-directories-first --icons'
@@ -127,7 +131,6 @@ ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 #[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export FZF_DEFAULT_OPTS=" \
@@ -168,5 +171,4 @@ export GPG_TTY=$(tty)
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
-
-eval "$(starship init zsh)"
+eval "$(oh-my-posh init zsh --config ~/.config/omp/config.omp.json)"
