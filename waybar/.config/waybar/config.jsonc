@@ -40,6 +40,7 @@
     "custom/right5"
   ],
   "modules-right": [
+    "hyprland/language",
     "custom/media", // media info
     "custom/left6",
     "pulseaudio", // output device
@@ -65,12 +66,16 @@
     "show-special": true,
     "format": "{icon}",
     "format-icons": {
-      "1": "",
-      "2": "",
-      "3": "",
-      "4": "",
-      "5": ""
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5"
     }
+  },
+  "hyprland/language": {
+    "format": "{short}",
+    "keyboard-name": "at-translated-set-2-keyboard"
   },
   "hyprland/window": {
     "format": "{}",
