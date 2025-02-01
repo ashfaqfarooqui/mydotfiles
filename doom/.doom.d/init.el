@@ -33,7 +33,7 @@
        (vertico +icons)                               ; a search engine for love and life
 
        :ui
-       deft              ; notational velocity for Emacs
+                                        ;deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
@@ -43,8 +43,8 @@
         +unicode)
                                         ;       fill-column       ; a `fill-column' indicator
        hl-todo                          ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       (hydra +hydra/window-nav/body
-              +hydra/text-zoom/body)
+                                        ;(hydra +hydra/window-nav/body
+                                        ;       +hydra/text-zoom/body)
        indent-guides     ; highlighted indent columns
        ;;minimap           ; show a map of the code on the side
        (modeline)
@@ -65,7 +65,7 @@
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
        ;;workspaces        ; tab emulation, persistence & separate workspaces
-       zen               ; distraction-free coding or writing
+                                        ;zen               ; distraction-free coding or writing
 
        :editor
        (evil +everywhere); come to the dark side, we have cookies
@@ -74,7 +74,7 @@
        (format +onsave)  ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
        ;;lispy             ; vim for lisp, for people who don't like vim
-       multiple-cursors  ; editing in many places at once
+       ;;multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
@@ -82,9 +82,9 @@
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired
-        +icons)             ; making dired pretty [functional]
-       electric          ; smarter, keyword-based electric-indent
+                                        ;(dired
+                                        ; +icons)             ; making dired pretty [functional]
+                                        ;electric          ; smarter, keyword-based electric-indent
        (ibuffer
         +icons)         ; interactive buffer management
        (undo
@@ -102,29 +102,29 @@
         +childframe)              ; tasing you for every semicolon you forget
        (spell
         +flyspell
-        +aspell
-        +everywhere
+                                        ;+aspell
+                                        ;+everywhere
         )             ; tasing you for misspelling mispelling
-       grammar           ; tasing grammar mistake every you make
+                                        ;grammar           ; tasing grammar mistake every you make
 
        :tools
        ;;ansible
                                         ;biblio
-       debugger          ; FIXME stepping through code, to help you add bugs
+                                        ;debugger          ; FIXME stepping through code, to help you add bugs
                                         ;direnv
                                         ;docker
        ;;editorconfig      ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
-       (lookup
-        +dictionary +offline)              ; navigate your code and its documentation
+                                        ;(lookup
+                                        ;+dictionary +offline)              ; navigate your code and its documentation
        (lsp +peek)
        ;;macos             ; MacOS-specific commands
        (magit +forge)             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
-       pdf               ; pdf enhancements
+                                        ;pdf               ; pdf enhancements
        ;;prodigy           ; FIXME managing external services & code builders
        rgb               ; creating color strings
        ;;taskrunner        ; taskrunner for all your projects
@@ -134,7 +134,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
-       (cc +lsp)               ; C/C++/Obj-C madness
+                                        ;(cc +lsp)               ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -176,7 +176,7 @@
                                         ;+present
                                         ;+noter
                                         ;+pomodoro
-        +hugo
+                                        ; +hugo
                                         ; +journal
         +pretty
         +pandoc
@@ -193,7 +193,7 @@
        ;;rst               ; ReST in peace
        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
                                         ;(rust +lsp)         ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       (scala +lsp)             ; java, but good
+                                        ;(scala +lsp)             ; java, but good
        ;;scheme            ; a fully conniving family of lisps
                                         ;(sh)                ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml

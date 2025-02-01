@@ -57,7 +57,7 @@
                                         ;(package! org-super-agenda)
 ;;(package! flyspell-correct-ivy)
 (package! alert)
-                                        ;(package! undo-tree)
+(package! catppuccin-theme)                                       ;(package! undo-tree)
                                         ;(package! company-lsp)
 ;;(package! company-box)
                                         ;(package! org-msg)
@@ -77,26 +77,26 @@
                                         ;(package! htmlize)
                                         ;(package! modus-themes
                                         ;  :recipe (:host gitlab :repo "protesilaos/modus-themes"))
-(package! pretty-hydra)  ;; dependency
+                                        ;(package! pretty-hydra)  ;; dependency
                                         ;(package! org-media-note :recipe (:host github :repo "yuchen-lea/org-media-note"))
 
 ;;(package! flyspell-lazy)
 ;;(package! elfeed-goodies)
-;(package! lexic)
+                                        ;(package! lexic)
                                         ;(package! holy-books)
-(package! info-colors)
+                                        ;(package! info-colors)
 ;; Testing the org fold branch
                                         ;(package! org-fragtog)
-(package! org-pretty-tags)
+;;(package! org-pretty-tags)
                                         ;(package! gif-screencast)
-;(package! request)
+                                        ;(package! request)
                                         ;(package! activity-watch-mode)
 
-;(package! org-pretty-table-mode
-;  :recipe (:host github :repo "Fuco1/org-pretty-table"))
+                                        ;(package! org-pretty-table-mode
+                                        ;  :recipe (:host github :repo "Fuco1/org-pretty-table"))
                                         ;(package! org-ref)
                                         ;(package! org-roam-bibtex)
-;(package! iedit)
+                                        ;(package! iedit)
                                         ;(package! ob-ammonite)
                                         ;(package! flycheck-grammarly)
                                         ;(package! mixed-pitch :recipe (:local-repo "lisp/mixed-pitch") :pin nil)
@@ -111,6 +111,6 @@
                                         ;           :repo "nobiot/org-transclusion"
                                         ;           :branch "main"
                                         ;           :files ("*.el")))
-;(package! org-web-tools)
+                                        ;(package! org-web-tools)
 
 ;; $DOOMDIR/config.el

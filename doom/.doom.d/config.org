@@ -132,16 +132,16 @@ We also like ~org-fragtog~, and that wants a hook.
 #+begin_src emacs-lisp
 ;(add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
-** COMMENT Fonts
+** Fonts
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 24)
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 20)
       doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 35)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 25)
-      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 20))
 
                                         ;(setq doom-font (font-spec :family "Overpass" :size 30)
                                         ;  doom-big-font (font-spec :family "fira code retina" :size 50)
                                         ;doom-variable-pitch-font (font-spec :family "Overpass" :size 33))
+(setq doom-theme 'catppuccin)
 (after! doom-theme
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
@@ -650,7 +650,7 @@ Taking inspiration from [[https://github.com/rougier/emacs-gtd][GitHub - rougier
 #+END_SRC
 
 
-** Mail setup
+** COMMENT Mail setup
 *** Mu4e
 #+BEGIN_SRC emacs-lisp
 

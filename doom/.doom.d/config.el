@@ -101,6 +101,45 @@
 
 ;(add-hook 'org-mode-hook 'org-fragtog-mode)
 
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 20)
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 35)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 20))
+
+                                        ;(setq doom-font (font-spec :family "Overpass" :size 30)
+                                        ;  doom-big-font (font-spec :family "fira code retina" :size 50)
+                                        ;doom-variable-pitch-font (font-spec :family "Overpass" :size 33))
+(setq doom-theme 'catppuccin)
+(after! doom-theme
+  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic))
+
+
+
+                                        ;(setq doom-font (font-spec :family "mononoki Nerd Font" :size 12 :weight 'semi-light)
+                                        ;      doom-variable-pitch-font (font-spec :family "mononoki Nerd Font") ; inherits `doom-font''s :size
+                                        ;      doom-big-font (font-spec :family "mononoki Nerd Font" :size 19))
+
+
+
+
+                                        ;(setq doom-font (font-spec :family "mononoki Nerd Font" :size 12 :weight 'semi-light)
+                                        ;      doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
+                                        ;      doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 12)
+                                        ;      doom-big-font (font-spec :family "Fira Mono" :size 19))
+
+
+                                        ;(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 30)
+                                        ;      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 36)
+                                        ;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
+                                        ;)
+
+
+
+                                        ;(setq doom-font (font-spec :family "iA Writer Quattro S" :size 24)
+                                        ;      doom-big-font (font-spec :family "iA Writer Quattro S" :size 36)
+                                        ;      doom-variable-pitch-font (font-spec :family "iA Writer Quattro S" :size 24)
+                                        ;      doom-serif-font (font-spec :family "iA Writer Quattro S" :weight 'light))
+
 (use-package! rainbow-mode
   :after rainbow-delimiter
 :init (rainbow-mode))
@@ -360,153 +399,3 @@ otherwise call `org-self-insert-command'."
 
 
 )
-
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/elpa-src/mu4e-1.10.8")
-(after! mu4e
-  (setq mu4e-maildir-shortcuts
-        '( ("/ri.se/Inbox"               . ?i)
-           ("/ashfaqfarooqui.me/Inbox"   . ?p)))
-
-  (setq mu4e-headers-fields
-        '((:flags . 6)
-          (:account-stripe . 2)
-          (:from-or-to . 25)
-          (:folder . 10)
-          (:recipnum . 2)
-          (:subject . 80)
-          (:human-date . 8))
-        +mu4e-min-header-frame-width 142
-        mu4e-headers-date-format "%d/%m/%y"
-        mu4e-headers-time-format "⧖ %H:%M"
-        mu4e-headers-results-limit 1000
-        mu4e-index-cleanup t)
-
-  (add-to-list 'mu4e-bookmarks
-               '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
-
-  (defvar +mu4e-header--folder-colors nil)
-  (appendq! mu4e-header-info-custom
-            '((:folder .
-               (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
-                (lambda (msg)
-                  (+mu4e-colorize-str
-                   (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
-                   '+mu4e-header--folder-colors))))))
-
-
-  ;; spell check
-  (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
-  (setq mu4e-update-interval 600)
-
-
-
-                                        ;(setq mu4e-compose-signature-auto-include t)
-
-
-
-
-  (setq mu4e-enable-mode-line t)
-
-  (set-email-account! "ashfaqfarooqui.me"
-                      '(
-                        ( user-mail-address      . "ashfaq@ashfaqfarooqui.me"  )
-                        ( user-full-name         . "Ashfaq Farooqui" )
-                        (mu4e-sent-folder       . "/ashfaqfarooqui.me/Sent")
-                        (mu4e-drafts-folder     . "/ashfaqfarooqui.me/Drafts")
-                        (mu4e-trash-folder      . "/ashfaqfarooqui.me/Trash")
-                        (mu4e-refile-folder     . "/ashfaqfarooqui.me/Archive")
-                        (smtpmail-smtp-user     . "ashfaq.farooqui@mailbox.org")
-                        ;;    (user-mail-address      . "ashfaq@ashfaqfarooqui.me")    ;; only needed for mu < 1.4
-                        (mu4e-attachment-dir . "~/Documents/MailAttachments/Personal")
-                        (smtpmail-smtp-server . "smtp.mailbox.org")
-                        (smtpmail-stream-type . ssl )
-                        (smtpmail-smtp-service . 465)
-                        (mu4e-compose-signature . "---\nAshfaq Farooqui"))
-                      t)
-  (set-email-account! "ri.se"
-                      '(
-                        ( user-mail-address      . "ashfaq.farooqui@ri.se"  )
-                        ( user-full-name         . "Ashfaq Farooqui" )
-                        (mu4e-sent-folder       . "/ri.se/Sent Mail")
-                        (mu4e-drafts-folder     . "/ri.se/Drafts")
-                        (mu4e-trash-folder      . "/ri.se/Trash")
-                        (mu4e-refile-folder     . "/ri.se/Arkiv")
-                        (smtpmail-smtp-user     . "ashfaq.farooqui@ri.se")
-                        ;;    (user-mail-address      . "ashfaq@ashfaqfarooqui.me")    ;; only needed for mu < 1.4
-                        (mu4e-attachment-dir . "~/Documents/MailAttachments/ri.se")
-                        (mu4e-compose-signature . "//Ashfaq Farooqui")
-                        ( smtpmail-smtp-server   . "localhost" )
-                        (smtpmail-stream-type . nil )
-                        ( smtpmail-smtp-service . 1025)
-                        )
-                      t)
-
-                                        ;(setq smtpmail-debug-verb t)
-
-
-                                        ;(setq mu4e-compose-signature message-signature)
-
-
-  )
-
-;;;Taking the below from [[http://mbork.pl/2016-02-06_An_attachment_reminder_in_mu4e]]
-(after! mu4e
-    (defun mbork/message-attachment-present-p ()
-      "Return t if an attachment is found in the current message."
-      (save-excursion
-        (save-restriction
-          (widen)
-          (goto-char (point-min))
-          (when (search-forward "<#part" nil t) t))))
-
-    (defcustom mbork/message-attachment-intent-re
-      (regexp-opt '("I attach"
-                    "I have attached"
-                    "I've attached"
-                    "I have included"
-                    "I've included"
-                    "see the attached"
-                    "see the attachment"
-                    "attached file"))
-      "A regex which - if found in the message, and if there is no
-    attachment - should launch the no-attachment warning.")
-
-    (defcustom mbork/message-attachment-reminder
-      "Are you sure you want to send this message without any attachment? "
-      "The default question asked when trying to send a message
-    containing `mbork/message-attachment-intent-re' without an
-    actual attachment.")
-
-    (defun mbork/message-warn-if-no-attachments ()
-      "Ask the user if s?he wants to send the message even though
-    there are no attachments."
-      (when (and (save-excursion
-                   (save-restriction
-                     (widen)
-                     (goto-char (point-min))
-                     (re-search-forward mbork/message-attachment-intent-re nil t)))
-                 (not (mbork/message-attachment-present-p)))
-        (unless (y-or-n-p mbork/message-attachment-reminder)
-          (keyboard-quit))))
-
-    (add-hook 'message-send-hook #'mbork/message-warn-if-no-attachments)
-
-
-)
-
-(after! org-msg
-                                        ;use-package! org-msg
-                                        ;  :after mu4e
-                                        ;:config
-  (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil"
-	org-msg-startup "hidestars indent inlineimages"
-	org-msg-greeting-fmt "\nHi *%s*,\n\n"
-	org-msg-greeting-name-limit 3
-	org-msg-signature "
-
-
-
- #+begin_signature
- //Ashfaq
- #+end_signature")
-  )
