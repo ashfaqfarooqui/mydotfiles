@@ -1,6 +1,8 @@
 abbrev_defs
 ashfaq.html
 .smex-items
+*.el~
+*.org~
 emacsConf/.emacs.d/.cache
 emacsConf/.emacs.d/backups
 emacsConf/.emacs.d/emacs-backups/

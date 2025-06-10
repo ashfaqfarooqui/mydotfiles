@@ -37,10 +37,10 @@
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       (emoji
+ ;      (emoji
                                         ;    +ascii
                                         ;    +github
-        +unicode)
+  ;      +unicode)
                                         ;       fill-column       ; a `fill-column' indicator
        hl-todo                          ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
                                         ;(hydra +hydra/window-nav/body
@@ -52,12 +52,12 @@
        nav-flash         ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
-       (popup
-        +all
-        +defaults)   ; tame sudden yet inevitable temporary windows
-       (ligatures
-        +extra
-        +iosevka)
+;       (popup
+;        +all
+;        +defaults)   ; tame sudden yet inevitable temporary windows
+;       (ligatures
+;        +extra
+;        +iosevka)
        ;; tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
@@ -69,8 +69,8 @@
 
        :editor
        (evil +everywhere); come to the dark side, we have cookies
-       file-templates    ; auto-snippets for empty files
-       fold              ; (nigh) universal code folding
+;       file-templates    ; auto-snippets for empty files
+;       fold              ; (nigh) universal code folding
        (format +onsave)  ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
        ;;lispy             ; vim for lisp, for people who don't like vim
@@ -78,7 +78,7 @@
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
-       snippets          ; my elves. They type so I don't have to
+;       snippets          ; my elves. They type so I don't have to
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
@@ -89,22 +89,22 @@
         +icons)         ; interactive buffer management
        (undo
         +tree)               ; persistent, smarter undo for your inevitable mistakes
-       vc                ; version-control and Emacs, sitting in a tree
+;       vc                ; version-control and Emacs, sitting in a tree
 
        :term
        ;;eshell            ; the elisp shell that works everywhere
        ;;shell             ; simple shell REPL for Emacs
        ;;term              ; basic terminal emulator for Emacs
-       vterm             ; the best terminal emulation in Emacs
+;       vterm             ; the best terminal emulation in Emacs
 
        :checkers
        (syntax
         +childframe)              ; tasing you for every semicolon you forget
-       (spell
-        +flyspell
+                                        ; (spell
+                                        ; +flyspell
                                         ;+aspell
                                         ;+everywhere
-        )             ; tasing you for misspelling mispelling
+                                        ; )             ; tasing you for misspelling mispelling
                                         ;grammar           ; tasing grammar mistake every you make
 
        :tools
@@ -172,16 +172,16 @@
        ;;nim               ; python + lisp at the speed of c
                                         ;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org
+       ;(org
                                         ;+present
                                         ;+noter
                                         ;+pomodoro
                                         ; +hugo
                                         ; +journal
-        +pretty
-        +pandoc
+        ;+pretty
+        ;+pandoc
                                         ; +roam2
-        +dragndrop)              ; organize your plain life in plain text
+       ; +dragndrop)              ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
@@ -201,10 +201,10 @@
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
        ;;web               ; the tubes
-       yaml              ; JSON, but readable
-
-       :email
-       (mu4e +org)
+       ;;yaml              ; JSON, but readable
+       ;;rust
+       ;;:email
+       ;;(mu4e +org)
        ;;notmuch
        ;;(wanderlust +gmail)
 
@@ -215,5 +215,6 @@
        ;; twitter           ; twitter client https://twitter.com/vnought
 
        :config
+       +native-comp
        literate
        (default +bindings +smartparens))

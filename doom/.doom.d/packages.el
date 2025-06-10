@@ -63,7 +63,7 @@
                                         ;(package! org-msg)
                                         ;(package! mu4e-conversation)
 
-(package! rg)
+;(package! rg)
                                         ;(package! keycast)
                                         ;(package! org-bullets)
                                         ;(package! flycheck-ledger)
@@ -73,7 +73,7 @@
 ;;(package! minions)
                                         ;(package! org-roam-server)
 ;;(package! deft)
-(package! visual-fill-column)
+;;(package! visual-fill-column)
                                         ;(package! htmlize)
                                         ;(package! modus-themes
                                         ;  :recipe (:host gitlab :repo "protesilaos/modus-themes"))

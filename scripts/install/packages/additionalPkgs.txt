@@ -1,6 +1,8 @@
 tp_smpi-dkms
 zotero
 davmail
-mu
 mbsync
 zotero
+amdvlk
+dsnote
+coqui-tts
