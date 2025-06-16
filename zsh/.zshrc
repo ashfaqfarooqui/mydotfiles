@@ -171,7 +171,10 @@ export GPG_TTY=$(tty)
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
-eval "$(oh-my-posh init zsh --config ~/.config/omp/config.omp.json)"
+#eval "$(oh-my-posh init zsh --config ~/.config/omp/config.omp.json)"
+
+eval "$(starship init zsh)"
+
 
 . "$HOME/.local/bin/env"
 eval "$(uv generate-shell-completion zsh)"
