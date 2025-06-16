@@ -16,15 +16,20 @@ return {
     end,
     -- for example
     provider = "ollama",
+    cursor_applying_provider = "ollama",
+    behabiour = {
+      enable_cursor_planning_mode = true,
+    },
     providers = {
       ollama = {
         endpoint = "http://127.0.0.1:11434",
-        model = "qwen3:32b", -- your desired model (or use gpt-4o, etc.)
+        -- model = "llama3.3:latest", -- your desired model (or use gpt-4o, etc.)
+        model = "qwen3:32b",
         extra_request_body = {
           timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
           temperature = 0.75,
-          max_completion_tokens = 28192, -- Increase this to include reasoning tokens (for reasoning models)
-          --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+          max_completion_tokens = 328192, -- Increase this to include reasoning tokens (for reasoning models)
+          reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
         },
       },
     },
