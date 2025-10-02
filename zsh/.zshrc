@@ -190,3 +190,7 @@ zstyle ':completion:*' menu select
 # tmuxifier
 export PATH="$HOME/.tmuxifier/bin:$PATH"
 eval "$(tmuxifier init -)"
+
+alias claude="/home/ashfaqf/.claude/local/claude"
+export BUN_INSTALL="/home/ashfaqf/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
