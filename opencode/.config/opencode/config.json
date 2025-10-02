@@ -1,0 +1,21 @@
+{
+	"$schema": "https://opencode.ai/config.json",
+	"theme": "catppuccin",
+	"provider": {
+		"ollama": {
+			"npm": "@openrouter/ai-sdk-provider",
+			"options": {
+				"baseURL": "http://localhost:11434/v1"
+			},
+			"models": {
+				"devstral": {},
+				"qwen3:latest": {},
+				"deepseek-r1:70b": {},
+				"gemma3:latest": {},
+				"qwen3-coder": {},
+				"gpt-oss:120b": {},
+				"gpt-oss:20b": {}
+			}
+		}
+	}
+}
