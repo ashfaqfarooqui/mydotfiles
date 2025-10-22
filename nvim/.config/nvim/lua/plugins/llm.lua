@@ -3,28 +3,26 @@ return {
   event = "VeryLazy",
   version = false, -- Never set this value to "*"! Never!
   opts = {
+    instruction_file = "avante.md",
     -- add any opts here
-    system_prompt = function()
-      local hub = require("mcphub").get_hub_instance()
-      return hub and hub:get_active_servers_prompt() or ""
-    end,
-    -- Using function prevents requiring mcphub before it's loaded
-    custom_tools = function()
-      return {
-        require("mcphub.extensions.avante").mcp_tool(),
-      }
-    end,
+
     -- for example
+
     provider = "ollama",
     cursor_applying_provider = "ollama",
-    behabiour = {
-      enable_cursor_planning_mode = true,
+    auto_suggestions_provider = "ollama",
+    behaviour = {
+      auto_suggestions = true, -- Experimental stage
+      auto_set_highlight_group = true,
+      auto_set_keymaps = true,
+      auto_apply_diff_after_generation = false,
+      support_paste_from_clipboard = false,
     },
     providers = {
       ollama = {
         endpoint = "http://127.0.0.1:11434",
         -- model = "llama3.3:latest", -- your desired model (or use gpt-4o, etc.)
-        model = "qwen3:32b",
+        model = "qwen3:latest",
         extra_request_body = {
           timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
           temperature = 0.75,
@@ -62,8 +60,6 @@ return {
           drag_and_drop = {
             insert_mode = true,
           },
-          -- required for Windows users
-          use_absolute_path = true,
         },
       },
     },

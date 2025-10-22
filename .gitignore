@@ -18,3 +18,4 @@ demo.org
 /xmonad/.xmonad/xmonad.hi
 /xmonad/.xmonad/xmonad.o
 /doomEmacs/.doom.d/config.el
+*.log

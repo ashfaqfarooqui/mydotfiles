@@ -14,7 +14,8 @@
 				"gemma3:latest": {},
 				"qwen3-coder": {},
 				"gpt-oss:120b": {},
-				"gpt-oss:20b": {}
+				"gpt-oss:20b": {},
+				"qwen3-dev:latest": {},
 			}
 		}
 	}
