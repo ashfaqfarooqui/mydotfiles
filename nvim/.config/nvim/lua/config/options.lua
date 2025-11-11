@@ -34,3 +34,5 @@ vim.opt.signcolumn = "yes"
 -- Configure how new splits should be opened
 vim.opt.splitright = true
 vim.opt.splitbelow = true
+-- then you need to set the option below.
+vim.g.lazyvim_picker = "snacks"

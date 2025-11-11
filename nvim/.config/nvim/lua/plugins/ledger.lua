@@ -1,36 +1,50 @@
 return {
-
-  "wllfaria/ledger.nvim",
-  -- tree sitter needs to be loaded before ledger.nvim loads
-  dependencies = { "nvim-treesitter/nvim-treesitter" },
-  config = function()
-    require("ledger").setup({
-      extensions = {
+  {
+    "ledger/vim-ledger",
+    version = false,
+    ft = "ledger",
+    init = function()
+      vim.g.ledger_bin = "hledger"
+      vim.g.ledger_fuzzy_account_completion = 1
+      vim.g.ledger_date_format = "%Y-%m-%d"
+      vim.g.ledger_align_at = 70
+      vim.g.ledger_fuzzy_account_completion = 1
+    end,
+    opt = {},
+  },
+  {
+    "saghen/blink.cmp",
+    opts = {
+      sources = {
+        compat = {},
+        default = { "lsp", "path", "snippets", "buffer", "omni" },
+      },
+    },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
         "ledger",
-        "hledger",
-        "journal",
       },
-      completion = {
-        cmp = { enabled = true },
+    },
+  },
+  {
+    "mfussenegger/nvim-lint",
+    opts = {
+      events = { "BufWritePost", "BufReadPost", "InsertLeave" },
+      linters_by_ft = {
+        ledger = { "hledger" },
       },
-      snippets = {
-        cmp = { enabled = true },
-        luasnip = { enabled = false },
-        native = { enabled = false },
+      linters = {},
+    },
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        ledger = { "trim_newlines", "trim_whitespace" },
       },
-      keymaps = {
-        snippets = {
-          new_posting = { "tt" },
-          new_account = { "acc" },
-          new_posting_today = { "td" },
-          new_commodity = { "cm" },
-        },
-        reports = {},
-      },
-      diagnostics = {
-        lsp_diagnostics = true,
-        strict = false,
-      },
-    })
-  end,
+    },
+  },
 }
