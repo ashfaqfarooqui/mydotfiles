@@ -107,6 +107,7 @@ export EDITOR='nvim'
 #
 # Example aliases
 alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
+alias nvim-personal='NVIM_APPNAME="nvim-personal" nvim'
 alias zshconfig="nvim ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias e="emacsclient -c -a emacs"   
@@ -194,3 +195,8 @@ eval "$(tmuxifier init -)"
 alias claude="/home/ashfaqf/.claude/local/claude"
 export BUN_INSTALL="/home/ashfaqf/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"
+eval "$(atuin init zsh)"
