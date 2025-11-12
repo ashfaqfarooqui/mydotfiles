@@ -198,11 +198,4 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 . "$HOME/.atuin/bin/env"
 
-eval "$(atuin init zsh)"
-eval "$(atuin init zsh)"
-
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /home/ashfaqf/.dart-cli-completion/zsh-config.zsh ]] && . /home/ashfaqf/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
 
