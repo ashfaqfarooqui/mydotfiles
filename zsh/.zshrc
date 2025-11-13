@@ -198,4 +198,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 . "$HOME/.atuin/bin/env"
 
+eval "$(atuin init zsh)"
 
+
+export SSH_AUTH_SOCK=/home/ashfaqf/.bitwarden-ssh-agent.sock
