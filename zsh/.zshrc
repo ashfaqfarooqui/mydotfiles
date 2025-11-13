@@ -202,3 +202,7 @@ eval "$(atuin init zsh)"
 
 
 export SSH_AUTH_SOCK=/home/ashfaqf/.bitwarden-ssh-agent.sock
+
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/lib:/opt/rocm/lib64
+export PATH="${PATH:+${PATH}:}~/opt/rocm/bin"

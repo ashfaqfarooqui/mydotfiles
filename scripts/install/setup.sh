@@ -89,6 +89,13 @@ yay -S hyprpicker
 yay -S freerdp
 
 yay -S fprintd
+yay -S evince
+yay -S auto-cpufreq
+
+yay -S docker
+yay -S lazydocker
+yay -S docker-compose
+yay -S portainer
 # git clone https://github.com/Fausto-Korpsvart/Catppuccin-GTK-Theme
 # cd theme
 # ./install.sh
