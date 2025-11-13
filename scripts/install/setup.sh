@@ -87,7 +87,7 @@ yay -S timeshift
 yay -S hyprshot
 yay -S hyprpicker
 yay -S freerdp
-
+yay -S yq
 yay -S fprintd
 yay -S evince
 yay -S auto-cpufreq
@@ -99,3 +99,5 @@ yay -S portainer
 # git clone https://github.com/Fausto-Korpsvart/Catppuccin-GTK-Theme
 # cd theme
 # ./install.sh
+# tmux
+#git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
