@@ -66,6 +66,9 @@ yay -S fd --needed
 yay -S dust --needed
 yay -S duf --needed
 yay -S hyprpolkitagent
+yay -S pdf-latex
+yay -S lazygit
+yay -S ntfs-3g
 #yay -S xwaylandvideobridge --needed
 
 yay -S figlet --needed
@@ -91,7 +94,8 @@ yay -S yq
 yay -S fprintd
 yay -S evince
 yay -S auto-cpufreq
-
+yay -S ttf-nerd-fonts-symbols
+yay -S tree-sitter-cli
 yay -S docker
 yay -S lazydocker
 yay -S docker-compose
