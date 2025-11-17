@@ -27,7 +27,7 @@ vim.opt.updatetime = 50
 vim.opt.termguicolors = true
 vim.opt.scrolloff = 8
 
-vim.opt.guifont = "JetBrains Mono"
+vim.opt.guifont = "JetBrainsMono Nerd Font"
 vim.opt.breakindent = true
 vim.opt.signcolumn = "yes"
 
