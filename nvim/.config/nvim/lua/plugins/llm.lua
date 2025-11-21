@@ -5,8 +5,8 @@ return {
     provider = "ollama",
     providers = {
       ollama = {
-        endpoint = "https://localhost:11434",
-        model = "qwen3",
+        endpoint = "http://localhost:11434",
+        model = "codellama:13b",
         timeout = 30000,
       },
     },

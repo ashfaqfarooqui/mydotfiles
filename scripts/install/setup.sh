@@ -100,8 +100,23 @@ yay -S docker
 yay -S lazydocker
 yay -S docker-compose
 yay -S portainer
+yay -S wttrbar
+yay -S libreoffice-fresh
+
+yay -S sddm-silent-theme
+yay -S gparted
+yay -S wttrbar
+yay -S net-tools
 # git clone https://github.com/Fausto-Korpsvart/Catppuccin-GTK-Theme
 # cd theme
 # ./install.sh
 # tmux
 #git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# in /etc/NetworkManager/conf.d/wifi_backend.conf add the line
+#[device]
+# wifi.backend=iwd
+# start network manager and iwd make sure wpa_supplicant is off
+# systemctl start/enable NetworkManager and iwd
+#
+#
