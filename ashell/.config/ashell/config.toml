@@ -1,0 +1,91 @@
+# Ashell Configuration with Catppuccin Mocha Theme
+# https://catppuccin.com/palette
+
+# Main Configuration
+log_level = "warn"
+outputs = "All"
+position = "Top"
+
+# Module Layout
+[modules]
+left = [ "Workspaces", "WindowTitle" ]
+center = [ "Clock" ]
+right = [ "SystemInfo", "MediaPlayer", "KeyboardLayout", [ "Tray", "Settings", "Privacy" ] ]
+
+[keyboard_layout.labels]
+"English (US)" = "EN"
+"Swedish" = "SV"
+# Workspaces Configuration
+[workspaces]
+enable_workspace_filling = true  # Show empty workspaces between existing ones
+
+# Window Title Configuration
+[window_title]
+truncate_title_after_length = 100  # Truncate long window titles
+
+# Appearance Configuration
+[appearance]
+font_name = "FiraCode Nerd Font"
+scale_factor = 1.1
+style = "Islands"
+opacity = 1.0
+
+# Background color - Base with Surface and Mantle variants
+[appearance.background_color]
+base = "#1e1e2e"    # Catppuccin Mocha Base
+strong = "#313244"  # Catppuccin Mocha Surface0
+weak = "#181825"    # Catppuccin Mocha Mantle
+text = "#cdd6f4"    # Catppuccin Mocha Text
+
+# Primary color - Lavender for buttons and highlights
+[appearance.primary_color]
+base = "#b4befe"    # Catppuccin Mocha Lavender
+strong = "#cba6f7"  # Catppuccin Mocha Mauve
+weak = "#89dceb"    # Catppuccin Mocha Sky
+text = "#1e1e2e"    # Catppuccin Mocha Base
+
+# Secondary color - Surface tones for borders and tracks
+[appearance.secondary_color]
+base = "#585b70"    # Catppuccin Mocha Surface2
+strong = "#6c7086"  # Catppuccin Mocha Overlay0
+weak = "#45475a"    # Catppuccin Mocha Surface1
+text = "#cdd6f4"    # Catppuccin Mocha Text
+
+# Success color - Green for success indicators
+[appearance.success_color]
+base = "#a6e3a1"    # Catppuccin Mocha Green
+strong = "#94e2d5"  # Catppuccin Mocha Teal
+weak = "#f9e2af"    # Catppuccin Mocha Yellow
+text = "#1e1e2e"    # Catppuccin Mocha Base
+
+# Danger color - Red for errors and warnings
+[appearance.danger_color]
+base = "#f38ba8"    # Catppuccin Mocha Red
+strong = "#f38ba8"  # Catppuccin Mocha Red
+weak = "#eba0ac"    # Catppuccin Mocha Maroon
+text = "#1e1e2e"    # Catppuccin Mocha Base
+
+# Text color - Standard text tones
+[appearance.text_color]
+base = "#cdd6f4"    # Catppuccin Mocha Text
+strong = "#cdd6f4"  # Catppuccin Mocha Text
+weak = "#bac2de"    # Catppuccin Mocha Subtext1
+text = "#cdd6f4"    # Catppuccin Mocha Text
+
+# Workspace colors - Colorful mix of accent colors
+workspace_colors = [
+  "#89b4fa",  # Blue
+  "#cba6f7",  # Mauve
+  "#f5c2e7",  # Pink
+  "#89dceb",  # Sky
+  "#a6e3a1",  # Green
+  "#f9e2af",  # Yellow
+  "#fab387",  # Peach
+  "#f5e0dc",  # Rosewater
+]
+
+# Special workspace colors
+special_workspace_colors = [
+  "#f38ba8",  # Red
+  "#eba0ac",  # Maroon
+]

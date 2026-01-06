@@ -107,6 +107,16 @@ yay -S sddm-silent-theme
 yay -S gparted
 yay -S wttrbar
 yay -S net-tools
+
+yay -S --no-confirm git-delta
+yay -S --no-confirm trash
+yay -S --no-confirm broot
+yay -S --no-confirm trash-cli
+yay -S --no-confirm bottom
+yay -S --no-confirm tokei
+yay -S --no-confirm hyperfine
+yay -S --no-confirm bandwhich
+
 # git clone https://github.com/Fausto-Korpsvart/Catppuccin-GTK-Theme
 # cd theme
 # ./install.sh

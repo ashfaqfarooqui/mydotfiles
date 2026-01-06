@@ -1,8 +1,21 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+
+# ============================================================================
+# PATH and Environment Setup (consolidated for faster startup)
+# ============================================================================
+export PATH="$HOME/.tmuxifier/bin:$HOME/.bun/bin:$HOME/opt/rocm/bin:$HOME/Downloads/nusmv/NuSMV-2.7.1-linux64/bin:$PATH"
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/opt/rocm/lib:/opt/rocm/lib64"
+export BUN_INSTALL="$HOME/.bun"
+
+# Source environment files (only if not already sourced in .profile)
+[[ -z "$CARGO_ENV_LOADED" ]] && . "$HOME/.cargo/env" && export CARGO_ENV_LOADED=1
+[[ -z "$LOCAL_BIN_LOADED" ]] && . "$HOME/.local/bin/env" && export LOCAL_BIN_LOADED=1
+[[ -z "$ATUIN_ENV_LOADED" ]] && . "$HOME/.atuin/bin/env" && export ATUIN_ENV_LOADED=1
+
 # Path to your oh-my-zsh installation.
-  export ZSH=~/.oh-my-zsh
+export ZSH=~/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -51,26 +64,20 @@ HYPHEN_INSENSITIVE="true"
 #for ssh agent
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
+# Optimized plugin list - only essentials for maximum performance
+# Removed: command-not-found (slow), cp, colorize, sudo (minimal benefit)
+# Removed: fzf plugin (redundant with manual setup)
+# Removed: uv plugin (lazy loaded instead for performance)
 plugins=(
-fzf-tab
-    jsontools
 git
 extract
 archlinux
-command-not-found
-zsh-autosuggestions
-zsh-syntax-highlighting
+jsontools
 python
-cp
-colorize
-sudo
-zsh-bat
-fzf
-uv
 poetry
+fzf-tab
+zsh-autosuggestions
+zsh-syntax-highlighting  # Keep at end - must be last or near-last
 )
 
 # User configuration
@@ -116,16 +123,32 @@ alias v="nvim"
 alias s="kitten ssh"
 alias vim="nvim"
 alias vi="nvim"
-alias ff=fzf --preview 'cat --style=numbers --color=always {}'
+alias ff='fzf --preview "bat --style=numbers --color=always {}"'
 alias cd="z"
 alias ls='eza -lh --group-directories-first --icons'
-alias lsa='ls -a'
+alias lsa='eza -lha --group-directories-first --icons'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
+alias cat='bat'
 alias du="dust"
-alias htop="btop"
+alias htop="btm"
+alias bottom="btm"
 alias df="duf"
 alias proc="procs"
+
+# Trash-CLI aliases (safer file deletion)
+alias rm='trash-put'
+alias tp='trash-put'
+alias trash='trash-put'
+alias tl='trash-list'
+alias trashlist='trash-list'
+alias tr='trash-restore'
+alias trashrestore='trash-restore'
+alias te='trash-empty'
+alias trashempty='trash-empty'
+# Use actual rm when you really need it
+alias rmdirect='/usr/bin/rm -i'
+
 ef() { fzf | xargs -r -I % $EDITOR % ;}
 ec() { du -a ~/mydotfiles/* | awk '{print $2}' | fzf | xargs -r $EDITOR ;}
 
@@ -167,42 +190,40 @@ if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
   export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 fi
 
-export GPG_TTY=$(tty)
+# ============================================================================
+# Lazy Loading Setup for Maximum Performance
+# ============================================================================
+# Tools are initialized only when first used, dramatically speeding up shell startup
 
-# Set up fzf key bindings and fuzzy completion
+# Lazy load zoxide
+z() {
+  unfunction z
+  eval "$(zoxide init zsh)"
+  z "$@"
+}
+
+# FZF - Load immediately (fast and frequently used)
 eval "$(fzf --zsh)"
-eval "$(zoxide init zsh)"
-#eval "$(oh-my-posh init zsh --config ~/.config/omp/config.omp.json)"
 
-eval "$(starship init zsh)"
+# Lazy load tmuxifier
+tmuxifier() {
+  unfunction tmuxifier
+  eval "$(tmuxifier init -)"
+  tmuxifier "$@"
+}
 
-
-. "$HOME/.local/bin/env"
+# UV completions (loaded immediately - fast enough)
 eval "$(uv generate-shell-completion zsh)"
 eval "$(uvx --generate-shell-completion zsh)"
 
-fpath+=~/.zfunc; autoload -Uz compinit; compinit
+# Initialize starship (fast enough to load immediately)
+eval "$(starship init zsh)"
 
-zstyle ':completion:*' menu select
-
-
-
-
-# tmuxifier
-export PATH="$HOME/.tmuxifier/bin:$PATH"
-eval "$(tmuxifier init -)"
-
-alias claude="/home/ashfaqf/.claude/local/claude"
-export BUN_INSTALL="/home/ashfaqf/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-. "$HOME/.atuin/bin/env"
-
+# Initialize atuin (history search - load immediately for Ctrl-R)
 eval "$(atuin init zsh)"
 
+zstyle ':completion:*' menu select
+fpath+=~/.zfunc
 
+# SSH configuration
 export SSH_AUTH_SOCK=/home/ashfaqf/.bitwarden-ssh-agent.sock
-
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/lib:/opt/rocm/lib64
-export PATH="${PATH:+${PATH}:}~/opt/rocm/bin"

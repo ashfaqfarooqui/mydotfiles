@@ -6,9 +6,9 @@
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil) ; default is 7200 (2h)
 
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 20)
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 15)
       doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 35)
-      doom-variable-pitch-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 20))
+      doom-variable-pitch-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 15))
 
                                         ;(setq doom-font (font-spec :family "Overpass" :size 30)
                                         ;  doom-big-font (font-spec :family "fira code retina" :size 50)

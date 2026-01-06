@@ -29,9 +29,9 @@ This is requried for the org roam stuff
 taken from https://tecosaur.github.io/emacs-config/config.html#font-display
 ** Fonts
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 20)
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 15)
       doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 35)
-      doom-variable-pitch-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 20))
+      doom-variable-pitch-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 15))
 
                                         ;(setq doom-font (font-spec :family "Overpass" :size 30)
                                         ;  doom-big-font (font-spec :family "fira code retina" :size 50)
@@ -94,14 +94,6 @@ taken from https://tecosaur.github.io/emacs-config/config.html#font-display
 
 #+end_src
 
-** COMMENT Supersave
-#+begin_src emacs-lisp
-(after! super-save
-(super-save-mode 1)
-(setq super-save-exclude '(".gpg"))
-(setq super-save-auto-save-when-idle t)
-)
-#+END_SRC
 ** COMMENT Wrap paragraphs automatically
 I don't like =AutoFillMode= which  automatically wraps paragraphs, kinda
 like hitting =M-q=. But i like wrapped paragraphs, hence use visual fill
