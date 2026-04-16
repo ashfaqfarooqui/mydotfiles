@@ -116,7 +116,13 @@ yay -S --no-confirm bottom
 yay -S --no-confirm tokei
 yay -S --no-confirm hyperfine
 yay -S --no-confirm bandwhich
-
+yay -S --no-confirm sd
+yay -S --no-confirm lazygit
+yay -S --no-confirm davmail
+yay -S --no-confirm isync
+yay -S --no-confirm aerc
+yay -S --no-confirm libsecret
+yay -S --no-confirm ttf-aptos
 # git clone https://github.com/Fausto-Korpsvart/Catppuccin-GTK-Theme
 # cd theme
 # ./install.sh
@@ -130,3 +136,37 @@ yay -S --no-confirm bandwhich
 # systemctl start/enable NetworkManager and iwd
 #
 #
+
+# --- Added from installs review ---
+
+# Shell & Terminal
+yay -S --no-confirm ripgrep
+yay -S --no-confirm tree
+
+# Dev tools
+yay -S --no-confirm aspell
+yay -S --no-confirm ispell
+yay -S --no-confirm rust-analyzer
+yay -S --no-confirm cargo-nextest
+yay -S --no-confirm cargo-tarpaulin
+
+# Hyprland / Desktop
+yay -S --no-confirm hyprcursor
+yay -S --no-confirm xorg-xwayland
+yay -S --no-confirm grim
+yay -S --no-confirm slurp
+
+# Applications
+yay -S --no-confirm ghostty
+yay -S --no-confirm mpv
+yay -S --no-confirm rawtherapee
+yay -S --no-confirm nextcloud-client
+yay -S --no-confirm localsend-bin
+yay -S --no-confirm tailscale
+
+# AMD GPU / Hardware
+yay -S --no-confirm rocm-smi
+yay -S --no-confirm vulkan-radeon
+yay -S --no-confirm amd-ucode
+yay -S --no-confirm lm_sensors
+yay -S --no-confirm fwupd

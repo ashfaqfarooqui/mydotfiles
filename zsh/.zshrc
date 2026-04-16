@@ -69,6 +69,7 @@ HYPHEN_INSENSITIVE="true"
 # Removed: fzf plugin (redundant with manual setup)
 # Removed: uv plugin (lazy loaded instead for performance)
 plugins=(
+    sudo
 git
 extract
 archlinux
@@ -227,3 +228,69 @@ fpath+=~/.zfunc
 
 # SSH configuration
 export SSH_AUTH_SOCK=/home/ashfaqf/.bitwarden-ssh-agent.sock
+
+
+# Quickly switch to a worktree directory
+swtree() {
+  local dir
+  dir=$(git worktree list | grep "$1" | awk '{print $1}')
+  if [[ -d "$dir" ]]; then
+    cd "$dir" || echo "❌ Worktree not found"
+  else
+    echo "❌ Worktree '$1' not found"
+  fi
+}
+
+# Create a new worktree
+newtree() {
+  if [[ $# -ne 2 ]]; then
+    echo "Usage: newtree <directory> <branch>"
+    return 1
+  fi
+  git worktree add "$1" "$2"
+}
+
+# Remove a worktree
+rmtree() {
+  if [[ $# -ne 1 ]]; then
+    echo "Usage: rmtree <directory>"
+    return 1
+  fi
+  git worktree remove "$1"
+}
+
+# Show status of all worktrees
+worktree-status() {
+  for dir in $(git worktree list | awk '{print $1}' | tail -n +2); do
+    echo "📂 Checking status in: $dir"
+    (cd "$dir" && git status --short)
+  done
+}
+#compdef opencode
+###-begin-opencode-completions-###
+#
+# yargs command completion script
+#
+# Installation: opencode completion >> ~/.zshrc
+#    or opencode completion >> ~/.zprofile on OSX.
+#
+_opencode_yargs_completions()
+{
+  local reply
+  local si=$IFS
+  IFS=$'
+' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" opencode --get-yargs-completions "${words[@]}"))
+  IFS=$si
+  if [[ ${#reply} -gt 0 ]]; then
+    _describe 'values' reply
+  else
+    _default
+  fi
+}
+if [[ "'${zsh_eval_context[-1]}" == "loadautofunc" ]]; then
+  _opencode_yargs_completions "$@"
+else
+  compdef _opencode_yargs_completions opencode
+fi
+###-end-opencode-completions-###
+

@@ -1,115 +1,173 @@
-# zsh
+# dotfiles
 
-Zsh with [[https://ohmyz.sh/][oh-my-zsh]] has been my shell for a long time now.
+My personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
-Install zsh, I guess this is already done at this stage by [[*Installing all programs][Installing all programs]].
-yay -S zsh
-chsh -s $(which zsh)
+## Setup
 
-Install oh-my-zsh
-sh -c "$(curl -fsSL <https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh>)"
+### Prerequisites
 
-Install additional plugins I require:
+Install `yay` (AUR helper) and `stow`:
 
-- auto-suggestions
+```sh
+# Install yay first (see scripts/install/installyay.sh)
+yay -S stow --needed
+```
 
-# +BEGIN_SRC sh
+### Install packages
 
-git clone <https://github.com/zsh-users/zsh-autosuggestions> ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+```sh
+bash scripts/install/setup.sh
+```
 
-# +END_SRC
+### Stow configs
 
-- powerlevel10k theme
+```sh
+stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit gpg opencode aerc mbsync
+```
 
-# +BEGIN_SRC sh
+## Configs managed
 
-git clone --depth=1 <https://github.com/romkatv/powerlevel10k.git> ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
+| Directory | Description |
+|-----------|-------------|
+| `aerc/` | [aerc](https://aerc-mail.org/) TUI email client |
+| `ashell/` | [ashell](https://github.com/MalpenZibo/ashell) status bar |
+| `atuin/` | [atuin](https://github.com/atuinsh/atuin) shell history |
+| `bat/` | [bat](https://github.com/sharkdp/bat) cat replacement |
+| `btop/` | [btop](https://github.com/aristocratsoftware/btop) resource monitor |
+| `chromimum/` | Chromium browser config |
+| `doom/` | [Doom Emacs](https://github.com/doomemacs/doomemacs) config |
+| `electron/` | Electron app flags (Wayland) |
+| `fastfetch/` | [fastfetch](https://github.com/fastfetch-cli/fastfetch) system info |
+| `ghostty/` | [Ghostty](https://ghostty.org/) terminal emulator |
+| `git/` | Git config and aliases |
+| `gpg/` | GPG agent config |
+| `gtk/` | GTK theme config |
+| `hypr/` | [Hyprland](https://hyprland.org/) compositor, hypridle, hyprlock |
+| `kitty/` | [Kitty](https://sw.kovidgoyal.net/kitty/) terminal config |
+| `lazygit/` | [lazygit](https://github.com/jesseduffield/lazygit) TUI |
+| `mbsync/` | [mbsync/isync](https://isync.sourceforge.io/) email sync |
+| `mechabar/` | Waybar theme |
+| `nvim/` | [Neovim](https://neovim.io/) config |
+| `opencode/` | [opencode](https://opencode.ai/) AI coding assistant |
+| `pacman/` | pacman config (parallel downloads etc.) |
+| `rofi/` | [rofi](https://github.com/davatorium/rofi) launcher |
+| `scripts/` | Install scripts and utilities |
+| `sshs/` | [sshs](https://github.com/quantumsheep/sshs) SSH host manager |
+| `starship/` | [Starship](https://starship.rs/) shell prompt |
+| `swaync/` | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) notifications |
+| `tmux/` | [tmux](https://github.com/tmux/tmux) terminal multiplexer |
+| `vscode/` | VS Code / Cursor settings |
+| `walker/` | [walker](https://github.com/abenz1267/walker) launcher |
+| `waybar/` | [Waybar](https://github.com/Alexays/Waybar) status bar |
+| `wlogout/` | [wlogout](https://github.com/ArtsyMacaw/wlogout) logout menu |
+| `zellij/` | [Zellij](https://zellij.dev/) terminal multiplexer |
+| `zsh/` | Zsh config with oh-my-zsh |
 
-# +END_SRC
+## Zsh setup
 
-- Syntax highlighting
+Install [oh-my-zsh](https://ohmyz.sh/):
 
-# +BEGIN_SRC sh
+```sh
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
 
-git clone <https://github.com/zsh-users/zsh-syntax-highlighting.git> ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+Install plugins:
 
-# +END_SRC
+```sh
+# Auto-suggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
-- cat Bat
-  #+begin_src sh
-  git clone <https://github.com/fdellwing/zsh-bat.git> $ZSH_CUSTOM/plugins/zsh-bat
-  #+end_src
-  Stow the config files:
+# Syntax highlighting
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
-# +BEGIN_SRC sh
+# bat integration
+git clone https://github.com/fdellwing/zsh-bat.git $ZSH_CUSTOM/plugins/zsh-bat
 
-stow zsh
+# powerlevel10k theme
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
+```
 
-# +END_SRC
+Then stow: `stow zsh`
 
-Additionally, make sure to update the user name in the [[file:zsh/.zshrc][.zshrc]] file to the correct one.
+Update the username in [zsh/.zshrc](zsh/.zshrc) if needed.
 
-- Fzf
+## fzf
 
-It might be the case that [[https://github.com/junegunn/fzf][fzf]] needs to be installed separately.
-
-# +BEGIN_SRC sh
-
-git clone --depth 1 <https://github.com/junegunn/fzf.git> ~/.fzf
+```sh
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
+```
 
-# +END_SRC
+## Rust tools (via rustup/cargo)
 
-- Some additional notes:
-  The folder [[file:scripts/][scripts]] has some scripts mainly used by the i3 config.
+```sh
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh
+cargo install --locked zellij
+```
 
-configurations for [[file:cups/][cups]] and [[file:system/etc/krb5.conf][kbr5]] are meant to get printers working at Chalmers.
+## Python (via uv)
 
-Ensure to have .authinfo file in the home directory with all the required credential's for things to work. It might also be needed to be added to the Emacs.d folder created by Doom.
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
-- TODO scala installation
-  The scala community has come out with a new tool to install and maintain scala versions. May I need to look into that one for a more stable experience with Scala toolchain.
-  <https://www.scala-lang.org/2020/06/29/one-click-install.html>
+## atuin
 
-- Gopass
-  dependencies
+```sh
+curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+```
 
-# +begin_src shell
+## tmux plugin manager
 
-pacman -S gnupg2 git rng-tools
+```sh
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
 
-# +end_src
+## gopass (password manager)
 
-install zsh auto completions
+Dependencies:
 
-# +begin_src shell
+```sh
+pacman -S gnupg2 git
+```
 
-gopass completion zsh > ~/\_gopass
-sudo mv ~/\_gopass /usr/share/zsh/site-functions/\_gopass
+Zsh completions:
+
+```sh
+gopass completion zsh > ~/_gopass
+sudo mv ~/_gopass /usr/share/zsh/site-functions/_gopass
 rm -i ${ZDOTDIR:-${HOME:?No ZDOTDIR or HOME}}/.zcompdump && compinit
+```
 
-# +end_src
+## GTK theme
 
-frontend
+```sh
+# git clone https://github.com/Fausto-Korpsvart/Catppuccin-GTK-Theme
+# cd theme && ./install.sh
+```
 
-# +begin_src shell
+## Network (Hyprland / WiFi)
 
-pacman -S qtpass
+To use `iwd` as the WiFi backend, create `/etc/NetworkManager/conf.d/wifi_backend.conf`:
 
-# +end_src
+```ini
+[device]
+wifi.backend=iwd
+```
 
-- Portal
+Then: `systemctl enable --now NetworkManager iwd` and disable `wpa_supplicant`.
 
-> curl -sL portal.spatiumportae.com | bash
+## Mail (aerc + mbsync + davmail)
 
-- SShs
+For Exchange/Office365 email setup, see [scripts/install/mail.sh](scripts/install/mail.sh).
 
-> <https://github.com/quantumsheep/sshs/releases>
+## Fingerprint
 
-- TMUx
+See [scripts/install/setup-fingerprint.sh](scripts/install/setup-fingerprint.sh).
 
-# Zoxide
+## Other notes
 
-curl -sSfL <https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh> | sh
-
-# sesh
+- `cups/` and `system/etc/krb5.conf` handle Chalmers printer setup.
+- Ensure `~/.authinfo` exists with credentials for Emacs/mail tools.
+- Scala: use [Coursier](https://www.scala-lang.org/2020/06/29/one-click-install.html) for Scala toolchain management.
+- Package review: see [scripts/install/installs-review.md](scripts/install/installs-review.md) for a categorized list of historically installed packages to audit.
