@@ -91,7 +91,8 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 export ALTERNATE_EDITOR="nvim"
 
-export EDITOR='nvim'
+export EDITOR='zeditor'
+export VISUAL='zeditor'
 
 
 
@@ -120,6 +121,7 @@ alias zshconfig="nvim ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias e="emacsclient -c -a emacs"   
 alias et="emacsclient -t"
+alias zed="zeditor"
 alias v="nvim"
 alias s="kitten ssh"
 alias vim="nvim"
@@ -294,3 +296,12 @@ else
 fi
 ###-end-opencode-completions-###
 
+
+fpath=(~/.zsh/completions $fpath)
+autoload -Uz compinit && compinit
+
+OPENCODE_EXPERIMENTAL=true
+
+
+# Entire CLI shell completion
+autoload -Uz compinit && compinit && source <(entire completion zsh)
