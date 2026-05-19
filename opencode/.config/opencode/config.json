@@ -2,21 +2,16 @@
     "$schema": "https://opencode.ai/config.json",
     "theme": "catppuccin",
     "provider": {
-        "ollama": {
+        "local": {
             "npm": "@ai-sdk/openai-compatible",
+            "name": "Local llama.cpp",
             "options": {
-                "baseURL": "http://localhost:11434/v1"
+                "baseURL": "http://localhost:8081/v1"
             },
             "models": {
-                "gemma4:31b": {},
-                "qwen3.5:35b": {},
-                "qwen3.5:9b": {},
-                "qwen3:8b": {},
-                "deepseek-r1:8b": {},
-                "qwen3-coder:latest": {},
-                "qwen2.5-coder:7b": {},
-                "gpt-oss:20B": {},
-                "deepseek-coder:6.7b": {},
+                "local": {
+                    "name": "Local Model"
+                }
             }
         }
     }
