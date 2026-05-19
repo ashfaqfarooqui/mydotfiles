@@ -1,0 +1,146 @@
+// Zed settings
+// https://zed.dev/docs/configuring-zed
+{
+  "diff_view_style": "split",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+
+  // Fonts
+  "ui_font_family": "JetBrainsMono Nerd Font",
+  "ui_font_size": 16,
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "buffer_font_size": 15,
+  "buffer_font_features": {
+    "calt": true
+  },
+
+  // Theme
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "Catppuccin Mocha"
+  },
+  "icon_theme": "Colored Zed Icons Theme Dark",
+
+  // Editor behaviour
+  "vim_mode": true,
+  "base_keymap": "VSCode",
+  "relative_line_numbers": "enabled",
+  "scrolloff": 8,
+  "tab_size": 4,
+  "hard_tabs": false,
+  "soft_wrap": "none",
+  "show_whitespaces": "selection",
+  "cursor_blink": false,
+
+  // Saving
+  "autosave": "on_focus_change",
+  "format_on_save": "on",
+  "ensure_final_newline_on_save": true,
+  "trim_trailing_whitespace_on_save": true,
+
+  // Git
+  "git": {
+    "inline_blame": {
+      "enabled": true
+    }
+  },
+
+  // Tabs
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
+
+  // Inlay hints & LSP
+  "inlay_hints": {
+    "enabled": true
+  },
+  "lsp_document_colors": "inlay",
+  "auto_signature_help": true,
+
+  // Search
+  "use_smartcase_search": true,
+  "search": {
+    "center_on_match": true,
+    "whole_word": false
+  },
+
+  // Vim
+  "vim": {
+    "use_smartcase_find": true
+  },
+
+  // Which-key
+  "which_key": {
+    "enabled": true,
+    "delay_ms": 500
+  },
+
+  // Panels
+  "project_panel": {
+    "dock": "left",
+    "git_status_indicator": true,
+    "diagnostic_badges": true,
+    "hide_gitignore": true
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
+  "agent": {
+    "dock": "right",
+    "single_file_review": true,
+    "new_thread_location": "new_worktree"
+  },
+
+  // Terminal
+  "terminal": {
+    "shell": "system",
+    "font_family": "JetBrainsMono Nerd Font",
+    "font_size": 13
+  },
+
+  // Misc
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "proxy": "",
+  "status_bar": {
+    "active_encoding_button": "enabled"
+  },
+
+  // Language overrides
+  "languages": {
+    "Rust": {
+      "tab_size": 4,
+      "format_on_save": "on"
+    }
+  },
+
+  // LSP
+  "lsp": {
+    "rust-analyzer": {
+      "settings": {
+        "cargo": {
+          "allFeatures": true
+        },
+        "checkOnSave": {
+          "command": "clippy"
+        },
+        "inlayHints": {
+          "typeHints": { "enable": true },
+          "parameterHints": { "enable": true },
+          "chainingHints": { "enable": true }
+        }
+      }
+    }
+  }
+}

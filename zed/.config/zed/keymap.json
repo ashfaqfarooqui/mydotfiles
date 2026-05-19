@@ -1,0 +1,45 @@
+// Zed keymap — mirroring neovim/LazyVim muscle memory
+// https://zed.dev/docs/key-bindings
+[
+  // Insert mode: jk → Normal
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "j k": "vim::NormalBefore"
+    }
+  },
+
+  // Normal mode: scrolling centres view (like <C-d>zz / <C-u>zz in nvim)
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "ctrl-d": ["workspace::SendKeystrokes", "ctrl-d z z"],
+      "ctrl-u": ["workspace::SendKeystrokes", "ctrl-u z z"],
+      // Centre on next/prev search match (nzzzv / Nzzzv)
+      "n": ["workspace::SendKeystrokes", "n z z"],
+      "shift-n": ["workspace::SendKeystrokes", "N z z"],
+      // Clear search highlight on Esc
+      "escape": "editor::CancelLanguageServerWork"
+    }
+  },
+
+  // Visual mode: J/K move selected lines (like :m '>+1 / :m '<-2)
+  {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      "shift-j": "editor::MoveLineDown",
+      "shift-k": "editor::MoveLineUp"
+    }
+  },
+
+  // Pane navigation with Ctrl+hjkl (matches nvim <C-w><C-hjkl>)
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown"
+    }
+  }
+]
