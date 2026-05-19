@@ -1,0 +1,73 @@
+/* Keybind cheatsheet */
+
+configuration {
+  font: "JetBrainsMono Nerd Font 11";
+  display-drun: "";
+  disable-history: true;
+  sidebar-mode: false;
+  show-icons: false;
+}
+
+@theme "~/.config/rofi/theme.rasi"
+
+window {
+  width: 50%;
+  border: 2px;
+  border-radius: 12px;
+  border-color: @main-br;
+  background-color: @main-bg;
+  padding: 12px;
+}
+
+mainbox {
+  background-color: inherit;
+  children: [ inputbar, listview ];
+}
+
+inputbar {
+  background-color: @input-bg;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 0 0 8px 0;
+  children: [ prompt, entry ];
+}
+
+prompt {
+  text-color: @main-br;
+  padding: 0 8px 0 0;
+}
+
+entry {
+  text-color: @main-fg;
+  placeholder: "Search keybinds...";
+  placeholder-color: @main-br;
+}
+
+listview {
+  lines: 20;
+  columns: 1;
+  padding: 4px 0;
+  background-color: inherit;
+  scrollbar: false;
+}
+
+element {
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: transparent;
+  text-color: @main-fg;
+  spacing: 0;
+  children: [ element-text ];
+}
+
+element selected.normal {
+  background-color: @select-bg;
+  text-color: @select-fg;
+}
+
+element-text {
+  background-color: inherit;
+  text-color: inherit;
+  vertical-align: 0.5;
+}

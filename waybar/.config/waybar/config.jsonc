@@ -1,8 +1,8 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 33, // Uncomment to set a fixed height
-    // Note: The layout may break if height is greater than 24
+    "height": 33,
+    "spacing": 0,
     "mode": "dock",
     "reload_style_on_change": true,
     "gtk-layer-shell": true,
@@ -12,6 +12,7 @@
         "custom/left1",
         "hyprland/workspaces", // workspaces
         "custom/right1",
+        "hyprland/submap",
         "custom/paddw",
         "hyprland/window" // window title
     ],
@@ -39,8 +40,7 @@
         "network",
         "bluetooth", // bluetooth
         "custom/right5",
-        "tray",
-        "custom/right5"
+        "tray"
     ],
     "modules-right": [
         "privacy",
@@ -76,16 +76,30 @@
             "2": "2",
             "3": "3",
             "4": "4",
-            "5": "5"
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "10": "10",
+            "default": "",
+            "special": "",
+            "urgent": ""
         }
     },
     "hyprland/language": {
         "format": "{short}",
         "keyboard-name": "at-translated-set-2-keyboard"
     },
+    "hyprland/submap": {
+        "format": "  {}",
+        "tooltip": true,
+        "tooltip-format": "Press Escape to exit submap"
+    },
     "hyprland/window": {
         "format": "{}",
         "min-length": 5,
+        "max-length": 40,
         // === Window Titles ===
         "rewrite": {
             // == Desktop ==
@@ -93,7 +107,7 @@
             // == Terminal ==
             "~": "  Terminal",
             "zsh": "  Terminal",
-            "kitty": "  Terminal",
+            "ghostty": "  Terminal",
             "ashfaqf@42:(.*)": "  Terminal",
             "(.*)ashfaqf@42:~": "  Terminal",
             // == Browser ==
@@ -104,6 +118,16 @@
             // == Development ==
             "(.*) - Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> $1",
             "(.*)Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> Visual Studio Code",
+            "(.*) - Zed": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*)Zed$": "<span foreground='#a6e3a1'> </span> Zed",
+            "(.*) — Zed": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*)Neovim(.*)": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*)NVIM(.*)": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*)nvim(.*)": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*) - Sublime Text": "<span foreground='#f9e2af'> </span> $1",
+            "(.*)Sublime Text": "<span foreground='#f9e2af'> </span> Sublime Text",
+            "(.*) - IntelliJ IDEA": "<span foreground='#f38ba8'> </span> $1",
+            "(.*)IntelliJ IDEA": "<span foreground='#f38ba8'> </span> IntelliJ IDEA",
             "Godot": "<span foreground='#89b4fa'> </span> Godot Engine",
             "Godot Engine - (.*)": "<span foreground='#89b4fa'> </span> $1",
             "(.*) - Godot Engine": "<span foreground='#89b4fa'> </span> $1",
@@ -164,11 +188,9 @@
         ]
     },
     "temperature": {
-        //"thermal-zone": 2,
-        //"hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
-        //"critical-threshold": 80,
-        "format-critical": "{temperatureC}°C ",
-        "format": "{temperatureC}°C "
+        "critical-threshold": 80,
+        "format-critical": "{temperatureC}°C ",
+        "format": "{temperatureC}°C "
     },
     "memory": {
         "states": {
@@ -178,45 +200,49 @@
         "format": "󰘚 {percentage}%",
         "format-critical": "󰀦 {percentage}%",
         "tooltip": true,
-        "tooltip-format": "Memory Used: {used:0.1f} GB / {total:0.1f} GB",
+        "format-alt": "󰘚 {swap_percentage}%",
+        "tooltip-format": "Memory Used: {used:0.1f} GB / {total:0.1f} GB\nSwap: {swapUsed:0.1f} GB / {swapTotal:0.1f} GB",
         "interval": 5,
         "min-length": 7,
         "max-length": 7,
-        "on-click": "$terminal -e btop"
+        "on-click": "ghostty -e btop"
     },
     "cpu": {
         "interval": 10,
         "states": {
-            "warning": 50,
-            "critical": 80
+            "warning": 70,
+            "critical": 90
         },
-        "format": " {usage}%",
+        "format": " {usage}%",
+        "format-alt": " {avg_frequency}GHz",
         "max-length": 10,
         "min-length": 5,
         "tooltip": true,
-        "on-click": "kitty -e btop"
+        "tooltip-format": "CPU Usage: {usage}%\nFrequency: {avg_frequency}GHz",
+        "on-click": "ghostty -e btop"
     },
     "idle_inhibitor": {
-        "format": " {icon} ",
+        "format": " {icon} ",
         "format-icons": {
-            "activated": "",
-            "deactivated": ""
+            "activated": "",
+            "deactivated": ""
         },
         "tooltip": true,
-        "tooltip-format-activated": "Presentation Mode",
-        "tooltip-format-deactivated": "Idle Mode",
+        "tooltip-format-activated": "Screen won't sleep\nClick to disable",
+        "tooltip-format-deactivated": "Idle mode active\nClick to enable",
         "start-activated": false,
         "timeout": 5
     },
     "clock#time": {
         "format": "󱑂 {:%H:%M}",
+        "format-alt": "󱑂 {:%I:%M %p}",
         "tooltip": true,
         "tooltip-format": "Standard Time: {:%I:%M %p}",
         "min-length": 8,
         "max-length": 8
     },
     "clock#date": {
-        "format": "󰨳 {:%m-%d}",
+        "format": "󰨳 {:%a %m-%d}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "year",
@@ -239,22 +265,12 @@
         "min-length": 8,
         "max-length": 8
     },
-    // "custom/wifi": {
-    // 	"exec": "~/.config/waybar/scripts/wifi-status.sh",
-    // 	"return-type": "json",
-    // 	"format": "{}",
-    // 	"tooltip": true,
-    // 	"on-click": "~/.config/waybar/scripts/wifi-menu.sh",
-    // 	"on-click-right": "kitty --title '󰤨  Network Manager TUI' bash -c nmtui",
-    // 	"interval": 1,
-    // 	"min-length": 1,
-    // 	"max-length": 1
-    // },
     "network": {
-        "format-wifi": "{icon}",
+        "format-wifi": "{icon} {signalStrength}%",
         "format-ethernet": "󰈀",
         "format-linked": "󰈀",
         "format-disconnected": "󰌙",
+        "format-alt": "󰀠 {bandwidthDownBits} 󰀡 {bandwidthUpBits}",
         "format-icons": [
             "󰤮",
             "󰤯",
@@ -269,7 +285,7 @@
         "tooltip": true,
         "interval": 10,
         "on-click": "nm-applet",
-        "on-click-right": "kitty --title '󰤨  Network Manager TUI' bash -c nmtui",
+        "on-click-right": "ghostty --title '󰤨  Network Manager TUI' bash -c nmtui",
         "max-length": 50
     },
     "bluetooth": {
@@ -283,7 +299,7 @@
         "tooltip-format-enumerate-connected": "{device_alias}",
         "tooltip-format-enumerate-connected-battery": "{device_alias}: {device_battery_percentage}%",
         "on-click": "blueman-manager",
-        "on-click-right": "kitty --title '󰂯  Bluetooth TUI' bash -c bluetui",
+        "on-click-right": "ghostty --title '󰂯  Bluetooth TUI' bash -c bluetui",
         "interval": 1,
         "min-length": 1,
         "max-length": 1
@@ -299,8 +315,10 @@
     },
     "pulseaudio": {
         "format": " {icon} {volume}%",
-        "format-bluetooth": "{icon} {volume}% ",
-        "format-muted": " {volume} %",
+        "format-bluetooth": "{icon} {volume}% ",
+        "format-muted": " {volume} %",
+        "format-source": " {volume}%",
+        "format-source-muted": "",
         "format-icons": {
             "headphone": "",
             "default": [
@@ -313,15 +331,6 @@
         "ignored-sinks": [
             "Easy Effects Sink"
         ],
-        // },
-        // "pulseaudio": {
-        // 	"format": "{icon} {volume}%",
-        // 	"format-muted": "󰝟 {volume}%",
-        // 	"format-icons": {
-        // 		"default": ["󰕿", "󰖀", "󰕾"],
-        // 		"headphone": "󰋋",
-        // 		"headset": "󰋋"
-        // 	},
         "tooltip": true,
         "tooltip-format": "Device: {desc}",
         "on-click": "~/.config/waybar/scripts/volume-control.sh -o m",
@@ -363,8 +372,9 @@
         "format-warning": "󰁻 {capacity}%",
         "format-critical": "󱃍 {capacity}%",
         "format-charging": "󱘖 {capacity}%",
-        "tooltip-format": "Discharging: {time}",
-        "tooltip-format-charging": "Charging: {time}",
+        "format-time": "{H}h {M}m",
+        "tooltip-format": "Discharging: {time}\nCapacity: {capacity}%",
+        "tooltip-format-charging": "Charging: {time}\nAdapter: {power:.1f}W",
         "interval": 1,
         "min-length": 6,
         "max-length": 6

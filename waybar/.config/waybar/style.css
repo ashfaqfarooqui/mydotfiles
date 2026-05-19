@@ -118,6 +118,18 @@ tooltip label {
   background: @main-bg;
 }
 
+/* == Submap indicator == */
+
+#submap {
+  color: @main-bg;
+  background: @critical;
+  font-weight: bold;
+  padding: 0 10px;
+  border-radius: 8px;
+  margin: 2px 4px;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
 /* == Workspaces == */
 
 #custom-left1 {
@@ -275,6 +287,35 @@ tooltip label {
   background: @main-bg;
 }
 
+#tray {
+  background: @tray;
+  padding: 0 6px;
+}
+#tray > .passive {
+  color: @module-fg;
+}
+#tray > .needs-attention {
+  color: @critical;
+}
+
+#temperature.critical {
+  color: @critical;
+}
+
+#language {
+  background: @main-bg;
+  color: @module-fg;
+  padding: 0 4px;
+}
+
+#privacy-item {
+  color: @module-fg;
+  padding: 0 2px;
+}
+#privacy-item.active {
+  color: @warning;
+}
+
 /* == Media Info == */
 
 #custom-media {
@@ -367,6 +408,10 @@ tooltip label {
   box-shadow: none;
 }
 
-#notification{
-
+#custom-notification {
+  color: @module-fg;
+  padding: 0 6px;
+}
+#custom-notification:hover {
+  color: @hover-fg;
 }

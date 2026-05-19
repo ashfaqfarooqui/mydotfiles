@@ -24,16 +24,16 @@
 @define-color module-fg       #f5e0dc;
 @define-color workspaces      #181825;
 
-@define-color cpuinfo         #181825;
+@define-color cpuinfo         #1a1b2e;
 @define-color memory          #1e1e2e;
 @define-color cpu             #313244;
 @define-color distro-fg       #000000;
 @define-color distro-bg       #9399b2;
 @define-color time            #313244;
 @define-color date            #1e1e2e;
-@define-color tray            #181825;
+@define-color tray            #16161f;
 
-@define-color pulseaudio      #181825;
+@define-color pulseaudio      #1a1a28;
 @define-color backlight       #1e1e2e;
 @define-color battery         #313244;
 @define-color power           #9399b2;
