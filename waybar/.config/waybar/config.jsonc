@@ -262,8 +262,8 @@
             "on-scroll-up": "shift_up",
             "on-scroll-down": "shift_down"
         },
-        "min-length": 8,
-        "max-length": 8
+        "min-length": 12,
+        "max-length": 12
     },
     "network": {
         "format-wifi": "{icon} {signalStrength}%",
@@ -285,7 +285,7 @@
         "tooltip": true,
         "interval": 10,
         "on-click": "nm-applet",
-        "on-click-right": "ghostty --title '󰤨  Network Manager TUI' bash -c nmtui",
+        "on-click-right": "ghostty -e bash -c nmtui",
         "max-length": 50
     },
     "bluetooth": {
@@ -299,7 +299,7 @@
         "tooltip-format-enumerate-connected": "{device_alias}",
         "tooltip-format-enumerate-connected-battery": "{device_alias}: {device_battery_percentage}%",
         "on-click": "blueman-manager",
-        "on-click-right": "ghostty --title '󰂯  Bluetooth TUI' bash -c bluetui",
+        "on-click-right": "ghostty -e bash -c bluetui",
         "interval": 1,
         "min-length": 1,
         "max-length": 1

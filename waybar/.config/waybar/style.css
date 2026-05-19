@@ -149,7 +149,7 @@ tooltip label {
 /* == Temperature == */
 
 #custom-paddc {
-  padding-right: 22px;
+  padding-right: 8px;
 }
 #custom-left2 {
   color: @cpuinfo;
@@ -159,7 +159,7 @@ tooltip label {
 #temperature {
   background: @cpuinfo;
   padding-left: 1px;
-  padding-right: 0;
+  padding-right: 2px;
 }
 
 /* == Memory == */
@@ -194,7 +194,7 @@ tooltip label {
 #custom-leftin1 {
   color: @cpu;
   font-size: 12.2pt;
-  margin-bottom: -2px;
+  margin-bottom: 0;
 }
 
 /* == Distro Icon == */
@@ -209,10 +209,10 @@ tooltip label {
   color: @distro-fg;
   background: @distro-bg;
   font-size: 11pt;
-  margin-right: -1px;
-  margin-bottom: -2px;
-  padding-right: 0;
-  padding-left: 3px;
+  margin-right: 0;
+  margin-bottom: 0;
+  padding-right: 4px;
+  padding-left: 4px;
   text-shadow: 0 0 1.5px rgba(0, 0, 0, 1);
 }
 #custom-right2 {
@@ -225,7 +225,7 @@ tooltip label {
 #custom-rightin1 {
   color: @time;
   font-size: 12.2pt;
-  margin-bottom: -2px;
+  margin-bottom: 0;
 }
 #clock.time {
   background: @time;
@@ -253,8 +253,8 @@ tooltip label {
 /* == Tray == */
 
 #network {
-  padding-left: 5px;
-  padding-right: 8px;
+  padding-left: 4px;
+  padding-right: 5px;
   background: @tray;
 }
 #network:hover {
@@ -321,8 +321,8 @@ tooltip label {
 #custom-media {
   font-weight: normal;
   background-color: @main-bg;
-  padding-right: 8px;
-  padding-left: 8px;
+  padding-right: 4px;
+  padding-left: 4px;
 }
 #custom-media:hover {
   color: @hover-fg;
@@ -389,7 +389,7 @@ tooltip label {
   color: @battery;
   background: @main-bg;
   font-size: 12.2pt;
-  margin-bottom: -2px;
+  margin-bottom: 0;
 }
 #custom-power {
   color: @main-bg;
