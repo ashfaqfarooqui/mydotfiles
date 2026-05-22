@@ -27,25 +27,19 @@
     "hide-on-action": true,
     "text-empty": "No Notifications",
     "script-fail-notify": true,
-    "notification-visibility": {
-        "example-name": {
-            "state": "enabled",
-            "urgency": "Low",
-            "app-name": "Spotify"
-        }
-    },
     "widgets": [
-        "buttons-grid",
-        "volume",
-        "dnd",
+        //"buttons-grid",
         "title",
+        "dnd",
+        "mpris",
+        "volume",
         "notifications"
     ],
     "widget-config": {
         "volume": {
-            "label": " 󰕾 ",
-            "expand-button-label": " ",
-            "collapse-button-label": " ",
+            "label": "󰕾",
+            "expand-button-label": "",
+            "collapse-button-label": "",
             "show-per-app": true,
             "show-per-app-icon": true,
             "show-per-app-label": false
@@ -54,12 +48,32 @@
             "text": "Do Not Disturb"
         },
         "title": {
-            "text": "Notifications Center",
+            "text": "Notification Center",
             "clear-all-button": true,
-            "button-text": " 󰆴 "
+            "button-text": "󰆴"
         },
         "buttons-grid": {
-            "actions": []
+            "actions": [
+                {
+                    "label": "󰍳",
+                    "command": "hyprctl dispatch exec -- swaylock -f -c 11111b"
+                },
+                {
+                    "label": "󰹑",
+                    "command": "hyprctl dispatch exec -- grim -g \"$(slurp)\" - | wl-copy"
+                },
+                {
+                    "label": "󰷈",
+                    "command": "hyprctl dispatch exec -- grim $(xdg-user-dir PICTURES)/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"
+                },
+                {
+                    "label": "󰑴",
+                    "command": "hyprctl dispatch exec -- wlogout"
+                }
+            ]
+        },
+        "mpris": {
+            "blur": false
         }
     }
 }

@@ -1,12 +1,12 @@
 * {
   all: unset;
-  font-size: 16px;
   font-family: "JetBrainsMono Nerd Font";
+  font-weight: bold;
   transition: 200ms;
 }
 
 trough highlight {
-  background: #cdd6f4;
+  background: #f5e0dc;
 }
 
 scale {
@@ -17,12 +17,13 @@ scale trough {
   margin: 0rem 1rem;
   min-height: 8px;
   min-width: 70px;
-  border-radius: 12.6px;
+  border-radius: 8px;
+  background: #313244;
 }
 
 trough slider {
   margin: -10px;
-  border-radius: 12.6px;
+  border-radius: 8px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
   transition: all 0.2s ease;
   background-color: #89b4fa;
@@ -37,18 +38,22 @@ trough {
 }
 
 /* notifications */
+.floating-notifications {
+  margin: 6px;
+}
+
 .notification-background {
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px #45475a;
-  border-radius: 12.6px;
-  margin: 18px;
-  background: #181825;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 1);
+  border-radius: 8px;
+  margin: 6px;
+  background: #11111b;
   color: #cdd6f4;
   padding: 0;
 }
 
 .notification-background .notification {
   padding: 7px;
-  border-radius: 12.6px;
+  border-radius: 8px;
 }
 
 .notification-background .notification.critical {
@@ -60,12 +65,11 @@ trough {
 }
 
 .notification .notification-content overlay {
-  /* icons */
   margin: 4px;
 }
 
 .notification-content .summary {
-  color: #cdd6f4;
+  color: #f5e0dc;
 }
 
 .notification-content .time {
@@ -73,48 +77,39 @@ trough {
 }
 
 .notification-content .body {
-  color: #bac2de;
+  color: #cdd6f4;
+  font-weight: normal;
 }
 
 .notification > *:last-child > * {
-  min-height: 3.4em;
+  min-height: 2.4em;
 }
 
 .notification-background .close-button {
   margin: 7px;
-  padding: 2px;
-  border-radius: 6.3px;
-  color: #1e1e2e;
+  padding: 2px 6px;
+  border-radius: 8px;
+  color: #11111b;
   background-color: #f38ba8;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
 }
 
 .notification-background .close-button:hover {
   background-color: #eba0ac;
 }
 
-.notification-background .close-button:active {
-  background-color: #f5c2e7;
-}
-
 .notification .notification-action {
-  border-radius: 7px;
-  color: #cdd6f4;
-  box-shadow: inset 0 0 0 1px #45475a;
+  border-radius: 8px;
+  color: #f5e0dc;
+  background: #313244;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
   margin: 4px;
   padding: 8px;
-  font-size: 0.2rem; /* controls the button size not text size*/
-}
-
-.notification .notification-action {
-  background-color: #313244;
+  font-size: 0.2rem;
 }
 
 .notification .notification-action:hover {
   background-color: #45475a;
-}
-
-.notification .notification-action:active {
-  background-color: #585b70;
 }
 
 .notification.critical progress {
@@ -129,27 +124,28 @@ trough {
 .notification progress,
 .notification trough,
 .notification progressbar {
-  border-radius: 12.6px;
+  border-radius: 8px;
   padding: 3px 0;
 }
 
 /* control center */
 .control-center {
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px #313244;
-  border-radius: 12.6px;
-  background-color: #1e1e2e;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 1);
+  border-radius: 8px;
+  background-color: #11111b;
   color: #cdd6f4;
   padding: 14px;
 }
 
 .control-center .notification-background {
-  border-radius: 7px;
-  box-shadow: inset 0 0 0 1px #45475a;
+  border-radius: 8px;
+  background: #181825;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.6);
   margin: 4px 10px;
 }
 
 .control-center .notification-background .notification {
-  border-radius: 7px;
+  border-radius: 8px;
 }
 
 .control-center .notification-background .notification.low {
@@ -157,16 +153,18 @@ trough {
 }
 
 .control-center .widget-title > label {
-  color: #cdd6f4;
+  color: #f5e0dc;
   font-size: 1.3em;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .control-center .widget-title button {
-  border-radius: 7px;
-  color: #cdd6f4;
+  border-radius: 8px;
+  color: #f5e0dc;
   background-color: #313244;
-  box-shadow: inset 0 0 0 1px #45475a;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
   padding: 8px;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .control-center .widget-title button:hover {
@@ -194,11 +192,31 @@ scrollbar trough {
   margin: 2px 0;
 }
 
+/* grouped notifications */
+.notification-group .grouped-expand,
+.notification-group .grouped-collapse {
+  border-radius: 8px;
+  color: #f5e0dc;
+  background-color: #313244;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
+  margin: 4px 10px;
+  padding: 4px 8px;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.notification-group .grouped-expand:hover,
+.notification-group .grouped-collapse:hover {
+  background-color: #45475a;
+}
+
 /* dnd */
 .widget-dnd {
   margin-top: 5px;
   border-radius: 8px;
   font-size: 1.1rem;
+  background: #181825;
+  padding: 4px 8px;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
 }
 
 .widget-dnd > switch {
@@ -218,10 +236,18 @@ scrollbar trough {
 }
 
 /* mpris */
+.widget-mpris {
+  background: #181825;
+  border-radius: 8px;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
+  margin: 2px 0;
+}
+
 .widget-mpris-player {
-  background: #313244;
-  border-radius: 12.6px;
-  color: #cdd6f4;
+  background: #181825;
+  border-radius: 8px;
+  color: #f5e0dc;
+  padding: 8px;
 }
 
 .mpris-overlay {
@@ -232,25 +258,28 @@ scrollbar trough {
 
 .widget-mpris-album-art {
   -gtk-icon-size: 100px;
-  border-radius: 12.6px;
+  border-radius: 8px;
   margin: 0 10px;
 }
 
 .widget-mpris-title {
   font-size: 1.2rem;
-  color: #cdd6f4;
+  color: #f5e0dc;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .widget-mpris-subtitle {
   font-size: 1rem;
-  color: #bac2de;
+  color: #cdd6f4;
+  font-weight: normal;
 }
 
 .widget-mpris button {
-  border-radius: 12.6px;
-  color: #cdd6f4;
+  border-radius: 8px;
+  color: #f5e0dc;
   margin: 0 5px;
   padding: 2px;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .widget-mpris button image {
@@ -258,11 +287,11 @@ scrollbar trough {
 }
 
 .widget-mpris button:hover {
-  background-color: #313244;
+  background-color: #45475a;
 }
 
 .widget-mpris button:active {
-  background-color: #45475a;
+  background-color: #585b70;
 }
 
 .widget-mpris button:disabled {
@@ -285,29 +314,49 @@ scrollbar trough {
 }
 
 .control-center .widget-label > label {
-  color: #cdd6f4;
+  color: #f5e0dc;
   font-size: 2rem;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .widget-buttons-grid {
-  padding-top: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+  background: #181825;
+  border-radius: 8px;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
+  margin: 2px;
+  padding: 6px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+  background: #313244;
 }
 
 .widget-buttons-grid > flowbox > flowboxchild > button label {
-  font-size: 2.5rem;
+  font-size: 2rem;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .widget-volume {
-  padding: 1rem 0;
+  background: #181825;
+  border-radius: 8px;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
+  padding: 1rem;
+  margin: 2px 0;
 }
 
 .widget-volume label {
-  color: #74c7ec;
+  color: #89b4fa;
   padding: 0 1rem;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .widget-volume trough highlight {
-  background: #74c7ec;
+  background: #89b4fa;
 }
 
 .widget-backlight trough highlight {
@@ -317,6 +366,7 @@ scrollbar trough {
 .widget-backlight label {
   font-size: 1.5rem;
   color: #f9e2af;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .widget-backlight .KB {
