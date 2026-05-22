@@ -6,61 +6,38 @@
     "mode": "dock",
     "reload_style_on_change": true,
     "gtk-layer-shell": true,
-    // === Positions ===
     "modules-left": [
-        "custom/ws", // window icon
-        "custom/left1",
-        "hyprland/workspaces", // workspaces
-        "custom/right1",
-        "hyprland/submap",
-        "custom/paddw",
-        "hyprland/window" // window title
+        "custom/ws",
+        "hyprland/workspaces",
+        "hyprland/bindmode",
+        "hyprland/window"
     ],
     "modules-center": [
         "custom/weather",
-        "custom/paddc",
-        "custom/left2",
-        // "custom/cpuinfo", // temperature
         "temperature",
-        "custom/left3",
-        "memory", // memory
-        "custom/left4",
-        // "custom/cpu", // cpu
+        "memory",
         "cpu",
-        "custom/leftin1",
-        "custom/left5",
-        "idle_inhibitor", // distro icon
-        "custom/right2",
-        "custom/rightin1",
-        "clock#time", // time
-        "custom/right3",
-        "clock#date", // date
-        "custom/right4",
-        // "custom/wifi", // wi-fi
+        "disk",
+        "idle_inhibitor",
+        "clock#time",
+        "clock#date",
         "network",
-        "bluetooth", // bluetooth
-        "custom/right5",
+        "bluetooth",
         "tray"
     ],
     "modules-right": [
         "privacy",
-        "custom/left6",
         "hyprland/language",
-        "custom/left6",
-        "custom/media", // media info
-        "custom/left6",
-        "pulseaudio", // output device
-        "custom/left7",
-        "custom/backlight", // brightness
-        "custom/left8",
-        "battery", // battery
-        "custom/leftin2",
-        "custom/power", // power button
+        "mpris",
+        "pulseaudio",
+        "custom/backlight",
+        "battery",
+        "custom/power",
         "custom/notification"
     ],
     // === Modules ===
     "custom/ws": {
-        "format": "  ",
+        "format": "",
         "tooltip": false,
         "min-length": 3,
         "max-length": 3
@@ -82,77 +59,62 @@
             "8": "8",
             "9": "9",
             "10": "10",
-            "default": "",
-            "special": "",
-            "urgent": ""
+            "default": "",
+            "special": "",
+            "urgent": ""
         }
     },
-    "hyprland/language": {
-        "format": "{short}",
-        "keyboard-name": "at-translated-set-2-keyboard"
-    },
-    "hyprland/submap": {
+    "hyprland/bindmode": {
         "format": "  {}",
         "tooltip": true,
-        "tooltip-format": "Press Escape to exit submap"
+        "tooltip-format": "Press Escape to exit bindmode"
     },
     "hyprland/window": {
         "format": "{}",
         "min-length": 5,
         "max-length": 40,
-        // === Window Titles ===
         "rewrite": {
-            // == Desktop ==
-            "": "<span foreground='#89b4fa'> </span> Hyprland",
-            // == Terminal ==
-            "~": "  Terminal",
-            "zsh": "  Terminal",
-            "ghostty": "  Terminal",
-            "ashfaqf@42:(.*)": "  Terminal",
-            "(.*)ashfaqf@42:~": "  Terminal",
-            // == Browser ==
+            "": "<span foreground='#89b4fa'> </span> Hyprland",
+            "~": "  Terminal",
+            "zsh": "  Terminal",
+            "ghostty": "  Terminal",
+            "ashfaqf@42:(.*)": "  Terminal",
+            "(.*)ashfaqf@42:~": "  Terminal",
             "(.*)Mozilla Firefox": "<span foreground='#f38ba8'>󰈹 </span> Firefox",
             "(.*) — Mozilla Firefox": "<span foreground='#f38ba8'>󰈹 </span> $1",
             "(.*)Zen Browser": "<span foreground='#cdd6f4'>󰈹 </span> Zen Browser",
             "(.*) — Zen Browser": "<span foreground='#cdd6f4'>󰈹 </span> $1",
-            // == Development ==
             "(.*) - Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> $1",
             "(.*)Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> Visual Studio Code",
-            "(.*) - Zed": "<span foreground='#a6e3a1'> </span> $1",
-            "(.*)Zed$": "<span foreground='#a6e3a1'> </span> Zed",
-            "(.*) — Zed": "<span foreground='#a6e3a1'> </span> $1",
-            "(.*)Neovim(.*)": "<span foreground='#a6e3a1'> </span> $1",
-            "(.*)NVIM(.*)": "<span foreground='#a6e3a1'> </span> $1",
-            "(.*)nvim(.*)": "<span foreground='#a6e3a1'> </span> $1",
-            "(.*) - Sublime Text": "<span foreground='#f9e2af'> </span> $1",
-            "(.*)Sublime Text": "<span foreground='#f9e2af'> </span> Sublime Text",
-            "(.*) - IntelliJ IDEA": "<span foreground='#f38ba8'> </span> $1",
-            "(.*)IntelliJ IDEA": "<span foreground='#f38ba8'> </span> IntelliJ IDEA",
-            "Godot": "<span foreground='#89b4fa'> </span> Godot Engine",
-            "Godot Engine - (.*)": "<span foreground='#89b4fa'> </span> $1",
-            "(.*) - Godot Engine": "<span foreground='#89b4fa'> </span> $1",
-            // == Media ==
-            "GNU Image Manipulation Program": "<span foreground='#a6adc8'> </span> GNU Image Manipulation Program",
-            "(.*).jpg": "  $1.jpg",
-            "(.*).png": "  $1.png",
-            "(.*).svg": "  $1.svg",
-            // == Social ==
+            "(.*) - Zed": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*)Zed$": "<span foreground='#a6e3a1'> </span> Zed",
+            "(.*) — Zed": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*)Neovim(.*)": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*)NVIM(.*)": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*)nvim(.*)": "<span foreground='#a6e3a1'> </span> $1",
+            "(.*) - Sublime Text": "<span foreground='#f9e2af'> </span> $1",
+            "(.*)Sublime Text": "<span foreground='#f9e2af'> </span> Sublime Text",
+            "(.*) - IntelliJ IDEA": "<span foreground='#f38ba8'> </span> $1",
+            "(.*)IntelliJ IDEA": "<span foreground='#f38ba8'> </span> IntelliJ IDEA",
+            "Godot": "<span foreground='#89b4fa'> </span> Godot Engine",
+            "Godot Engine - (.*)": "<span foreground='#89b4fa'> </span> $1",
+            "(.*) - Godot Engine": "<span foreground='#89b4fa'> </span> $1",
+            "GNU Image Manipulation Program": "<span foreground='#a6adc8'> </span> GNU Image Manipulation Program",
+            "(.*).jpg": "  $1.jpg",
+            "(.*).png": "  $1.png",
+            "(.*).svg": "  $1.svg",
             "• Discord(.*)": "Discord$1",
-            // == Documents ==
-            "(.*).docx": "<span foreground='#89b4fa'> </span> $1.docx",
-            "(.*).xlsx": "<span foreground='#a6e3a1'> </span> $1.xlsx",
-            "(.*).pptx": "<span foreground='#fab387'> </span> $1.pptx",
-            "(.*).pdf": "<span foreground='#f38ba8'> </span> $1.pdf",
-            "/": "  File Manager",
-            // == System ==
-            "Timeshift-gtk": "<span foreground='#a6e3a1'> </span> Timeshift",
-            "Authenticate": "  Authenticate"
+            "(.*).docx": "<span foreground='#89b4fa'> </span> $1.docx",
+            "(.*).xlsx": "<span foreground='#a6e3a1'> </span> $1.xlsx",
+            "(.*).pptx": "<span foreground='#fab387'> </span> $1.pptx",
+            "(.*).pdf": "<span foreground='#f38ba8'> </span> $1.pdf",
+            "/": "  File Manager",
+            "Timeshift-gtk": "<span foreground='#a6e3a1'> </span> Timeshift",
+            "Authenticate": "  Authenticate"
         }
     },
-    "load": {
-        "interval": 10,
-        "format": "load: {load1}",
-        "max-length": 10
+    "hyprland/language": {
+        "format": "{short}"
     },
     "privacy": {
         "icon-spacing": 4,
@@ -189,8 +151,9 @@
     },
     "temperature": {
         "critical-threshold": 80,
-        "format-critical": "{temperatureC}°C ",
-        "format": "{temperatureC}°C "
+        "format-critical": "{temperatureC}°C ",
+        "format": "{temperatureC}°C ",
+        "on-click": "ghostty -e btop"
     },
     "memory": {
         "states": {
@@ -213,19 +176,27 @@
             "warning": 70,
             "critical": 90
         },
-        "format": " {usage}%",
-        "format-alt": " {avg_frequency}GHz",
+        "format": "  {usage}%",
+        "format-alt": " {avg_frequency}GHz",
         "max-length": 10,
         "min-length": 5,
         "tooltip": true,
         "tooltip-format": "CPU Usage: {usage}%\nFrequency: {avg_frequency}GHz",
         "on-click": "ghostty -e btop"
     },
+    "disk": {
+        "interval": 30,
+        "format": "󰓊 {percentage_used}%",
+        "tooltip-format": "Used: {used} / {total} ({percentage_used}%)\nFree: {free}",
+        "path": "/",
+        "min-length": 6,
+        "max-length": 6
+    },
     "idle_inhibitor": {
-        "format": " {icon} ",
+        "format": " {icon} ",
         "format-icons": {
-            "activated": "",
-            "deactivated": ""
+            "activated": "",
+            "deactivated": ""
         },
         "tooltip": true,
         "tooltip-format-activated": "Screen won't sleep\nClick to disable",
@@ -270,17 +241,10 @@
         "format-ethernet": "󰈀",
         "format-linked": "󰈀",
         "format-disconnected": "󰌙",
-        "format-alt": "󰀠 {bandwidthDownBits} 󰀡 {bandwidthUpBits}",
-        "format-icons": [
-            "󰤮",
-            "󰤯",
-            "󰤟",
-            "󰤢",
-            "󰤥",
-            "󰤨"
-        ],
-        "tooltip-format-wifi": "{essid} ({signalStrength}% / {signaldBm} dBm)\n{ipaddr}/{cidr}\n{icon} VPN\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
-        "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}\n{icon} VPN\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
+        "format-alt": " {bandwidthDownBits}  {bandwidthUpBits}",
+        "format-icons": ["󰤮", "󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+        "tooltip-format-wifi": "{essid} ({signalStrength}% / {signaldBm} dBm)\n{ipaddr}/{cidr}\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
+        "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
         "tooltip-format-disconnected": "Disconnected",
         "tooltip": true,
         "interval": 10,
@@ -300,37 +264,38 @@
         "tooltip-format-enumerate-connected-battery": "{device_alias}: {device_battery_percentage}%",
         "on-click": "blueman-manager",
         "on-click-right": "ghostty -e bash -c bluetui",
-        "interval": 1,
+        "interval": 5,
         "min-length": 1,
         "max-length": 1
     },
-    "custom/media": {
-        "exec": "~/.config/waybar/scripts/media-player.py",
-        "return-type": "json",
-        "format": "{}",
-        "tooltip": "{tooltip}",
+    "mpris": {
+        "format": "{player_icon} {dynamic}",
+        "format-paused": "{player_icon} {dynamic}",
+        "format-stopped": "",
+        "player-icons": {
+            "default": "♫",
+            "firefox": "󰈹",
+            "spotify": "󰓇"
+        },
+        "tooltip": true,
+        "tooltip-format": "{player_icon} ({player})\n{title}\n{artist}\n{album}",
         "on-click": "playerctl play-pause",
-        "min-length": 5,
+        "on-click-right": "playerctl next",
+        "on-click-middle": "playerctl previous",
         "max-length": 35
     },
     "pulseaudio": {
-        "format": " {icon} {volume}%",
-        "format-bluetooth": "{icon} {volume}% ",
-        "format-muted": " {volume} %",
-        "format-source": " {volume}%",
+        "format": "󰕾 {icon} {volume}%",
+        "format-bluetooth": "{icon} {volume}% ",
+        "format-muted": " {volume} %",
+        "format-source": "󰕾 {volume}%",
         "format-source-muted": "",
         "format-icons": {
             "headphone": "",
-            "default": [
-                "",
-                ""
-            ]
+            "default": ["", ""]
         },
         "scroll-step": 1,
-        // "on-click": "pavucontrol",
-        "ignored-sinks": [
-            "Easy Effects Sink"
-        ],
+        "ignored-sinks": ["Easy Effects Sink"],
         "tooltip": true,
         "tooltip-format": "Device: {desc}",
         "on-click": "~/.config/waybar/scripts/volume-control.sh -o m",
@@ -359,15 +324,7 @@
             "critical": 15
         },
         "format": "{icon} {capacity}%",
-        "format-icons": [
-            "󰁼",
-            "󰁽",
-            "󰁾",
-            "󰁿",
-            "󰂀",
-            "󰂁",
-            "󰂂"
-        ],
+        "format-icons": ["󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂"],
         "format-full": "󱃌 {capacity}%",
         "format-warning": "󰁻 {capacity}%",
         "format-critical": "󱃍 {capacity}%",
@@ -380,86 +337,9 @@
         "max-length": 6
     },
     "custom/power": {
-        "format": " ",
+        "format": "",
         "tooltip": false,
         "on-click": "~/.config/waybar/scripts/power-menu.sh"
-    },
-    // === Padding ===
-    "custom/paddw": {
-        "format": " ",
-        "tooltip": false
-    },
-    "custom/paddc": {
-        "format": " ",
-        "tooltip": false
-    },
-    // == Left Arrows ==
-    "custom/left1": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/left2": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/left3": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/left4": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/left5": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/left6": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/left7": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/left8": {
-        "format": "",
-        "tooltip": false
-    },
-    // == Right Arrows ==
-    "custom/right1": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/right2": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/right3": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/right4": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/right5": {
-        "format": "",
-        "tooltip": false
-    },
-    // == Left Inverse ==
-    "custom/leftin1": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/leftin2": {
-        "format": "",
-        "tooltip": false
-    },
-    // == Right Inverse ==
-    "custom/rightin1": {
-        "format": "",
-        "tooltip": false
     },
     "custom/notification": {
         "tooltip": false,
