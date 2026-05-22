@@ -9,7 +9,7 @@
     "modules-left": [
         "custom/ws",
         "hyprland/workspaces",
-        "hyprland/bindmode",
+        "hyprland/submap",
         "hyprland/window"
     ],
     "modules-center": [
@@ -64,10 +64,10 @@
             "urgent": ""
         }
     },
-    "hyprland/bindmode": {
+    "hyprland/submap": {
         "format": "  {}",
         "tooltip": true,
-        "tooltip-format": "Press Escape to exit bindmode"
+        "tooltip-format": "Press Escape to exit submap"
     },
     "hyprland/window": {
         "format": "{}",

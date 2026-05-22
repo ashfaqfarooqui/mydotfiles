@@ -103,7 +103,7 @@ tooltip label {
   margin: 2px 1px;
 }
 
-#bindmode {
+#submap {
   color: @main-bg;
   background: @critical;
   font-weight: bold;
