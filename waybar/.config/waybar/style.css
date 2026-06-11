@@ -75,6 +75,7 @@ tooltip label {
 #disk,
 #clock,
 #network,
+#custom-netspeed,
 #bluetooth,
 #mpris,
 #pulseaudio,
@@ -164,14 +165,17 @@ tooltip label {
   margin: 2px 1px;
 }
 
-#idle_inhibitor {
+#custom-hypridle {
   color: @distro-fg;
   background: @distro-bg;
   border-radius: 8px;
   margin: 2px 1px;
-  padding: 0 4px;
-  font-size: 11pt;
+  padding: 0 10px 0 6px;
   text-shadow: 0 0 1.5px rgba(0, 0, 0, 1);
+}
+#custom-hypridle.inhibiting {
+  color: @main-bg;
+  background: @warning;
 }
 
 #clock.time {
@@ -201,6 +205,14 @@ tooltip label {
   color: @hover-fg;
   text-shadow: none;
   box-shadow: none;
+}
+
+#custom-netspeed {
+  background: @dark;
+  border-radius: 8px;
+  margin: 2px 1px;
+  padding: 0 6px;
+  font-size: 10px;
 }
 
 #bluetooth {
@@ -240,7 +252,7 @@ tooltip label {
 #language {
   background: @medium;
   border-radius: 8px;
-  margin: 2px 1px;
+  margin: 4px 3px;
   color: @module-fg;
 }
 
