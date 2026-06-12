@@ -68,8 +68,8 @@ _plugin_vendor sudo \
 # Fish-style inline autosuggestions
 _plugin_load zsh-users zsh-autosuggestions
 
-# Suggest alias when you type a full command that has one
-_plugin_load akash329d zsh-alias-finder
+# Remind you to use an alias when you type its full expansion
+_plugin_load MichaelAquilina zsh-you-should-use
 
 # fzf shell integration — keybindings (Ctrl-T, Alt-C) and completion
 # Must come BEFORE atuin so atuin can overwrite Ctrl-R
