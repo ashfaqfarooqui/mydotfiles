@@ -46,23 +46,63 @@ tooltip label {
   color: @module-fg;
   border-radius: 8px;
   box-shadow: none;
-  margin: 2px 0;
-  padding: 0 2px;
-  transition: background 120ms ease;
+  margin: 2px 1px;
+  padding: 0 3px;
+  transition: all 150ms ease;
+  font-size: 19px;
 }
-#workspaces button:hover {
+
+/* Empty workspace — dim but consistently sized so all 10 are always visible */
+#workspaces button.empty {
+  color: rgba(205, 214, 244, 0.30);
+  min-width: 22px;
+  padding: 0 3px;
+  margin: 2px 1px;
+}
+#workspaces button.empty:hover {
+  color: rgba(205, 214, 244, 0.55);
+  background: rgba(49, 50, 68, 0.4);
+}
+
+/* Occupied workspace — warm tint + bright bottom bar + dot above */
+#workspaces button.occupied {
+  color: #cba6f7;
+  border-bottom: 2px solid rgba(203, 166, 247, 0.75);
+  padding: 0 4px;
+  margin: 2px 1px;
+  min-width: 22px;
+}
+#workspaces button.occupied:hover {
+  color: @hover-fg;
+  background: rgba(49, 50, 68, 0.7);
+  border-bottom-color: rgba(203, 166, 247, 1.0);
+}
+
+/* Active workspace — bright pill, strongly contrasted */
+#workspaces button.active {
+  color: @active-fg;
+  background: rgba(147, 153, 178, 0.95);
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  border-bottom: 2px solid rgba(166, 227, 161, 1.0);
+  margin: 3px 2px;
+  padding: 0 8px;
+  min-width: 22px;
+}
+#workspaces button.active:hover {
   color: @hover-fg;
   background: rgba(49, 50, 68, 0.7);
   text-shadow: none;
   box-shadow: none;
 }
-#workspaces button.active {
-  color: @active-fg;
-  background: rgba(147, 153, 178, 0.85);
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  margin: 4px;
-  padding: 0 6px;
+
+/* Urgent workspace — red pulse */
+#workspaces button.urgent {
+  color: #f38ba8;
+  border-bottom: 2px solid rgba(243, 139, 168, 0.9);
+  padding: 0 4px;
+  margin: 2px 1px;
+  min-width: 22px;
 }
 
 /* === Module Base Style === */

@@ -50,22 +50,35 @@
             "on-scroll-up": "hyprctl dispatch workspace -1",
             "on-scroll-down": "hyprctl dispatch workspace +1",
             "active-only": false,
+            "all-outputs": false,
             "show-special": true,
+            "persistent-workspaces": {
+                "1": [],
+                "2": [],
+                "3": [],
+                "4": [],
+                "5": [],
+                "6": [],
+                "7": [],
+                "8": [],
+                "9": [],
+                "10": []
+            },
             "format": "{icon}",
             "format-icons": {
-                "1": "1",
-                "2": "2",
-                "3": "3",
-                "4": "4",
-                "5": "5",
-                "6": "6",
-                "7": "7",
-                "8": "8",
-                "9": "9",
-                "10": "10",
-                "default": "",
-                "special": "",
-                "urgent": ""
+                "1": "󰎤",
+                "2": "󰎧",
+                "3": "󰎪",
+                "4": "󰎭",
+                "5": "󰎱",
+                "6": "󰎳",
+                "7": "󰎶",
+                "8": "󰎹",
+                "9": "󰎼",
+                "10": "󰎡",
+                "default": "󰎥",
+                "special": "󰮯",
+                "urgent": "󰀦"
             }
         },
         "hyprland/submap": {
@@ -78,43 +91,87 @@
             "min-length": 5,
             "max-length": 40,
             "rewrite": {
+                // --- Empty desktop ---
                 "": "<span foreground='#89b4fa'> </span> Hyprland",
-                "~": "  Terminal",
-                "zsh": "  Terminal",
-                "ghostty": "  Terminal",
-                "ashfaqf@42:(.*)": "  Terminal",
-                "(.*)ashfaqf@42:~": "  Terminal",
-                "(.*)Mozilla Firefox": "<span foreground='#f38ba8'>󰈹 </span> Firefox",
+
+                // --- Terminals ---
+                "~": "<span foreground='#a6e3a1'> </span> Home",
+                "zsh": "<span foreground='#a6e3a1'> </span> Terminal",
+                "ghostty": "<span foreground='#a6e3a1'> </span> Ghostty",
+                "kitty": "<span foreground='#a6e3a1'> </span> Kitty",
+                "Alacritty": "<span foreground='#a6e3a1'> </span> Alacritty",
+                "Wezterm": "<span foreground='#a6e3a1'> </span> Wezterm",
+                "ashfaqf@42:(.*)": "<span foreground='#a6e3a1'> </span> $1",
+                "(.*)ashfaqf@42:~": "<span foreground='#a6e3a1'> </span> Home",
+
+                // --- Browsers (specific before generic) ---
                 "(.*) — Mozilla Firefox": "<span foreground='#f38ba8'>󰈹 </span> $1",
-                "(.*)Zen Browser": "<span foreground='#cdd6f4'>󰈹 </span> Zen Browser",
+                "(.*)Mozilla Firefox": "<span foreground='#f38ba8'>󰈹 </span> Firefox",
                 "(.*) — Zen Browser": "<span foreground='#cdd6f4'>󰈹 </span> $1",
+                "(.*)Zen Browser": "<span foreground='#cdd6f4'>󰈹 </span> Zen Browser",
+
+                // --- IDEs & Editors (specific before generic) ---
                 "(.*) - Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> $1",
-                "(.*)Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> Visual Studio Code",
+                "(.*)Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> VS Code",
                 "(.*) - Zed": "<span foreground='#a6e3a1'> </span> $1",
                 "(.*)Zed$": "<span foreground='#a6e3a1'> </span> Zed",
                 "(.*) — Zed": "<span foreground='#a6e3a1'> </span> $1",
-                "(.*)Neovim(.*)": "<span foreground='#a6e3a1'> </span> $1",
-                "(.*)NVIM(.*)": "<span foreground='#a6e3a1'> </span> $1",
-                "(.*)nvim(.*)": "<span foreground='#a6e3a1'> </span> $1",
+                "(.*)NVIM(.*)": "<span foreground='#a6e3a1'> </span> $1$2",
+                "(.*)\\bNvim\\b(.*)": "<span foreground='#a6e3a1'> </span> $1$2",
+                "(.*) — .*Neovim$": "<span foreground='#a6e3a1'> </span> $1",
                 "(.*) - Sublime Text": "<span foreground='#f9e2af'> </span> $1",
                 "(.*)Sublime Text": "<span foreground='#f9e2af'> </span> Sublime Text",
                 "(.*) - IntelliJ IDEA": "<span foreground='#f38ba8'> </span> $1",
                 "(.*)IntelliJ IDEA": "<span foreground='#f38ba8'> </span> IntelliJ IDEA",
-                "Godot": "<span foreground='#89b4fa'> </span> Godot Engine",
+
+                // --- Godot (specific before generic) ---
                 "Godot Engine - (.*)": "<span foreground='#89b4fa'> </span> $1",
                 "(.*) - Godot Engine": "<span foreground='#89b4fa'> </span> $1",
-                "GNU Image Manipulation Program": "<span foreground='#a6adc8'> </span> GNU Image Manipulation Program",
-                "(.*).jpg": "  $1.jpg",
-                "(.*).png": "  $1.png",
-                "(.*).svg": "  $1.svg",
-                "• Discord(.*)": "Discord$1",
-                "(.*).docx": "<span foreground='#89b4fa'> </span> $1.docx",
-                "(.*).xlsx": "<span foreground='#a6e3a1'> </span> $1.xlsx",
-                "(.*).pptx": "<span foreground='#fab387'> </span> $1.pptx",
-                "(.*).pdf": "<span foreground='#f38ba8'> </span> $1.pdf",
-                "/": "  File Manager",
+                "Godot": "<span foreground='#89b4fa'> </span> Godot Engine",
+
+                // --- File Managers ---
+                "Dolphin": "<span foreground='#94e2d5'>󰉋 </span> Dolphin",
+                "Nautilus": "<span foreground='#94e2d5'>󰉋 </span> Nautilus",
+                "Thunar": "<span foreground='#94e2d5'>󰉋 </span> Thunar",
+                "(.*)\\bYazi\\b(.*)": "<span foreground='#94e2d5'>󰉋 </span> Yazi",
+                "/": "<span foreground='#94e2d5'>󰉋 </span> File Manager",
+
+                // --- Chat & Communication ---
+                "• Discord(.*)": "<span foreground='#89b4fa'>󰙯 </span> Discord$1",
+                "(.*)Discord$": "<span foreground='#89b4fa'>󰙯 </span> Discord",
+                "(.*)\\bSlack\\b(.*)": "<span foreground='#a6e3a1'>󰒲 </span> Slack",
+                "Telegram(.*)": "<span foreground='#89b4fa'> </span> Telegram",
+                "(.*)WhatsApp(.*)": "<span foreground='#a6e3a1'> </span> WhatsApp",
+                "Zoom Meeting(.*)": "<span foreground='#89b4fa'> </span> Zoom$1",
+                "Zoom": "<span foreground='#89b4fa'> </span> Zoom",
+
+                // --- Media ---
+                "(.*)\\bSpotify\\b(.*)": "<span foreground='#a6e3a1'>󰓇 </span> $1$2",
+                "Spotify": "<span foreground='#a6e3a1'>󰓇 </span> Spotify",
+                "(.*)\\bVLC\\b(.*)": "<span foreground='#fab387'> </span> VLC",
+                "(.*)\\bmpv\\b(.*)": "<span foreground='#fab387'> </span> mpv",
+
+                // --- Games ---
+                "(.*)\\bSteam\\b(.*)": "<span foreground='#cdd6f4'>󰓓 </span> Steam",
+
+                // --- Creative & Tools ---
+                "GNU Image Manipulation Program": "<span foreground='#a6adc8'> </span> GIMP",
+                "(.*)\\bOBS\\b(.*)": "<span foreground='#a6adc8'> </span> OBS Studio",
+
+                // --- Image files ---
+                "(.*)\\.jpg": "<span foreground='#a6adc8'> </span> $1.jpg",
+                "(.*)\\.png": "<span foreground='#a6adc8'> </span> $1.png",
+                "(.*)\\.svg": "<span foreground='#a6adc8'> </span> $1.svg",
+
+                // --- Office documents ---
+                "(.*)\\.docx": "<span foreground='#89b4fa'> </span> $1.docx",
+                "(.*)\\.xlsx": "<span foreground='#a6e3a1'> </span> $1.xlsx",
+                "(.*)\\.pptx": "<span foreground='#fab387'> </span> $1.pptx",
+                "(.*)\\.pdf": "<span foreground='#f38ba8'> </span> $1.pdf",
+
+                // --- Misc ---
                 "Timeshift-gtk": "<span foreground='#a6e3a1'> </span> Timeshift",
-                "Authenticate": "  Authenticate"
+                "Authenticate": "<span foreground='#f9e2af'> </span> Authenticate"
             }
         },
         "hyprland/language": {
@@ -292,7 +349,7 @@
             "max-length": 35
         },
         "pulseaudio": {
-            "format": "󰕾 {icon} {volume}%",
+            "format": "{icon} {volume}%",
             "format-bluetooth": "{icon} {volume}% ",
             "format-muted": " {volume} %",
             "format-source": "󰕾 {volume}%",
@@ -422,22 +479,35 @@
             "on-scroll-up": "hyprctl dispatch workspace -1",
             "on-scroll-down": "hyprctl dispatch workspace +1",
             "active-only": false,
+            "all-outputs": false,
             "show-special": true,
+            "persistent-workspaces": {
+                "1": [],
+                "2": [],
+                "3": [],
+                "4": [],
+                "5": [],
+                "6": [],
+                "7": [],
+                "8": [],
+                "9": [],
+                "10": []
+            },
             "format": "{icon}",
             "format-icons": {
                 "1": "1",
-                "2": "2",
-                "3": "3",
-                "4": "4",
-                "5": "5",
-                "6": "6",
-                "7": "7",
-                "8": "8",
-                "9": "9",
-                "10": "10",
-                "default": "",
-                "special": "",
-                "urgent": ""
+                "2": "󰎧",
+                "3": "󰎪",
+                "4": "󰎭",
+                "5": "󰎱",
+                "6": "󰎳",
+                "7": "󰎶",
+                "8": "󰎹",
+                "9": "󰎼",
+                "10": "󰎡",
+                "default": "󰎥",
+                "special": "󰮯",
+                "urgent": "󰀦"
             }
         },
         "hyprland/submap": {
@@ -450,43 +520,87 @@
             "min-length": 5,
             "max-length": 40,
             "rewrite": {
+                // --- Empty desktop ---
                 "": "<span foreground='#89b4fa'> </span> Hyprland",
-                "~": "  Terminal",
-                "zsh": "  Terminal",
-                "ghostty": "  Terminal",
-                "ashfaqf@42:(.*)": "  Terminal",
-                "(.*)ashfaqf@42:~": "  Terminal",
-                "(.*)Mozilla Firefox": "<span foreground='#f38ba8'>󰈹 </span> Firefox",
+
+                // --- Terminals ---
+                "~": "<span foreground='#a6e3a1'> </span> Home",
+                "zsh": "<span foreground='#a6e3a1'> </span> Terminal",
+                "ghostty": "<span foreground='#a6e3a1'> </span> Ghostty",
+                "kitty": "<span foreground='#a6e3a1'> </span> Kitty",
+                "Alacritty": "<span foreground='#a6e3a1'> </span> Alacritty",
+                "Wezterm": "<span foreground='#a6e3a1'> </span> Wezterm",
+                "ashfaqf@42:(.*)": "<span foreground='#a6e3a1'> </span> $1",
+                "(.*)ashfaqf@42:~": "<span foreground='#a6e3a1'> </span> Home",
+
+                // --- Browsers (specific before generic) ---
                 "(.*) — Mozilla Firefox": "<span foreground='#f38ba8'>󰈹 </span> $1",
-                "(.*)Zen Browser": "<span foreground='#cdd6f4'>󰈹 </span> Zen Browser",
+                "(.*)Mozilla Firefox": "<span foreground='#f38ba8'>󰈹 </span> Firefox",
                 "(.*) — Zen Browser": "<span foreground='#cdd6f4'>󰈹 </span> $1",
+                "(.*)Zen Browser": "<span foreground='#cdd6f4'>󰈹 </span> Zen Browser",
+
+                // --- IDEs & Editors (specific before generic) ---
                 "(.*) - Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> $1",
-                "(.*)Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> Visual Studio Code",
+                "(.*)Visual Studio Code": "<span foreground='#89b4fa'>󰨞 </span> VS Code",
                 "(.*) - Zed": "<span foreground='#a6e3a1'> </span> $1",
                 "(.*)Zed$": "<span foreground='#a6e3a1'> </span> Zed",
                 "(.*) — Zed": "<span foreground='#a6e3a1'> </span> $1",
-                "(.*)Neovim(.*)": "<span foreground='#a6e3a1'> </span> $1",
-                "(.*)NVIM(.*)": "<span foreground='#a6e3a1'> </span> $1",
-                "(.*)nvim(.*)": "<span foreground='#a6e3a1'> </span> $1",
+                "(.*)NVIM(.*)": "<span foreground='#a6e3a1'> </span> $1$2",
+                "(.*)\\bNvim\\b(.*)": "<span foreground='#a6e3a1'> </span> $1$2",
+                "(.*) — .*Neovim$": "<span foreground='#a6e3a1'> </span> $1",
                 "(.*) - Sublime Text": "<span foreground='#f9e2af'> </span> $1",
                 "(.*)Sublime Text": "<span foreground='#f9e2af'> </span> Sublime Text",
                 "(.*) - IntelliJ IDEA": "<span foreground='#f38ba8'> </span> $1",
                 "(.*)IntelliJ IDEA": "<span foreground='#f38ba8'> </span> IntelliJ IDEA",
-                "Godot": "<span foreground='#89b4fa'> </span> Godot Engine",
+
+                // --- Godot (specific before generic) ---
                 "Godot Engine - (.*)": "<span foreground='#89b4fa'> </span> $1",
                 "(.*) - Godot Engine": "<span foreground='#89b4fa'> </span> $1",
-                "GNU Image Manipulation Program": "<span foreground='#a6adc8'> </span> GNU Image Manipulation Program",
-                "(.*).jpg": "  $1.jpg",
-                "(.*).png": "  $1.png",
-                "(.*).svg": "  $1.svg",
-                "• Discord(.*)": "Discord$1",
-                "(.*).docx": "<span foreground='#89b4fa'> </span> $1.docx",
-                "(.*).xlsx": "<span foreground='#a6e3a1'> </span> $1.xlsx",
-                "(.*).pptx": "<span foreground='#fab387'> </span> $1.pptx",
-                "(.*).pdf": "<span foreground='#f38ba8'> </span> $1.pdf",
-                "/": "  File Manager",
+                "Godot": "<span foreground='#89b4fa'> </span> Godot Engine",
+
+                // --- File Managers ---
+                "Dolphin": "<span foreground='#94e2d5'>󰉋 </span> Dolphin",
+                "Nautilus": "<span foreground='#94e2d5'>󰉋 </span> Nautilus",
+                "Thunar": "<span foreground='#94e2d5'>󰉋 </span> Thunar",
+                "(.*)\\bYazi\\b(.*)": "<span foreground='#94e2d5'>󰉋 </span> Yazi",
+                "/": "<span foreground='#94e2d5'>󰉋 </span> File Manager",
+
+                // --- Chat & Communication ---
+                "• Discord(.*)": "<span foreground='#89b4fa'>󰙯 </span> Discord$1",
+                "(.*)Discord$": "<span foreground='#89b4fa'>󰙯 </span> Discord",
+                "(.*)\\bSlack\\b(.*)": "<span foreground='#a6e3a1'>󰒲 </span> Slack",
+                "Telegram(.*)": "<span foreground='#89b4fa'> </span> Telegram",
+                "(.*)WhatsApp(.*)": "<span foreground='#a6e3a1'> </span> WhatsApp",
+                "Zoom Meeting(.*)": "<span foreground='#89b4fa'> </span> Zoom$1",
+                "Zoom": "<span foreground='#89b4fa'> </span> Zoom",
+
+                // --- Media ---
+                "(.*)\\bSpotify\\b(.*)": "<span foreground='#a6e3a1'>󰓇 </span> $1$2",
+                "Spotify": "<span foreground='#a6e3a1'>󰓇 </span> Spotify",
+                "(.*)\\bVLC\\b(.*)": "<span foreground='#fab387'> </span> VLC",
+                "(.*)\\bmpv\\b(.*)": "<span foreground='#fab387'> </span> mpv",
+
+                // --- Games ---
+                "(.*)\\bSteam\\b(.*)": "<span foreground='#cdd6f4'>󰓓 </span> Steam",
+
+                // --- Creative & Tools ---
+                "GNU Image Manipulation Program": "<span foreground='#a6adc8'> </span> GIMP",
+                "(.*)\\bOBS\\b(.*)": "<span foreground='#a6adc8'> </span> OBS Studio",
+
+                // --- Image files ---
+                "(.*)\\.jpg": "<span foreground='#a6adc8'> </span> $1.jpg",
+                "(.*)\\.png": "<span foreground='#a6adc8'> </span> $1.png",
+                "(.*)\\.svg": "<span foreground='#a6adc8'> </span> $1.svg",
+
+                // --- Office documents ---
+                "(.*)\\.docx": "<span foreground='#89b4fa'> </span> $1.docx",
+                "(.*)\\.xlsx": "<span foreground='#a6e3a1'> </span> $1.xlsx",
+                "(.*)\\.pptx": "<span foreground='#fab387'> </span> $1.pptx",
+                "(.*)\\.pdf": "<span foreground='#f38ba8'> </span> $1.pdf",
+
+                // --- Misc ---
                 "Timeshift-gtk": "<span foreground='#a6e3a1'> </span> Timeshift",
-                "Authenticate": "  Authenticate"
+                "Authenticate": "<span foreground='#f9e2af'> </span> Authenticate"
             }
         },
         "hyprland/language": {
@@ -605,7 +719,7 @@
             "max-length": 1
         },
         "pulseaudio": {
-            "format": "󰕾 {icon} {volume}%",
+            "format": "{icon} {volume}%",
             "format-bluetooth": "{icon} {volume}% ",
             "format-muted": " {volume} %",
             "format-source": "󰕾 {volume}%",
