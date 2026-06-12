@@ -1,12 +1,28 @@
-# Install ohmyzsh
+#!/usr/bin/env bash
+# ==============================================================================
+# scripts/install/changeShell.sh
+#
+# Sets up zsh as the default shell and bootstraps the zsh config.
+# Plugin management, ZDOTDIR, XDG dirs, and stow are all handled by
+# zsh/setup.sh — this script is a thin entry point.
+#
+# Usage:
+#   cd ~/mydotfiles
+#   bash scripts/install/changeShell.sh
+# ==============================================================================
 
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-chsh -s $(which zsh)
+set -euo pipefail
 
-#install starship
-sh -c "$(curl -fsSL https://starship.rs/install.sh)"
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
-git clone https://github.com/fdellwing/zsh-bat.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-bat
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-git clone https://github.com/Aloxaf/fzf-tab ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/fzf-tab
+# ── Install starship if missing ───────────────────────────────────────────────
+# On Arch this is handled by setup.sh (yay -S starship).
+# This curl fallback covers other distros or a manual run before setup.sh.
+if ! command -v starship &>/dev/null; then
+  echo "--> Installing starship..."
+  curl -fsSL https://starship.rs/install.sh | sh
+fi
+
+# ── Delegate to zsh/setup.sh ──────────────────────────────────────────────────
+# Handles: XDG dirs, plugin bootstrap, stow, chsh
+DOTFILES_DIR="$DOTFILES_DIR" bash "$DOTFILES_DIR/zsh/setup.sh"
