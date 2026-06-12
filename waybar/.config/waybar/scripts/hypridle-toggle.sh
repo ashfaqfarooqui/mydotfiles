@@ -12,9 +12,9 @@ case "$1" in
         ;;
     *)
         if pgrep -x hypridle > /dev/null; then
-            echo '{"text": "", "tooltip": "Idle mode active\nClick to inhibit", "class": "active"}'
+            echo '{"text": " ", "tooltip": "Idle mode active\nClick to inhibit", "class": "active"}'
         else
-            echo '{"text": "", "tooltip": "Screen won'\''t sleep\nClick to enable idle", "class": "inhibiting"}'
+            echo '{"text": " ", "tooltip": "Screen won'\''t sleep\nClick to enable idle", "class": "inhibiting"}'
         fi
         ;;
 esac

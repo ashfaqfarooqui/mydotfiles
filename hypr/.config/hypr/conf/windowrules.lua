@@ -37,8 +37,8 @@ assign_workspace("^(Marvin)$", 9)
 hl.window_rule({ match = { title = "^(Extension)$" }, float = true })
 hl.window_rule({ match = { title = "^(Volume Control)$" }, float = true, size = "800 600" })
 hl.window_rule({ match = { title = "^(Media viewer)$" }, float = true })
-hl.window_rule({ match = { title = "^(Open Files)$" }, size = "1000 700" })
-hl.window_rule({ match = { title = "^(Save File)$" }, size = "1000 700" })
+hl.window_rule({ match = { title = "^(Open Files)$" }, float = true, center = true, size = "1000 700" })
+hl.window_rule({ match = { title = "^(Save File)$" }, float = true, center = true, size = "1000 700" })
 hl.window_rule({ match = { title = "^(Bluetooth)" }, float = true })
 hl.window_rule({ match = { class = "^(steam)$" }, float = true })
 hl.window_rule({ match = { title = "^(guifetch)$" }, float = true })
@@ -65,7 +65,7 @@ for _, title in ipairs(float_titles) do
     hl.window_rule({ match = { title = title }, float = true })
 end
 
--- File dialog centering + float
+-- File dialog centering + float (capped size to prevent oversized dialogs)
 local centered_dialogs = {
     "^(Open File)(.*)$",
     "^(Select a File)(.*)$",
@@ -76,7 +76,7 @@ local centered_dialogs = {
     "^(File Upload)(.*)$",
 }
 for _, pattern in ipairs(centered_dialogs) do
-    hl.window_rule({ match = { title = pattern }, float = true, center = true })
+    hl.window_rule({ match = { title = pattern }, float = true, center = true, size = "1000 700" })
 end
 
 -- Picture-in-Picture (browser)
