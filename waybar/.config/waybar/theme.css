@@ -22,9 +22,13 @@
 /* Module Colors - 3 distinct shades */
 
 @define-color module-fg       #f5e0dc;
-@define-color dark            #181825;
-@define-color medium          #313244;
-@define-color light           #45475a;
+@define-color dark            rgba(24, 24, 37, 0.65);
+@define-color medium          rgba(49, 50, 68, 0.65);
+@define-color light           rgba(69, 71, 90, 0.65);
+
+/* Glass effect extras */
+@define-color glass-border    rgba(205, 214, 244, 0.12);
+@define-color glass-highlight rgba(255, 255, 255, 0.07);
 
 @define-color distro-fg       #11111b;
 @define-color distro-bg       #9399b2;

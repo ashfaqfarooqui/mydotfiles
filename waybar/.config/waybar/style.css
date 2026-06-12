@@ -13,25 +13,26 @@
 /* === Main Background === */
 
 window#waybar {
-  background: @main-bg;
+  background: transparent;
 }
 
 /* === Drop Shadow === */
 
 window#waybar > box {
-  background-color: transparent;
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 1);
+  background: rgba(17, 17, 27, 0.55);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(205, 214, 244, 0.08);
   margin: 2px;
 }
 
 /* === Tooltip === */
 
 tooltip {
-  background: @main-bg;
+  background: rgba(17, 17, 27, 0.85);
   border: solid;
-  border-width: 1.5px;
+  border-width: 1px;
   border-radius: 8px;
-  border-color: @main-br;
+  border-color: @glass-border;
 }
 tooltip label {
   color: @main-fg;
@@ -47,19 +48,19 @@ tooltip label {
   box-shadow: none;
   margin: 2px 0;
   padding: 0 2px;
-  transition: none;
+  transition: background 120ms ease;
 }
 #workspaces button:hover {
   color: @hover-fg;
-  background: @hover-bg;
+  background: rgba(49, 50, 68, 0.7);
   text-shadow: none;
   box-shadow: none;
 }
 #workspaces button.active {
   color: @active-fg;
-  background: @active-bg;
+  background: rgba(147, 153, 178, 0.85);
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   margin: 4px;
   padding: 0 6px;
 }
@@ -87,6 +88,8 @@ tooltip label {
   color: @module-fg;
   padding: 0 6px;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  border: 1px solid @glass-border;
+  box-shadow: inset 0 1px 0 @glass-highlight, 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* === Modules Left === */
@@ -106,12 +109,14 @@ tooltip label {
 
 #submap {
   color: @main-bg;
-  background: @critical;
+  background: rgba(243, 139, 168, 0.85);
   font-weight: bold;
   padding: 0 10px;
   border-radius: 8px;
   margin: 2px 4px;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(243, 139, 168, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 #window {
@@ -130,6 +135,8 @@ tooltip label {
   padding: 0 8px;
   color: @module-fg;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  border: 1px solid @glass-border;
+  box-shadow: inset 0 1px 0 @glass-highlight, 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 #temperature {
@@ -167,15 +174,18 @@ tooltip label {
 
 #custom-hypridle {
   color: @distro-fg;
-  background: @distro-bg;
+  background: rgba(147, 153, 178, 0.75);
   border-radius: 8px;
   margin: 2px 1px;
-  padding: 0 10px 0 6px;
+  padding: 0 10px;
   text-shadow: 0 0 1.5px rgba(0, 0, 0, 1);
+  border: 1px solid rgba(147, 153, 178, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 #custom-hypridle.inhibiting {
   color: @main-bg;
-  background: @warning;
+  background: rgba(249, 226, 175, 0.85);
+  border-color: rgba(249, 226, 175, 0.3);
 }
 
 #clock.time {
@@ -309,12 +319,13 @@ tooltip label {
 
 #custom-power {
   color: @main-bg;
-  background: @power;
+  background: rgba(243, 139, 168, 0.85);
   border-radius: 10px;
   margin: 2px 4px 2px 1px;
   padding: 0 8px;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(243, 139, 168, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 #custom-power:hover {
   color: @hover-fg;
@@ -325,7 +336,9 @@ tooltip label {
 
 #custom-notification {
   color: @module-fg;
-  padding: 0 6px;
+  background: @dark;
+  border-radius: 8px;
+  padding: 0 8px;
   margin: 2px 1px;
 }
 #custom-notification:hover {
