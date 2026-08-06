@@ -8,7 +8,8 @@
         "spacing": 0,
         "mode": "dock",
         "reload_style_on_change": true,
-        "gtk-layer-shell": true,
+        "gtk-layer-shell": false,
+        "include": ["hyprwhspr-module.jsonc"],
         "modules-left": [
             "custom/ws",
             "hyprland/workspaces",
@@ -35,6 +36,7 @@
             "mpris",
             "pulseaudio",
             "custom/backlight",
+            "custom/hyprwhspr",
             "battery",
             "custom/power",
             "custom/notification"
@@ -443,7 +445,8 @@
         "spacing": 0,
         "mode": "dock",
         "reload_style_on_change": true,
-        "gtk-layer-shell": true,
+        "gtk-layer-shell": false,
+        "include": ["hyprwhspr-module.jsonc"],
         "modules-left": [
             "custom/ws",
             "hyprland/workspaces",
@@ -464,6 +467,7 @@
             "privacy",
             "hyprland/language",
             "pulseaudio",
+            "custom/hyprwhspr",
             "battery",
             "custom/power",
             "custom/notification"

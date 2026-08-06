@@ -1,108 +1,112 @@
-* {
-  font-family: "JetBrainsMono Nerd Font";
-  font-weight: bold;
-  font-size: 15px;
-  min-height: 0;
-  padding: 0;
-  border: none;
-  margin: 0;
-}
-
 @import "theme.css";
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-weight: bold;
+    font-size: 15px;
+    min-height: 0;
+    padding: 0;
+    border: none;
+    margin: 0;
+}
 
 /* === Main Background === */
 
 window#waybar {
-  background: transparent;
+    background: transparent;
 }
 
 /* === Drop Shadow === */
 
 window#waybar > box {
-  background: rgba(17, 17, 27, 0.55);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(205, 214, 244, 0.08);
-  margin: 2px;
+    background: rgba(17, 17, 27, 0.55);
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(205, 214, 244, 0.08);
+    margin: 2px;
 }
 
 /* === Tooltip === */
 
 tooltip {
-  background: rgba(17, 17, 27, 0.85);
-  border: solid;
-  border-width: 1px;
-  border-radius: 8px;
-  border-color: @glass-border;
+    background: rgba(17, 17, 27, 0.85);
+    border: solid;
+    border-width: 1px;
+    border-radius: 8px;
+    border-color: @glass-border;
 }
 tooltip label {
-  color: @main-fg;
-  font-weight: normal;
-  margin: -1.5px 3px;
+    color: @main-fg;
+    font-weight: normal;
+    margin: -1.5px 3px;
 }
 
 /* === Workspace Buttons === */
 
 #workspaces button {
-  color: @module-fg;
-  border-radius: 8px;
-  box-shadow: none;
-  margin: 2px 1px;
-  padding: 0 3px;
-  transition: all 150ms ease;
-  font-size: 19px;
+    color: @module-fg;
+    border-radius: 8px;
+    box-shadow: none;
+    margin: 2px 1px;
+    padding: 0 3px;
+    transition: all 150ms ease;
+    font-size: 19px;
 }
 
 /* Empty workspace — dim but consistently sized so all 10 are always visible */
 #workspaces button.empty {
-  color: rgba(205, 214, 244, 0.30);
-  min-width: 22px;
-  padding: 0 3px;
-  margin: 2px 1px;
+    color: rgba(205, 214, 244, 0.3);
+    min-width: 22px;
+    padding: 0 3px;
+    margin: 2px 1px;
 }
 #workspaces button.empty:hover {
-  color: rgba(205, 214, 244, 0.55);
-  background: rgba(49, 50, 68, 0.4);
+    color: rgba(205, 214, 244, 0.55);
+    background: rgba(49, 50, 68, 0.4);
 }
 
 /* Occupied workspace — warm tint + bright bottom bar + dot above */
 #workspaces button.occupied {
-  color: #cba6f7;
-  border-bottom: 2px solid rgba(203, 166, 247, 0.75);
-  padding: 0 4px;
-  margin: 2px 1px;
-  min-width: 22px;
+    color: #cba6f7;
+    border-bottom: 2px solid rgba(203, 166, 247, 0.75);
+    padding: 0 4px;
+    margin: 2px 1px;
+    min-width: 22px;
 }
 #workspaces button.occupied:hover {
-  color: @hover-fg;
-  background: rgba(49, 50, 68, 0.7);
-  border-bottom-color: rgba(203, 166, 247, 1.0);
+    color: @hover-fg;
+    background: rgba(49, 50, 68, 0.7);
+    border-bottom-color: rgba(203, 166, 247, 1);
 }
 
 /* Active workspace — bright pill, strongly contrasted */
 #workspaces button.active {
-  color: @active-fg;
-  background: rgba(147, 153, 178, 0.95);
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  border-bottom: 2px solid rgba(166, 227, 161, 1.0);
-  margin: 3px 2px;
-  padding: 0 8px;
-  min-width: 22px;
+    color: @active-fg;
+    background: rgba(147, 153, 178, 0.95);
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+    box-shadow:
+        0 0 6px 1px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    border-bottom: 2px solid rgba(166, 227, 161, 1);
+    margin: 3px 2px;
+    padding: 0 8px;
+    min-width: 22px;
 }
 #workspaces button.active:hover {
-  color: @hover-fg;
-  background: rgba(49, 50, 68, 0.7);
-  text-shadow: none;
-  box-shadow: none;
+    color: @hover-fg;
+    background: rgba(49, 50, 68, 0.7);
+    text-shadow: none;
+    box-shadow: none;
 }
 
 /* Urgent workspace — red pulse */
 #workspaces button.urgent {
-  color: #f38ba8;
-  border-bottom: 2px solid rgba(243, 139, 168, 0.9);
-  padding: 0 4px;
-  margin: 2px 1px;
-  min-width: 22px;
+    color: #f38ba8;
+    border-bottom: 2px solid rgba(243, 139, 168, 0.9);
+    padding: 0 4px;
+    margin: 2px 1px;
+    min-width: 22px;
 }
 
 /* === Module Base Style === */
@@ -124,263 +128,273 @@ tooltip label {
 #battery,
 #custom-power,
 #custom-notification {
-  opacity: 1;
-  color: @module-fg;
-  padding: 0 6px;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  border: 1px solid @glass-border;
-  box-shadow: inset 0 1px 0 @glass-highlight, 0 1px 3px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    color: @module-fg;
+    padding: 0 6px;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+    border: 1px solid @glass-border;
+    box-shadow:
+        inset 0 1px 0 @glass-highlight,
+        0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* === Modules Left === */
 
 #custom-ws {
-  background: @dark;
-  border-radius: 8px;
-  margin: 2px 1px;
-  padding: 0 8px;
+    background: @dark;
+    border-radius: 8px;
+    margin: 2px 1px;
+    padding: 0 8px;
 }
 
 #workspaces {
-  background: @dark;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @dark;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 
 #submap {
-  color: @main-bg;
-  background: rgba(243, 139, 168, 0.85);
-  font-weight: bold;
-  padding: 0 10px;
-  border-radius: 8px;
-  margin: 2px 4px;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(243, 139, 168, 0.3);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 4px rgba(0, 0, 0, 0.4);
+    color: @main-bg;
+    background: rgba(243, 139, 168, 0.85);
+    font-weight: bold;
+    padding: 0 10px;
+    border-radius: 8px;
+    margin: 2px 4px;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(243, 139, 168, 0.3);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 #window {
-  background: @medium;
-  border-radius: 8px;
-  margin: 2px 1px;
-  padding: 0 8px;
+    background: @medium;
+    border-radius: 8px;
+    margin: 2px 1px;
+    padding: 0 8px;
 }
 
 /* === Modules Center === */
 
 #custom-weather {
-  background: @dark;
-  border-radius: 8px;
-  margin: 2px 1px;
-  padding: 0 8px;
-  color: @module-fg;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  border: 1px solid @glass-border;
-  box-shadow: inset 0 1px 0 @glass-highlight, 0 1px 3px rgba(0, 0, 0, 0.3);
+    background: @dark;
+    border-radius: 8px;
+    margin: 2px 1px;
+    padding: 0 8px;
+    color: @module-fg;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+    border: 1px solid @glass-border;
+    box-shadow:
+        inset 0 1px 0 @glass-highlight,
+        0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 #temperature {
-  background: @light;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @light;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 #temperature.critical {
-  color: @critical;
+    color: @critical;
 }
 
 #memory {
-  background: @medium;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @medium;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 #memory.warning {
-  color: @warning;
+    color: @warning;
 }
 #memory.critical {
-  color: @critical;
+    color: @critical;
 }
 
 #cpu {
-  background: @light;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @light;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 
 #disk {
-  background: @medium;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @medium;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 
 #custom-hypridle {
-  color: @distro-fg;
-  background: rgba(147, 153, 178, 0.75);
-  border-radius: 8px;
-  margin: 2px 1px;
-  padding: 0 10px;
-  text-shadow: 0 0 1.5px rgba(0, 0, 0, 1);
-  border: 1px solid rgba(147, 153, 178, 0.3);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
+    color: @distro-fg;
+    background: rgba(147, 153, 178, 0.75);
+    border-radius: 8px;
+    margin: 2px 1px;
+    padding: 0 10px;
+    text-shadow: 0 0 1.5px rgba(0, 0, 0, 1);
+    border: 1px solid rgba(147, 153, 178, 0.3);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 1px 3px rgba(0, 0, 0, 0.3);
 }
 #custom-hypridle.inhibiting {
-  color: @main-bg;
-  background: rgba(249, 226, 175, 0.85);
-  border-color: rgba(249, 226, 175, 0.3);
+    color: @main-bg;
+    background: rgba(249, 226, 175, 0.85);
+    border-color: rgba(249, 226, 175, 0.3);
 }
 
 #clock.time {
-  background: @medium;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @medium;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 
 #clock.date {
-  background: @light;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @light;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 #clock.date:hover {
-  color: @hover-fg;
-  text-shadow: none;
-  box-shadow: none;
+    color: @hover-fg;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 #network {
-  background: @dark;
-  border-radius: 8px;
-  margin: 2px 1px;
-  padding: 0 6px;
+    background: @dark;
+    border-radius: 8px;
+    margin: 2px 1px;
+    padding: 0 6px;
 }
 #network:hover {
-  color: @hover-fg;
-  text-shadow: none;
-  box-shadow: none;
+    color: @hover-fg;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 #custom-netspeed {
-  background: @dark;
-  border-radius: 8px;
-  margin: 2px 1px;
-  padding: 0 6px;
-  font-size: 10px;
+    background: @dark;
+    border-radius: 8px;
+    margin: 2px 1px;
+    padding: 0 6px;
+    font-size: 10px;
 }
 
 #bluetooth {
-  background: @dark;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @dark;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 #bluetooth:hover {
-  color: @hover-fg;
-  text-shadow: none;
-  box-shadow: none;
+    color: @hover-fg;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 #tray {
-  background: @dark;
-  border-radius: 8px;
-  margin: 2px 1px;
-  padding: 0 6px;
+    background: @dark;
+    border-radius: 8px;
+    margin: 2px 1px;
+    padding: 0 6px;
 }
 #tray > .passive {
-  color: @module-fg;
+    color: @module-fg;
 }
 #tray > .needs-attention {
-  color: @critical;
+    color: @critical;
 }
 
 /* === Modules Right === */
 
 #privacy-item {
-  color: @module-fg;
-  padding: 0 2px;
+    color: @module-fg;
+    padding: 0 2px;
 }
 #privacy-item.active {
-  color: @warning;
+    color: @warning;
 }
 
 #language {
-  background: @medium;
-  border-radius: 8px;
-  margin: 4px 3px;
-  color: @module-fg;
+    background: @medium;
+    border-radius: 8px;
+    margin: 4px 3px;
+    color: @module-fg;
 }
 
 #mpris {
-  font-weight: normal;
-  background: @light;
-  border-radius: 8px;
-  margin: 2px 1px;
-  color: @module-fg;
+    font-weight: normal;
+    background: @light;
+    border-radius: 8px;
+    margin: 2px 1px;
+    color: @module-fg;
 }
 #mpris:hover {
-  color: @hover-fg;
-  text-shadow: none;
-  box-shadow: none;
+    color: @hover-fg;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 #pulseaudio {
-  background: @medium;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @medium;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 #pulseaudio:hover {
-  color: @hover-fg;
-  text-shadow: none;
-  box-shadow: none;
+    color: @hover-fg;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 #custom-backlight {
-  background: @light;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @light;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 
 #battery {
-  background: @medium;
-  border-radius: 8px;
-  margin: 2px 1px;
+    background: @medium;
+    border-radius: 8px;
+    margin: 2px 1px;
 }
 #battery.full {
-  color: @full;
+    color: @full;
 }
 #battery.good {
-  color: @module-fg;
+    color: @module-fg;
 }
 #battery.warning {
-  color: @warning;
+    color: @warning;
 }
 #battery.critical {
-  color: @critical;
+    color: @critical;
 }
 #battery.charging {
-  color: @charging;
+    color: @charging;
 }
 
 #custom-power {
-  color: @main-bg;
-  background: rgba(243, 139, 168, 0.85);
-  border-radius: 10px;
-  margin: 2px 4px 2px 1px;
-  padding: 0 8px;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(243, 139, 168, 0.3);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 4px rgba(0, 0, 0, 0.5);
+    color: @main-bg;
+    background: rgba(243, 139, 168, 0.85);
+    border-radius: 10px;
+    margin: 2px 4px 2px 1px;
+    padding: 0 8px;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(243, 139, 168, 0.3);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 1px 4px rgba(0, 0, 0, 0.5);
 }
 #custom-power:hover {
-  color: @hover-fg;
-  background: @hover-bg;
-  text-shadow: none;
-  box-shadow: none;
+    color: @hover-fg;
+    background: @hover-bg;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 #custom-notification {
-  color: @module-fg;
-  background: @dark;
-  border-radius: 8px;
-  padding: 0 8px;
-  margin: 2px 1px;
+    color: @module-fg;
+    background: @dark;
+    border-radius: 8px;
+    padding: 0 8px;
+    margin: 2px 1px;
 }
 #custom-notification:hover {
-  color: @hover-fg;
+    color: @hover-fg;
 }
