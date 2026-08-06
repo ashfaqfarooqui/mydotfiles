@@ -103,3 +103,5 @@
 	defaultBranch = main
 [diff]
 	colorMoved = default
+[credential]
+	helper = store
