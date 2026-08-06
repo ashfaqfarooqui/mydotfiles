@@ -1,0 +1,31 @@
+onboarding = false
+
+[theme]
+# Matches the Catppuccin Mocha used across kitty/tmux/starship/aerc/ashell.
+name = "catppuccin"
+
+[terminal]
+# Inherit cwd from the source pane/workspace when opening new panes.
+new_cwd = "follow"
+
+[session]
+# Reattach supported agent panes to their live conversation after a server restart.
+resume_agents_on_restore = true
+
+[ui]
+show_agent_labels_on_pane_borders = true
+
+[ui.toast]
+delivery = "herdr"
+
+[[keys.command]]
+# Quick lazygit popup, since it's already part of the toolkit.
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit"
+width = "80%"
+height = "80%"
+
+[experimental]
+# Keep pane scrollback across full server restarts.
+pane_history = true

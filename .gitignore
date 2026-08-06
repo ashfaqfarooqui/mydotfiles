@@ -19,3 +19,8 @@ demo.org
 /xmonad/.xmonad/xmonad.o
 /doomEmacs/.doom.d/config.el
 *.log
+herdr/.config/herdr/*.sock
+herdr/.config/herdr/session.json
+herdr/.config/herdr/session-history.json
+herdr/.config/herdr/release-notes.json
+herdr/.config/herdr/sessions/

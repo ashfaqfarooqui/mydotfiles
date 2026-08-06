@@ -22,7 +22,7 @@ bash scripts/install/setup.sh
 ### Stow configs
 
 ```sh
-stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit gpg opencode aerc mbsync
+stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit gpg opencode aerc mbsync herdr
 ```
 
 ## Configs managed
@@ -40,6 +40,7 @@ stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit
 | `fastfetch/` | [fastfetch](https://github.com/fastfetch-cli/fastfetch) system info |
 | `ghostty/` | [Ghostty](https://ghostty.org/) terminal emulator |
 | `git/` | Git config and aliases |
+| `herdr/` | [herdr](https://herdr.dev) terminal workspace manager for AI coding agents |
 | `gpg/` | GPG agent config |
 | `gtk/` | GTK theme config |
 | `hypr/` | [Hyprland](https://hyprland.org/) compositor, hypridle, hyprlock |
