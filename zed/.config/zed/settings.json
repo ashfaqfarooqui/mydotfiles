@@ -1,6 +1,25 @@
 // Zed settings
 // https://zed.dev/docs/configuring-zed
 {
+  "redact_private_values": false,
+  "agent_servers": {
+    "opencode": {
+      "default_config_options": {
+        "mode": "build",
+        "effort": "high",
+        "model": "github-copilot/claude-sonnet-4.5"
+      },
+      "type": "registry",
+      "favorite_config_option_values": {
+        "model": [
+          "github-copilot/claude-sonnet-4.5"
+        ],
+        "effort": [
+          "high"
+        ]
+      }
+    }
+  },
   "cli_default_open_behavior": "existing_window",
   "diff_view_style": "split",
   "telemetry": {
@@ -32,7 +51,7 @@
   "scrolloff": 8,
   "tab_size": 4,
   "hard_tabs": false,
-  "soft_wrap": "none",
+  "soft_wrap": "editor_width",
   "show_whitespaces": "selection",
   "cursor_blink": false,
 
@@ -85,7 +104,7 @@
     "dock": "left",
     "git_status_indicator": true,
     "diagnostic_badges": true,
-    "hide_gitignore": true
+    "hide_gitignore": false
   },
   "outline_panel": {
     "dock": "right"
