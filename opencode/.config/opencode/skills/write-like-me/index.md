@@ -1,11 +1,11 @@
 ---
 name: write-like-me
-description: Write a blog post, essay, or informal piece in Ashfaq Farooqui's personal writing style. Use for blogs, essays, stray reflections, and book notes. Not for academic/technical writing — use write-paper-like-me for that.
+description: Write a blog post, essay, or informal piece in Ashfaq Farooqui's personal writing style. Use for blogs, essays, stray reflections, and book notes. Not for academic/technical writing — use write-technical-like-me for that.
 ---
 
 Write a blog post in the author's personal style. Follow every rule below precisely.
 
-(Scope: blogs, essays, and informal writing only. For academic papers, abstracts, or thesis text, use the `write-paper-like-me` skill instead — the registers are deliberately different and must not blend.)
+(Scope: blogs, essays, and informal writing only. For academic papers, abstracts, thesis text, technical reports, or any other technical writing, use the `write-technical-like-me` skill instead — the registers are deliberately different and must not blend.)
 
 ---
 
@@ -39,8 +39,22 @@ Learned from a real edit pass where the draft was flagged as "reads like AI wrot
 - **Don't use the "polish" register for plain facts.** Watch for words like "genuine curiosity," "culmination," "provably correct... fascinated me" showing up as reflexive upgrades of plainer phrasing ("something clicked," "was really the output of," "that idea got me"). If the plainer version says the same thing, use the plainer version.
 - **Vary section rhythm on purpose.** A pattern of "every section is exactly two paragraphs of similar length, each with setup + payoff" is itself a tell, independent of any single sentence. Deliberately let some sections run one paragraph, some run four, some end mid-thought without a wrap-up line.
 - **Fragments over complete "worked" sentences for a beat of surprise.** E.g. "It worked, somehow. Felt like magic." over "It worked, and it felt like magic." Dropping the subject/conjunction in a short reaction sentence reads more like someone typing what they actually thought than someone composing a sentence.
-- **Words the author verifiably never uses** (checked against ~19 of his real papers, 2016–2025 — these are LLM fingerprints, not his): "leverage" (0 uses in a decade of writing), "delve", "arguably", "it is likely that", "realm", "landscape" (metaphorical), "underscore" (as a verb), "pivotal", "showcase", "plethora", "cutting-edge", "seamless" as a throwaway adjective, "moreover". If one of these appears in a draft, it's a tell — replace with the plain word ("use", "look into", "important", "show").
+- **Words the author verifiably never (or almost never) uses** (checked against ~19 of his real papers, 2016–2025, and a full read of his 2021 PhD thesis — these are LLM fingerprints, not his): "delve", "arguably", "it is likely that", "realm", "landscape" (metaphorical), "underscore" (as a verb), "pivotal", "showcase", "plethora", "cutting-edge", "seamless" as a throwaway adjective, "moreover". If one of these appears in a draft, it's a tell — replace with the plain word ("use", "look into", "important", "show"). "leverage" is a near-miss, not a zero: the thesis has a handful of narrow technical-verb uses ("leverages upon the known foundations") — but it never appears in his informal writing, so in a blog post still treat it as a tell.
 - **Quirks that make prose read as his, verified from his real writing**: "learnt" as the past tense of learn (genuinely his, don't autocorrect it to "learned"); "in order to" left unshortened where it falls naturally; "admittedly" for a plain admission instead of hedging ("the validation was admittedly rather superficial" is how he concedes a weakness — direct, a little self-deprecating, no cushioning); an occasional run of exactly three adjectives when a thing genuinely has three qualities ("time-consuming, error-prone, and intractable") — but never padded to three for rhythm. American spelling otherwise (-ize, behavior).
+
+---
+
+## His Personal Register (verified from the PhD thesis acknowledgments, his longest stretch of informal first-person prose)
+
+The acknowledgments of his 2021 thesis are the best ground truth for how he writes when he's *not* writing a paper. What shows up there, use here:
+
+- **Exclamation marks are authentic in his warm register** — "Thank you!", "we should have them more often!", "I promise to make up for it!". One per beat of genuine feeling, never stacked, never on jokes that don't earn it.
+- **Fragment openers**: "Feels like it was a couple of months ago that I first stepped into the EDIT building." — dropping the subject in a reflective opener is his move, not an error.
+- **Parenthetical self-deprecation**: "thank you for having the patience to listen to my (often) incoherent ramblings" — a small aside inserted with parentheses, aimed at himself.
+- **Colloquial idioms he actually reaches for**: "shout out to", "kept my sanity in check", "I can't put my finger on it", "way too" as an intensifier ("I have spent way too little time with you; I promise to make up for it!" — note the semicolon running straight into an exclamation).
+- **One extended metaphor carrying a whole piece**: the acknowledgments ride a single journey/odyssey metaphor from first line to last ("My odyssey as a doctoral student draws to a close... Like in all journeys, the people encountered have left an impact"). This matches the "analogy as engine" move — one image, sustained, not a parade of different metaphors.
+- **Sincerity is stated plainly, even a little grandly, without irony**: "it was just the magic that you conjured up and bestowed upon me somehow", "each profound and beautiful in their own ways". When he's moved, he says so directly — don't undercut warm moments with a joke or hedge.
+- **Second-person address when writing about specific people**: he switches from "Martin Fabian is..." to "You have been an impeccable example..." mid-paragraph. In personal posts about people, address them, don't describe them.
 
 ---
 
