@@ -22,7 +22,7 @@ bash scripts/install/setup.sh
 ### Stow configs
 
 ```sh
-stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit gpg opencode aerc mbsync herdr
+stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit gpg opencode aerc mbsync herdr voxtype
 ```
 
 ## Configs managed
@@ -56,7 +56,9 @@ stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit
 | `sshs/` | [sshs](https://github.com/quantumsheep/sshs) SSH host manager |
 | `starship/` | [Starship](https://starship.rs/) shell prompt |
 | `swaync/` | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) notifications |
+| `theme/` | Not stowed — [Whiskers](https://github.com/catppuccin/whiskers)-based generator for hypr/waybar/ghostty/rofi/hyprlock theming (+ matching wallpaper). Native: `mocha`/`latte`/`frappe`/`macchiato`. Custom (repainted via `--color-overrides`, see `theme/palettes/`): `nord`/`gruvbox`/`dracula`/`tokyonight`/`rosepine`. Run `just -f theme/justfile apply <name>`, or `SUPER+CTRL+SHIFT+SPACE` |
 | `tmux/` | [tmux](https://github.com/tmux/tmux) terminal multiplexer |
+| `voxtype/` | [Voxtype](https://github.com/peteonrails/voxtype) offline push-to-talk dictation |
 | `vscode/` | VS Code / Cursor settings |
 | `walker/` | [walker](https://github.com/abenz1267/walker) launcher |
 | `waybar/` | [Waybar](https://github.com/Alexays/Waybar) status bar |

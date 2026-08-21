@@ -9,7 +9,7 @@
         "mode": "dock",
         "reload_style_on_change": true,
         "gtk-layer-shell": false,
-        "include": ["hyprwhspr-module.jsonc"],
+        "include": ["voxtype-module.jsonc"],
         "modules-left": [
             "custom/ws",
             "hyprland/workspaces",
@@ -36,7 +36,7 @@
             "mpris",
             "pulseaudio",
             "custom/backlight",
-            "custom/hyprwhspr",
+            "custom/voxtype",
             "battery",
             "custom/power",
             "custom/notification"
@@ -446,7 +446,7 @@
         "mode": "dock",
         "reload_style_on_change": true,
         "gtk-layer-shell": false,
-        "include": ["hyprwhspr-module.jsonc"],
+        "include": ["voxtype-module.jsonc"],
         "modules-left": [
             "custom/ws",
             "hyprland/workspaces",
@@ -467,7 +467,7 @@
             "privacy",
             "hyprland/language",
             "pulseaudio",
-            "custom/hyprwhspr",
+            "custom/voxtype",
             "battery",
             "custom/power",
             "custom/notification"

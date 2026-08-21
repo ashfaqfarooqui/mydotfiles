@@ -1,6 +1,11 @@
 -- Look and feel: general, decoration, animations, layouts, misc, xwayland
 local theme = require("theme")
 
+-- Hyprland's gradient border syntax needs rgba(), not rgb() — theme.lua only has rgb().
+local function rgba(rgb_str)
+    return (rgb_str:gsub("^rgb%(", "rgba("):gsub("%)$", "ff)"))
+end
+
 ---------------------------------------------------------------------------
 -- Options
 ---------------------------------------------------------------------------
@@ -10,7 +15,9 @@ hl.config({
         gaps_out         = 20,
         border_size      = 2,
         col              = {
-            active_border   = theme.mauve,
+            -- Gradient (not a flat color) so the "borderangle" animation below has
+            -- something to actually rotate.
+            active_border   = { colors = { rgba(theme.mauve), rgba(theme.pink), rgba(theme.blue) }, angle = 45 },
             inactive_border = theme.surface2,
         },
         resize_on_border = true,
@@ -23,6 +30,9 @@ hl.config({
         active_opacity     = 1.0,
         inactive_opacity   = 0.95,
         fullscreen_opacity = 1.0,
+        dim_inactive       = true,
+        dim_strength       = 0.15,
+        dim_special        = 0.15,
         shadow           = {
             enabled        = true,
             range          = 20,

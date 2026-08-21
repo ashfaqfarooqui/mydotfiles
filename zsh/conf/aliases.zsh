@@ -22,6 +22,9 @@ alias zshconfig="$EDITOR $ZDOTDIR/.zshrc"
 # --- SSH ---
 alias s='kitten ssh'
 
+# --- Music ---
+alias music='cliamp'
+
 # --- File finder ---
 alias ff='fzf --preview "bat --style=numbers --color=always {}"'
 

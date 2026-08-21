@@ -125,6 +125,7 @@ tooltip label {
 #mpris,
 #pulseaudio,
 #custom-backlight,
+#custom-voxtype,
 #battery,
 #custom-power,
 #custom-notification {
@@ -346,6 +347,31 @@ tooltip label {
     background: @light;
     border-radius: 8px;
     margin: 2px 1px;
+}
+
+#custom-voxtype {
+    background: @medium;
+    border-radius: 8px;
+    margin: 2px 1px;
+}
+#custom-voxtype.idle {
+    color: @full;
+}
+#custom-voxtype.transcribing {
+    color: @warning;
+}
+#custom-voxtype.recording {
+    color: @critical;
+    animation: voxtype-pulse 1s ease-in-out infinite;
+}
+#custom-voxtype.stopped {
+    color: @overlay0;
+}
+
+@keyframes voxtype-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
 }
 
 #battery {

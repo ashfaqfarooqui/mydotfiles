@@ -1,0 +1,10 @@
+{
+  "custom/voxtype": {
+    "format": "{}",
+    "exec": "voxtype status --format json --follow",
+    "return-type": "json",
+    "exec-on-event": true,
+    "on-click": "systemctl --user restart voxtype",
+    "tooltip": true
+  }
+}

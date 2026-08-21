@@ -1,0 +1,91 @@
+# Print out all recipes when running `just`
+_default:
+    @just --list
+
+output := "generated"
+native_flavors := "mocha latte frappe macchiato"
+
+# Render every template for every native Catppuccin flavor into generated/<flavor>/...
+generate:
+    whiskers hyprland.tera
+    whiskers hyprlock.tera
+    whiskers waybar.tera
+    whiskers ghostty.tera
+    whiskers rofi.tera
+
+# Render every template for a non-Catppuccin theme (theme/palettes/<name>.json) into
+# generated/<name>/..., by repainting all 26 Catppuccin color slots via
+# `--color-overrides` and stripping each template's frontmatter so whiskers prints
+# to stdout instead of writing to the native flavor's own output path.
+generate-custom name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "{{output}}/{{name}}"
+    overrides=$(jq -c "{mocha: .}" "palettes/{{name}}.json")
+    display_name=$(case "{{name}}" in
+        nord) echo "Nord" ;;
+        gruvbox) echo "Gruvbox" ;;
+        dracula) echo "Dracula" ;;
+        tokyonight) echo "Tokyo Night" ;;
+        rosepine) echo "Rose Pine" ;;
+        *) echo "{{name}}" ;;
+    esac)
+    declare -A files=(
+        [hyprland.tera]=hypr-theme.lua
+        [hyprlock.tera]=hyprlock-colors.conf
+        [waybar.tera]=waybar-theme.css
+        [ghostty.tera]=ghostty-theme.conf
+        [rofi.tera]=rofi-theme.rasi
+    )
+    for tmpl in "${!files[@]}"; do
+        out="{{output}}/{{name}}/${files[$tmpl]}"
+        awk '/^---$/{c++; next} c>=2' "$tmpl" \
+            | whiskers - -f mocha --color-overrides "$overrides" \
+            | sed "s/Catppuccin Mocha/${display_name}/g" \
+            > "$out"
+    done
+
+# Remove generated output
+clean:
+    rm -rf {{output}}
+
+# Apply a theme (native: mocha/latte/frappe/macchiato, or custom: nord/gruvbox/
+# dracula/tokyonight/rosepine) to the live, stowed configs and reload apps.
+# Usage: just -f theme/justfile apply mocha
+apply name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [[ " {{native_flavors}} " == *" {{name}} "* ]]; then
+        just -f "{{justfile()}}" generate
+    else
+        just -f "{{justfile()}}" generate-custom "{{name}}"
+    fi
+    cp "{{output}}/{{name}}/hypr-theme.lua" ../hypr/.config/hypr/theme.lua
+    cp "{{output}}/{{name}}/hyprlock-colors.conf" ../hypr/.config/hypr/hyprlock-colors.conf
+    cp "{{output}}/{{name}}/waybar-theme.css" ../waybar/.config/waybar/theme.css
+    cp "{{output}}/{{name}}/ghostty-theme.conf" ../ghostty/.config/ghostty/theme.conf
+    cp "{{output}}/{{name}}/rofi-theme.rasi" ../rofi/.config/rofi/theme.rasi
+    hyprctl reload || true
+    pkill -SIGUSR2 waybar || true
+    # Themes with a dedicated Wallpapers/<name>/ folder pick a random image from it;
+    # native flavors without one (currently just mocha) fall back to a fixed default
+    # so re-applying mocha reliably restores the original wallpaper.
+    declare -A default_wallpaper=(
+        [mocha]="../Wallpapers/DSC_0749-1.jpg"
+    )
+    wallpaper_dir="../Wallpapers/{{name}}"
+    if [ -d "$wallpaper_dir" ] && [ -n "$(ls -A "$wallpaper_dir" 2>/dev/null)" ]; then
+        wallpaper=$(find "$wallpaper_dir" -type f | shuf -n1)
+    else
+        wallpaper="${default_wallpaper[{{name}}]:-}"
+    fi
+    if [ -n "$wallpaper" ]; then
+        # hyprpaper 0.8.4 has no working "reload" IPC verb, and an empty monitor
+        # field silently no-ops — set it per connected monitor explicitly.
+        for mon in $(hyprctl monitors -j | jq -r '.[].name'); do
+            hyprctl hyprpaper wallpaper "$mon,$wallpaper" || true
+        done
+        wallpaper_abs=$(realpath "$wallpaper")
+        sed -i "s|^    path = .*|    path = $wallpaper_abs|" ../hypr/.config/hypr/hyprlock.conf
+    fi
+    echo "Applied {{name}}. Reload ghostty's config with its 'reload_config' keybind (default ctrl+shift+,) or open a new window; rofi and hyprlock pick up the new theme next time they're launched."

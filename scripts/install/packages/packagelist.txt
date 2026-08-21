@@ -125,3 +125,8 @@ helvum
 bluez
 bluez-tools
 bat
+just
+catppuccin-whiskers-bin
+voxtype-bin
+cliamp-bin
+nwg-displays

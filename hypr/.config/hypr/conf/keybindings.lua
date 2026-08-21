@@ -22,8 +22,8 @@ hl.bind(mainMod .. " + SPACE",  hl.dsp.exec_cmd(menu),            D("App launche
 hl.bind(mainMod .. " + b",      hl.dsp.exec_cmd(browser),         D("Browser"))
 hl.bind(mainMod .. " + o",      hl.dsp.layout("togglesplit"),     D("Toggle split"))
 
--- Clipboard history
-hl.bind("ALT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"), D("Clipboard history"))
+-- Clipboard history (image entries render as thumbnails, not a text placeholder)
+hl.bind("ALT + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/cliphist-picker.py"), D("Clipboard history"))
 
 -- Lock screen
 hl.bind(mainMod .. " + ALT + l", hl.dsp.exec_cmd("hyprlock"),     D("Lock screen"))
@@ -43,6 +43,12 @@ hl.bind(mainMod .. " + ALT + Tab", hl.dsp.exec_cmd("rofi -show window"), D("Wind
 
 -- Help overlay
 hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("~/.config/hypr/scripts/keybind-help.sh"), D("Show keybinds"))
+
+-- Theme picker
+hl.bind(mainMod .. " + CTRL + SHIFT + SPACE", hl.dsp.exec_cmd("~/.config/hypr/scripts/theme-picker.sh"), D("Theme picker"))
+
+-- Dictation (Voxtype)
+hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("voxtype record toggle"), D("Toggle dictation"))
 
 ---------------------------------------------------------------------------
 -- Window focus (vim keys)

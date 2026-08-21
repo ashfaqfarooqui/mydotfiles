@@ -170,3 +170,10 @@ yay -S --no-confirm vulkan-radeon
 yay -S --no-confirm amd-ucode
 yay -S --no-confirm lm_sensors
 yay -S --no-confirm fwupd
+
+# Theming / dictation / misc (omarchy-inspired)
+yay -S --no-confirm just
+yay -S --no-confirm catppuccin-whiskers-bin
+yay -S --no-confirm voxtype-bin
+yay -S --no-confirm cliamp-bin
+yay -S --no-confirm nwg-displays
