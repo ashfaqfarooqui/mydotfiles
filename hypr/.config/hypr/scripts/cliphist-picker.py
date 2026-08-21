@@ -14,12 +14,23 @@ os.makedirs(cache_dir, exist_ok=True)
 img_re = re.compile(r"^(\d+)\t\[\[ binary data .*?(png|jpe?g|bmp|gif|webp) ", re.IGNORECASE)
 
 
+THUMB_SIZE = "128x128"
+
+
 def thumbnail_for(entry_id: str, ext: str) -> str:
-    path = os.path.join(cache_dir, f"{entry_id}.{ext}")
+    path = os.path.join(cache_dir, f"{entry_id}.png")
     if not os.path.exists(path):
-        proc = subprocess.run(["cliphist", "decode", entry_id], capture_output=True, check=True)
-        with open(path, "wb") as f:
-            f.write(proc.stdout)
+        decoded = subprocess.run(["cliphist", "decode", entry_id], capture_output=True, check=True).stdout
+        raw = os.path.join(cache_dir, f"{entry_id}-raw.{ext}")
+        with open(raw, "wb") as f:
+            f.write(decoded)
+        # Center-crop to a square so portrait/landscape/panorama images all fill
+        # the icon slot instead of shrinking to a sliver at rofi's default fit.
+        subprocess.run(
+            ["magick", raw, "-resize", f"{THUMB_SIZE}^", "-gravity", "center", "-extent", THUMB_SIZE, path],
+            check=True,
+        )
+        os.remove(raw)
     return path
 
 
