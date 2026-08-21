@@ -13,6 +13,9 @@ generate:
     whiskers ghostty.tera
     whiskers rofi.tera
     whiskers swaync.tera
+    whiskers btop.tera
+    whiskers lazygit.tera
+    whiskers fzf.tera
 
 # Render every template for a non-Catppuccin theme (theme/palettes/<name>.json) into
 # generated/<name>/..., by repainting all 26 Catppuccin color slots via
@@ -38,6 +41,9 @@ generate-custom name:
         [ghostty.tera]=ghostty-theme.conf
         [rofi.tera]=rofi-theme.rasi
         [swaync.tera]=swaync-theme.css
+        [btop.tera]=btop-theme.theme
+        [lazygit.tera]=lazygit-config.yml
+        [fzf.tera]=fzf-theme.zsh
     )
     for tmpl in "${!files[@]}"; do
         out="{{output}}/{{name}}/${files[$tmpl]}"
@@ -78,6 +84,11 @@ apply name:
     cp "{{output}}/{{name}}/ghostty-theme.conf" ../ghostty/.config/ghostty/theme.conf
     cp "{{output}}/{{name}}/rofi-theme.rasi" ../rofi/.config/rofi/theme.rasi
     cp "{{output}}/{{name}}/swaync-theme.css" ../swaync/.config/swaync/theme.css
+    mkdir -p ../btop/.config/btop/themes
+    cp "{{output}}/{{name}}/btop-theme.theme" ../btop/.config/btop/themes/current.theme
+    cp "{{output}}/{{name}}/lazygit-config.yml" ../lazygit/.config/lazygit/config.yml
+    cp "{{output}}/{{name}}/fzf-theme.zsh" ../zsh/conf/fzf-theme.zsh
+    python3 apply-starship.py "{{output}}/{{name}}/hypr-theme.lua" ../starship/.config/starship.toml
     hyprctl reload || true
     pkill -SIGUSR2 waybar || true
     pkill -SIGUSR2 ghostty || true

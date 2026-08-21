@@ -91,7 +91,6 @@ bitwarden
 emacs-wayland
 calibre
 hledger
-zellij
 aspell
 betterbird
 yazi

@@ -6,6 +6,12 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 	hl.exec_cmd("systemctl --user restart xdg-desktop-portal-hyprland xdg-desktop-portal")
 
+	-- xdg-desktop-portal-gtk's appearance/color-scheme setting comes from this
+	-- gsetting (not from gtk-*.0/settings.ini), and Zen/Firefox's "Auto" theme
+	-- reads it through the portal — without this, dark GTK themes don't
+	-- actually signal "dark" to portal-aware apps.
+	hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
+
 	-- Polkit agent
 	hl.exec_cmd("systemctl --user start hyprpolkitagent")
 
