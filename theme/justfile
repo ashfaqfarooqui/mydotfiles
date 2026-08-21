@@ -45,6 +45,16 @@ generate-custom name:
             > "$out"
     done
 
+# Rebuild the 2x2 color-swatch PNGs (theme/swatches/<name>.png) used as row icons
+# in the theme picker. Only needs re-running if a palette changes.
+swatches: generate
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for name in nord gruvbox dracula tokyonight rosepine; do
+        just -f "{{justfile()}}" generate-custom "$name"
+    done
+    ./make-swatches.sh
+
 # Remove generated output
 clean:
     rm -rf {{output}}
@@ -88,4 +98,5 @@ apply name:
         wallpaper_abs=$(realpath "$wallpaper")
         sed -i "s|^    path = .*|    path = $wallpaper_abs|" ../hypr/.config/hypr/hyprlock.conf
     fi
+    echo "{{name}}" > .current
     echo "Applied {{name}}. Reload ghostty's config with its 'reload_config' keybind (default ctrl+shift+,) or open a new window; rofi and hyprlock pick up the new theme next time they're launched."

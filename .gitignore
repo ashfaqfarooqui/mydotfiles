@@ -25,4 +25,5 @@ herdr/.config/herdr/session-history.json
 herdr/.config/herdr/release-notes.json
 herdr/.config/herdr/sessions/
 theme/generated/
+theme/.current
 __pycache__/
