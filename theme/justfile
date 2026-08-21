@@ -12,6 +12,7 @@ generate:
     whiskers waybar.tera
     whiskers ghostty.tera
     whiskers rofi.tera
+    whiskers swaync.tera
 
 # Render every template for a non-Catppuccin theme (theme/palettes/<name>.json) into
 # generated/<name>/..., by repainting all 26 Catppuccin color slots via
@@ -36,6 +37,7 @@ generate-custom name:
         [waybar.tera]=waybar-theme.css
         [ghostty.tera]=ghostty-theme.conf
         [rofi.tera]=rofi-theme.rasi
+        [swaync.tera]=swaync-theme.css
     )
     for tmpl in "${!files[@]}"; do
         out="{{output}}/{{name}}/${files[$tmpl]}"
@@ -75,8 +77,11 @@ apply name:
     cp "{{output}}/{{name}}/waybar-theme.css" ../waybar/.config/waybar/theme.css
     cp "{{output}}/{{name}}/ghostty-theme.conf" ../ghostty/.config/ghostty/theme.conf
     cp "{{output}}/{{name}}/rofi-theme.rasi" ../rofi/.config/rofi/theme.rasi
+    cp "{{output}}/{{name}}/swaync-theme.css" ../swaync/.config/swaync/theme.css
     hyprctl reload || true
     pkill -SIGUSR2 waybar || true
+    pkill -SIGUSR2 ghostty || true
+    swaync-client --reload-css || true
     # Themes with a dedicated Wallpapers/<name>/ folder pick a random image from it;
     # native flavors without one (currently just mocha) fall back to a fixed default
     # so re-applying mocha reliably restores the original wallpaper.
@@ -99,4 +104,4 @@ apply name:
         sed -i "s|^    path = .*|    path = $wallpaper_abs|" ../hypr/.config/hypr/hyprlock.conf
     fi
     echo "{{name}}" > .current
-    echo "Applied {{name}}. Reload ghostty's config with its 'reload_config' keybind (default ctrl+shift+,) or open a new window; rofi and hyprlock pick up the new theme next time they're launched."
+    echo "Applied {{name}}. rofi and hyprlock pick up the new theme next time they're launched."
