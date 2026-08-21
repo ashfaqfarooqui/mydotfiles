@@ -91,3 +91,9 @@ Verified against the full 2021 PhD thesis kappa, but these structures carry over
 > "Chapter 3 introduced supervisor synthesis, an approach to automatically compute supervisors for a given plant and specification. These methods assume access to usable plant and specification models. However, manually constructing these models is difficult, time-consuming, and prone to errors. Automata learning, introduced in Chapter 4, provides an approach to interact with a SUL and learn a model that represents its behavior. ... This chapter discusses an approach to integrate the two fields of study. First, some related work is presented." — chapter bridge, PhD thesis 2021
 
 Match this rhythm and these habits. Do not quote these excerpts back in output — they're calibration only.
+
+## After drafting
+
+Run the draft through the `voice-rubric` skill's enforcement loop (`~/.claude/skills/voice-rubric/SKILL.md`)
+before showing it: `voice_check.py --register technical`, then an independent critic subagent,
+revise, repeat until both pass or 5 rounds are up.

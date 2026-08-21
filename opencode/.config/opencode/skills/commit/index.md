@@ -1,31 +1,35 @@
 ---
 name: commit
-description: Stage and commit changes with a meaningful, concise commit message — no AI attribution, no Co-Authored-By footer
+description: Stage and commit changes with meaningful, concise commit messages, split into logically separate commits by concern — no AI attribution, no Co-Authored-By footer, no force-push
 ---
 
 # Git Commit Skill
 
-Create clean, meaningful git commits.
+Create clean, meaningful git commits, grouped by concern.
 
 ## Rules
 
-- **Never** include "Co-Authored-By", "Generated with", or any reference to Claude, AI, or any model in the commit message or footer
+- **Never** include "Co-Authored-By", "Generated with", "signed by Claude", or any reference to Claude, AI, or any model — in the commit message OR anywhere else (no signing on Claude's behalf, no committer identity changes)
+- **Never** force-push (`--force`, `--force-with-lease`), even on retry after a failed push — report the failure and let the user decide
+- **Never** skip hooks (`--no-verify`) or bypass GPG signing config
 - Subject line under 72 characters
 - Imperative mood: "add", "fix", "update", "remove", "refactor" — not "added"
 - No trailing period on the subject line
 - Use a body only when the why needs explaining — keep it brief
 - Match the repo's existing commit style (check `git log --oneline -5` first)
 - Use conventional commit prefixes (`feat:`, `fix:`, `chore:`, etc.) only if the repo already uses them
+- Group changes by concern: one commit per distinct config/feature/fix, not one giant commit
 
 ## Steps
 
-1. Run `git status --porcelain` and `git diff --cached` in parallel to see what's staged
-2. If nothing is staged, run `git diff` to see unstaged changes, then stage relevant files selectively — avoid `git add -A`
-3. Run `git log --oneline -5` to match the repo's commit style
-4. Analyze the diff: what changed and *why* — focus the message on the why
-5. Propose a commit message to the user
-6. Run `git commit -m "<message>"` — no attribution footer of any kind
-7. Show `git log --oneline -3` to confirm
+1. Check for `.git/index.lock`. If present, do NOT delete or retry — identify the holding process (`lsof .git/index.lock` or `fuser`), report it, and stop.
+2. Run the project's build/typecheck command if one is discoverable. If it fails, stop and report — do not commit. If none is discoverable, skip this step rather than guessing.
+3. Run `git status --porcelain` and `git diff` in parallel to see what changed
+4. Run `git log --oneline -5` to match the repo's commit style
+5. Group the changed files into logically separate commits by concern; draft a message per group
+6. Propose the grouping and messages to the user and wait for explicit approval before staging or committing anything
+7. Once approved, stage and commit each group separately (avoid `git add -A` — be selective per commit) — no attribution footer of any kind
+8. Show `git log --oneline -N` (N = number of new commits, or 3, whichever is larger) to confirm
 
 ## Message format
 

@@ -102,4 +102,11 @@ The acknowledgments of his 2021 thesis are the best ground truth for how he writ
 
 ---
 
+## After drafting
+
+Run the draft through the `voice-rubric` skill's enforcement loop (`~/.claude/skills/voice-rubric/SKILL.md`)
+before showing it: `voice_check.py`, then an independent critic subagent, revise, repeat until both
+pass or 5 rounds are up. Do not skip this because the draft "looks fine" — that's exactly the
+failure mode it exists to catch.
+
 Now write the blog post about whatever topic the user gives you.
