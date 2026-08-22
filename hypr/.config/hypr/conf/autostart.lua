@@ -17,7 +17,7 @@ hl.on("hyprland.start", function()
 
 	-- System tray / daemons (systemd-managed for auto-restart and logging)
 	hl.exec_cmd("nm-applet --indicator &")
-	hl.exec_cmd("systemctl --user start hypridle hyprpaper swaync waybar")
+	hl.exec_cmd("systemctl --user start hypridle hyprpaper quickshell")
 
 	-- Clipboard history
 	hl.exec_cmd("systemctl --user start cliphist")

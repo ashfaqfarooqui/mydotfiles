@@ -32,8 +32,10 @@ hl.bind(mainMod .. " + ALT + l", hl.dsp.exec_cmd("hyprlock"),     D("Lock screen
 hl.bind(mainMod .. " + P",      hl.dsp.exec_cmd("hyprshot -m window --clipboard-only"), D("Screenshot window"))
 hl.bind(mainMod .. " + CTRL + P", hl.dsp.exec_cmd("hyprshot -m region --clipboard-only"), D("Screenshot region"))
 
--- Toggle waybar
-hl.bind(mainMod .. " + CTRL + b", hl.dsp.exec_cmd("pkill -SIGUSR1 waybar"), D("Toggle waybar"))
+-- Toggle bar: waybar's SIGUSR1 toggle is now a no-op (waybar no longer
+-- autostarts). QuickShell has no bar-toggle IPC yet (see the quickshell
+-- plan's Open Risk #6) so this is disabled until that's solved.
+-- hl.bind(mainMod .. " + CTRL + b", hl.dsp.exec_cmd("pkill -SIGUSR1 waybar"), D("Toggle waybar"))
 
 -- Notification center (swaync)
 hl.bind(mainMod .. " + SHIFT + n", hl.dsp.exec_cmd("swaync-client -t -sw"), D("Notifications"))

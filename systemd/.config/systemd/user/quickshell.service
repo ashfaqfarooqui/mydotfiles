@@ -1,0 +1,13 @@
+[Unit]
+Description=QuickShell (bar, OSD, notifications, launcher)
+Documentation=https://quickshell.org
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/quickshell -p %h/.config/quickshell/shell.qml
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target
