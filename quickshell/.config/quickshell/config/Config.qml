@@ -6,4 +6,8 @@ import Quickshell
 Singleton {
     readonly property int barHeight: 38
     readonly property string reducedOutput: "eDP-1"
+    readonly property string fontFamily: "JetBrainsMono Nerd Font"
+    readonly property int fontSize: 13
+    // privacy indicator's ignore-list, mirrors waybar's privacy.ignore config
+    readonly property var privacyIgnore: ["cava", "obs"]
 }

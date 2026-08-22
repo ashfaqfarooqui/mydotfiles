@@ -1,4 +1,5 @@
 pragma Singleton
+import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 
@@ -11,6 +12,17 @@ Singleton {
     readonly property var focusedMonitor: Hyprland.focusedMonitor
     readonly property var activeToplevel: Hyprland.activeToplevel
     readonly property var toplevels: Hyprland.toplevels
+
+    // Hyprland has no "current submap" property; derive it from the event
+    // socket, same source waybar's hyprland/submap module ultimately reads.
+    property string submap: ""
+
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "submap") submap = event.data;
+        }
+    }
 
     function dispatch(request) {
         Hyprland.dispatch(request);
