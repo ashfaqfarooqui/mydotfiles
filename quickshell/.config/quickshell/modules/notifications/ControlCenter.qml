@@ -84,7 +84,19 @@ Scope {
 
                         component GridButton: Rectangle {
                             property string icon
-                            property var onActivated
+                            // A real signal, not `property var onActivated`
+                            // assigned a call expression: that form is a
+                            // QML property BINDING, whose right-hand side
+                            // is evaluated immediately when the binding is
+                            // established (i.e. the instant this component
+                            // loads), not deferred until click — found via
+                            // the identical bug in PowerMenuUI.qml, which
+                            // fired every action (including a real
+                            // poweroff) at popup-open time with zero
+                            // clicks. `signal activated()` +
+                            // `onActivated:` on a real signal is a genuine
+                            // handler, evaluated only on emission.
+                            signal activated()
                             Layout.fillWidth: true
                             Layout.preferredHeight: 44
                             radius: 8
@@ -100,7 +112,7 @@ Scope {
 
                             MouseArea {
                                 anchors.fill: parent
-                                onClicked: parent.onActivated()
+                                onClicked: parent.activated()
                             }
                         }
 

@@ -18,17 +18,27 @@ Scope {
         hideTimer.restart();
     }
 
+    // Audio.volumePercent starts at a default before Pipewire finishes its
+    // initial sync; without this guard, that first real-value update looks
+    // like a user-triggered volume change and pops the OSD on launch.
+    property bool _ready: false
     property int _lastPercent: Audio.volumePercent
     signal volumeChangedTrigger()
     Connections {
         target: Audio
         function onVolumePercentChanged() {
+            if (!root._ready) {
+                root._ready = true;
+                root._lastPercent = Audio.volumePercent;
+                return;
+            }
             if (Audio.volumePercent !== root._lastPercent) {
                 root._lastPercent = Audio.volumePercent;
                 root.volumeChangedTrigger();
             }
         }
         function onMutedChanged() {
+            if (!root._ready) return;
             root.volumeChangedTrigger();
         }
     }

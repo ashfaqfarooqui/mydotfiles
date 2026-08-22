@@ -8,6 +8,13 @@ import qs.services
 // icon, then buttons 1-10 (persistent, like waybar's persistent-workspaces),
 // highlighting the focused one. Scroll to switch, same as the original
 // on-scroll-up/down dispatchers.
+//
+// This machine's Hyprland build has a Lua-native dispatch IPC (hl.dispatch /
+// hl.dsp.*, see hypr/.config/hypr/conf/keybindings.lua) instead of vanilla
+// Hyprland's classic "dispatch <dispatcher> <args>" text protocol — a plain
+// "workspace N" string gets rejected with a Lua parse error. Dispatch calls
+// here must be Lua dispatcher-object expressions instead, confirmed live via
+// `hyprctl dispatch 'hl.dsp.focus({workspace = N, on_current_monitor = true})'`.
 Row {
     id: root
     spacing: 2
@@ -40,7 +47,7 @@ Row {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: Hypr.dispatch("workspace " + wsId)
+                onClicked: Hypr.dispatch("hl.dsp.focus({workspace = " + wsId + ", on_current_monitor = true})")
             }
         }
     }
@@ -48,7 +55,8 @@ Row {
     WheelHandler {
         target: root
         onWheel: event => {
-            Hypr.dispatch(event.angleDelta.y < 0 ? "workspace +1" : "workspace -1");
+            const rel = event.angleDelta.y < 0 ? "+1" : "-1";
+            Hypr.dispatch("hl.dsp.focus({workspace = \"" + rel + "\", on_current_monitor = true})");
         }
     }
 }

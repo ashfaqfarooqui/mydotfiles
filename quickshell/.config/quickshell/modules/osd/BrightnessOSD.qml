@@ -9,11 +9,21 @@ import qs.services
 Scope {
     id: root
     property bool shouldShow: false
+    // Brightness.percent starts at a default before brightnessctl's first
+    // poll resolves; without this guard, that first real-value update looks
+    // like a user-triggered brightness change and pops the OSD on launch
+    // (same class of bug as VolumeOSD.qml).
+    property bool _ready: false
     property int _lastPercent: Brightness.percent
 
     Connections {
         target: Brightness
         function onPercentChanged() {
+            if (!root._ready) {
+                root._ready = true;
+                root._lastPercent = Brightness.percent;
+                return;
+            }
             if (Brightness.percent !== root._lastPercent) {
                 root._lastPercent = Brightness.percent;
                 root.shouldShow = true;
