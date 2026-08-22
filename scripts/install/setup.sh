@@ -177,3 +177,6 @@ yay -S --no-confirm catppuccin-whiskers-bin
 yay -S --no-confirm voxtype-bin
 yay -S --no-confirm cliamp-bin
 yay -S --no-confirm nwg-displays
+
+# QuickShell (experimental shell replacing waybar/swaync/rofi, see quickshell-experiment branch)
+yay -S --no-confirm quickshell

@@ -66,6 +66,7 @@ nwg-look
 qt6ct
 waybar
 rofi
+quickshell
 polkit-gnome
 zsh
 fzf
