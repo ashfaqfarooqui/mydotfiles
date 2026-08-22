@@ -17,7 +17,7 @@ Row {
         font.pixelSize: Config.fontSize
 
         HoverHandler {
-            onHoveredChanged: hovered ? TooltipBus.show("Microphone in use") : TooltipBus.hide()
+            onHoveredChanged: hovered ? TooltipBus.show("Microphone in use", point.scenePosition.x) : TooltipBus.hide()
         }
     }
 
@@ -29,7 +29,7 @@ Row {
         font.pixelSize: Config.fontSize
 
         HoverHandler {
-            onHoveredChanged: hovered ? TooltipBus.show("Camera or screen share in use") : TooltipBus.hide()
+            onHoveredChanged: hovered ? TooltipBus.show("Camera or screen share in use", point.scenePosition.x) : TooltipBus.hide()
         }
     }
 }

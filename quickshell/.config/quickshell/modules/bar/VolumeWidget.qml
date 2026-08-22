@@ -31,6 +31,6 @@ Text {
     }
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show(Audio.muted ? "Muted" : "Volume: " + Audio.volumePercent + "%") : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show(Audio.muted ? "Muted" : "Volume: " + Audio.volumePercent + "%", point.scenePosition.x) : TooltipBus.hide()
     }
 }

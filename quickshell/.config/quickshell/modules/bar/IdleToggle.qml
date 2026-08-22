@@ -17,6 +17,6 @@ Text {
     }
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show(IdleInhibit.tooltip) : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show(IdleInhibit.tooltip, point.scenePosition.x) : TooltipBus.hide()
     }
 }

@@ -10,6 +10,6 @@ Text {
     font.pixelSize: Config.fontSize
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show("Disk used: " + SystemStats.diskPercent + "%") : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show("Disk used: " + SystemStats.diskPercent + "%", point.scenePosition.x) : TooltipBus.hide()
     }
 }

@@ -23,6 +23,6 @@ Text {
     HoverHandler {
         onHoveredChanged: hovered ? TooltipBus.show(
             !Bluetooth.enabled ? "Bluetooth disabled" : Bluetooth.connectedCount + " connected"
-        ) : TooltipBus.hide()
+        , point.scenePosition.x) : TooltipBus.hide()
     }
 }

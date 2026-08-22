@@ -20,6 +20,6 @@ Text {
     }
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show("CPU temperature: " + SystemStats.tempC + "°C") : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show("CPU temperature: " + SystemStats.tempC + "°C", point.scenePosition.x) : TooltipBus.hide()
     }
 }

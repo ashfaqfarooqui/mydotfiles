@@ -10,6 +10,6 @@ Text {
     font.pixelSize: Config.fontSize
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show(Weather.tooltip) : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show(Weather.tooltip, point.scenePosition.x) : TooltipBus.hide()
     }
 }

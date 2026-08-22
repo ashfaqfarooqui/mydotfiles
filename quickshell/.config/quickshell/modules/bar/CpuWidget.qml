@@ -16,6 +16,6 @@ Text {
     }
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show("CPU usage: " + SystemStats.cpuPercent + "%") : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show("CPU usage: " + SystemStats.cpuPercent + "%", point.scenePosition.x) : TooltipBus.hide()
     }
 }

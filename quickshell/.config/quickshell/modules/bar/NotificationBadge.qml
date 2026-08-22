@@ -25,6 +25,6 @@ Text {
         onHoveredChanged: hovered ? TooltipBus.show(
             Notifications.unreadCount + " notification" + (Notifications.unreadCount === 1 ? "" : "s") +
             (Notifications.dndEnabled ? " (DND on)" : "")
-        ) : TooltipBus.hide()
+        , point.scenePosition.x) : TooltipBus.hide()
     }
 }

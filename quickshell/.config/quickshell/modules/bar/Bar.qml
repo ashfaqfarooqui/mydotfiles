@@ -108,8 +108,9 @@ PanelWindow {
 
         PanelWindow {
             screen: root.screen
-            anchors.top: true
+            anchors { top: true; left: true }
             margins.top: Config.barHeight + 4
+            margins.left: Math.max(4, Math.min(TooltipBus.x - implicitWidth / 2, screen.width - implicitWidth - 4))
             implicitWidth: tooltipText.implicitWidth + 16
             implicitHeight: tooltipText.implicitHeight + 10
             color: "transparent"

@@ -34,7 +34,7 @@ Text {
     HoverHandler {
         onHoveredChanged: {
             const p = Mpris.activePlayer;
-            hovered && p ? TooltipBus.show((p.identity ?? "") + "\n" + (p.trackTitle ?? "") + "\n" + (p.trackArtist ?? "")) : TooltipBus.hide();
+            hovered && p ? TooltipBus.show((p.identity ?? "") + "\n" + (p.trackTitle ?? "") + "\n" + (p.trackArtist ?? ""), point.scenePosition.x) : TooltipBus.hide();
         }
     }
 }

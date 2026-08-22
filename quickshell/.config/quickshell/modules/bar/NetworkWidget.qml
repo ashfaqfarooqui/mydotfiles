@@ -33,6 +33,6 @@ Text {
         onHoveredChanged: hovered ? TooltipBus.show(
             Network.kind === "wifi" ? (Network.ssid + " (" + Network.signalStrength + "%)") :
             Network.kind === "ethernet" ? "Ethernet connected" : "Disconnected"
-        ) : TooltipBus.hide()
+        , point.scenePosition.x) : TooltipBus.hide()
     }
 }

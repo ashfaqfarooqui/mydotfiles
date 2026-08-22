@@ -23,6 +23,6 @@ Text {
     HoverHandler {
         onHoveredChanged: hovered ? TooltipBus.show(
             Battery.charging ? "Charging: " + pct + "%" : "Discharging: " + pct + "%"
-        ) : TooltipBus.hide()
+        , point.scenePosition.x) : TooltipBus.hide()
     }
 }
