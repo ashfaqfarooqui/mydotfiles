@@ -21,8 +21,12 @@ declare -A display_names=(
     [dracula]="Dracula"
     [tokyonight]="Tokyo Night"
     [rosepine]="Rosé Pine"
+    [everforest]="Everforest"
+    [kanagawa]="Kanagawa"
+    [matte-black]="Matte Black"
+    [osaka-jade]="Osaka Jade"
 )
-order=(mocha latte frappe macchiato nord gruvbox dracula tokyonight rosepine)
+order=(mocha latte frappe macchiato nord gruvbox dracula tokyonight rosepine everforest kanagawa matte-black osaka-jade)
 
 menu=""
 declare -A slug_for_label

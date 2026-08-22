@@ -8,7 +8,7 @@ hex() {
     grep -m1 "^M\.$2 = " "generated/$1/hypr-theme.lua" | sed -E 's/.*rgb\(([0-9a-f]{6})\).*/#\1/'
 }
 
-for name in mocha latte frappe macchiato nord gruvbox dracula tokyonight rosepine; do
+for name in mocha latte frappe macchiato nord gruvbox dracula tokyonight rosepine everforest kanagawa matte-black osaka-jade; do
     base=$(hex "$name" base)
     accent=$(hex "$name" mauve)
     blue=$(hex "$name" blue)

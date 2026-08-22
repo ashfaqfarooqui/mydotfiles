@@ -16,6 +16,8 @@ generate:
     whiskers btop.tera
     whiskers lazygit.tera
     whiskers fzf.tera
+    whiskers nvim.tera
+    whiskers emacs.tera
 
 # Render every template for a non-Catppuccin theme (theme/palettes/<name>.json) into
 # generated/<name>/..., by repainting all 26 Catppuccin color slots via
@@ -32,6 +34,10 @@ generate-custom name:
         dracula) echo "Dracula" ;;
         tokyonight) echo "Tokyo Night" ;;
         rosepine) echo "Rose Pine" ;;
+        everforest) echo "Everforest" ;;
+        kanagawa) echo "Kanagawa" ;;
+        matte-black) echo "Matte Black" ;;
+        osaka-jade) echo "Osaka Jade" ;;
         *) echo "{{name}}" ;;
     esac)
     declare -A files=(
@@ -44,6 +50,8 @@ generate-custom name:
         [btop.tera]=btop-theme.theme
         [lazygit.tera]=lazygit-config.yml
         [fzf.tera]=fzf-theme.zsh
+        [nvim.tera]=nvim-theme.lua
+        [emacs.tera]=emacs-theme.el
     )
     for tmpl in "${!files[@]}"; do
         out="{{output}}/{{name}}/${files[$tmpl]}"
@@ -58,7 +66,7 @@ generate-custom name:
 swatches: generate
     #!/usr/bin/env bash
     set -euo pipefail
-    for name in nord gruvbox dracula tokyonight rosepine; do
+    for name in nord gruvbox dracula tokyonight rosepine everforest kanagawa matte-black osaka-jade; do
         just -f "{{justfile()}}" generate-custom "$name"
     done
     ./make-swatches.sh
@@ -88,6 +96,9 @@ apply name:
     cp "{{output}}/{{name}}/btop-theme.theme" ../btop/.config/btop/themes/current.theme
     cp "{{output}}/{{name}}/lazygit-config.yml" ../lazygit/.config/lazygit/config.yml
     cp "{{output}}/{{name}}/fzf-theme.zsh" ../zsh/conf/fzf-theme.zsh
+    cp "{{output}}/{{name}}/nvim-theme.lua" ../nvim/.config/nvim/colors/theme_generated.lua
+    mkdir -p ../doom/.doom.d/themes
+    cp "{{output}}/{{name}}/emacs-theme.el" ../doom/.doom.d/themes/theme-generated-theme.el
     python3 apply-starship.py "{{output}}/{{name}}/hypr-theme.lua" ../starship/.config/starship.toml
     hyprctl reload || true
     pkill -SIGUSR2 waybar || true
