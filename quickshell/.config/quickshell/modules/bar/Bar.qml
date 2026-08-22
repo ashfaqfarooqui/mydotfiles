@@ -111,7 +111,7 @@ PanelWindow {
             anchors { top: true; left: true }
             margins.top: Config.barHeight + 4
             margins.left: Math.max(4, Math.min(TooltipBus.x - implicitWidth / 2, screen.width - implicitWidth - 4))
-            implicitWidth: tooltipText.implicitWidth + 16
+            implicitWidth: tooltipText.width + 16
             implicitHeight: tooltipText.implicitHeight + 10
             color: "transparent"
             exclusiveZone: 0
@@ -125,10 +125,20 @@ PanelWindow {
                 Text {
                     id: tooltipText
                     anchors.centerIn: parent
-                    text: TooltipBus.text
+                    // wttrbar's weather tooltip embeds <b> pango markup, which
+                    // makes Qt auto-detect RichText and switch to HTML
+                    // semantics — where a literal "\n" is just whitespace,
+                    // not a line break, collapsing the whole multi-line
+                    // tooltip onto one line. Force RichText explicitly and
+                    // translate "\n" to <br/> so every tooltip (plain or
+                    // markup) renders as real separate lines.
+                    textFormat: Text.RichText
+                    text: TooltipBus.text.replace(/\n/g, "<br/>")
                     color: Theme.text
                     font.family: Config.fontFamily
                     font.pixelSize: 12
+                    wrapMode: Text.WordWrap
+                    width: Math.min(implicitWidth, 420)
                 }
             }
         }

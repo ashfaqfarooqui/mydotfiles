@@ -32,22 +32,39 @@ Row {
 
     Repeater {
         model: 10
-        delegate: Text {
+        delegate: Column {
             required property int index
             readonly property int wsId: index + 1
             readonly property bool isFocused: Hypr.focusedWorkspace?.id === wsId
+            // Mirrors waybar's button.occupied class — a workspace with at
+            // least one window on it, regardless of focus.
+            readonly property bool isOccupied: (Hypr.workspaces.values.find(w => w.id === wsId)?.toplevels.values.length ?? 0) > 0
 
-            text: root.icons[index]
-            color: isFocused ? Theme.blue : Theme.overlay0
-            font.family: Config.fontFamily
-            font.pixelSize: Config.fontSize
-            font.bold: isFocused
-            leftPadding: 4
-            rightPadding: 4
+            spacing: 1
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: Hypr.dispatch("hl.dsp.focus({workspace = " + wsId + ", on_current_monitor = true})")
+            Text {
+                text: root.icons[index]
+                color: isFocused ? Theme.blue : (isOccupied ? Theme.mauve : Theme.overlay0)
+                font.family: Config.fontFamily
+                font.pixelSize: Config.fontSize
+                font.bold: isFocused
+                leftPadding: 4
+                rightPadding: 4
+                horizontalAlignment: Text.AlignHCenter
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: Hypr.dispatch("hl.dsp.focus({workspace = " + wsId + ", on_current_monitor = true})")
+                }
+            }
+
+            Rectangle {
+                visible: isOccupied
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width - 8
+                height: 2
+                radius: 1
+                color: isFocused ? Theme.blue : Theme.mauve
             }
         }
     }

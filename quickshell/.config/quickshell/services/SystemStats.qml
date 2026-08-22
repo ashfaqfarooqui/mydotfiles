@@ -10,8 +10,16 @@ Singleton {
     id: root
 
     property real cpuPercent: 0
+    property real cpuFreqGHz: 0
     property real memPercent: 0
+    property real memUsedGB: 0
+    property real memTotalGB: 0
+    property real swapUsedGB: 0
+    property real swapTotalGB: 0
     property real diskPercent: 0
+    property string diskUsed: ""
+    property string diskTotal: ""
+    property string diskFree: ""
     property real tempC: 0
 
     property var _lastCpu: null // {idle, total}
@@ -23,6 +31,7 @@ Singleton {
         triggeredOnStart: true
         onTriggered: {
             cpuProc.running = true;
+            cpuFreqProc.running = true;
             memProc.running = true;
         }
     }
@@ -66,28 +75,49 @@ Singleton {
 
     Process {
         id: memProc
-        command: ["sh", "-c", "grep -E '^(MemTotal|MemAvailable):' /proc/meminfo"]
+        command: ["sh", "-c", "grep -E '^(MemTotal|MemAvailable|SwapTotal|SwapFree):' /proc/meminfo"]
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = this.text.trim().split("\n");
-                let total = 0, avail = 0;
+                let total = 0, avail = 0, swapTotal = 0, swapFree = 0;
                 for (const line of lines) {
                     const [, key, val] = line.match(/^(\w+):\s+(\d+)/) ?? [];
                     if (key === "MemTotal") total = Number(val);
                     if (key === "MemAvailable") avail = Number(val);
+                    if (key === "SwapTotal") swapTotal = Number(val);
+                    if (key === "SwapFree") swapFree = Number(val);
                 }
-                if (total > 0) root.memPercent = Math.round(((total - avail) / total) * 100);
+                if (total > 0) {
+                    root.memPercent = Math.round(((total - avail) / total) * 100);
+                    root.memUsedGB = (total - avail) / 1048576;
+                    root.memTotalGB = total / 1048576;
+                }
+                root.swapUsedGB = (swapTotal - swapFree) / 1048576;
+                root.swapTotalGB = swapTotal / 1048576;
             }
         }
     }
 
     Process {
+        id: cpuFreqProc
+        command: ["sh", "-c", "grep '^cpu MHz' /proc/cpuinfo | awk '{sum+=$4; n++} END {if (n>0) print sum/n/1000}'"]
+        stdout: StdioCollector {
+            onStreamFinished: root.cpuFreqGHz = Number(this.text.trim()) || 0
+        }
+    }
+
+    Process {
         id: diskProc
-        command: ["sh", "-c", "df -B1 --output=used,size / | tail -1"]
+        command: ["sh", "-c", "df -B1 --output=used,size,avail / | tail -1; df -h --output=used,size,avail / | tail -1"]
         stdout: StdioCollector {
             onStreamFinished: {
-                const [used, size] = this.text.trim().split(/\s+/).map(Number);
+                const lines = this.text.trim().split("\n");
+                const [used, size] = lines[0].trim().split(/\s+/).map(Number);
+                const [usedH, sizeH, availH] = lines[1].trim().split(/\s+/);
                 if (size > 0) root.diskPercent = Math.round((used / size) * 100);
+                root.diskUsed = usedH ?? "";
+                root.diskTotal = sizeH ?? "";
+                root.diskFree = availH ?? "";
             }
         }
     }

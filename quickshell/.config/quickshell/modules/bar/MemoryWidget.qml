@@ -16,6 +16,9 @@ Text {
     }
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show("Memory used: " + SystemStats.memPercent + "%", point.scenePosition.x) : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show(
+            "Memory Used: " + SystemStats.memUsedGB.toFixed(1) + " GB / " + SystemStats.memTotalGB.toFixed(1) + " GB\n" +
+            "Swap: " + SystemStats.swapUsedGB.toFixed(1) + " GB / " + SystemStats.swapTotalGB.toFixed(1) + " GB"
+        , point.scenePosition.x) : TooltipBus.hide()
     }
 }

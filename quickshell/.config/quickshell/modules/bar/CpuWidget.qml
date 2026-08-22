@@ -16,6 +16,8 @@ Text {
     }
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show("CPU usage: " + SystemStats.cpuPercent + "%", point.scenePosition.x) : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show(
+            "CPU Usage: " + SystemStats.cpuPercent + "%\nFrequency: " + SystemStats.cpuFreqGHz.toFixed(2) + "GHz"
+        , point.scenePosition.x) : TooltipBus.hide()
     }
 }
