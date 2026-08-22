@@ -26,13 +26,13 @@ scale trough {
 trough slider {
   margin: -10px;
   border-radius: 8px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
   transition: all 0.2s ease;
   background-color: @blue;
 }
 
 trough slider:hover {
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8), 0 0 8px @blue;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4), 0 0 8px @blue;
 }
 
 trough {
@@ -45,7 +45,7 @@ trough {
 }
 
 .notification-background {
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 1);
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   margin: 6px;
   background: @crust;
@@ -93,7 +93,7 @@ trough {
   border-radius: 8px;
   color: @crust;
   background-color: @red;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
 }
 
 .notification-background .close-button:hover {
@@ -107,7 +107,7 @@ trough {
   box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
   margin: 4px;
   padding: 8px;
-  font-size: 0.2rem;
+  font-size: 0.9rem;
 }
 
 .notification .notification-action:hover {
@@ -132,7 +132,7 @@ trough {
 
 /* control center */
 .control-center {
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 1);
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   background-color: @crust;
   color: @text;

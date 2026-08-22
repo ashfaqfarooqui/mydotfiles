@@ -28,8 +28,8 @@
     "text-empty": "No Notifications",
     "script-fail-notify": true,
     "widgets": [
-        //"buttons-grid",
         "title",
+        "buttons-grid",
         "dnd",
         "mpris",
         "volume",
