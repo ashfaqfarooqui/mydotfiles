@@ -3,11 +3,14 @@
 {
   "redact_private_values": false,
   "agent_servers": {
+    "claude-acp": {
+      "type": "registry"
+    },
     "opencode": {
       "default_config_options": {
         "mode": "build",
         "effort": "high",
-        "model": "github-copilot/claude-sonnet-4.5"
+        "model": "zai-coding-plan/glm-5.3"
       },
       "type": "registry",
       "favorite_config_option_values": {
@@ -116,6 +119,26 @@
     "dock": "left"
   },
   "agent": {
+    "tool_permissions": {
+      "tools": {
+        "terminal": {
+          "always_allow": [
+            {
+              "pattern": "^cat\\s+\\.venv/lib/python3\\.14/site-packages/ant_ai/tools/tool\\.py(\\s|$)"
+            },
+            {
+              "pattern": "^cat\\b"
+            }
+          ]
+        }
+      }
+    },
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "claude-opus-4.6",
+      "enable_thinking": true,
+      "effort": "high"
+    },
     "dock": "right",
     "single_file_review": true,
     "new_thread_location": "new_worktree"
