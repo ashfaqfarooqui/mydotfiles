@@ -14,7 +14,21 @@ Singleton {
         id: paletteFile
         path: Qt.resolvedUrl("./theme.json")
         watchChanges: true
-        onFileChanged: reload()
+        onFileChanged: {
+            reload();
+            reloadDelay.restart();
+        }
+    }
+
+    // Guards against a race where an external tool's write and this
+    // FileView's onFileChanged-triggered reload() overlap, reading the
+    // file mid-write. A short deferred second reload picks up the final
+    // contents once the writer has finished. (Precedent: end-4/dots-hyprland
+    // MaterialThemeLoader.qml.)
+    Timer {
+        id: reloadDelay
+        interval: 100
+        onTriggered: paletteFile.reload()
     }
 
     readonly property var palette: {

@@ -3,15 +3,15 @@ import Quickshell
 import qs.theme
 import qs.config
 import qs.services
+import qs.modules.network
 
-// Replaces waybar's two-config split: a full bar on external outputs, a
-// reduced bar on the laptop panel (Config.reducedOutput, "eDP-1").
+// Same widget set on every monitor — no more waybar-style full/reduced
+// split (Config.reducedOutput is now unused for layout purposes; kept only
+// for BacklightWidget's real-backlight comment below).
 PanelWindow {
     id: root
     required property var modelData
     screen: modelData
-
-    readonly property bool reduced: screen.name === Config.reducedOutput
 
     anchors {
         top: true
@@ -19,11 +19,10 @@ PanelWindow {
         right: true
     }
     implicitHeight: Config.barHeight
-    // Matches waybar's window#waybar>box background: rgba(17,17,27,0.55) —
-    // a translucent surface so Hyprland's layer blur (the "shell:*"/"bar"
-    // layer_rules already matching this namespace by substring) has
-    // something to actually blend, instead of a fully opaque fill.
-    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.55)
+    // Bumped from waybar's original rgba(17,17,27,0.55) — 0.55 read as too
+    // see-through against a busy wallpaper; still translucent enough for
+    // Hyprland's layer blur (the "shell:*"/"bar" layer_rules) to blend.
+    color: Qt.rgba(Theme.base.r, Theme.base.g, Theme.base.b, 0.78)
 
     Item {
         anchors.fill: parent
@@ -47,29 +46,19 @@ PanelWindow {
 
             GroupPill {
                 anchors.verticalCenter: parent.verticalCenter
-                visible: !root.reduced
                 WeatherWidget {}
                 TemperatureWidget {}
                 MemoryWidget {}
                 CpuWidget {}
                 DiskWidget {}
             }
-            Separator { visible: !root.reduced }
+            Separator {}
 
             GroupPill {
                 anchors.verticalCenter: parent.verticalCenter
                 IdleToggle {}
                 ClockWidget {}
                 DateWidget {}
-            }
-            Separator {}
-
-            GroupPill {
-                anchors.verticalCenter: parent.verticalCenter
-                NetworkWidget {}
-                NetSpeedWidget {}
-                BluetoothWidget {}
-                TrayWidget {}
             }
         }
 
@@ -81,18 +70,34 @@ PanelWindow {
             GroupPill {
                 anchors.verticalCenter: parent.verticalCenter
                 PrivacyIndicator {}
+                VoxtypeWidget {}
                 LanguageWidget {}
-                MprisWidget { visible: !root.reduced }
+                MprisWidget {}
+                AgentsWidget {}
             }
             Separator {}
 
             GroupPill {
                 anchors.verticalCenter: parent.verticalCenter
                 VolumeWidget {}
-                BacklightWidget { visible: !root.reduced }
+                // Shown on every monitor for a consistent bar even though
+                // amdgpu_bl1 (confirmed via `brightnessctl -l`) is only the
+                // laptop panel's own backlight — it still just controls that
+                // one real backlight regardless of which screen it's clicked
+                // from.
+                BacklightWidget {}
             }
             Separator {}
 
+            GroupPill {
+                anchors.verticalCenter: parent.verticalCenter
+                NetworkWidget {}
+                BluetoothWidget {}
+                TrayWidget {}
+            }
+            Separator {}
+
+            RecordingIndicator {}
             BatteryWidget {}
             Separator {}
             PowerButton {}
@@ -100,27 +105,56 @@ PanelWindow {
         }
     }
 
-    // Shared tooltip overlay, see services/TooltipBus.qml. Shows on both
-    // monitors' bars at once (not tracking exact screen identity through
-    // every widget) — an accepted minor imperfection with only two monitors.
+    NetworkPanel { screenName: root.screen.name }
+    BluetoothPanel { screenName: root.screen.name }
+    BatteryPanel { screenName: root.screen.name }
+    DisplayPanel { screenName: root.screen.name }
+    VolumePanel { screenName: root.screen.name }
+    CalendarPanel { screenName: root.screen.name }
+    VitalsPanel { screenName: root.screen.name }
+    AgentsPanel { screenName: root.screen.name }
+
+    // Shared tooltip overlay, see services/TooltipBus.qml. Gated on
+    // TooltipBus.screenName (the hovered widget's own Screen.name) so only
+    // the monitor actually being hovered shows a tooltip — previously both
+    // monitors' Bar instances reacted to the same global TooltipBus.text
+    // and each computed its own position from the same x against its own
+    // screen.width, popping a second, wrongly-positioned tooltip on
+    // whichever monitor wasn't hovered.
     LazyLoader {
-        active: TooltipBus.text !== ""
+        active: TooltipBus.text !== "" && TooltipBus.screenName === root.screen.name
 
         PanelWindow {
             screen: root.screen
             anchors { top: true; left: true }
-            margins.top: Config.barHeight + 4
-            margins.left: Math.max(4, Math.min(TooltipBus.x - implicitWidth / 2, screen.width - implicitWidth - 4))
-            implicitWidth: tooltipText.width + 16
-            implicitHeight: tooltipText.implicitHeight + 10
+            margins.top: Config.barHeight
+            margins.left: Math.max(6, Math.min(TooltipBus.x - implicitWidth / 2, screen.width - implicitWidth - 6))
+            implicitWidth: tooltipText.width + 24
+            implicitHeight: tooltipText.implicitHeight + 18
             color: "transparent"
             exclusiveZone: 0
             mask: Region {}
 
+            // Two-tone card: an outer accent border for contrast against the
+            // wallpaper/blur behind it, and an inset inner border for depth
+            // against the card's own fill — plain single-border/flat-fill
+            // tooltips were hard to spot and read against a busy background.
             Rectangle {
+                id: outer
                 anchors.fill: parent
-                radius: 6
-                color: Theme.surface0
+                radius: 10
+                color: Theme.crust
+                border.width: 1.5
+                border.color: Qt.rgba(Theme.blue.r, Theme.blue.g, Theme.blue.b, 0.55)
+
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: 2
+                    radius: 8
+                    color: "transparent"
+                    border.width: 1
+                    border.color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.08)
+                }
 
                 Text {
                     id: tooltipText
@@ -131,12 +165,19 @@ PanelWindow {
                     // not a line break, collapsing the whole multi-line
                     // tooltip onto one line. Force RichText explicitly and
                     // translate "\n" to <br/> so every tooltip (plain or
-                    // markup) renders as real separate lines.
+                    // markup) renders as real separate lines; also bold the
+                    // first line so multi-line tooltips read as a
+                    // headline + detail instead of a flat block of text.
+                    readonly property var lines: TooltipBus.text.split("\n")
                     textFormat: Text.RichText
-                    text: TooltipBus.text.replace(/\n/g, "<br/>")
+                    text: lines.length > 1
+                        ? "<b>" + lines[0] + "</b><br/><span style='color:" + Theme.subtext0 + "'>"
+                            + lines.slice(1).join("<br/>") + "</span>"
+                        : "<b>" + lines[0] + "</b>"
                     color: Theme.text
                     font.family: Config.fontFamily
                     font.pixelSize: 12
+                    lineHeight: 1.3
                     wrapMode: Text.WordWrap
                     width: Math.min(implicitWidth, 420)
                 }

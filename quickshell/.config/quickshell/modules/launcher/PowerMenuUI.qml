@@ -37,7 +37,7 @@ Scope {
     // storing a function here never calls it; only entries[i].run() does,
     // from inside an actual event handler below.
     readonly property var entries: [
-        { label: "Lock", icon: "", needsConfirm: false, run: () => win.act(["hyprlock"]) },
+        { label: "Lock", icon: "", needsConfirm: false, run: () => { Lock.beginLock(); LauncherBus.powerMenuVisible = false; } },
         { label: "Suspend", icon: "", needsConfirm: true, run: () => win.act(["systemctl", "suspend"]) },
         { label: "Hibernate", icon: "", needsConfirm: true, run: () => win.act(["systemctl", "hibernate"]) },
         { label: "Reboot", icon: "", needsConfirm: true, run: () => win.act(["systemctl", "reboot"]) },

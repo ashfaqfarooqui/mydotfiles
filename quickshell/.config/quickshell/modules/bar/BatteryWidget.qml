@@ -1,28 +1,35 @@
 import QtQuick
+import QtQuick.Window
 import qs.theme
 import qs.config
 import qs.services
 
 // Replaces waybar's "battery" module.
 Text {
-    readonly property int pct: Math.round(Battery.percent)
-    readonly property var icons: ["󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂"]
+    id: root
+    // Screen must be captured here (a real Item), not read inside
+    // HoverHandler below — see IdleToggle.qml for why.
+    readonly property string screenName: Screen.name
 
-    text: {
-        const idx = Math.min(icons.length - 1, Math.floor(pct / (100 / icons.length)));
-        if (pct >= 100) return "󱃌 " + pct + "%";
-        if (Battery.charging) return "󱘖 " + pct + "%";
-        if (pct <= 15) return "󱃍 " + pct + "%";
-        if (pct <= 30) return "󰁻 " + pct + "%";
-        return icons[idx] + " " + pct + "%";
-    }
+    readonly property int pct: Math.round(Battery.percent)
+
+    text: Battery.iconFor(pct, Battery.charging) + " " + pct + "%"
     color: pct <= 15 && !Battery.charging ? Theme.red : Theme.text
     font.family: Config.fontFamily
-    font.pixelSize: Config.fontSize
+    font.pixelSize: Settings.fontSize
+    font.weight: Config.fontWeight
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: Battery.togglePanel(Screen.name)
+    }
 
     HoverHandler {
         onHoveredChanged: hovered ? TooltipBus.show(
-            Battery.charging ? "Charging: " + pct + "%" : "Discharging: " + pct + "%"
-        , point.scenePosition.x) : TooltipBus.hide()
+            (Battery.charging ? "Charging: " + pct + "%" : "Discharging: " + pct + "%") +
+            (Battery.charging && Battery.timeToFullFormatted !== "" ? "\nTime to full: " + Battery.timeToFullFormatted :
+                !Battery.charging && Battery.timeToEmptyFormatted !== "" ? "\nTime remaining: " + Battery.timeToEmptyFormatted : "") +
+            (Battery.powerDrawWatts > 0 ? "\n" + Battery.powerDrawWatts.toFixed(1) + " W" : "")
+        , point.scenePosition.x, root.screenName) : TooltipBus.hide()
     }
 }

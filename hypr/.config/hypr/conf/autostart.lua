@@ -12,12 +12,16 @@ hl.on("hyprland.start", function()
 	-- actually signal "dark" to portal-aware apps.
 	hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
 
-	-- Polkit agent
-	hl.exec_cmd("systemctl --user start hyprpolkitagent")
+	-- Polkit agent, idle daemon, and lock screen are now handled inside
+	-- quickshell itself (services/Polkit.qml, services/Idle.qml,
+	-- services/Lock.qml) — hyprpolkitagent/hypridle/hyprlock stay installed
+	-- as a manual fallback but are no longer autostarted, since only one
+	-- polkit agent may be registered system-wide and two idle daemons would
+	-- race each other.
 
 	-- System tray / daemons (systemd-managed for auto-restart and logging)
 	hl.exec_cmd("nm-applet --indicator &")
-	hl.exec_cmd("systemctl --user start hypridle hyprpaper quickshell")
+	hl.exec_cmd("systemctl --user start hyprpaper quickshell")
 
 	-- Clipboard history
 	hl.exec_cmd("systemctl --user start cliphist")

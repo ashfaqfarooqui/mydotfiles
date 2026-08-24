@@ -32,6 +32,37 @@ Scope {
     })
 
     readonly property string repoTheme: Quickshell.env("HOME") + "/mydotfiles/theme"
+    readonly property string repoWallpapers: Quickshell.env("HOME") + "/mydotfiles/Wallpapers"
+
+    // Real wallpaper thumbnails read better than the abstract color-swatch
+    // strips. A static map instead of scanning Wallpapers/<name>/ with a
+    // `find` Process on every popup open — the file list only changes when
+    // someone adds/removes a wallpaper, so there's nothing to discover at
+    // runtime; hardcoding it also means the image never has to wait on a
+    // subprocess round-trip before it can start loading.
+    //
+    // Three of the four Catppuccin flavors (latte/frappe/macchiato) have no
+    // dedicated Wallpapers/<name>/ folder — same as theme/justfile's own
+    // default_wallpaper map, kept in sync with it by hand.
+    readonly property var thumbFor: ({
+        mocha: repoWallpapers + "/DSC_0749-1.jpg",
+        latte: repoWallpapers + "/DSC_0042.jpg",
+        frappe: repoWallpapers + "/DSC_0194-1.jpg",
+        macchiato: repoWallpapers + "/DSC_0515.JPG",
+        nord: repoWallpapers + "/nord/preikestolen.jpg",
+        gruvbox: repoWallpapers + "/gruvbox/valley-of-fire.jpg",
+        dracula: repoWallpapers + "/dracula/base.png",
+        tokyonight: repoWallpapers + "/tokyonight/gnome.png",
+        rosepine: repoWallpapers + "/rosepine/maze.png",
+        everforest: repoWallpapers + "/everforest/misty-pines.jpg",
+        kanagawa: repoWallpapers + "/kanagawa/hokusai-tago-bay.jpg",
+        "matte-black": repoWallpapers + "/matte-black/dark-marble.jpg",
+        "osaka-jade": repoWallpapers + "/osaka-jade/bamboo-grove.jpg",
+    })
+
+    function thumbSource(name) {
+        return "file://" + (root.thumbFor[name] ?? (root.repoTheme + "/swatches/" + name + ".png"));
+    }
 
     LazyLoader {
         active: LauncherBus.themePickerVisible
@@ -53,13 +84,17 @@ Scope {
                 id: readCurrent
                 command: ["cat", root.repoTheme + "/.current"]
                 stdout: StdioCollector {
-                    onStreamFinished: win.current = this.text.trim()
+                    onStreamFinished: {
+                        win.current = this.text.trim();
+                        const idx = root.order.indexOf(win.current);
+                        if (idx >= 0) grid.currentIndex = idx;
+                    }
                 }
             }
 
             Component.onCompleted: {
                 readCurrent.running = true;
-                keyCatcher.forceActiveFocus();
+                grid.forceActiveFocus();
             }
 
             function apply(flavor) {
@@ -100,20 +135,28 @@ Scope {
                         cellWidth: 130
                         cellHeight: 110
                         model: root.order
+                        focus: true
+                        keyNavigationWraps: true
+
+                        Keys.onReturnPressed: win.apply(root.order[grid.currentIndex])
+                        Keys.onEnterPressed: win.apply(root.order[grid.currentIndex])
+                        Keys.onEscapePressed: LauncherBus.themePickerVisible = false
 
                         delegate: Item {
                             required property var modelData
+                            required property int index
                             width: grid.cellWidth
                             height: grid.cellHeight
 
                             readonly property bool isCurrent: modelData === win.current
+                            readonly property bool isSelected: index === grid.currentIndex
 
                             Rectangle {
                                 anchors.fill: parent
                                 anchors.margins: 6
                                 radius: 10
                                 color: Theme.surface1
-                                border.color: isCurrent ? Theme.blue : "transparent"
+                                border.color: isSelected ? Theme.lavender : (isCurrent ? Theme.blue : "transparent")
                                 border.width: 2
 
                                 ColumnLayout {
@@ -124,12 +167,13 @@ Scope {
                                     Image {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 60
-                                        source: "file://" + root.repoTheme + "/swatches/" + modelData + ".png"
+                                        source: root.thumbSource(modelData)
                                         fillMode: Image.PreserveAspectCrop
+                                        asynchronous: true
                                     }
 
                                     Text {
-                                        text: root.displayNames[modelData] ?? modelData
+                                        text: (root.displayNames[modelData] ?? modelData) + (isCurrent ? " ✓" : "")
                                         color: Theme.text
                                         font.family: Config.fontFamily
                                         font.pixelSize: 11
@@ -141,7 +185,10 @@ Scope {
 
                                 MouseArea {
                                     anchors.fill: parent
-                                    onClicked: win.apply(modelData)
+                                    onClicked: {
+                                        grid.currentIndex = index;
+                                        win.apply(modelData);
+                                    }
                                 }
                             }
                         }

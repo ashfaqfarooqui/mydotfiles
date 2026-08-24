@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
 import qs.theme
 import qs.config
@@ -20,6 +21,7 @@ Scope {
         active: Notifications.controlCenterVisible
 
         PanelWindow {
+            id: win
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors {
                 top: true
@@ -34,15 +36,27 @@ Scope {
             implicitWidth: 400
             color: "transparent"
             exclusiveZone: 0
-            // Keyboard focus / click-outside-to-close aren't wired yet —
-            // closing via the bar's notification-badge toggle is sufficient
-            // for this phase; revisit once the launcher work (Phase 3)
-            // establishes a shared pattern for dismissable popups.
+            focusable: true
+
+            HyprlandFocusGrab {
+                // Same click-outside-to-close mechanism as
+                // NetworkPanel.qml/BluetoothPanel.qml.
+                active: Notifications.controlCenterVisible
+                windows: [win]
+                onCleared: Notifications.hideControlCenter()
+            }
 
             Rectangle {
                 anchors.fill: parent
                 radius: 12
                 color: Theme.surface0
+                // PanelWindow's layershell surface isn't a QtQuick Item, so
+                // Keys can't attach there directly — an Item with
+                // focus: true is required to receive routed key events (same
+                // pattern as NetworkPanel.qml/ThemePicker.qml's keyCatcher).
+                focus: true
+
+                Keys.onEscapePressed: Notifications.hideControlCenter()
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -122,11 +136,11 @@ Scope {
                         }
                         GridButton {
                             icon: "\u{F0E51}"
-                            onActivated: Quickshell.execDetached(["sh", "-c", 'grim -g "$(slurp)" - | wl-copy'])
+                            onActivated: Capture.screenshot("region")
                         }
                         GridButton {
                             icon: "\u{F0DC8}"
-                            onActivated: Quickshell.execDetached(["sh", "-c", 'grim "$(xdg-user-dir PICTURES)/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"'])
+                            onActivated: Capture.screenshot("output")
                         }
                         GridButton {
                             icon: "\u{F0474}"
@@ -199,6 +213,7 @@ Scope {
 
                     // --- Per-app volume sliders ---
                     ColumnLayout {
+                        id: volumeSection
                         Layout.fillWidth: true
                         spacing: 6
                         visible: playbackNodes.length > 0
@@ -216,12 +231,20 @@ Scope {
                             font.pixelSize: 12
                         }
 
+                        // PwObjectTracker is a plain QtObject, not an Item —
+                        // it has no `parent` property to fall back on, so
+                        // the bare `parent.playbackNodes` this used to read
+                        // threw "parent is not defined" the first time this
+                        // popup actually rendered (caught wiring up the
+                        // notifications IPC toggle — this section was never
+                        // exercised live before). Reference the ColumnLayout
+                        // by id instead.
                         PwObjectTracker {
-                            objects: parent.playbackNodes
+                            objects: volumeSection.playbackNodes
                         }
 
                         Repeater {
-                            model: parent.playbackNodes
+                            model: volumeSection.playbackNodes
                             delegate: RowLayout {
                                 required property var modelData
                                 Layout.fillWidth: true

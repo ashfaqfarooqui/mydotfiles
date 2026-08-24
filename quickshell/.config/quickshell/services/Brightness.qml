@@ -2,6 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.services
 
 // Replaces waybar's custom/backlight module + brightness-control.sh.
 // No first-party brightness service exists in Quickshell 0.3.1, so this
@@ -9,6 +10,32 @@ import Quickshell.Io
 Singleton {
     id: root
     property int percent: 50
+
+    // Visibility for BrightnessPanel.qml (modules/bar/) — same pattern as
+    // Network.qml/Bluetooth.qml/Battery.qml, see Network.qml for why the
+    // per-screen gating is mandatory.
+    property bool panelVisible: false
+    property string panelScreenName: ""
+
+    function togglePanel(screenName) {
+        if (panelVisible && panelScreenName === screenName) {
+            panelVisible = false;
+        } else {
+            Network.hidePanel();
+            Bluetooth.hidePanel();
+            Battery.hidePanel();
+            Audio.hidePanel();
+            Calendar.hidePanel();
+            SystemStats.hidePanel();
+            AgentsUsage.hidePanel();
+            panelScreenName = screenName;
+            panelVisible = true;
+        }
+    }
+
+    function hidePanel() {
+        panelVisible = false;
+    }
 
     Timer {
         interval: 1000

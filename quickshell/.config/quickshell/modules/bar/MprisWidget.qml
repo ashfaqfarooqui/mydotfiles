@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import qs.theme
 import qs.config
 import qs.services
@@ -9,6 +10,11 @@ import qs.services
 // importing the module's own "Mpris" singleton alongside it under the same
 // unaliased name silently collided (see services/Mpris.qml for the fix).
 Text {
+    id: root
+    // Screen must be captured here (a real Item), not read inside
+    // HoverHandler below — see IdleToggle.qml for why.
+    readonly property string screenName: Screen.name
+
     visible: Mpris.activePlayer !== null
     text: {
         const p = Mpris.activePlayer;
@@ -17,7 +23,8 @@ Text {
     }
     color: Theme.text
     font.family: Config.fontFamily
-    font.pixelSize: Config.fontSize
+    font.pixelSize: Settings.fontSize
+    font.weight: Config.fontWeight
     elide: Text.ElideRight
     width: Math.min(implicitWidth, 250)
 
@@ -34,7 +41,7 @@ Text {
     HoverHandler {
         onHoveredChanged: {
             const p = Mpris.activePlayer;
-            hovered && p ? TooltipBus.show((p.identity ?? "") + "\n" + (p.trackTitle ?? "") + "\n" + (p.trackArtist ?? ""), point.scenePosition.x) : TooltipBus.hide();
+            hovered && p ? TooltipBus.show((p.identity ?? "") + "\n" + (p.trackTitle ?? "") + "\n" + (p.trackArtist ?? ""), point.scenePosition.x, root.screenName) : TooltipBus.hide();
         }
     }
 }

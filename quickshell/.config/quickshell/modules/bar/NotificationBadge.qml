@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import qs.theme
 import qs.config
 import qs.services
@@ -7,10 +8,16 @@ import qs.services
 // directly from services/Notifications.qml (Phase 2's native
 // NotificationServer) instead of shelling to swaync-client -swb.
 Text {
+    id: root
+    // Screen must be captured here (a real Item), not read inside
+    // HoverHandler below — see IdleToggle.qml for why.
+    readonly property string screenName: Screen.name
+
     text: ""
     color: Notifications.unreadCount > 0 ? Theme.red : (Notifications.dndEnabled ? Theme.overlay0 : Theme.text)
     font.family: Config.fontFamily
-    font.pixelSize: Config.fontSize
+    font.pixelSize: Settings.fontSize
+    font.weight: Config.fontWeight
 
     MouseArea {
         anchors.fill: parent
@@ -25,6 +32,6 @@ Text {
         onHoveredChanged: hovered ? TooltipBus.show(
             Notifications.unreadCount + " notification" + (Notifications.unreadCount === 1 ? "" : "s") +
             (Notifications.dndEnabled ? " (DND on)" : "")
-        , point.scenePosition.x) : TooltipBus.hide()
+        , point.scenePosition.x, root.screenName) : TooltipBus.hide()
     }
 }

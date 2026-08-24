@@ -50,6 +50,16 @@ password  required pam_unix.so
 session   required pam_unix.so
 EOF
     fi
+
+    # Configure the quickshell lock screen's fingerprint stack
+    # (services/Lock.qml). This is a dedicated fingerprint-only PAM service,
+    # run concurrently with (not layered on top of) the password stack in
+    # quickshell-lock-password, so a slow/timed-out scan never blocks typing
+    # a password — see services/Lock.qml's fingerprintPam/passwordPam.
+    print_info "Creating quickshell lock screen fingerprint configuration..."
+    sudo tee /etc/pam.d/quickshell-lock-fingerprint >/dev/null <<'EOF'
+auth      required pam_fprintd.so
+EOF
 }
 
 add_hyprlock_fingerprint_icon() {
@@ -73,6 +83,12 @@ remove_pam_config() {
     if [ -f /etc/pam.d/polkit-1 ] && grep -Fq 'pam_fprintd.so' /etc/pam.d/polkit-1; then
         print_info "Removing fingerprint authentication from polkit..."
         sudo sed -i '/pam_fprintd\.so/d' /etc/pam.d/polkit-1
+    fi
+
+    # Remove the quickshell lock screen's fingerprint stack
+    if [ -f /etc/pam.d/quickshell-lock-fingerprint ]; then
+        print_info "Removing quickshell lock screen fingerprint configuration..."
+        sudo rm -f /etc/pam.d/quickshell-lock-fingerprint
     fi
 }
 

@@ -14,6 +14,8 @@ Singleton {
     property bool cheatsheetVisible: false
     property bool themePickerVisible: false
     property bool powerMenuVisible: false
+    property bool lockAppearanceVisible: false
+    property bool emojiVisible: false
 
     function hideAll() {
         launcherVisible = false;
@@ -22,6 +24,8 @@ Singleton {
         cheatsheetVisible = false;
         themePickerVisible = false;
         powerMenuVisible = false;
+        lockAppearanceVisible = false;
+        emojiVisible = false;
     }
 
     function toggleLauncher() { launcherVisible = !launcherVisible; }
@@ -30,4 +34,6 @@ Singleton {
     function toggleCheatsheet() { cheatsheetVisible = !cheatsheetVisible; }
     function toggleThemePicker() { themePickerVisible = !themePickerVisible; }
     function togglePowerMenu() { powerMenuVisible = !powerMenuVisible; }
+    function toggleLockAppearance() { lockAppearanceVisible = !lockAppearanceVisible; }
+    function toggleEmoji() { emojiVisible = !emojiVisible; }
 }

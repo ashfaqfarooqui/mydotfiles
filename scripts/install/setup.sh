@@ -66,6 +66,19 @@ yay -S fd --needed
 yay -S dust --needed
 yay -S duf --needed
 yay -S hyprpolkitagent
+
+# PAM services for the quickshell lock screen (services/Lock.qml), replacing
+# hyprlock as the default. Password stack mirrors /etc/pam.d/hyprlock;
+# scripts/install/setup-fingerprint.sh separately creates
+# quickshell-lock-fingerprint if a sensor is enrolled. The two run as
+# concurrent, independent PamContexts (not one layered on the other) so a
+# slow/timed-out fingerprint scan never blocks password entry.
+if [ ! -f /etc/pam.d/quickshell-lock-password ]; then
+    sudo tee /etc/pam.d/quickshell-lock-password >/dev/null <<'EOF'
+auth        include     login
+EOF
+fi
+
 yay -S pdf-latex
 yay -S lazygit
 yay -S ntfs-3g
@@ -180,3 +193,14 @@ yay -S --no-confirm nwg-displays
 
 # QuickShell (experimental shell replacing waybar/swaync/rofi, see quickshell-experiment branch)
 yay -S --no-confirm quickshell
+
+# QuickShell capture menu (screenshots/recording/OCR) + network panel extras
+yay -S --no-confirm wf-recorder
+yay -S --no-confirm tesseract
+yay -S --no-confirm tesseract-data-eng
+yay -S --no-confirm qrencode
+yay -S --no-confirm speedtest-cli
+# iw: read-only nl80211 query tool (current AP band/frequency for the
+# Network panel's WI-FI BAND row) — doesn't manage connections, so it's
+# safe alongside NetworkManager, just a diagnostic query.
+yay -S --no-confirm iw

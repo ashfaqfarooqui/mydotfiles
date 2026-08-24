@@ -6,7 +6,6 @@ local menu     = "rofi -show drun"
 local browser  = "zen-browser"
 
 local submap_resize = "RESIZE  [hjkl] resize  [0] reset  [Esc] exit"
-local submap_session = "SESSION  [L]ock  [E]xit  [S]uspend  [R]eboot  [P]oweroff  [Esc] cancel"
 
 local D = function(desc) return { description = desc } end
 
@@ -18,36 +17,49 @@ hl.bind(mainMod .. " + Q",      hl.dsp.window.close(),            D("Close windo
 hl.bind(mainMod .. " + F",      hl.dsp.window.fullscreen({ mode = 1 }), D("Fullscreen"))
 hl.bind(mainMod .. " + E",      hl.dsp.exec_cmd(file_mgr),        D("File manager"))
 hl.bind(mainMod .. " + V",      hl.dsp.window.float({ action = "toggle" }), D("Toggle float"))
-hl.bind(mainMod .. " + SPACE",  hl.dsp.exec_cmd(menu),            D("App launcher"))
+hl.bind(mainMod .. " + SPACE",  hl.dsp.exec_cmd("quickshell ipc call launcher toggle"), D("App launcher"))
 hl.bind(mainMod .. " + b",      hl.dsp.exec_cmd(browser),         D("Browser"))
 hl.bind(mainMod .. " + o",      hl.dsp.layout("togglesplit"),     D("Toggle split"))
 
 -- Clipboard history (image entries render as thumbnails, not a text placeholder)
-hl.bind("ALT + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/cliphist-picker.py"), D("Clipboard history"))
+hl.bind("ALT + V", hl.dsp.exec_cmd("quickshell ipc call clipboard toggle"), D("Clipboard history"))
+
+-- Emoji picker (search by name, types the selection directly via wtype)
+hl.bind(mainMod .. " + ALT + e", hl.dsp.exec_cmd("quickshell ipc call emoji toggle"), D("Emoji picker"))
 
 -- Lock screen
-hl.bind(mainMod .. " + ALT + l", hl.dsp.exec_cmd("hyprlock"),     D("Lock screen"))
+hl.bind(mainMod .. " + ALT + l", hl.dsp.exec_cmd("quickshell ipc call lock lock"),     D("Lock screen"))
 
--- Screenshots (hyprshot)
-hl.bind(mainMod .. " + P",      hl.dsp.exec_cmd("hyprshot -m window --clipboard-only"), D("Screenshot window"))
-hl.bind(mainMod .. " + CTRL + P", hl.dsp.exec_cmd("hyprshot -m region --clipboard-only"), D("Screenshot region"))
+-- Capture menu (screenshot region/window/full screen, start/stop
+-- recording, OCR region — see quickshell/.config/quickshell/services/
+-- Capture.qml). Super+Ctrl+C matches Omarchy's own capture-menu fallback
+-- convention for keyboards without a dedicated Print Screen key.
+hl.bind(mainMod .. " + CTRL + c", hl.dsp.exec_cmd("quickshell ipc call capture toggle"), D("Capture menu"))
 
 -- Toggle bar: waybar's SIGUSR1 toggle is now a no-op (waybar no longer
 -- autostarts). QuickShell has no bar-toggle IPC yet (see the quickshell
 -- plan's Open Risk #6) so this is disabled until that's solved.
 -- hl.bind(mainMod .. " + CTRL + b", hl.dsp.exec_cmd("pkill -SIGUSR1 waybar"), D("Toggle waybar"))
 
--- Notification center (swaync)
-hl.bind(mainMod .. " + SHIFT + n", hl.dsp.exec_cmd("swaync-client -t -sw"), D("Notifications"))
+-- Notification center (quickshell — swaync is stopped/disabled, see the
+-- quickshell plan's boot-cutover section)
+hl.bind(mainMod .. " + SHIFT + n", hl.dsp.exec_cmd("quickshell ipc call notifications toggle"), D("Notifications"))
 
--- Rofi window switcher
-hl.bind(mainMod .. " + ALT + Tab", hl.dsp.exec_cmd("rofi -show window"), D("Window switcher"))
+-- Window switcher
+hl.bind(mainMod .. " + ALT + Tab", hl.dsp.exec_cmd("quickshell ipc call windowSwitcher toggle"), D("Window switcher"))
 
 -- Help overlay
-hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("~/.config/hypr/scripts/keybind-help.sh"), D("Show keybinds"))
+hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("quickshell ipc call cheatsheet toggle"), D("Show keybinds"))
 
 -- Theme picker
-hl.bind(mainMod .. " + CTRL + SHIFT + SPACE", hl.dsp.exec_cmd("~/.config/hypr/scripts/theme-picker.sh"), D("Theme picker"))
+hl.bind(mainMod .. " + CTRL + SHIFT + SPACE", hl.dsp.exec_cmd("quickshell ipc call themePicker toggle"), D("Theme picker"))
+
+-- Lock screen appearance (wallpaper + blur) picker
+hl.bind(mainMod .. " + CTRL + SHIFT + l", hl.dsp.exec_cmd("quickshell ipc call lockAppearance toggle"), D("Lock screen appearance"))
+
+-- Network / Bluetooth panels (matches Omarchy's own Super+Ctrl+W/B bindings)
+hl.bind(mainMod .. " + CTRL + w", hl.dsp.exec_cmd("quickshell ipc call network toggle"), D("Network panel"))
+hl.bind(mainMod .. " + CTRL + b", hl.dsp.exec_cmd("quickshell ipc call bluetooth toggle"), D("Bluetooth panel"))
 
 -- Dictation (Voxtype)
 hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("voxtype record toggle"), D("Toggle dictation"))
@@ -155,19 +167,10 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 ---------------------------------------------------------------------------
--- Session/Power submap (SUPER+Escape to enter)
+-- Power menu (quickshell PowerMenuUI — Lock/Suspend/Hibernate/Reboot/
+-- Poweroff/Logout, confirm-click required on all but Lock)
 ---------------------------------------------------------------------------
-hl.bind(mainMod .. " + ESCAPE", hl.dsp.submap(submap_session))
-
-hl.define_submap(submap_session, function()
-    hl.bind("l", hl.dsp.exec_cmd("hyprlock"))
-    hl.bind("e", hl.dsp.exit())
-    hl.bind("s", hl.dsp.exec_cmd("systemctl suspend"))
-    hl.bind("r", hl.dsp.exec_cmd("systemctl reboot"))
-    hl.bind("p", hl.dsp.exec_cmd("systemctl poweroff"))
-    hl.bind("escape", hl.dsp.submap("reset"))
-    hl.bind("catchall", hl.dsp.submap("reset"))
-end)
+hl.bind(mainMod .. " + ESCAPE", hl.dsp.exec_cmd("quickshell ipc call powerMenu toggle"), D("Power menu"))
 
 ---------------------------------------------------------------------------
 -- Multimedia keys

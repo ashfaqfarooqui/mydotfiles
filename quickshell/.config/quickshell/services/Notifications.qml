@@ -19,6 +19,16 @@ Singleton {
     property var popupQueue: []
     signal popupQueueChanged_()
 
+    // One live auto-dismiss Timer per notification id. A sender replacing an
+    // existing notification (same id — e.g. a repeated volume/progress
+    // toast) re-fires the `notification` signal with a new object; without
+    // tracking timers by id, the OLD timer would still be holding a
+    // reference to the now-replaced object, so its `.filter(n => n !==
+    // notification)` on expiry would never match the NEW object actually
+    // sitting in popupQueue — leaving that toast stuck on screen forever.
+    // Keying by id lets a replace cancel and replace the old timer outright.
+    property var _timers: ({})
+
     readonly property int unreadCount: server.trackedNotifications.values.length
 
     // Cross-directory toggle channel: NotificationBadge.qml (modules/bar)
@@ -59,24 +69,70 @@ Singleton {
         keepOnReload: true
 
         onNotification: notification => {
+            // tracked = true is required just to keep the object alive long
+            // enough to render as a toast (see the class comment above) —
+            // but a sender-marked `transient` notification (voxtype's
+            // "Transcribed" toast: hints={transient: true,
+            // x-canonical-private-synchronous: "voxtype"}, confirmed via
+            // dbus-monitor) explicitly asks not to be kept around after it's
+            // shown. Leaving tracked true for those meant every dictation
+            // permanently inflated the notification badge count and control
+            // -center history — they never expired from anywhere but the
+            // toast queue. Non-transient notifications still behave as
+            // before: they linger in trackedNotifications (control-center
+            // history) after their toast times out, until dismissed.
             notification.tracked = true;
 
             if (!root.dndEnabled) {
-                const timeoutMs = notification.expireTimeout > 0 ? notification.expireTimeout * 1000 : 8000;
-                root.popupQueue = [...root.popupQueue, notification];
+                // expire_timeout === 0 is the sender explicitly asking to
+                // never auto-expire (freedesktop notification spec) — e.g.
+                // a critical alert meant to stay until dismissed. -1 (or
+                // anything else <= 0 that isn't 0) means "use the server
+                // default", which is the 8s fallback. Quickshell's
+                // Notification.expireTimeout is already in milliseconds
+                // (confirmed empirically: notify-send -t 5000 arrives as
+                // expireTimeout=5000, not 5) despite what the docs site's
+                // prose implies — do not re-multiply by 1000 here, that was
+                // turning a 5s hyprshot toast into an 83-minute one.
+                const neverExpires = notification.expireTimeout === 0;
+                const timeoutMs = notification.expireTimeout > 0 ? notification.expireTimeout : 8000;
+
+                // A replace (same id as an already-showing toast) drops the
+                // old entry and its timer before re-adding — otherwise the
+                // stale timer's object reference never matches the new one
+                // in popupQueue and that toast never clears (see _timers'
+                // comment above).
+                const existingTimer = root._timers[notification.id];
+                if (existingTimer) {
+                    existingTimer.destroy();
+                    delete root._timers[notification.id];
+                }
+                root.popupQueue = [...root.popupQueue.filter(n => n.id !== notification.id), notification];
                 root.popupQueueChanged_();
 
-                const t = popupTimerComponent.createObject(root, { interval: timeoutMs, running: true });
-                t.triggered.connect(() => {
-                    root.popupQueue = root.popupQueue.filter(n => n !== notification);
-                    root.popupQueueChanged_();
-                    t.destroy();
-                });
+                if (!neverExpires) {
+                    const t = popupTimerComponent.createObject(root, { interval: timeoutMs, running: true });
+                    root._timers[notification.id] = t;
+                    t.triggered.connect(() => {
+                        root.popupQueue = root.popupQueue.filter(n => n.id !== notification.id);
+                        root.popupQueueChanged_();
+                        if (notification.transient) notification.dismiss();
+                        delete root._timers[notification.id];
+                        t.destroy();
+                    });
+                }
 
                 notification.closed.connect(() => {
-                    root.popupQueue = root.popupQueue.filter(n => n !== notification);
+                    root.popupQueue = root.popupQueue.filter(n => n.id !== notification.id);
                     root.popupQueueChanged_();
+                    const timer = root._timers[notification.id];
+                    if (timer) {
+                        timer.destroy();
+                        delete root._timers[notification.id];
+                    }
                 });
+            } else if (notification.transient) {
+                notification.tracked = false;
             }
         }
     }

@@ -15,13 +15,15 @@ Column {
         text: lines[0] ?? ""
         color: Theme.text
         font.family: Config.fontFamily
-        font.pixelSize: Config.fontSize - 3
+        font.pixelSize: Settings.fontSize - 3
+        font.weight: Config.fontWeight
     }
 
     Text {
         text: lines[1] ?? ""
         color: Theme.text
         font.family: Config.fontFamily
-        font.pixelSize: Config.fontSize - 3
+        font.pixelSize: Settings.fontSize - 3
+        font.weight: Config.fontWeight
     }
 }

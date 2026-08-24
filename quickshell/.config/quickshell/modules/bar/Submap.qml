@@ -9,7 +9,8 @@ Text {
     text: "  " + Hypr.submap
     color: Theme.yellow
     font.family: Config.fontFamily
-    font.pixelSize: Config.fontSize
+    font.pixelSize: Settings.fontSize
+    font.weight: Config.fontWeight
     leftPadding: 8
     rightPadding: 8
 }

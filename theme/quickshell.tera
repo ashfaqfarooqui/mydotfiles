@@ -1,0 +1,29 @@
+---
+whiskers:
+    version: "^2.4.0"
+    matrix:
+        - flavor
+    filename: "generated/{{flavor.identifier}}/quickshell-theme.json"
+---
+{
+  "base": "{{ flavor.colors.base.hex }}",
+  "mantle": "{{ flavor.colors.mantle.hex }}",
+  "crust": "{{ flavor.colors.crust.hex }}",
+  "surface0": "{{ flavor.colors.surface0.hex }}",
+  "surface1": "{{ flavor.colors.surface1.hex }}",
+  "surface2": "{{ flavor.colors.surface2.hex }}",
+  "overlay0": "{{ flavor.colors.overlay0.hex }}",
+  "subtext0": "{{ flavor.colors.subtext0.hex }}",
+  "subtext1": "{{ flavor.colors.subtext1.hex }}",
+  "text": "{{ flavor.colors.text.hex }}",
+  "red": "{{ flavor.colors.red.hex }}",
+  "peach": "{{ flavor.colors.peach.hex }}",
+  "yellow": "{{ flavor.colors.yellow.hex }}",
+  "green": "{{ flavor.colors.green.hex }}",
+  "teal": "{{ flavor.colors.teal.hex }}",
+  "sky": "{{ flavor.colors.sky.hex }}",
+  "blue": "{{ flavor.colors.blue.hex }}",
+  "lavender": "{{ flavor.colors.lavender.hex }}",
+  "mauve": "{{ flavor.colors.mauve.hex }}",
+  "pink": "{{ flavor.colors.pink.hex }}"
+}

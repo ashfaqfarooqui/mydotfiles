@@ -50,6 +50,30 @@ Singleton {
         proc.running = true;
     }
 
+    // Full-text cache: mirrors thumbCache above, but for the detail-pane
+    // preview of a text entry — decode once per id, then it's a plain JS
+    // map lookup on every subsequent highlight of the same row.
+    property var fullTextCache: ({})
+    property var _fullTextPending: ({})
+
+    function requestFullText(entryId) {
+        if (root.fullTextCache[entryId] || root._fullTextPending[entryId]) return;
+        root._fullTextPending[entryId] = true;
+        const proc = fullTextProcComponent.createObject(root, {
+            command: ["cliphist", "decode", entryId]
+        });
+        proc.exited.connect(exitCode => {
+            delete root._fullTextPending[entryId];
+            if (exitCode === 0) {
+                const cache = Object.assign({}, root.fullTextCache);
+                cache[entryId] = proc.buffer.join("\n");
+                root.fullTextCache = cache;
+            }
+            proc.destroy();
+        });
+        proc.running = true;
+    }
+
     function refresh() {
         listProc.buffer = [];
         listProc.running = true;
@@ -106,5 +130,16 @@ Singleton {
     Component {
         id: thumbProcComponent
         Process {}
+    }
+
+    Component {
+        id: fullTextProcComponent
+        Process {
+            id: fullTextProc
+            property var buffer: []
+            stdout: SplitParser {
+                onRead: line => fullTextProc.buffer.push(line)
+            }
+        }
     }
 }

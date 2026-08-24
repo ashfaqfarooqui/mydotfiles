@@ -21,8 +21,53 @@ Singleton {
     property string diskTotal: ""
     property string diskFree: ""
     property real tempC: 0
+    // One entry per logical core, 0-100 — feeds VitalsPanel.qml's per-core
+    // bar row. Empty until the first poll resolves.
+    property var perCorePercent: []
+
+    // Vitals panel visibility — same panelVisible/panelScreenName bus as
+    // Brightness.qml/Battery.qml, shared by the 4 separate stat widgets
+    // (Cpu/Memory/Disk/Temperature) so they all open the one combined panel.
+    property bool panelVisible: false
+    property string panelScreenName: ""
+
+    function togglePanel(screenName) {
+        if (panelVisible && panelScreenName === screenName) {
+            panelVisible = false;
+        } else {
+            Network.hidePanel();
+            Bluetooth.hidePanel();
+            Battery.hidePanel();
+            Brightness.hidePanel();
+            Audio.hidePanel();
+            Calendar.hidePanel();
+            AgentsUsage.hidePanel();
+            panelScreenName = screenName;
+            panelVisible = true;
+        }
+    }
+
+    function hidePanel() {
+        panelVisible = false;
+    }
 
     property var _lastCpu: null // {idle, total}
+    property var _lastCores: null // [{idle, total}, ...] per core
+
+    // Graphics/disk temperature and fan RPM aren't exposed on every machine
+    // (confirmed: this one has no fan*_input anywhere in hwmon at all) — so
+    // these are probed once at startup rather than hardcoded, and
+    // VitalsPanel.qml hides each tile whose *Available is false instead of
+    // showing a fake/zero reading.
+    property bool graphicsTempAvailable: false
+    property real graphicsTempC: 0
+    property bool diskTempAvailable: false
+    property real diskTempC: 0
+    property bool fanAvailable: false
+    property int fanRpm: 0
+    property string _gpuTempPath: ""
+    property string _diskTempPath: ""
+    property string _fanPath: ""
 
     Timer {
         interval: 10000
@@ -57,18 +102,37 @@ Singleton {
 
     Process {
         id: cpuProc
-        command: ["sh", "-c", "grep '^cpu ' /proc/stat"]
+        // '^cpu ' is the aggregate line, '^cpu[0-9]' the per-core lines
+        // (needed for VitalsPanel.qml's per-core bar row).
+        command: ["sh", "-c", "grep '^cpu' /proc/stat"]
         stdout: StdioCollector {
             onStreamFinished: {
-                const fields = this.text.trim().split(/\s+/).slice(1).map(Number);
-                const idle = fields[3] + (fields[4] ?? 0);
-                const total = fields.reduce((a, b) => a + b, 0);
+                function parse(line) {
+                    const fields = line.trim().split(/\s+/).slice(1).map(Number);
+                    const idle = fields[3] + (fields[4] ?? 0);
+                    const total = fields.reduce((a, b) => a + b, 0);
+                    return { idle, total };
+                }
+
+                const lines = this.text.trim().split("\n");
+                const agg = parse(lines[0]);
                 if (root._lastCpu) {
-                    const dIdle = idle - root._lastCpu.idle;
-                    const dTotal = total - root._lastCpu.total;
+                    const dIdle = agg.idle - root._lastCpu.idle;
+                    const dTotal = agg.total - root._lastCpu.total;
                     if (dTotal > 0) root.cpuPercent = Math.round((1 - dIdle / dTotal) * 100);
                 }
-                root._lastCpu = { idle, total };
+                root._lastCpu = agg;
+
+                const cores = lines.slice(1).map(parse);
+                if (root._lastCores && root._lastCores.length === cores.length) {
+                    root.perCorePercent = cores.map((c, i) => {
+                        const prev = root._lastCores[i];
+                        const dIdle = c.idle - prev.idle;
+                        const dTotal = c.total - prev.total;
+                        return dTotal > 0 ? Math.round((1 - dIdle / dTotal) * 100) : 0;
+                    });
+                }
+                root._lastCores = cores;
             }
         }
     }
@@ -129,6 +193,60 @@ Singleton {
         command: ["sh", "-c", "cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0"]
         stdout: StdioCollector {
             onStreamFinished: root.tempC = Math.round(Number(this.text.trim()) / 1000)
+        }
+    }
+
+    // One-shot at startup: locate any GPU/NVMe temp hwmon path and any
+    // fan RPM input, so the polling below knows whether there's anything
+    // to read.
+    Process {
+        id: hwmonProbe
+        running: true
+        command: ["sh", "-c", `
+            for h in /sys/class/hwmon/hwmon*; do
+                name=$(cat "$h/name" 2>/dev/null)
+                case "$name" in
+                    amdgpu) [ -f "$h/temp1_input" ] && echo "GPU:$h/temp1_input" ;;
+                    nvme*) [ -f "$h/temp1_input" ] && echo "DISK:$h/temp1_input" ;;
+                esac
+                for f in "$h"/fan*_input; do
+                    [ -f "$f" ] && echo "FAN:$f"
+                done
+            done
+            true
+        `]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                for (const line of this.text.trim().split("\n")) {
+                    const [kind, path] = line.split(":");
+                    if (kind === "GPU" && path) { root._gpuTempPath = path; root.graphicsTempAvailable = true; }
+                    else if (kind === "DISK" && path) { root._diskTempPath = path; root.diskTempAvailable = true; }
+                    else if (kind === "FAN" && path) { root._fanPath = path; root.fanAvailable = true; }
+                }
+            }
+        }
+    }
+
+    Timer {
+        interval: 10000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: hwmonReadProc.running = true
+    }
+
+    Process {
+        id: hwmonReadProc
+        command: root._gpuTempPath || root._diskTempPath || root._fanPath
+            ? ["sh", "-c", `cat "${root._gpuTempPath || "/dev/null"}" 2>/dev/null; echo; cat "${root._diskTempPath || "/dev/null"}" 2>/dev/null; echo; cat "${root._fanPath || "/dev/null"}" 2>/dev/null`]
+            : ["true"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const [gpu, disk, fan] = this.text.split("\n");
+                if (root.graphicsTempAvailable) root.graphicsTempC = Math.round(Number(gpu) / 1000) || 0;
+                if (root.diskTempAvailable) root.diskTempC = Math.round(Number(disk) / 1000) || 0;
+                if (root.fanAvailable) root.fanRpm = parseInt(fan) || 0;
+            }
         }
     }
 }

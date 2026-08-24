@@ -12,7 +12,8 @@ Text {
     text: (resolved.icon ? resolved.icon + " " : "") + resolved.label
     color: Theme.text
     font.family: Config.fontFamily
-    font.pixelSize: Config.fontSize
+    font.pixelSize: Settings.fontSize
+    font.weight: Config.fontWeight
     elide: Text.ElideRight
     width: Math.min(implicitWidth, 320)
 }

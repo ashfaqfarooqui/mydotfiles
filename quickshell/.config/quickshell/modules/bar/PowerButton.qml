@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import qs.theme
 import qs.config
+import qs.services
 
 // Replaces waybar's custom/power module. Still calls the existing
 // power-menu.sh (rofi-backed) for now — a native PowerMenuUI.qml lands in
@@ -10,7 +11,8 @@ Text {
     text: "\uF011"
     color: Theme.text
     font.family: Config.fontFamily
-    font.pixelSize: Config.fontSize
+    font.pixelSize: Settings.fontSize
+    font.weight: Config.fontWeight
 
     MouseArea {
         anchors.fill: parent

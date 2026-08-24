@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import qs.theme
 import qs.config
+import qs.services
 
 // Replaces waybar's hyprland/language module. Quickshell.Hyprland doesn't
 // expose active keymap directly, so this polls `hyprctl devices -j` for the
@@ -25,7 +26,8 @@ Text {
     text: layout ? "\uF11C " + shortCode : ""
     color: Theme.text
     font.family: Config.fontFamily
-    font.pixelSize: Config.fontSize
+    font.pixelSize: Settings.fontSize
+    font.weight: Config.fontWeight
 
     Timer {
         interval: 2000

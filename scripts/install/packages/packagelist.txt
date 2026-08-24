@@ -130,3 +130,10 @@ catppuccin-whiskers-bin
 voxtype-bin
 cliamp-bin
 nwg-displays
+
+# Capture menu (screenshots/recording/OCR) + network panel extras
+wf-recorder
+tesseract
+tesseract-data-eng
+qrencode
+speedtest-cli

@@ -25,7 +25,8 @@ Row {
         text: "\uF303"
         color: Theme.overlay0
         font.family: Config.fontFamily
-        font.pixelSize: Config.fontSize
+        font.pixelSize: Settings.fontSize
+        font.weight: Config.fontWeight
         anchors.verticalCenter: parent.verticalCenter
         rightPadding: 4
     }
@@ -46,7 +47,8 @@ Row {
                 text: root.icons[index]
                 color: isFocused ? Theme.blue : (isOccupied ? Theme.mauve : Theme.overlay0)
                 font.family: Config.fontFamily
-                font.pixelSize: Config.fontSize
+                font.pixelSize: Settings.fontSize
+                font.weight: Config.fontWeight
                 font.bold: isFocused
                 leftPadding: 4
                 rightPadding: 4

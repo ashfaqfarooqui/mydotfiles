@@ -27,3 +27,4 @@ herdr/.config/herdr/sessions/
 theme/generated/
 theme/.current
 __pycache__/
+quickshell/.config/quickshell/settings.json

@@ -15,10 +15,19 @@ import Quickshell
 Singleton {
     property string text: ""
     property real x: 0
+    // Which monitor's Bar triggered the current tooltip (from the hovered
+    // widget's `Screen.name` attached property) — TooltipBus is a single
+    // global singleton but each monitor has its own Bar instance with its
+    // own tooltip overlay, so without this both overlays would react to
+    // every hover and each compute its own (only one correct) position
+    // from the same shared x, popping a second stray tooltip on whichever
+    // monitor wasn't actually hovered.
+    property string screenName: ""
 
-    function show(t, xPos) {
+    function show(t, xPos, screen) {
         text = t;
         if (xPos !== undefined) x = xPos;
+        if (screen !== undefined) screenName = screen;
     }
 
     function hide() {

@@ -18,6 +18,7 @@ generate:
     whiskers fzf.tera
     whiskers nvim.tera
     whiskers emacs.tera
+    whiskers quickshell.tera
 
 # Render every template for a non-Catppuccin theme (theme/palettes/<name>.json) into
 # generated/<name>/..., by repainting all 26 Catppuccin color slots via
@@ -52,6 +53,7 @@ generate-custom name:
         [fzf.tera]=fzf-theme.zsh
         [nvim.tera]=nvim-theme.lua
         [emacs.tera]=emacs-theme.el
+        [quickshell.tera]=quickshell-theme.json
     )
     for tmpl in "${!files[@]}"; do
         out="{{output}}/{{name}}/${files[$tmpl]}"
@@ -99,16 +101,23 @@ apply name:
     cp "{{output}}/{{name}}/nvim-theme.lua" ../nvim/.config/nvim/colors/theme_generated.lua
     mkdir -p ../doom/.doom.d/themes
     cp "{{output}}/{{name}}/emacs-theme.el" ../doom/.doom.d/themes/theme-generated-theme.el
+    cp "{{output}}/{{name}}/quickshell-theme.json" ../quickshell/.config/quickshell/theme/theme.json
     python3 apply-starship.py "{{output}}/{{name}}/hypr-theme.lua" ../starship/.config/starship.toml
     hyprctl reload || true
     pkill -SIGUSR2 waybar || true
     pkill -SIGUSR2 ghostty || true
-    swaync-client --reload-css || true
+    # swaync was replaced by quickshell.service in the boot cutover
+    # (28a88bf); swaync-client blocks forever waiting for a D-Bus service
+    # that no longer exists, so it's dropped rather than left as a hang.
     # Themes with a dedicated Wallpapers/<name>/ folder pick a random image from it;
-    # native flavors without one (currently just mocha) fall back to a fixed default
-    # so re-applying mocha reliably restores the original wallpaper.
+    # native flavors without one (the four Catppuccin variants, which share the
+    # top-level wallpaper pool instead of having their own folder) fall back to
+    # a fixed default so re-applying one reliably restores the same wallpaper.
     declare -A default_wallpaper=(
         [mocha]="../Wallpapers/DSC_0749-1.jpg"
+        [latte]="../Wallpapers/DSC_0042.jpg"
+        [frappe]="../Wallpapers/DSC_0194-1.jpg"
+        [macchiato]="../Wallpapers/DSC_0515.JPG"
     )
     wallpaper_dir="../Wallpapers/{{name}}"
     if [ -d "$wallpaper_dir" ] && [ -n "$(ls -A "$wallpaper_dir" 2>/dev/null)" ]; then
