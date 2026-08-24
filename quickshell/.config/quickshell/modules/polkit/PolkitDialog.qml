@@ -96,7 +96,7 @@ Scope {
                         color: Theme.text
                         wrapMode: Text.WordWrap
                         font.family: Config.fontFamily
-                        font.pixelSize: 14
+                        font.pixelSize: Config.px(14)
                         font.bold: true
                     }
 
@@ -107,12 +107,12 @@ Scope {
                         color: Theme.subtext0
                         wrapMode: Text.WordWrap
                         font.family: Config.fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: Config.px(12)
                     }
 
                     Rectangle {
                         Layout.fillWidth: true
-                        implicitHeight: 42
+                        implicitHeight: Config.px(42)
                         radius: 8
                         color: Theme.surface1
                         border.color: root.failed ? Theme.red : (field.activeFocus ? Theme.blue : "transparent")
@@ -131,7 +131,7 @@ Scope {
                             color: Theme.text
                             selectionColor: Theme.blue
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                             focus: true
 
                             Component.onCompleted: forceActiveFocus()
@@ -145,7 +145,7 @@ Scope {
                             text: root.submitted ? "Checking…" : "Enter password"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 13
+                            font.pixelSize: Config.px(13)
                         }
                     }
 
@@ -155,7 +155,7 @@ Scope {
                         text: "Authentication failed, try again"
                         color: Theme.red
                         font.family: Config.fontFamily
-                        font.pixelSize: 11
+                        font.pixelSize: Config.px(11)
                     }
                 }
             }

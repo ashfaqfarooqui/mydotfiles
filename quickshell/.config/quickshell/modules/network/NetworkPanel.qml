@@ -30,7 +30,6 @@ Scope {
     readonly property bool isActive: Network.panelVisible && Network.panelScreenName === screenName
 
     readonly property var wifiDevice: QN.Networking.devices.values.find(d => d.type === QN.DeviceType.Wifi) ?? null
-    readonly property var wiredDevice: QN.Networking.devices.values.find(d => d.type === QN.DeviceType.Wired) ?? null
     readonly property var wifiNetworks: {
         const list = wifiDevice?.networks.values ?? [];
         return [...list].sort((a, b) => {
@@ -112,7 +111,7 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === root.screenName) ?? Quickshell.screens[0]
             anchors { top: true; right: true }
             margins { top: Config.barHeight + 4; right: 10 }
-            implicitWidth: 340
+            implicitWidth: Config.px(340)
             implicitHeight: Math.min(640, content.implicitHeight + 28)
             color: "transparent"
             exclusiveZone: 0
@@ -161,7 +160,7 @@ Scope {
                         property string label
                         signal activated()
                         Layout.fillWidth: true
-                        implicitHeight: 24
+                        implicitHeight: Config.px(24)
                         radius: 6
                         color: Theme.surface1
 
@@ -170,7 +169,7 @@ Scope {
                             text: parent.label
                             color: Theme.text
                             font.family: Config.fontFamily
-                            font.pixelSize: 11
+                            font.pixelSize: Config.px(11)
                         }
 
                         MouseArea {
@@ -182,11 +181,17 @@ Scope {
                     // Small icon button used by the header's QR/speed-test
                     // triggers below.
                     component IconButton: Rectangle {
+                        id: iconButton
                         property string glyph
                         property color tint: Theme.text
+                        // In-progress cue for actions with no other visible
+                        // feedback while running (e.g. the ~10-20s
+                        // speedtest-cli call) — same pulse RecordingIndicator.qml
+                        // uses for Capture.recording.
+                        property bool pulsing: false
                         signal activated()
-                        implicitWidth: 26
-                        implicitHeight: 26
+                        implicitWidth: Config.px(26)
+                        implicitHeight: Config.px(26)
                         radius: 6
                         color: Theme.surface1
 
@@ -195,7 +200,20 @@ Scope {
                             text: parent.glyph
                             color: parent.tint
                             font.family: Config.fontFamily
-                            font.pixelSize: 13
+                            font.pixelSize: Config.px(13)
+
+                            SequentialAnimation on opacity {
+                                // `parent` here resolves to this Text (its
+                                // immediate QML parent), not IconButton —
+                                // `pulsing` only exists on the latter, so
+                                // this silently evaluated to undefined
+                                // (never actually pulsing) until named
+                                // explicitly.
+                                running: iconButton.pulsing
+                                loops: Animation.Infinite
+                                NumberAnimation { from: 1.0; to: 0.35; duration: 700; easing.type: Easing.InOutQuad }
+                                NumberAnimation { from: 0.35; to: 1.0; duration: 700; easing.type: Easing.InOutQuad }
+                            }
                         }
 
                         MouseArea {
@@ -211,10 +229,10 @@ Scope {
                         spacing: 8
 
                         Text {
-                            text: root.wiredDevice?.connected ? "\u{F0200}" : "\u{F05A9}"
+                            text: Network.kind === "ethernet" ? "\u{F0200}" : "\u{F05A9}"
                             color: Theme.blue
                             font.family: Config.fontFamily
-                            font.pixelSize: 22
+                            font.pixelSize: Config.px(22)
                         }
 
                         ColumnLayout {
@@ -222,19 +240,19 @@ Scope {
                             Layout.fillWidth: true
 
                             Text {
-                                text: root.wiredDevice?.connected ? "Ethernet" : (Network.ssid !== "" ? Network.ssid : "Not Connected")
+                                text: Network.kind === "ethernet" ? "Ethernet" : (Network.ssid !== "" ? Network.ssid : "Not Connected")
                                 color: Theme.text
                                 font.family: Config.fontFamily
                                 font.bold: true
-                                font.pixelSize: 15
+                                font.pixelSize: Config.px(15)
                                 elide: Text.ElideRight
                                 Layout.fillWidth: true
                             }
                             Text {
-                                text: (root.wiredDevice?.connected ? "WIRED" : "WI-FI") + (Network.vpnActive ? " · VPN" : "")
+                                text: (Network.kind === "ethernet" ? "WIRED" : "WI-FI") + (Network.vpnActive ? " · VPN" : "")
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                             }
                         }
 
@@ -251,6 +269,7 @@ Scope {
                             visible: Network.kind !== "disconnected"
                             glyph: "\u{F0489}" // nf-md-speedometer (speedtest trigger)
                             tint: Network.speedtestRunning ? Theme.blue : Theme.text
+                            pulsing: Network.speedtestRunning
                             onActivated: Network.runSpeedtest()
                         }
 
@@ -290,7 +309,7 @@ Scope {
                             text: "Generating…"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 11
+                            font.pixelSize: Config.px(11)
                             Layout.alignment: Qt.AlignHCenter
                         }
 
@@ -318,8 +337,8 @@ Scope {
                             Layout.fillWidth: true
                             property string label
                             property string value
-                            Text { text: parent.label; color: Theme.subtext0; font.family: Config.fontFamily; font.pixelSize: 11; Layout.fillWidth: true }
-                            Text { text: parent.value; color: Theme.text; font.family: Config.fontFamily; font.bold: true; font.pixelSize: 11 }
+                            Text { text: parent.label; color: Theme.subtext0; font.family: Config.fontFamily; font.pixelSize: Config.px(11); Layout.fillWidth: true }
+                            Text { text: parent.value; color: Theme.text; font.family: Config.fontFamily; font.bold: true; font.pixelSize: Config.px(11) }
                         }
 
                         function fmtMs(ms) { return ms < 0 ? "—" : Math.round(ms) + " ms"; }
@@ -355,7 +374,7 @@ Scope {
                             text: "WI-FI BAND: " + (Network.currentBandLabel !== "" ? Network.currentBandLabel : "—")
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 10
+                            font.pixelSize: Config.px(10)
                             font.bold: true
                             Layout.fillWidth: true
                         }
@@ -364,7 +383,7 @@ Scope {
                             text: "AUTOMATIC"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 9
+                            font.pixelSize: Config.px(9)
                         }
 
                         Rectangle {
@@ -423,7 +442,7 @@ Scope {
                                 text: root.wifiDevice?.scannerEnabled ? "Scanning…" : "No networks found"
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 12
+                                font.pixelSize: Config.px(12)
                                 Layout.topMargin: 20
                                 Layout.alignment: Qt.AlignHCenter
                             }
@@ -449,7 +468,7 @@ Scope {
                                         color: Theme.overlay0
                                         font.family: Config.fontFamily
                                         font.bold: true
-                                        font.pixelSize: 10
+                                        font.pixelSize: Config.px(10)
                                         Layout.topMargin: 6
                                         Layout.leftMargin: 8
                                     }
@@ -477,14 +496,14 @@ Scope {
                                                 }
                                                 color: Theme.text
                                                 font.family: Config.fontFamily
-                                                font.pixelSize: 14
+                                                font.pixelSize: Config.px(14)
                                             }
 
                                             Text {
                                                 text: modelData.name
                                                 color: Theme.text
                                                 font.family: Config.fontFamily
-                                                font.pixelSize: 12
+                                                font.pixelSize: Config.px(12)
                                                 Layout.fillWidth: true
                                                 elide: Text.ElideRight
                                             }
@@ -494,7 +513,7 @@ Scope {
                                                 text: "\u{F0BC7}"
                                                 color: Theme.overlay0
                                                 font.family: Config.fontFamily
-                                                font.pixelSize: 11
+                                                font.pixelSize: Config.px(11)
                                             }
 
                                             Text {
@@ -502,7 +521,7 @@ Scope {
                                                 text: "\u{F012C}"
                                                 color: Theme.green
                                                 font.family: Config.fontFamily
-                                                font.pixelSize: 13
+                                                font.pixelSize: Config.px(13)
                                             }
 
                                             Text {
@@ -510,7 +529,7 @@ Scope {
                                                 text: "…"
                                                 color: Theme.subtext0
                                                 font.family: Config.fontFamily
-                                                font.pixelSize: 12
+                                                font.pixelSize: Config.px(12)
                                             }
                                         }
 
@@ -539,7 +558,7 @@ Scope {
 
                                         Rectangle {
                                             Layout.fillWidth: true
-                                            implicitHeight: 28
+                                            implicitHeight: Config.px(28)
                                             radius: 6
                                             color: Theme.crust
                                             border.color: Theme.surface2
@@ -551,7 +570,7 @@ Scope {
                                                 anchors.margins: 6
                                                 color: Theme.text
                                                 font.family: Config.fontFamily
-                                                font.pixelSize: 12
+                                                font.pixelSize: Config.px(12)
                                                 echoMode: TextInput.Password
                                                 clip: true
                                                 focus: row.isPasswordOpen
@@ -563,8 +582,8 @@ Scope {
                                         }
 
                                         Rectangle {
-                                            implicitWidth: 50
-                                            implicitHeight: 28
+                                            implicitWidth: Config.px(50)
+                                            implicitHeight: Config.px(28)
                                             radius: 6
                                             color: Theme.blue
 
@@ -573,7 +592,7 @@ Scope {
                                                 text: "Join"
                                                 color: Theme.crust
                                                 font.family: Config.fontFamily
-                                                font.pixelSize: 11
+                                                font.pixelSize: Config.px(11)
                                                 font.bold: true
                                             }
 
@@ -589,7 +608,7 @@ Scope {
                                         text: "Failed to connect — check the password"
                                         color: Theme.red
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 11
+                                        font.pixelSize: Config.px(11)
                                         Layout.leftMargin: 8
                                     }
 
@@ -616,14 +635,26 @@ Scope {
                     }
 
                     // --- Speed test result (from the header's speedtest icon button) ---
+                    // Three distinct states, not just "have a result or not"
+                    // — previously a running test showed nothing at all
+                    // (only the small header icon tinting blue, easy to
+                    // miss) for the full ~10-20s speedtest-cli takes, and a
+                    // failed run (speedtest-cli missing, no network, output
+                    // that didn't match the expected format) silently
+                    // produced the same "show nothing" result as never
+                    // having run a test.
                     Text {
-                        visible: Network.speedtestResult !== null
-                        text: Network.speedtestResult
-                            ? ("\u{F01DA} " + Network.speedtestResult.down.toFixed(1) + " ↓  " + Network.speedtestResult.up.toFixed(1) + " ↑ Mbps")
-                            : ""
-                        color: Theme.subtext0
+                        visible: Network.speedtestRunning || Network.speedtestFailed || Network.speedtestResult !== null
+                        text: Network.speedtestRunning
+                            ? "\u{F0489} Testing speed…"
+                            : Network.speedtestFailed
+                                ? "⚠ Speed test failed — is speedtest-cli installed?"
+                                : Network.speedtestResult
+                                    ? ("\u{F01DA} " + Network.speedtestResult.down.toFixed(1) + " ↓  " + Network.speedtestResult.up.toFixed(1) + " ↑ Mbps")
+                                    : ""
+                        color: Network.speedtestFailed ? Theme.red : Theme.subtext0
                         font.family: Config.fontFamily
-                        font.pixelSize: 11
+                        font.pixelSize: Config.px(11)
                         Layout.fillWidth: true
                         elide: Text.ElideRight
                     }

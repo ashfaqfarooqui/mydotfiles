@@ -32,7 +32,7 @@ Scope {
             // labels ("Power-saver"/"Performance") side by side with their
             // icons — the widest chip's content overflowed its own
             // Rectangle and visually overlapped its neighbor.
-            implicitWidth: 320
+            implicitWidth: Config.px(320)
             implicitHeight: content.implicitHeight + 28
             color: "transparent"
             exclusiveZone: 0
@@ -77,7 +77,7 @@ Scope {
                         property bool selected: false
                         signal activated()
                         Layout.fillWidth: true
-                        implicitHeight: 26
+                        implicitHeight: Config.px(26)
                         radius: 6
                         color: selected ? Theme.blue : Theme.surface1
 
@@ -94,13 +94,13 @@ Scope {
                                 text: chip.icon
                                 color: chip.selected ? Theme.crust : Theme.text
                                 font.family: Config.fontFamily
-                                font.pixelSize: 11
+                                font.pixelSize: Config.px(11)
                             }
                             Text {
                                 text: chip.label
                                 color: chip.selected ? Theme.crust : Theme.text
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                                 font.bold: chip.selected
                                 elide: Text.ElideRight
                             }
@@ -122,7 +122,7 @@ Scope {
                             text: Battery.iconFor(Math.round(Battery.percent), Battery.charging)
                             color: Battery.percent <= 15 && !Battery.charging ? Theme.red : Theme.text
                             font.family: Config.fontFamily
-                            font.pixelSize: 22
+                            font.pixelSize: Config.px(22)
                         }
 
                         ColumnLayout {
@@ -132,13 +132,13 @@ Scope {
                                 color: Theme.text
                                 font.family: Config.fontFamily
                                 font.bold: true
-                                font.pixelSize: 15
+                                font.pixelSize: Config.px(15)
                             }
                             Text {
                                 text: Battery.displayState.toUpperCase()
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                             }
                         }
 
@@ -149,7 +149,7 @@ Scope {
                             color: Theme.text
                             font.family: Config.fontFamily
                             font.bold: true
-                            font.pixelSize: 22
+                            font.pixelSize: Config.px(22)
                         }
                     }
 
@@ -182,8 +182,8 @@ Scope {
                             Layout.fillWidth: true
                             property string label
                             property string value
-                            Text { text: parent.label; color: Theme.subtext0; font.family: Config.fontFamily; font.pixelSize: 11; Layout.fillWidth: true }
-                            Text { text: parent.value; color: Theme.text; font.family: Config.fontFamily; font.bold: true; font.pixelSize: 11 }
+                            Text { text: parent.label; color: Theme.subtext0; font.family: Config.fontFamily; font.pixelSize: Config.px(11); Layout.fillWidth: true }
+                            Text { text: parent.value; color: Theme.text; font.family: Config.fontFamily; font.bold: true; font.pixelSize: Config.px(11) }
                         }
 
                         StatText { visible: Battery.capacityWh > 0; label: "Battery size"; value: Battery.capacityWh.toFixed(0) + "Wh" }
@@ -216,7 +216,7 @@ Scope {
                             text: "POWER PROFILE"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 10
+                            font.pixelSize: Config.px(10)
                             font.bold: true
                         }
 

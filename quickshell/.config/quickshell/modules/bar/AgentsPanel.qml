@@ -26,7 +26,7 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === root.screenName) ?? Quickshell.screens[0]
             anchors { top: true; right: true }
             margins { top: Config.barHeight + 4; right: 10 }
-            implicitWidth: 340
+            implicitWidth: Config.px(340)
             implicitHeight: content.implicitHeight + 28
             color: "transparent"
             exclusiveZone: 0
@@ -56,7 +56,7 @@ Scope {
                 component SectionLabel: Text {
                     color: Theme.overlay0
                     font.family: Config.fontFamily
-                    font.pixelSize: 10
+                    font.pixelSize: Config.px(10)
                     font.bold: true
                 }
 
@@ -73,7 +73,7 @@ Scope {
                         text: parent.label
                         color: Theme.subtext0
                         font.family: Config.fontFamily
-                        font.pixelSize: 10
+                        font.pixelSize: Config.px(10)
                         Layout.preferredWidth: 34
                     }
 
@@ -97,7 +97,7 @@ Scope {
                         text: parent.value
                         color: Theme.text
                         font.family: Config.fontFamily
-                        font.pixelSize: 10
+                        font.pixelSize: Config.px(10)
                         Layout.preferredWidth: 46
                         horizontalAlignment: Text.AlignRight
                     }
@@ -124,7 +124,7 @@ Scope {
                             text: "\u{F0AE2}" // nf-md-star_four_points
                             color: Theme.yellow
                             font.family: Config.fontFamily
-                            font.pixelSize: 22
+                            font.pixelSize: Config.px(22)
                         }
 
                         ColumnLayout {
@@ -134,13 +134,13 @@ Scope {
                                 color: Theme.text
                                 font.family: Config.fontFamily
                                 font.bold: true
-                                font.pixelSize: 15
+                                font.pixelSize: Config.px(15)
                             }
                             Text {
                                 text: "LOCAL USAGE"
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                             }
                         }
                     }
@@ -150,7 +150,7 @@ Scope {
                         property bool selected: false
                         signal activated()
                         Layout.fillWidth: true
-                        implicitHeight: 26
+                        implicitHeight: Config.px(26)
                         radius: 6
                         color: selected ? Theme.blue : Theme.surface1
 
@@ -159,7 +159,7 @@ Scope {
                             text: parent.label
                             color: parent.selected ? Theme.crust : Theme.text
                             font.family: Config.fontFamily
-                            font.pixelSize: 11
+                            font.pixelSize: Config.px(11)
                             font.bold: parent.selected
                         }
 

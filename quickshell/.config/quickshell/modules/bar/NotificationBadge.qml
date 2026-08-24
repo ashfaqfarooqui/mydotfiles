@@ -28,6 +28,33 @@ Text {
         }
     }
 
+    // Augments (doesn't replace) the bell's own color signal above — the
+    // color still needs to carry the DND-vs-unread-vs-clear three-state
+    // distinction (a DND-muted bell with zero unread has no count to show,
+    // but still needs to look visually "off"), which a count bubble alone
+    // can't convey.
+    Rectangle {
+        visible: Notifications.unreadCount > 0
+        width: Math.max(14, countText.implicitWidth + 6)
+        height: 14
+        radius: 7
+        color: Theme.red
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: -4
+        anchors.rightMargin: -6
+
+        Text {
+            id: countText
+            anchors.centerIn: parent
+            text: Notifications.unreadCount > 99 ? "99+" : String(Notifications.unreadCount)
+            color: Theme.base
+            font.family: Config.fontFamily
+            font.pixelSize: Config.px(9)
+            font.bold: true
+        }
+    }
+
     HoverHandler {
         onHoveredChanged: hovered ? TooltipBus.show(
             Notifications.unreadCount + " notification" + (Notifications.unreadCount === 1 ? "" : "s") +

@@ -35,9 +35,16 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 10
 
-            Workspaces {}
-            Submap {}
-            ActiveWindow {}
+            // Workspaces/ActiveWindow are now differently-tall pill
+            // widgets (their own padding, not just bare Text like Submap),
+            // so a plain Row's default top-alignment left them visibly
+            // misaligned against each other — same "Row only manages the
+            // x-axis" pitfall GroupPill.qml's own header comment warns
+            // about. Center each explicitly, matching how every GroupPill
+            // in the center/right rows below already does this.
+            Workspaces { anchors.verticalCenter: parent.verticalCenter; screen: root.screen }
+            Submap { anchors.verticalCenter: parent.verticalCenter }
+            ActiveWindow { anchors.verticalCenter: parent.verticalCenter }
         }
 
         Row {
@@ -176,7 +183,7 @@ PanelWindow {
                         : "<b>" + lines[0] + "</b>"
                     color: Theme.text
                     font.family: Config.fontFamily
-                    font.pixelSize: 12
+                    font.pixelSize: Config.px(12)
                     lineHeight: 1.3
                     wrapMode: Text.WordWrap
                     width: Math.min(implicitWidth, 420)

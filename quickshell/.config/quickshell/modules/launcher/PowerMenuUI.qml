@@ -57,8 +57,8 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors { top: true }
             margins.top: Math.round(screen.height * 0.2)
-            implicitWidth: 320
-            implicitHeight: 340
+            implicitWidth: Config.px(320)
+            implicitHeight: Config.px(340)
             color: "transparent"
             exclusiveZone: 0
             focusable: true
@@ -129,13 +129,13 @@ Scope {
                         text: "Power"
                         color: Theme.subtext1
                         font.family: Config.fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: Config.px(12)
                         font.bold: true
                     }
 
                     Rectangle {
                         Layout.fillWidth: true
-                        implicitHeight: 38
+                        implicitHeight: Config.px(38)
                         radius: 8
                         color: Theme.surface1
                         border.color: search.activeFocus ? Theme.blue : "transparent"
@@ -149,7 +149,7 @@ Scope {
                             text: "Search…"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                         }
 
                         TextInput {
@@ -160,7 +160,7 @@ Scope {
                             verticalAlignment: TextInput.AlignVCenter
                             color: Theme.text
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                             focus: true
                             clip: true
 
@@ -198,7 +198,7 @@ Scope {
                             required property var modelData
                             required property int index
                             width: list.width
-                            implicitHeight: 40
+                            implicitHeight: Config.px(40)
                             radius: 8
                             readonly property bool armed: win.armedIndex === index
                             color: armed ? Theme.red : (index === list.currentIndex ? Theme.surface2 : "transparent")
@@ -213,7 +213,7 @@ Scope {
                                     text: delegateRoot.modelData.icon
                                     color: Theme.text
                                     font.family: Config.fontFamily
-                                    font.pixelSize: 16
+                                    font.pixelSize: Config.px(16)
                                     Layout.preferredWidth: 20
                                 }
 
@@ -221,7 +221,7 @@ Scope {
                                     text: delegateRoot.armed ? "Press again to confirm" : delegateRoot.modelData.label
                                     color: Theme.text
                                     font.family: Config.fontFamily
-                                    font.pixelSize: 14
+                                    font.pixelSize: Config.px(14)
                                     font.bold: delegateRoot.armed
                                     Layout.fillWidth: true
                                 }

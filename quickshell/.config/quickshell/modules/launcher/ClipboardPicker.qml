@@ -26,8 +26,8 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors { top: true }
             margins.top: Math.round(screen.height * 0.12)
-            implicitWidth: 760
-            implicitHeight: 480
+            implicitWidth: Config.px(760)
+            implicitHeight: Config.px(480)
             color: "transparent"
             exclusiveZone: 0
             focusable: true
@@ -94,7 +94,7 @@ Scope {
                                 text: "Clipboard History"
                                 color: Theme.subtext1
                                 font.family: Config.fontFamily
-                                font.pixelSize: 12
+                                font.pixelSize: Config.px(12)
                                 font.bold: true
                             }
 
@@ -104,13 +104,13 @@ Scope {
                                 text: win.filtered.length + " items"
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 11
+                                font.pixelSize: Config.px(11)
                             }
                         }
 
                         Rectangle {
                             Layout.fillWidth: true
-                            implicitHeight: 38
+                            implicitHeight: Config.px(38)
                             radius: 8
                             color: Theme.surface1
                             border.color: search.activeFocus ? Theme.blue : "transparent"
@@ -124,7 +124,7 @@ Scope {
                                 text: "Search clipboard history…"
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 14
+                                font.pixelSize: Config.px(14)
                             }
 
                             TextInput {
@@ -135,7 +135,7 @@ Scope {
                                 verticalAlignment: TextInput.AlignVCenter
                                 color: Theme.text
                                 font.family: Config.fontFamily
-                                font.pixelSize: 14
+                                font.pixelSize: Config.px(14)
                                 focus: true
                                 clip: true
 
@@ -231,7 +231,7 @@ Scope {
                                         text: delegateRoot.previewText
                                         color: Theme.text
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 13
+                                        font.pixelSize: Config.px(13)
                                         Layout.fillWidth: true
                                         elide: Text.ElideRight
                                     }
@@ -289,7 +289,7 @@ Scope {
                             text: "No item selected"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 13
+                            font.pixelSize: Config.px(13)
                         }
 
                         ColumnLayout {
@@ -304,7 +304,7 @@ Scope {
                                 }
                                 color: Theme.subtext1
                                 font.family: Config.fontFamily
-                                font.pixelSize: 12
+                                font.pixelSize: Config.px(12)
                                 font.bold: true
                             }
 
@@ -331,7 +331,7 @@ Scope {
                                 text: Cliphist.fullTextCache[detail.entryId] ?? detail.previewText
                                 color: Theme.text
                                 font.family: Config.fontFamily
-                                font.pixelSize: 13
+                                font.pixelSize: Config.px(13)
                                 wrapMode: Text.Wrap
                             }
                         }

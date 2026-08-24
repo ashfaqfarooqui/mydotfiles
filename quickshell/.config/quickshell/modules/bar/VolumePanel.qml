@@ -26,7 +26,7 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === root.screenName) ?? Quickshell.screens[0]
             anchors { top: true; right: true }
             margins { top: Config.barHeight + 4; right: 10 }
-            implicitWidth: 340
+            implicitWidth: Config.px(340)
             implicitHeight: content.implicitHeight + 28
             color: "transparent"
             exclusiveZone: 0
@@ -66,7 +66,7 @@ Scope {
                         property bool selected: false
                         signal activated()
                         Layout.fillWidth: true
-                        implicitHeight: 22
+                        implicitHeight: Config.px(22)
                         radius: 6
                         color: selected ? Theme.blue : Theme.surface1
 
@@ -79,7 +79,7 @@ Scope {
                             text: parent.label
                             color: parent.selected ? Theme.crust : Theme.text
                             font.family: Config.fontFamily
-                            font.pixelSize: 10
+                            font.pixelSize: Config.px(10)
                             font.bold: parent.selected
                         }
 
@@ -92,7 +92,7 @@ Scope {
                     component VolumeSlider: Item {
                         id: slider
                         Layout.fillWidth: true
-                        implicitHeight: 20
+                        implicitHeight: Config.px(20)
                         property real ratio: 0
                         property bool danger: false
                         signal moved(real ratio)
@@ -146,7 +146,7 @@ Scope {
                                 text: Audio.muted ? "" : ""
                                 color: Audio.muted ? Theme.overlay0 : Theme.text
                                 font.family: Config.fontFamily
-                                font.pixelSize: 15
+                                font.pixelSize: Config.px(15)
                                 MouseArea { anchors.fill: parent; onClicked: Audio.toggleMute() }
                             }
 
@@ -155,7 +155,7 @@ Scope {
                                 color: Theme.text
                                 font.family: Config.fontFamily
                                 font.bold: true
-                                font.pixelSize: 13
+                                font.pixelSize: Config.px(13)
                                 Layout.fillWidth: true
                             }
 
@@ -163,7 +163,7 @@ Scope {
                                 text: Audio.volumePercent + "%"
                                 color: Theme.subtext0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 11
+                                font.pixelSize: Config.px(11)
                             }
                         }
 
@@ -188,7 +188,7 @@ Scope {
                         }
                     }
 
-                    Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.surface2 }
+                    Rectangle { Layout.fillWidth: true; implicitHeight: Config.px(1); color: Theme.surface2 }
 
                     // ---- Input ----
                     ColumnLayout {
@@ -203,7 +203,7 @@ Scope {
                                 text: ""
                                 color: Audio.sourceMuted ? Theme.overlay0 : Theme.text
                                 font.family: Config.fontFamily
-                                font.pixelSize: 15
+                                font.pixelSize: Config.px(15)
                                 MouseArea { anchors.fill: parent; onClicked: Audio.toggleSourceMute() }
                             }
 
@@ -212,7 +212,7 @@ Scope {
                                 color: Theme.text
                                 font.family: Config.fontFamily
                                 font.bold: true
-                                font.pixelSize: 13
+                                font.pixelSize: Config.px(13)
                                 Layout.fillWidth: true
                             }
 
@@ -220,7 +220,7 @@ Scope {
                                 text: Audio.sourceVolumePercent + "%"
                                 color: Theme.subtext0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 11
+                                font.pixelSize: Config.px(11)
                             }
                         }
 
@@ -250,13 +250,13 @@ Scope {
                         spacing: 4
                         visible: Audio.streams.length > 0
 
-                        Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.surface2 }
+                        Rectangle { Layout.fillWidth: true; implicitHeight: Config.px(1); color: Theme.surface2 }
 
                         Text {
                             text: "Applications"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 10
+                            font.pixelSize: Config.px(10)
                             font.bold: true
                         }
 
@@ -276,7 +276,7 @@ Scope {
                                         text: streamRow.modelData.audio.muted ? "" : ""
                                         color: streamRow.modelData.audio.muted ? Theme.overlay0 : Theme.text
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 12
+                                        font.pixelSize: Config.px(12)
                                         MouseArea {
                                             anchors.fill: parent
                                             onClicked: streamRow.modelData.audio.muted = !streamRow.modelData.audio.muted
@@ -287,7 +287,7 @@ Scope {
                                         text: Audio.streamLabel(streamRow.modelData)
                                         color: Theme.text
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 11
+                                        font.pixelSize: Config.px(11)
                                         elide: Text.ElideRight
                                         Layout.fillWidth: true
                                     }
@@ -296,7 +296,7 @@ Scope {
                                         text: Math.round((streamRow.modelData.audio.volume ?? 0) * 100) + "%"
                                         color: Theme.subtext0
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 10
+                                        font.pixelSize: Config.px(10)
                                     }
                                 }
 

@@ -36,7 +36,7 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === root.screenName) ?? Quickshell.screens[0]
             anchors { top: true; right: true }
             margins { top: Config.barHeight + 4; right: 10 }
-            implicitWidth: 320
+            implicitWidth: Config.px(320)
             implicitHeight: content.implicitHeight + 28
             color: "transparent"
             exclusiveZone: 0
@@ -76,14 +76,14 @@ Scope {
                         color: Theme.overlay0
                         font.family: Config.fontFamily
                         font.bold: true
-                        font.pixelSize: 10
+                        font.pixelSize: Config.px(10)
                         Layout.fillWidth: true
                     }
                     Text {
                         text: parent.value
                         color: Theme.subtext0
                         font.family: Config.fontFamily
-                        font.pixelSize: 11
+                        font.pixelSize: Config.px(11)
                     }
                 }
 
@@ -95,7 +95,7 @@ Scope {
                     property real ratio: 0
                     signal moved(real ratio)
                     Layout.fillWidth: true
-                    implicitHeight: 20
+                    implicitHeight: Config.px(20)
 
                     function setFromX(x) {
                         moved(Math.max(0, Math.min(1, x / slider.width)));
@@ -142,7 +142,7 @@ Scope {
                     property bool selected: false
                     signal activated()
                     Layout.fillWidth: true
-                    implicitHeight: 26
+                    implicitHeight: Config.px(26)
                     radius: 6
                     color: selected ? Theme.blue : Theme.surface1
 
@@ -151,7 +151,7 @@ Scope {
                         text: parent.label
                         color: parent.selected ? Theme.crust : Theme.text
                         font.family: Config.fontFamily
-                        font.pixelSize: 11
+                        font.pixelSize: Config.px(11)
                         font.bold: parent.selected
                     }
 
@@ -176,7 +176,7 @@ Scope {
                             text: "\u{F0DDD}"
                             color: Theme.blue
                             font.family: Config.fontFamily
-                            font.pixelSize: 22
+                            font.pixelSize: Config.px(22)
                         }
 
                         ColumnLayout {
@@ -186,13 +186,13 @@ Scope {
                                 color: Theme.text
                                 font.family: Config.fontFamily
                                 font.bold: true
-                                font.pixelSize: 15
+                                font.pixelSize: Config.px(15)
                             }
                             Text {
                                 text: (root.panelMonitor?.description ?? root.panelMonitor?.name ?? "").toUpperCase()
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                                 elide: Text.ElideRight
                                 Layout.maximumWidth: 220
                             }
@@ -215,8 +215,13 @@ Scope {
                     // fed straight into the font system, not a scale
                     // multiplier — see Model.js's textSizeStops). A global
                     // Settings.fontSize, not per-monitor: DPI/zoom is a
-                    // monitor property and lives in the Scale section below;
-                    // this is just "how big should bar text read."
+                    // monitor property and lives in the Scale section below.
+                    // Originally bar-only; Config.uiScale/Config.px() now
+                    // derive from this same value to scale every other
+                    // font.pixelSize in the shell (launcher, OSDs, lock
+                    // screen, notification popup, polkit dialog) relative to
+                    // it, so this slider is "how big should shell text read"
+                    // shell-wide, not just the bar row.
                     ColumnLayout {
                         id: textSizeSection
                         Layout.fillWidth: true
@@ -305,13 +310,13 @@ Scope {
                                         text: "\u{F0DDD}"
                                         color: modelData.focused ? Theme.blue : Theme.overlay0
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 13
+                                        font.pixelSize: Config.px(13)
                                     }
                                     Text {
                                         text: modelData.name + (modelData.focused ? " · active" : "")
                                         color: modelData.focused ? Theme.text : Theme.subtext0
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 12
+                                        font.pixelSize: Config.px(12)
                                         font.bold: displayRow.isThisPanel
                                         Layout.fillWidth: true
                                     }
@@ -320,7 +325,7 @@ Scope {
                                         text: "\u{F012C}"
                                         color: Theme.blue
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 12
+                                        font.pixelSize: Config.px(12)
                                     }
                                 }
                             }

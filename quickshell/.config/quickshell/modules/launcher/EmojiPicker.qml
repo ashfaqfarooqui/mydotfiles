@@ -41,8 +41,8 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors { top: true }
             margins.top: Math.round(screen.height * 0.12)
-            implicitWidth: 480
-            implicitHeight: 420
+            implicitWidth: Config.px(480)
+            implicitHeight: Config.px(420)
             color: "transparent"
             exclusiveZone: 0
             focusable: true
@@ -97,7 +97,7 @@ Scope {
                             text: "Emoji"
                             color: Theme.subtext1
                             font.family: Config.fontFamily
-                            font.pixelSize: 12
+                            font.pixelSize: Config.px(12)
                             font.bold: true
                         }
 
@@ -107,13 +107,13 @@ Scope {
                             text: win.filtered.length + " results"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 11
+                            font.pixelSize: Config.px(11)
                         }
                     }
 
                     Rectangle {
                         Layout.fillWidth: true
-                        implicitHeight: 38
+                        implicitHeight: Config.px(38)
                         radius: 8
                         color: Theme.surface1
                         border.color: search.activeFocus ? Theme.blue : "transparent"
@@ -127,7 +127,7 @@ Scope {
                             text: "Search emoji…"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                         }
 
                         TextInput {
@@ -138,7 +138,7 @@ Scope {
                             verticalAlignment: TextInput.AlignVCenter
                             color: Theme.text
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                             focus: true
                             clip: true
 
@@ -178,7 +178,7 @@ Scope {
                             Text {
                                 anchors.centerIn: parent
                                 text: cell.modelData.emoji
-                                font.pixelSize: 22
+                                font.pixelSize: Config.px(22)
                             }
 
                             MouseArea {

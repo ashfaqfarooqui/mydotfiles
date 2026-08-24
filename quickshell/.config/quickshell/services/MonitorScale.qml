@@ -1,5 +1,7 @@
 pragma Singleton
 import Quickshell
+import Quickshell.Io
+import qs.services
 
 // Backs DisplayPanel.qml's Scale section. No first-party Quickshell service
 // sets monitor scale (services/Hypr.qml's Hypr.monitors is read-only), so
@@ -54,8 +56,38 @@ Singleton {
         return result;
     }
 
+    // `hyprctl keyword monitor ...` (the vanilla Hyprland syntax) is
+    // rejected outright on this machine's Lua-native Hyprland build —
+    // "keyword can't work with non-legacy parsers. Use eval." — confirmed
+    // live. The Lua-dispatch equivalent is the `hl.monitor(table)` global
+    // (not a dispatcher under hl.dsp.*, and not exposed as a plain
+    // `hyprctl keyword`/`hyprctl dispatch` string either), which wants an
+    // `output` field (not `name`) — confirmed live via
+    // `hyprctl repl 'hl.monitor({output=..., scale=...})'`. `hyprctl eval`
+    // runs one-off Lua exactly like `repl`, so this shells out to that.
+    //
+    // Omitting `position` here is NOT safe to skip — confirmed live that it
+    // makes Hyprland fall back to auto-placement, which silently *moved*
+    // this machine's second monitor from its configured auto-left position
+    // to the right of the primary display the first time this ran. Passing
+    // the monitor's own current x/y back as an explicit "XxY" position
+    // keeps this a pure scale change.
+    // Confirmed live (listening on .socket2.sock while triggering this)
+    // that a scale change applied this way emits no Hyprland event at all —
+    // so DisplayPanel.qml's ScalePill.selected binding, which reads
+    // monitor.scale, never re-evaluates on its own and keeps showing the
+    // preset that was active before the click. execDetached() also gives no
+    // completion signal to know when it's even safe to refresh, so this
+    // uses a real Process and refreshes once it actually exits.
     function setScale(monitor, scale) {
         if (!monitor) return;
-        Quickshell.execDetached(["hyprctl", "keyword", "monitor", monitor.name + ",preferred,auto," + scale]);
+        const position = monitor.x + "x" + monitor.y;
+        scaleProc.command = ["hyprctl", "eval", "hl.monitor({output=\"" + monitor.name + "\", position=\"" + position + "\", scale=" + scale + "})"];
+        scaleProc.running = true;
+    }
+
+    Process {
+        id: scaleProc
+        onExited: Hypr.refreshMonitors()
     }
 }

@@ -40,7 +40,7 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === root.screenName) ?? Quickshell.screens[0]
             anchors { top: true; right: true }
             margins { top: Config.barHeight + 4; right: 10 }
-            implicitWidth: 340
+            implicitWidth: Config.px(340)
             implicitHeight: Math.min(500, content.implicitHeight + 28)
             color: "transparent"
             exclusiveZone: 0
@@ -82,7 +82,7 @@ Scope {
                             color: Theme.text
                             font.family: Config.fontFamily
                             font.bold: true
-                            font.pixelSize: 15
+                            font.pixelSize: Config.px(15)
                             Layout.fillWidth: true
                         }
 
@@ -94,7 +94,7 @@ Scope {
                             text: root.adapter?.discovering ? "Stop" : "Scan"
                             color: Theme.blue
                             font.family: Config.fontFamily
-                            font.pixelSize: 11
+                            font.pixelSize: Config.px(11)
 
                             MouseArea {
                                 anchors.fill: parent
@@ -149,7 +149,7 @@ Scope {
                                 text: root.adapter?.discovering ? "Scanning…" : "No devices"
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 12
+                                font.pixelSize: Config.px(12)
                                 Layout.topMargin: 20
                                 Layout.alignment: Qt.AlignHCenter
                             }
@@ -173,14 +173,14 @@ Scope {
                                             text: "\u{F00E1}"
                                             color: Theme.text
                                             font.family: Config.fontFamily
-                                            font.pixelSize: 14
+                                            font.pixelSize: Config.px(14)
                                         }
 
                                         Text {
                                             text: modelData.name !== "" ? modelData.name : modelData.deviceName
                                             color: Theme.text
                                             font.family: Config.fontFamily
-                                            font.pixelSize: 12
+                                            font.pixelSize: Config.px(12)
                                             Layout.fillWidth: true
                                             elide: Text.ElideRight
                                         }
@@ -190,7 +190,7 @@ Scope {
                                             text: Math.round(modelData.battery * 100) + "%"
                                             color: Theme.subtext0
                                             font.family: Config.fontFamily
-                                            font.pixelSize: 11
+                                            font.pixelSize: Config.px(11)
                                         }
 
                                         Text {
@@ -198,12 +198,12 @@ Scope {
                                             text: "Pairing…"
                                             color: Theme.subtext0
                                             font.family: Config.fontFamily
-                                            font.pixelSize: 11
+                                            font.pixelSize: Config.px(11)
                                         }
 
                                         Rectangle {
                                             implicitWidth: actionLabel.implicitWidth + 16
-                                            implicitHeight: 22
+                                            implicitHeight: Config.px(22)
                                             radius: 6
                                             color: modelData.connected ? Theme.surface2 : Theme.blue
 
@@ -213,7 +213,7 @@ Scope {
                                                 text: modelData.connected ? "Disconnect" : (modelData.paired ? "Connect" : "Pair")
                                                 color: modelData.connected ? Theme.text : Theme.crust
                                                 font.family: Config.fontFamily
-                                                font.pixelSize: 10
+                                                font.pixelSize: Config.px(10)
                                                 font.bold: true
                                             }
 
@@ -232,7 +232,7 @@ Scope {
                                             text: "\u{F0156}"
                                             color: Theme.overlay0
                                             font.family: Config.fontFamily
-                                            font.pixelSize: 12
+                                            font.pixelSize: Config.px(12)
 
                                             MouseArea {
                                                 anchors.fill: parent

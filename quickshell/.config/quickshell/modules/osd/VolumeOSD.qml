@@ -56,8 +56,8 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors.bottom: true
             margins.bottom: Math.round(screen.height * 0.12)
-            implicitWidth: 320
-            implicitHeight: 56
+            implicitWidth: Config.px(320)
+            implicitHeight: Config.px(56)
             color: "transparent"
             exclusiveZone: 0
             mask: Region {}
@@ -76,7 +76,7 @@ Scope {
                         text: Audio.muted ? "" : ""
                         color: Theme.text
                         font.family: Config.fontFamily
-                        font.pixelSize: 18
+                        font.pixelSize: Config.px(18)
                     }
 
                     Rectangle {
@@ -97,7 +97,7 @@ Scope {
                         text: Audio.volumePercent + "%"
                         color: Theme.text
                         font.family: Config.fontFamily
-                        font.pixelSize: 14
+                        font.pixelSize: Config.px(14)
                     }
                 }
             }

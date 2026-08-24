@@ -33,7 +33,7 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors { top: true }
             margins.top: Math.round(screen.height * 0.15)
-            implicitWidth: 320
+            implicitWidth: Config.px(320)
             implicitHeight: list.implicitHeight + 28
             color: "transparent"
             exclusiveZone: 0
@@ -84,7 +84,7 @@ Scope {
                             required property var modelData
                             required property int index
                             Layout.fillWidth: true
-                            implicitHeight: 36
+                            implicitHeight: Config.px(36)
                             radius: 6
                             color: index === list.currentIndex ? Theme.surface2 : "transparent"
 
@@ -95,7 +95,7 @@ Scope {
                                 text: modelData.label
                                 color: Theme.text
                                 font.family: Config.fontFamily
-                                font.pixelSize: 13
+                                font.pixelSize: Config.px(13)
                             }
 
                             MouseArea {

@@ -72,8 +72,8 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors { top: true }
             margins.top: Math.round(screen.height * 0.12)
-            implicitWidth: 560
-            implicitHeight: 460
+            implicitWidth: Config.px(560)
+            implicitHeight: Config.px(460)
             color: "transparent"
             exclusiveZone: 0
             focusable: true
@@ -124,7 +124,7 @@ Scope {
                         color: Theme.text
                         font.family: Config.fontFamily
                         font.bold: true
-                        font.pixelSize: 15
+                        font.pixelSize: Config.px(15)
                     }
 
                     GridView {
@@ -176,7 +176,7 @@ Scope {
                                         text: (root.displayNames[modelData] ?? modelData) + (isCurrent ? " ✓" : "")
                                         color: Theme.text
                                         font.family: Config.fontFamily
-                                        font.pixelSize: 11
+                                        font.pixelSize: Config.px(11)
                                         Layout.fillWidth: true
                                         horizontalAlignment: Text.AlignHCenter
                                         elide: Text.ElideRight

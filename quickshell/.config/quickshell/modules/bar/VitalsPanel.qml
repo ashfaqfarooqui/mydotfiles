@@ -25,7 +25,7 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === root.screenName) ?? Quickshell.screens[0]
             anchors { top: true; right: true }
             margins { top: Config.barHeight + 4; right: 10 }
-            implicitWidth: 360
+            implicitWidth: Config.px(360)
             implicitHeight: content.implicitHeight + 28
             color: "transparent"
             exclusiveZone: 0
@@ -55,7 +55,7 @@ Scope {
                 component SectionLabel: Text {
                     color: Theme.overlay0
                     font.family: Config.fontFamily
-                    font.pixelSize: 10
+                    font.pixelSize: Config.px(10)
                     font.bold: true
                 }
 
@@ -70,15 +70,15 @@ Scope {
 
                     RowLayout {
                         spacing: 4
-                        Text { text: parent.parent.leftLabel; color: Theme.subtext0; font.family: Config.fontFamily; font.pixelSize: 11 }
-                        Text { text: parent.parent.leftValue; color: Theme.text; font.family: Config.fontFamily; font.bold: true; font.pixelSize: 11 }
+                        Text { text: parent.parent.leftLabel; color: Theme.subtext0; font.family: Config.fontFamily; font.pixelSize: Config.px(11) }
+                        Text { text: parent.parent.leftValue; color: Theme.text; font.family: Config.fontFamily; font.bold: true; font.pixelSize: Config.px(11) }
                     }
                     Item { Layout.fillWidth: true }
                     RowLayout {
                         visible: parent.rightLabel !== ""
                         spacing: 4
-                        Text { text: parent.parent.rightLabel; color: Theme.subtext0; font.family: Config.fontFamily; font.pixelSize: 11 }
-                        Text { text: parent.parent.rightValue; color: Theme.text; font.family: Config.fontFamily; font.bold: true; font.pixelSize: 11 }
+                        Text { text: parent.parent.rightLabel; color: Theme.subtext0; font.family: Config.fontFamily; font.pixelSize: Config.px(11) }
+                        Text { text: parent.parent.rightValue; color: Theme.text; font.family: Config.fontFamily; font.bold: true; font.pixelSize: Config.px(11) }
                     }
                 }
 
@@ -97,7 +97,7 @@ Scope {
                             text: "\u{F061A}" // nf-md-chip (processor)
                             color: Theme.blue
                             font.family: Config.fontFamily
-                            font.pixelSize: 24
+                            font.pixelSize: Config.px(24)
                         }
 
                         ColumnLayout {
@@ -107,14 +107,14 @@ Scope {
                                 color: Theme.text
                                 font.family: Config.fontFamily
                                 font.bold: true
-                                font.pixelSize: 15
+                                font.pixelSize: Config.px(15)
                             }
                             Text {
                                 readonly property bool warning: SystemStats.cpuPercent >= 85 || SystemStats.memPercent >= 90 || SystemStats.tempC >= 85
                                 text: warning ? "ELEVATED" : "NOMINAL"
                                 color: warning ? Theme.yellow : Theme.green
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                             }
                         }
 
@@ -124,14 +124,14 @@ Scope {
                             radius: 6
                             color: Theme.surface1
                             implicitWidth: badgeText.implicitWidth + 16
-                            implicitHeight: 22
+                            implicitHeight: Config.px(22)
                             Text {
                                 id: badgeText
                                 anchors.centerIn: parent
                                 text: SystemStats.cpuPercent + "% · " + SystemStats.memUsedGB.toFixed(1) + " / " + SystemStats.memTotalGB.toFixed(1) + " GB"
                                 color: Theme.subtext1
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                             }
                         }
                     }
@@ -180,7 +180,7 @@ Scope {
                             text: SystemStats.perCorePercent.length + " threads"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 9
+                            font.pixelSize: Config.px(9)
                         }
                     }
 
@@ -202,7 +202,7 @@ Scope {
                                     text: modelData.name
                                     color: Theme.subtext1
                                     font.family: Config.fontFamily
-                                    font.pixelSize: 11
+                                    font.pixelSize: Config.px(11)
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
                                 }
@@ -210,7 +210,7 @@ Scope {
                                     text: modelData.cpu.toFixed(1) + "%"
                                     color: Theme.text
                                     font.family: Config.fontFamily
-                                    font.pixelSize: 11
+                                    font.pixelSize: Config.px(11)
                                 }
                             }
                         }
@@ -220,7 +220,7 @@ Scope {
                             text: "100% is one thread fully used"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 9
+                            font.pixelSize: Config.px(9)
                         }
                     }
 
@@ -254,6 +254,41 @@ Scope {
                             leftValue: SystemStats.diskTempAvailable ? SystemStats.diskTempC + "°C" : ""
                             rightLabel: SystemStats.fanAvailable ? "Fan" : ""
                             rightValue: SystemStats.fanAvailable ? SystemStats.fanRpm + " rpm" : ""
+                        }
+                    }
+
+                    // STORAGE — NVMe SMART health via udisks2 (see
+                    // services/DiskHealth.qml), not just usage/temperature.
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 6
+                        visible: DiskHealth.available
+
+                        SectionLabel { text: "STORAGE" }
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 4
+                            Text {
+                                text: "Health"
+                                color: Theme.subtext0
+                                font.family: Config.fontFamily
+                                font.pixelSize: Config.px(11)
+                            }
+                            Text {
+                                text: DiskHealth.healthy ? "OK" : "Warning: " + DiskHealth.warnings.join(", ")
+                                color: DiskHealth.healthy ? Theme.green : Theme.red
+                                font.family: Config.fontFamily
+                                font.bold: true
+                                font.pixelSize: Config.px(11)
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignRight
+                                horizontalAlignment: Text.AlignRight
+                                elide: Text.ElideLeft
+                            }
+                        }
+                        StatRow {
+                            leftLabel: "Power-on time"
+                            leftValue: Math.floor(DiskHealth.powerOnHours / 24) + "d " + (DiskHealth.powerOnHours % 24) + "h"
                         }
                     }
                 }

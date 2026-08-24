@@ -31,6 +31,15 @@ Singleton {
 
     readonly property int unreadCount: server.trackedNotifications.values.length
 
+    // Notification objects carry no timestamp of their own (confirmed
+    // against the installed qmltypes — id/appName/summary/body/etc but
+    // nothing time-related), so "received at" has to be tracked here for
+    // the control-center history's relative-time labels.
+    property var _receivedAt: ({})
+    function receivedAt(id) {
+        return root._receivedAt[id] ?? Date.now();
+    }
+
     // Cross-directory toggle channel: NotificationBadge.qml (modules/bar)
     // and ControlCenter.qml (modules/notifications) have no direct
     // reference to each other's instance, so the shared visibility flag
@@ -82,6 +91,7 @@ Singleton {
             // before: they linger in trackedNotifications (control-center
             // history) after their toast times out, until dismissed.
             notification.tracked = true;
+            root._receivedAt[notification.id] = Date.now();
 
             if (!root.dndEnabled) {
                 // expire_timeout === 0 is the sender explicitly asking to
@@ -130,6 +140,7 @@ Singleton {
                         timer.destroy();
                         delete root._timers[notification.id];
                     }
+                    delete root._receivedAt[notification.id];
                 });
             } else if (notification.transient) {
                 notification.tracked = false;

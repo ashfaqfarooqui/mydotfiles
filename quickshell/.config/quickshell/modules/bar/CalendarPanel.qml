@@ -35,7 +35,7 @@ Scope {
             // the single-month grid only and made year-view day numbers
             // cramped enough to overlap; 380, then 440, were still tight
             // once the mini-months grew roomier.
-            implicitWidth: 500
+            implicitWidth: Config.px(500)
             implicitHeight: content.implicitHeight + 28
             color: "transparent"
             exclusiveZone: 0
@@ -172,7 +172,7 @@ Scope {
                             color: mini.isCurrentMonth ? Theme.blue : Theme.subtext1
                             font.family: Config.fontFamily
                             font.bold: true
-                            font.pixelSize: 13
+                            font.pixelSize: Config.px(13)
                         }
 
                         // Plain Grid, not GridLayout — GridLayout sizes each
@@ -212,7 +212,7 @@ Scope {
                                     readonly property bool isToday: mini.isCurrentMonth && modelData === Calendar.today.getDate()
                                     color: isToday ? Theme.blue : Theme.subtext0
                                     font.family: Config.fontFamily
-                                    font.pixelSize: 10
+                                    font.pixelSize: Config.px(10)
                                     font.bold: isToday
                                 }
                             }
@@ -240,7 +240,7 @@ Scope {
                             text: "\u{F0E17}"
                             color: Theme.blue
                             font.family: Config.fontFamily
-                            font.pixelSize: 22
+                            font.pixelSize: Config.px(22)
                         }
 
                         Text {
@@ -248,7 +248,7 @@ Scope {
                             color: Theme.text
                             font.family: Config.fontFamily
                             font.bold: true
-                            font.pixelSize: 16
+                            font.pixelSize: Config.px(16)
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                         }
@@ -266,7 +266,7 @@ Scope {
                                 text: "\u{F0450}"
                                 color: Theme.subtext0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 14
+                                font.pixelSize: Config.px(14)
                             }
                         }
                     }
@@ -283,7 +283,7 @@ Scope {
                             text: "\u{F0141}"
                             color: Theme.subtext1
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.margins: -4
@@ -298,14 +298,14 @@ Scope {
                             color: Theme.text
                             font.family: Config.fontFamily
                             font.bold: true
-                            font.pixelSize: 13
+                            font.pixelSize: Config.px(13)
                         }
 
                         Text {
                             text: "\u{F0142}"
                             color: Theme.subtext1
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.margins: -4
@@ -321,7 +321,7 @@ Scope {
                             text: Calendar.viewMode === "month" ? "\u{F00F1}" : "\u{F0E17}"
                             color: Theme.subtext1
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                             MouseArea { anchors.fill: parent; anchors.margins: -4; onClicked: Calendar.toggleViewMode() }
                         }
                     }
@@ -346,7 +346,7 @@ Scope {
                             text: "Wk"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 9
+                            font.pixelSize: Config.px(9)
                             Layout.row: 0
                             Layout.column: 0
                             Layout.preferredWidth: 22
@@ -368,7 +368,7 @@ Scope {
                                 text: modelData
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                                 Layout.row: 0
                                 Layout.column: index + 1
                                 Layout.fillWidth: true
@@ -383,7 +383,7 @@ Scope {
                                 text: win.isoWeekNumber(index)
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 9
+                                font.pixelSize: Config.px(9)
                                 Layout.row: index + 1
                                 Layout.column: 0
                                 Layout.preferredWidth: 22
@@ -425,7 +425,7 @@ Scope {
                                     text: parent.modelData ?? ""
                                     color: parent.isToday ? Theme.blue : (parent.isWeekend ? Theme.overlay0 : Theme.text)
                                     font.family: Config.fontFamily
-                                    font.pixelSize: 11
+                                    font.pixelSize: Config.px(11)
                                     font.bold: parent.isToday
                                 }
                             }

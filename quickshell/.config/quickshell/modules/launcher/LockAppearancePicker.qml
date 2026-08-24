@@ -25,8 +25,8 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors { top: true }
             margins.top: Math.round(screen.height * 0.12)
-            implicitWidth: 560
-            implicitHeight: 460
+            implicitWidth: Config.px(560)
+            implicitHeight: Config.px(460)
             color: "transparent"
             exclusiveZone: 0
             focusable: true
@@ -71,7 +71,7 @@ Scope {
                         color: Theme.text
                         font.family: Config.fontFamily
                         font.bold: true
-                        font.pixelSize: 15
+                        font.pixelSize: Config.px(15)
                     }
 
                     GridView {
@@ -124,7 +124,7 @@ Scope {
                                     color: Theme.blue
                                     font.family: Config.fontFamily
                                     font.bold: true
-                                    font.pixelSize: 13
+                                    font.pixelSize: Config.px(13)
                                 }
 
                                 MouseArea {
@@ -151,7 +151,7 @@ Scope {
                                 text: "Blur"
                                 color: Theme.overlay0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Config.px(10)
                                 font.bold: true
                                 Layout.fillWidth: true
                             }
@@ -159,14 +159,14 @@ Scope {
                                 text: Math.round(Settings.lockBlur)
                                 color: Theme.subtext0
                                 font.family: Config.fontFamily
-                                font.pixelSize: 11
+                                font.pixelSize: Config.px(11)
                             }
                         }
 
                         Item {
                             id: slider
                             Layout.fillWidth: true
-                            implicitHeight: 20
+                            implicitHeight: Config.px(20)
 
                             readonly property real ratio: Math.max(0, Math.min(1, Settings.lockBlur / 128))
 

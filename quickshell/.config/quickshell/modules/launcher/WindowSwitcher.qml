@@ -28,8 +28,8 @@ Scope {
             screen: Quickshell.screens.find(s => s.name === Hypr.focusedMonitor?.name) ?? Quickshell.screens[0]
             anchors { top: true }
             margins.top: Math.round(screen.height * 0.15)
-            implicitWidth: 480
-            implicitHeight: 360
+            implicitWidth: Config.px(480)
+            implicitHeight: Config.px(360)
             color: "transparent"
             exclusiveZone: 0
             focusable: true
@@ -65,7 +65,7 @@ Scope {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        implicitHeight: 36
+                        implicitHeight: Config.px(36)
                         radius: 8
                         color: Theme.surface1
 
@@ -77,7 +77,7 @@ Scope {
                             text: "Switch window…"
                             color: Theme.overlay0
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                         }
 
                         TextInput {
@@ -88,7 +88,7 @@ Scope {
                             verticalAlignment: TextInput.AlignVCenter
                             color: Theme.text
                             font.family: Config.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: Config.px(14)
                             focus: true
                             clip: true
 
@@ -142,7 +142,7 @@ Scope {
                                     text: modelData.workspace?.name ?? ""
                                     color: Theme.overlay0
                                     font.family: Config.fontFamily
-                                    font.pixelSize: 12
+                                    font.pixelSize: Config.px(12)
                                     Layout.preferredWidth: 30
                                 }
 
@@ -157,7 +157,7 @@ Scope {
                                     text: WindowRewriteRules.resolve(modelData.title ?? "").label
                                     color: Theme.text
                                     font.family: Config.fontFamily
-                                    font.pixelSize: 13
+                                    font.pixelSize: Config.px(13)
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
                                 }

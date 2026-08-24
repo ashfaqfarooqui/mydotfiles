@@ -91,6 +91,38 @@ Singleton {
         // --- Misc ---
         { pattern: /^Timeshift-gtk$/, icon: "", label: "Timeshift" },
         { pattern: /^Authenticate$/, icon: "", label: "Authenticate" },
+
+        // --- Added beyond the original waybar table: apps that weren't
+        // covered there at all. Glyph codepoints cross-checked against the
+        // installed JetBrainsMono Nerd Font's cmap the same way the
+        // notification-panel icons were (see ControlCenter.qml's own
+        // header comment on the icon-drop postmortem) — never hand-pasted.
+        // Title patterns follow each app's well-known default window-title
+        // convention; adjust here if a specific version differs.
+        { pattern: /(.*) - Obsidian(?: v[\d.]+)?$/, icon: "\u{E6BB}", label: "$1" },
+        { pattern: /^Obsidian$/, icon: "\u{E6BB}", label: "Obsidian" },
+
+        { pattern: /(.*) - Google Chrome$/, icon: "\u{E743}", label: "$1" },
+        { pattern: /^Google Chrome$/, icon: "\u{E743}", label: "Chrome" },
+
+        { pattern: /(.*) [–-] Figma$/, icon: "\u{E7DA}", label: "$1" },
+        { pattern: /^Figma$/, icon: "\u{E7DA}", label: "Figma" },
+
+        { pattern: /^Docker Desktop$/, icon: "\u{F0868}", label: "Docker Desktop" },
+        { pattern: /(.*)Docker Desktop$/, icon: "\u{F0868}", label: "Docker Desktop" },
+
+        { pattern: /(.*) - Postman$/, icon: "\u{E86B}", label: "$1" },
+        { pattern: /^Postman$/, icon: "\u{E86B}", label: "Postman" },
+
+        { pattern: /(.*) - Mozilla Thunderbird$/, icon: "\u{F370}", label: "$1" },
+        { pattern: /^Mozilla Thunderbird$/, icon: "\u{F370}", label: "Thunderbird" },
+
+        { pattern: /(.*) - LibreOffice Writer$/, icon: "\u{F37C}", label: "$1" },
+        { pattern: /^LibreOffice Writer$/, icon: "\u{F37C}", label: "LibreOffice Writer" },
+        { pattern: /(.*) - LibreOffice Calc$/, icon: "\u{F378}", label: "$1" },
+        { pattern: /^LibreOffice Calc$/, icon: "\u{F378}", label: "LibreOffice Calc" },
+        { pattern: /(.*) - LibreOffice Impress$/, icon: "\u{F37A}", label: "$1" },
+        { pattern: /^LibreOffice Impress$/, icon: "\u{F37A}", label: "LibreOffice Impress" },
     ]
 
     // Waybar's rewrite table uses std::regex_match (whole-string match);
