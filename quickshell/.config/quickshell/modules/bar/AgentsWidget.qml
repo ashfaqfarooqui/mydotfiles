@@ -4,9 +4,9 @@ import qs.theme
 import qs.config
 import qs.services
 
-// Opens AgentsPanel.qml (local Claude Code token usage). No numeric badge —
-// there's no live quota % available locally to show at a glance (see
-// services/AgentsUsage.qml for why).
+// Opens AgentsPanel.qml (local Claude Code / opencode token usage). No
+// numeric badge — there's no live quota % available locally to show at a
+// glance (see services/AgentsUsage.qml for why).
 Text {
     id: root
     readonly property string screenName: Screen.name
@@ -23,6 +23,8 @@ Text {
     }
 
     HoverHandler {
-        onHoveredChanged: hovered ? TooltipBus.show("Claude Code usage", point.scenePosition.x, root.screenName) : TooltipBus.hide()
+        onHoveredChanged: hovered ? TooltipBus.show(
+            (AgentsUsage.source === "claude" ? "Claude Code" : "opencode") + " usage",
+            point.scenePosition.x, root.screenName) : TooltipBus.hide()
     }
 }

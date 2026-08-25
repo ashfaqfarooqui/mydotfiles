@@ -117,13 +117,47 @@ def opencode_db(query):
         return []
 
 
+def opencode_pretty_model(model):
+    # opencode's modelID strings ("claude-opus-4-6", "glm-4.7") aren't
+    # Claude Code's dotted transcript model IDs, so pretty_claude_model's
+    # date-suffix stripping doesn't apply — just clean up separators/case.
+    return model.replace("-", " ").replace("_", " ").title()
+
+
+# Every opencode token field that actually contributes to a message's real
+# cost/weight — confirmed against opencode's own message schema (`opencode db
+# "PRAGMA table_info(message)"` plus real rows) and cross-checked against
+# `tokens.total` where present: input+output alone (the original query here)
+# undercounted real usage by ~7x on this machine, because cache reads/writes
+# routinely dwarf input+output on any session with meaningful context reuse,
+# and `reasoning` tokens are real spend too. `tokens.total` itself can't be
+# used directly — it's missing on rows written before opencode added that
+# field, so it would silently zero out older history; summing the
+# components explicitly (same approach claude_usage_total already takes for
+# Claude Code's own cache_creation/cache_read fields) works for both old and
+# new rows.
+_OPENCODE_TOKEN_SUM = (
+    "COALESCE(json_extract(data,'$.tokens.input'),0) "
+    "+ COALESCE(json_extract(data,'$.tokens.output'),0) "
+    "+ COALESCE(json_extract(data,'$.tokens.cache.read'),0) "
+    "+ COALESCE(json_extract(data,'$.tokens.cache.write'),0) "
+    "+ COALESCE(json_extract(data,'$.tokens.reasoning'),0)"
+)
+
+
 def opencode_stats():
     by_day = {}
     for row in opencode_db(
-        "SELECT date(time_created/1000,'unixepoch') as day, "
-        "SUM(COALESCE(json_extract(data,'$.tokens.input'),0) + COALESCE(json_extract(data,'$.tokens.output'),0)) as tokens "
+        f"SELECT date(time_created/1000,'unixepoch') as day, "
+        f"SUM({_OPENCODE_TOKEN_SUM}) as tokens "
         "FROM message WHERE json_extract(data,'$.tokens') IS NOT NULL "
-        "AND time_created > (strftime('%s','now') - 7*86400) * 1000 "
+        # Calendar-day cutoff, not a rolling 7*86400s window — days_to_series()
+        # buckets by UTC calendar date (today-6 .. today), so a moment-in-time
+        # cutoff here disagreed with it right at the boundary day: rows from
+        # the early half of that day were excluded here but also didn't match
+        # any of days_to_series()'s 7 date labels, silently vanishing from the
+        # chart instead of landing in either the oldest or a dropped bucket.
+        "AND date(time_created/1000,'unixepoch') >= date('now','-6 days') "
         "GROUP BY day"
     ):
         if row.get("day"):
@@ -132,16 +166,20 @@ def opencode_stats():
     by_model = []
     for row in opencode_db(
         "SELECT json_extract(data,'$.modelID') as model, "
-        "SUM(COALESCE(json_extract(data,'$.tokens.input'),0) + COALESCE(json_extract(data,'$.tokens.output'),0)) as tokens "
+        f"SUM({_OPENCODE_TOKEN_SUM}) as tokens "
         "FROM message WHERE json_extract(data,'$.tokens') IS NOT NULL "
-        "GROUP BY model ORDER BY tokens DESC LIMIT 8"
+        "GROUP BY model ORDER BY tokens DESC LIMIT 12"
     ):
         model = row.get("model")
         tokens = row.get("tokens") or 0
-        if model and tokens > 0:
-            by_model.append({"model": model, "tokens": tokens})
+        # "" / "local" are ACP/local sessions with no resolved model, not
+        # real models to rank — excluded here rather than in SQL so the
+        # LIMIT above still leaves room for 8 real models even when local
+        # sessions would otherwise have taken a top-8 slot.
+        if model and model not in ("local",) and tokens > 0:
+            by_model.append({"model": opencode_pretty_model(model), "tokens": tokens})
 
-    return {"tokensByDay": days_to_series(by_day), "tokensByModel": by_model}
+    return {"tokensByDay": days_to_series(by_day), "tokensByModel": by_model[:8]}
 
 
 def main():
