@@ -18,9 +18,19 @@ Scope {
     readonly property bool dialogVisible: Polkit.dialogVisible
     property bool submitted: false
     property bool failed: false
+    property int shakeOffset: 0
 
     function currentFlow() {
         return Polkit.flow;
+    }
+
+    // Reformats the raw D-Bus message ("Authentication is needed to run
+    // `/usr/bin/foo` as the super user") into "Authorize running 'foo'".
+    // Ported from basecamp/omarchy's PolkitModel.js authorizationLabel().
+    function authorizationLabel(message) {
+        const text = String(message || "");
+        const match = text.match(/^Authentication is (?:needed|required) to run [`']([^`']+)[`'] as /i);
+        return match ? "Authorize running '" + match[1] + "'" : text;
     }
 
     function submitResponse() {
@@ -45,11 +55,19 @@ Scope {
             root.submitted = false;
             root.failed = true;
             failedTimer.restart();
+            shakeAnimation.restart();
         }
 
         function onAuthenticationSucceeded() {
             root.failed = false;
         }
+    }
+
+    SequentialAnimation {
+        id: shakeAnimation
+        NumberAnimation { target: root; property: "shakeOffset"; to: -8; duration: 35; easing.type: Easing.OutQuad }
+        NumberAnimation { target: root; property: "shakeOffset"; to: 8; duration: 50; easing.type: Easing.InOutQuad }
+        NumberAnimation { target: root; property: "shakeOffset"; to: 0; duration: 55; easing.type: Easing.OutQuad }
     }
 
     LazyLoader {
@@ -75,30 +93,37 @@ Scope {
                 height: content.implicitHeight + 32
                 radius: 14
                 anchors.centerIn: parent
+                anchors.horizontalCenterOffset: root.shakeOffset
                 color: Theme.surface0
                 border.color: root.failed ? Theme.red : Theme.surface2
                 border.width: 1
 
-                Keys.onEscapePressed: root.cancel()
                 focus: true
 
                 MouseArea { anchors.fill: parent; z: -1 }
+
+                // Catches Escape/Enter at the card level regardless of which
+                // child currently has focus (ported from Omarchy's keyCatcher).
+                Item {
+                    anchors.fill: parent
+                    focus: true
+                    Keys.priority: Keys.BeforeItem
+                    Keys.onPressed: function(event) {
+                        if (event.key === Qt.Key_Escape) {
+                            root.cancel();
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            root.submitResponse();
+                            event.accepted = true;
+                        }
+                    }
+                }
 
                 ColumnLayout {
                     id: content
                     anchors.fill: parent
                     anchors.margins: 16
                     spacing: 10
-
-                    Text {
-                        Layout.fillWidth: true
-                        text: Polkit.flow?.message ?? "Authentication is required"
-                        color: Theme.text
-                        wrapMode: Text.WordWrap
-                        font.family: Config.fontFamily
-                        font.pixelSize: Config.px(14)
-                        font.bold: true
-                    }
 
                     Text {
                         Layout.fillWidth: true
@@ -128,7 +153,7 @@ Scope {
                             passwordCharacter: "●"
                             enabled: !root.submitted
                             readOnly: root.submitted
-                            color: Theme.text
+                            color: root.failed ? Theme.red : Theme.text
                             selectionColor: Theme.blue
                             font.family: Config.fontFamily
                             font.pixelSize: Config.px(14)
@@ -142,21 +167,39 @@ Scope {
                         Text {
                             anchors.fill: field
                             visible: field.text.length === 0
-                            text: root.submitted ? "Checking…" : "Enter password"
-                            color: Theme.overlay0
+                            text: root.failed ? "Wrong" : (root.submitted ? "Checking…" : "Enter password")
+                            color: root.failed ? Theme.red : Theme.overlay0
                             font.family: Config.fontFamily
                             font.pixelSize: Config.px(13)
                         }
                     }
+                }
+            }
 
-                    Text {
-                        Layout.fillWidth: true
-                        visible: root.failed
-                        text: "Authentication failed, try again"
-                        color: Theme.red
-                        font.family: Config.fontFamily
-                        font.pixelSize: Config.px(11)
-                    }
+            // Justification pill floating above the card, matching Omarchy's
+            // separate authorization label rather than cramming it into the card.
+            Rectangle {
+                width: Math.min(justificationText.implicitWidth + 24, win.width - 32)
+                height: 28
+                anchors.horizontalCenter: card.horizontalCenter
+                anchors.bottom: card.top
+                anchors.bottomMargin: 10
+                radius: 14
+                color: Theme.surface0
+
+                Text {
+                    id: justificationText
+                    anchors.fill: parent
+                    anchors.leftMargin: 12
+                    anchors.rightMargin: 12
+                    text: root.authorizationLabel(Polkit.flow?.message ?? "Authentication is required")
+                    color: Theme.text
+                    font.family: Config.fontFamily
+                    font.pixelSize: Config.px(13)
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideMiddle
                 }
             }
         }
