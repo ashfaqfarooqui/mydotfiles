@@ -83,6 +83,17 @@ Item {
     }
 
     IpcHandler {
+        target: "tailscale"
+        function toggle(): void { Tailscale.togglePanel(Quickshell.screens[0]?.name ?? ""); }
+        function connectToggle(): void { Tailscale.toggle(); }
+    }
+
+    IpcHandler {
+        target: "weather"
+        function toggle(): void { Weather.togglePanel(Quickshell.screens[0]?.name ?? ""); }
+    }
+
+    IpcHandler {
         target: "capture"
         function toggle(): void { Capture.toggleMenu(); }
     }

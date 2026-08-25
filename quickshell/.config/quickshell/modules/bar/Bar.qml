@@ -100,6 +100,7 @@ PanelWindow {
                 anchors.verticalCenter: parent.verticalCenter
                 NetworkWidget {}
                 BluetoothWidget {}
+                TailscaleWidget {}
                 TrayWidget {}
             }
             Separator {}
@@ -114,6 +115,8 @@ PanelWindow {
 
     NetworkPanel { screenName: root.screen.name }
     BluetoothPanel { screenName: root.screen.name }
+    TailscalePanel { screenName: root.screen.name }
+    WeatherPanel { screenName: root.screen.name }
     BatteryPanel { screenName: root.screen.name }
     DisplayPanel { screenName: root.screen.name }
     VolumePanel { screenName: root.screen.name }

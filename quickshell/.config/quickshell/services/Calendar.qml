@@ -59,6 +59,8 @@ Singleton {
             Audio.hidePanel();
             SystemStats.hidePanel();
             AgentsUsage.hidePanel();
+            Tailscale.hidePanel();
+            Weather.hidePanel();
             resetToToday();
             panelScreenName = screenName;
             panelVisible = true;

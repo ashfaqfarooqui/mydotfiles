@@ -35,6 +35,8 @@ Singleton {
             Calendar.hidePanel();
             SystemStats.hidePanel();
             AgentsUsage.hidePanel();
+            Tailscale.hidePanel();
+            Weather.hidePanel();
             panelScreenName = screenName;
             panelVisible = true;
         }

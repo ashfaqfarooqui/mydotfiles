@@ -38,6 +38,8 @@ Singleton {
             Audio.hidePanel();
             Calendar.hidePanel();
             SystemStats.hidePanel();
+            Tailscale.hidePanel();
+            Weather.hidePanel();
             panelScreenName = screenName;
             panelVisible = true;
             refresh();
