@@ -13,11 +13,67 @@ import qs.services
 Singleton {
     id: root
 
-    readonly property var activeDevice: QN.Networking.devices.values.find(d => d.connected) ?? null
+    // Prefer a connected wired device over any other connected device — the
+    // NetworkPanel header already assumed this priority (its own separate
+    // `wiredDevice` lookup titles the panel "Ethernet" whenever a wired
+    // device is connected), but this activeDevice pick used to take
+    // whichever connected device came first in Networking.devices with no
+    // type priority, so the header could say "Ethernet" while the stat
+    // grid/QR/speedtest/band-toggle below it were still keyed off Wi-Fi (or
+    // vice versa) whenever both were connected at once.
+    readonly property var activeDevice: QN.Networking.devices.values.find(d => d.connected && d.type === QN.DeviceType.Wired)
+        ?? QN.Networking.devices.values.find(d => d.connected)
+        ?? null
 
-    readonly property string kind: activeDevice === null
-        ? "disconnected"
-        : (activeDevice.type === QN.DeviceType.Wifi ? "wifi" : "ethernet")
+    // Startup-only safety net: Networking.devices can take a beat to
+    // populate if quickshell starts (via Hyprland exec-once) before
+    // NetworkManager's D-Bus service is fully up, which otherwise leaves
+    // `kind` stuck on "disconnected" until something else nudges the
+    // native binding. A few cheap nmcli checks bridge that gap; once the
+    // native binding populates (or the retries run out) this fallback
+    // gets out of the way entirely — `kind` goes back to being driven
+    // solely by activeDevice, same as before.
+    property bool _startupFallbackActive: true
+    property string _startupFallbackKind: ""
+    property int _startupFallbackAttempts: 0
+
+    readonly property string kind: activeDevice !== null
+        ? (activeDevice.type === QN.DeviceType.Wifi ? "wifi" : "ethernet")
+        : (_startupFallbackActive && _startupFallbackKind !== "" ? _startupFallbackKind : "disconnected")
+
+    onActiveDeviceChanged: if (activeDevice !== null) root._startupFallbackActive = false
+
+    Timer {
+        id: startupFallbackTimer
+        interval: 700
+        repeat: true
+        running: root._startupFallbackActive
+        triggeredOnStart: true
+        onTriggered: {
+            root._startupFallbackAttempts++;
+            if (root._startupFallbackAttempts > 5) {
+                root._startupFallbackActive = false;
+                return;
+            }
+            startupFallbackProc.buffer = [];
+            startupFallbackProc.running = true;
+        }
+    }
+
+    Process {
+        id: startupFallbackProc
+        property list<string> buffer: []
+        command: ["nmcli", "-t", "-f", "DEVICE,TYPE,STATE", "device", "status"]
+        stdout: SplitParser {
+            onRead: line => startupFallbackProc.buffer.push(line)
+        }
+        onExited: exitCode => {
+            if (exitCode !== 0 || !root._startupFallbackActive) return;
+            const wired = startupFallbackProc.buffer.some(l => l.split(":")[1] === "ethernet" && l.split(":")[2] === "connected");
+            const wifi = startupFallbackProc.buffer.some(l => l.split(":")[1] === "wifi" && l.split(":")[2] === "connected");
+            root._startupFallbackKind = wired ? "ethernet" : (wifi ? "wifi" : "");
+        }
+    }
 
     readonly property var activeWifiNetwork: (activeDevice !== null && activeDevice.type === QN.DeviceType.Wifi)
         ? activeDevice.networks.values.find(n => n.connected) ?? null
@@ -245,11 +301,19 @@ Singleton {
 
     property bool speedtestRunning: false
     property var speedtestResult: null
+    // Distinct from speedtestResult === null so the panel can tell "never
+    // run yet" (both null, both false) apart from "just ran and failed"
+    // (result stays null, but this flips true) — previously a non-zero
+    // exit or unparseable output silently reset speedtestRunning with no
+    // other state change, so a failed test looked identical to one that
+    // was simply never started.
+    property bool speedtestFailed: false
 
     function runSpeedtest() {
         if (speedtestRunning) return;
         speedtestRunning = true;
         speedtestResult = null;
+        speedtestFailed = false;
         speedtestProc.buffer = [];
         speedtestProc.running = true;
     }
@@ -263,12 +327,17 @@ Singleton {
         }
         onExited: exitCode => {
             root.speedtestRunning = false;
-            if (exitCode !== 0) return;
+            if (exitCode !== 0) {
+                root.speedtestFailed = true;
+                return;
+            }
             const text = speedtestProc.buffer.join("\n");
             const down = /Download:\s*([\d.]+)\s*Mbit\/s/.exec(text);
             const up = /Upload:\s*([\d.]+)\s*Mbit\/s/.exec(text);
             if (down && up) {
                 root.speedtestResult = { down: parseFloat(down[1]), up: parseFloat(up[1]) };
+            } else {
+                root.speedtestFailed = true;
             }
         }
     }
@@ -351,6 +420,8 @@ Singleton {
             Calendar.hidePanel();
             SystemStats.hidePanel();
             AgentsUsage.hidePanel();
+            Tailscale.hidePanel();
+            Weather.hidePanel();
             panelScreenName = screenName;
             panelVisible = true;
         }
