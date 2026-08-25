@@ -178,6 +178,7 @@ Scope {
                             Text {
                                 anchors.centerIn: parent
                                 text: cell.modelData.emoji
+                                font.family: Config.fontFamily
                                 font.pixelSize: Config.px(22)
                             }
 

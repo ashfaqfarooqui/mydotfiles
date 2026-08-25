@@ -64,7 +64,7 @@ Item {
                 text: clock.text
                 color: Theme.text
                 font.family: Config.fontFamily
-                font.pixelSize: 72
+                font.pixelSize: Config.px(72)
                 font.bold: true
 
                 Timer {
@@ -83,7 +83,7 @@ Item {
                 text: Qt.formatDate(new Date(), "dddd, d MMMM yyyy")
                 color: Theme.subtext1
                 font.family: Config.fontFamily
-                font.pixelSize: 20
+                font.pixelSize: Config.px(20)
             }
         }
 
@@ -109,7 +109,7 @@ Item {
                 color: Theme.text
                 selectionColor: Theme.blue
                 font.family: Config.fontFamily
-                font.pixelSize: 20
+                font.pixelSize: Config.px(20)
                 focus: true
 
                 Component.onCompleted: forceActiveFocus()
@@ -127,7 +127,7 @@ Item {
                 text: root.authenticating ? "Checking…" : (root.errorState ? root.failureMessage : "Enter password")
                 color: root.errorState ? Theme.red : Theme.overlay0
                 font.family: Config.fontFamily
-                font.pixelSize: 16
+                font.pixelSize: Config.px(16)
                 font.italic: root.errorState
                 verticalAlignment: Text.AlignVCenter
             }
