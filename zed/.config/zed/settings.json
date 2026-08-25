@@ -4,6 +4,10 @@
   "redact_private_values": false,
   "agent_servers": {
     "claude-acp": {
+      "default_config_options": {
+        "mode": "plan",
+        "effort": "medium"
+      },
       "type": "registry"
     },
     "opencode": {
