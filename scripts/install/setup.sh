@@ -1,6 +1,6 @@
 yay -S stow --needed
 yay -S zsh --needed
-yay -S waybar --needed
+# yay -S waybar --needed # disabled — quickshell.service replaced waybar, see README.md#quickshell
 yay -S bat --needed
 yay -S btop --needed
 yay -S chromium --needed
@@ -11,10 +11,10 @@ yay -S neovim --needed
 yay -S opencode-bin --needed
 yay -S rofi --needed
 yay -S starship --needed
-yay -S swaync --needed
+# yay -S swaync --needed # disabled — quickshell.service replaced swaync, see README.md#quickshell
 yay -S tmux --needed
 yay -S vscode --needed
-yay -S waybar --needed
+# yay -S waybar --needed # disabled — quickshell.service replaced waybar, see README.md#quickshell
 yay -S wlogout --needed
 
 yay -S zen-browser-bin --needed
@@ -191,7 +191,7 @@ yay -S --no-confirm voxtype-bin
 yay -S --no-confirm cliamp-bin
 yay -S --no-confirm nwg-displays
 
-# QuickShell (experimental shell replacing waybar/swaync/rofi, see quickshell-experiment branch)
+# QuickShell — the active bar/notification shell, replacing waybar/swaync (see README.md#quickshell)
 yay -S --no-confirm quickshell
 
 # QuickShell capture menu (screenshots/recording/OCR) + network panel extras
