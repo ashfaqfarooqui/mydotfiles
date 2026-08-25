@@ -59,4 +59,10 @@ Singleton {
     readonly property color lavender: palette.lavender ? ("#" + palette.lavender) : "#b4befe"
     readonly property color mauve: palette.mauve ? ("#" + palette.mauve) : "#cba6f7"
     readonly property color pink: palette.pink ? ("#" + palette.pink) : "#f5c2e7"
+
+    // Single source of truth for the shell's font, same theme/font.json ->
+    // theme/quickshell.tera -> theme.json pipeline as the colors above —
+    // see Config.fontFamily, which reads this rather than hardcoding its
+    // own literal.
+    readonly property string fontFamily: palette.fontFamily || "JetBrainsMono Nerd Font"
 }

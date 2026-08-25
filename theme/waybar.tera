@@ -4,6 +4,7 @@ whiskers:
     matrix:
         - flavor
     filename: "generated/{{flavor.identifier}}/waybar-theme.css"
+font_family: "JetBrainsMono Nerd Font"
 ---
 /*
   Catppuccin {{ flavor.name }} theme for waybar.
@@ -13,6 +14,12 @@ whiskers:
   fg - foreground
   br - border
 */
+
+/* Font — style.css's own `* {}` block no longer hardcodes font-family so
+   this (from theme/font.json) is the one place it's set. */
+* {
+    font-family: "{{ font_family }}";
+}
 
 /* Main Colors */
 

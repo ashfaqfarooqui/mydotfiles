@@ -7,6 +7,12 @@
   br - border
 */
 
+/* Font — style.css's own `* {}` block no longer hardcodes font-family so
+   this (from theme/font.json) is the one place it's set. */
+* {
+    font-family: "JetBrainsMono Nerd Font";
+}
+
 /* Main Colors */
 
 @define-color main-fg         #cdd6f4;

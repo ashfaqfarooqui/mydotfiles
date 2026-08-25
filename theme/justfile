@@ -4,21 +4,27 @@ _default:
 
 output := "generated"
 native_flavors := "mocha latte frappe macchiato"
+# Single source of truth for the shell-wide font (theme/font.json) — passed
+# to whiskers as a frontmatter override, same mechanism `generate-custom`
+# already uses for --color-overrides. Templates that don't declare a
+# `font_family` frontmatter default just ignore the override.
+font_family := `jq -r .family font.json`
 
 # Render every template for every native Catppuccin flavor into generated/<flavor>/...
 generate:
     whiskers hyprland.tera
-    whiskers hyprlock.tera
-    whiskers waybar.tera
-    whiskers ghostty.tera
+    whiskers hyprlock.tera --overrides "{\"font_family\": \"{{font_family}}\"}"
+    whiskers waybar.tera --overrides "{\"font_family\": \"{{font_family}}\"}"
+    whiskers ghostty.tera --overrides "{\"font_family\": \"{{font_family}}\"}"
     whiskers rofi.tera
     whiskers swaync.tera
     whiskers btop.tera
     whiskers lazygit.tera
     whiskers fzf.tera
-    whiskers nvim.tera
+    whiskers nvim.tera --overrides "{\"font_family\": \"{{font_family}}\"}"
     whiskers emacs.tera
-    whiskers quickshell.tera
+    whiskers quickshell.tera --overrides "{\"font_family\": \"{{font_family}}\"}"
+    whiskers kitty-font.tera --overrides "{\"font_family\": \"{{font_family}}\"}"
 
 # Render every template for a non-Catppuccin theme (theme/palettes/<name>.json) into
 # generated/<name>/..., by repainting all 26 Catppuccin color slots via
@@ -54,11 +60,14 @@ generate-custom name:
         [nvim.tera]=nvim-theme.lua
         [emacs.tera]=emacs-theme.el
         [quickshell.tera]=quickshell-theme.json
+        [kitty-font.tera]=kitty-font.conf
     )
+    font_family=$(jq -r .family font.json)
     for tmpl in "${!files[@]}"; do
         out="{{output}}/{{name}}/${files[$tmpl]}"
         awk '/^---$/{c++; next} c>=2' "$tmpl" \
             | whiskers - -f mocha --color-overrides "$overrides" \
+                --overrides "{\"font_family\": \"$font_family\"}" \
             | sed "s/Catppuccin Mocha/${display_name}/g" \
             > "$out"
     done
@@ -102,7 +111,31 @@ apply name:
     mkdir -p ../doom/.doom.d/themes
     cp "{{output}}/{{name}}/emacs-theme.el" ../doom/.doom.d/themes/theme-generated-theme.el
     cp "{{output}}/{{name}}/quickshell-theme.json" ../quickshell/.config/quickshell/theme/theme.json
+    cp "{{output}}/{{name}}/kitty-font.conf" ../kitty/.config/kitty/font.conf
     python3 apply-starship.py "{{output}}/{{name}}/hypr-theme.lua" ../starship/.config/starship.toml
+    # Apps with no include/variable mechanism for font-family get their
+    # literal patched in place instead of a full generated file — same
+    # single source (theme/font.json), just a narrower sed/jq edit.
+    font_family=$(jq -r .family font.json)
+    jq --arg f "$font_family" '.["editor.fontFamily"] = $f' ../vscode/settings.json > ../vscode/settings.json.tmp \
+        && mv ../vscode/settings.json.tmp ../vscode/settings.json
+    # zed's settings.json is JSONC (has `//` comments), which jq can't parse
+    # — sed on the specific keys instead, so comments/formatting survive.
+    sed -i \
+        -e "s/\"ui_font_family\": \"[^\"]*\"/\"ui_font_family\": \"$font_family\"/" \
+        -e "s/\"buffer_font_family\": \"[^\"]*\"/\"buffer_font_family\": \"$font_family\"/" \
+        -e "s/\"font_family\": \"[^\"]*\"/\"font_family\": \"$font_family\"/" \
+        ../zed/.config/zed/settings.json
+    # swaync's `* { all: unset; font-family: ...; }` needs its own explicit
+    # font-family (the imported theme.css can't supply it — all:unset wipes
+    # any inherited/earlier value for this same selector), so this is a
+    # direct patch rather than a generated include.
+    sed -i "s/font-family: \".*\";/font-family: \"$font_family\";/" ../swaync/.config/swaync/style.css
+    # doom emacs' doom-font/doom-big-font/doom-variable-pitch-font each take
+    # a font-spec :family string — patch all three in one pass. (Previously
+    # "JetBrainsMono Nerd Font Mono", a different installed variant than
+    # every other app's "JetBrainsMono Nerd Font" — unified here.)
+    sed -i "s/:family \"[^\"]*\"/:family \"$font_family\"/g" ../doom/.doom.d/config.el
     hyprctl reload || true
     pkill -SIGUSR2 waybar || true
     pkill -SIGUSR2 ghostty || true

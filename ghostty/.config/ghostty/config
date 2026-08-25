@@ -25,7 +25,8 @@ cursor-invert-fg-bg = true
 mouse-hide-while-typing = true
 
 
-font-family = JetBrainsMono Nerd Font
+# font-family comes from theme.conf (config-file below), generated from
+# theme/font.json — see theme/ghostty.tera.
 font-style = Regular
 font-style-bold = Bold
 font-style-italic = Medium Italic

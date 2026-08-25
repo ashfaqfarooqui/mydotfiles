@@ -4,8 +4,10 @@ whiskers:
     matrix:
         - flavor
     filename: "generated/{{flavor.identifier}}/quickshell-theme.json"
+font_family: "JetBrainsMono Nerd Font"
 ---
 {
+  "fontFamily": "{{ font_family }}",
   "base": "{{ flavor.colors.base.hex }}",
   "mantle": "{{ flavor.colors.mantle.hex }}",
   "crust": "{{ flavor.colors.crust.hex }}",

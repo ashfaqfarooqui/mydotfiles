@@ -27,7 +27,8 @@ vim.opt.updatetime = 50
 vim.opt.termguicolors = true
 vim.opt.scrolloff = 8
 
-vim.opt.guifont = "JetBrainsMono Nerd Font"
+-- guifont is set by the generated colorscheme (colors/theme_generated.lua),
+-- sourced from theme/font.json — see theme/nvim.tera.
 vim.opt.breakindent = true
 vim.opt.signcolumn = "yes"
 

@@ -6,6 +6,9 @@ vim.cmd("highlight clear")
 if vim.fn.exists("syntax_on") == 1 then
   vim.cmd("syntax reset")
 end
+
+-- guifont, from theme/font.json — options.lua no longer hardcodes this.
+vim.opt.guifont = "JetBrainsMono Nerd Font"
 vim.o.background = "dark"
 vim.g.colors_name = "theme_generated"
 
