@@ -42,6 +42,8 @@ Singleton {
             Audio.hidePanel();
             Calendar.hidePanel();
             AgentsUsage.hidePanel();
+            Tailscale.hidePanel();
+            Weather.hidePanel();
             panelScreenName = screenName;
             panelVisible = true;
         }
@@ -68,6 +70,7 @@ Singleton {
     property string _gpuTempPath: ""
     property string _diskTempPath: ""
     property string _fanPath: ""
+    property string _cpuTempPath: ""
 
     Timer {
         interval: 10000
@@ -188,17 +191,26 @@ Singleton {
 
     Process {
         id: tempProc
-        // first thermal zone is a reasonable default; override here if a
-        // specific hwmon path is needed on this machine.
-        command: ["sh", "-c", "cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0"]
+        // Prefer k10temp's Tctl (the real CPU die sensor, once hwmonProbe
+        // below resolves it) over thermal_zone0 — thermal_zone0 is just
+        // "whichever ACPI thermal zone sorts first" (this machine has 7 of
+        // them, none of them k10temp), which happened to track Tctl within
+        // ~4°C on this platform but isn't documented to and isn't the CPU
+        // die reading TemperatureWidget.qml's tooltip claims it is. Falls
+        // back to thermal_zone0 until the one-shot probe resolves, and
+        // permanently on any machine without a k10temp node (Intel CPUs use
+        // coretemp instead).
+        command: root._cpuTempPath
+            ? ["sh", "-c", `cat "${root._cpuTempPath}" 2>/dev/null || echo 0`]
+            : ["sh", "-c", "cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0"]
         stdout: StdioCollector {
             onStreamFinished: root.tempC = Math.round(Number(this.text.trim()) / 1000)
         }
     }
 
-    // One-shot at startup: locate any GPU/NVMe temp hwmon path and any
-    // fan RPM input, so the polling below knows whether there's anything
-    // to read.
+    // One-shot at startup: locate the CPU die sensor, any GPU/NVMe temp
+    // hwmon path, and any fan RPM input, so the polling below knows what's
+    // available and where to read it from.
     Process {
         id: hwmonProbe
         running: true
@@ -206,6 +218,7 @@ Singleton {
             for h in /sys/class/hwmon/hwmon*; do
                 name=$(cat "$h/name" 2>/dev/null)
                 case "$name" in
+                    k10temp|coretemp) [ -f "$h/temp1_input" ] && echo "CPU:$h/temp1_input" ;;
                     amdgpu) [ -f "$h/temp1_input" ] && echo "GPU:$h/temp1_input" ;;
                     nvme*) [ -f "$h/temp1_input" ] && echo "DISK:$h/temp1_input" ;;
                 esac
@@ -219,7 +232,8 @@ Singleton {
             onStreamFinished: {
                 for (const line of this.text.trim().split("\n")) {
                     const [kind, path] = line.split(":");
-                    if (kind === "GPU" && path) { root._gpuTempPath = path; root.graphicsTempAvailable = true; }
+                    if (kind === "CPU" && path) { root._cpuTempPath = path; }
+                    else if (kind === "GPU" && path) { root._gpuTempPath = path; root.graphicsTempAvailable = true; }
                     else if (kind === "DISK" && path) { root._diskTempPath = path; root.diskTempAvailable = true; }
                     else if (kind === "FAN" && path) { root._fanPath = path; root.fanAvailable = true; }
                 }
@@ -237,8 +251,20 @@ Singleton {
 
     Process {
         id: hwmonReadProc
+        // `printf '%s\n' "$(cat path)"` always emits exactly one line per
+        // field, even when the underlying path is /dev/null (empty command
+        // substitution -> printf still emits the newline) — plain
+        // `cat path; echo` doesn't: cat's own trailing newline plus the
+        // extra echo produced a spurious blank line whenever a real file
+        // was read (shifting every field after it left by one, e.g. the
+        // disk temp field silently reading the fan's value instead), while
+        // a /dev/null field produced zero bytes and no line at all
+        // (collapsing the field instead of shifting). Either way the fixed
+        // 3-line destructure below went out of alignment.
         command: root._gpuTempPath || root._diskTempPath || root._fanPath
-            ? ["sh", "-c", `cat "${root._gpuTempPath || "/dev/null"}" 2>/dev/null; echo; cat "${root._diskTempPath || "/dev/null"}" 2>/dev/null; echo; cat "${root._fanPath || "/dev/null"}" 2>/dev/null`]
+            ? ["sh", "-c", `printf '%s\\n' "$(cat "${root._gpuTempPath || "/dev/null"}" 2>/dev/null)"; ` +
+                `printf '%s\\n' "$(cat "${root._diskTempPath || "/dev/null"}" 2>/dev/null)"; ` +
+                `printf '%s\\n' "$(cat "${root._fanPath || "/dev/null"}" 2>/dev/null)"`]
             : ["true"]
         stdout: StdioCollector {
             onStreamFinished: {

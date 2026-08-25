@@ -47,13 +47,19 @@ Singleton {
 
     Process {
         id: pollProc
+        // Each `cat` already ends its own output in a newline, so no `echo;`
+        // separators are needed between them — adding one inserted a
+        // spurious blank line per field, shifting the split() destructure
+        // one index off: vramUsedGB always read "" (-> 0) and vramTotalGB
+        // read what was actually vramUsed, so VRAM always showed "0.0 / (real
+        // used) GB" instead of "(real used) / (real total) GB".
         command: ["sh", "-c",
-            `cat "${root._devicePath}/gpu_busy_percent" 2>/dev/null; echo; ` +
-            `cat "${root._devicePath}/mem_info_vram_used" 2>/dev/null; echo; ` +
+            `cat "${root._devicePath}/gpu_busy_percent" 2>/dev/null; ` +
+            `cat "${root._devicePath}/mem_info_vram_used" 2>/dev/null; ` +
             `cat "${root._devicePath}/mem_info_vram_total" 2>/dev/null`]
         stdout: StdioCollector {
             onStreamFinished: {
-                const [busy, used, total] = this.text.split("\n");
+                const [busy, used, total] = this.text.split("\n").filter(l => l !== "");
                 root.available = true;
                 root.busyPercent = Number(busy) || 0;
                 root.vramUsedGB = (Number(used) || 0) / 1073741824;
