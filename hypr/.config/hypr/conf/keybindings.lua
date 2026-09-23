@@ -44,9 +44,6 @@ hl.bind(mainMod .. " + ALT + Tab", hl.dsp.exec_cmd("rofi -show window"), D("Wind
 -- Help overlay
 hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("~/.config/hypr/scripts/keybind-help.sh"), D("Show keybinds"))
 
--- Theme picker
-hl.bind(mainMod .. " + CTRL + SHIFT + SPACE", hl.dsp.exec_cmd("~/.config/hypr/scripts/theme-picker.sh"), D("Theme picker"))
-
 -- Dictation (Voxtype)
 hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("voxtype record toggle"), D("Toggle dictation"))
 
