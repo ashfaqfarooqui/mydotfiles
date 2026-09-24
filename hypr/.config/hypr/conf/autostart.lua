@@ -1,4 +1,13 @@
 -- Autostart applications (run once on Hyprland start)
+
+-- Desktop shell (bar, notifications, tray, idle, wallpaper, polkit agent).
+-- On NixOS, home-manager writes nix/shell.lua for the chosen shell
+-- (DankMaterialShell or waybar); it returns a table with start(). On Arch
+-- there is no nix/shell.lua: Hyprland's require raises "module not found",
+-- which pcall catches, and the waybar stack below starts as before.
+local shell_ok, shell = pcall(require, "nix.shell")
+local start_shell = shell_ok and type(shell) == "table" and shell.start or nil
+
 hl.on("hyprland.start", function()
 	-- XDG portal setup
 	hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
@@ -12,12 +21,16 @@ hl.on("hyprland.start", function()
 	-- actually signal "dark" to portal-aware apps.
 	hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
 
-	-- Polkit agent
-	hl.exec_cmd("systemctl --user start hyprpolkitagent")
+	if start_shell then
+		start_shell()
+	else
+		-- Polkit agent
+		hl.exec_cmd("systemctl --user start hyprpolkitagent")
 
-	-- System tray / daemons (systemd-managed for auto-restart and logging)
-	hl.exec_cmd("nm-applet --indicator &")
-	hl.exec_cmd("systemctl --user start hypridle hyprpaper swaync waybar")
+		-- System tray / daemons (systemd-managed for auto-restart and logging)
+		hl.exec_cmd("nm-applet --indicator &")
+		hl.exec_cmd("systemctl --user start hypridle hyprpaper swaync waybar")
+	end
 
 	-- Clipboard history
 	hl.exec_cmd("systemctl --user start cliphist")
@@ -26,7 +39,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("amazingmarvin --enable-wayland-ime")
 	hl.exec_cmd("sleep 2 && bitwarden-desktop &")
 	hl.exec_cmd("sleep 4 && nextcloud &")
-	hl.exec_cmd("sleep 5 && /opt/teams-for-linux/teams-for-linux &")
-	hl.exec_cmd("sleep 5 && /usr/bin/firefoxpwa site launch 01KS07TJ055S08F7FCQPRS274A &")
+	hl.exec_cmd("sleep 5 && teams-for-linux &")
+	hl.exec_cmd("sleep 5 && firefoxpwa site launch 01KS07TJ055S08F7FCQPRS274A &")
 	hl.exec_cmd("sleep 6 && zotero &")
 end)
