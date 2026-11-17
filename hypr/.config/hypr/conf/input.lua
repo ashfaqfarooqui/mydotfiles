@@ -28,8 +28,4 @@ hl.config({
     },
 })
 
-hl.gesture({
-    fingers   = 3,
-    direction = "horizontal",
-    action    = "workspace",
-})
+-- 3-finger horizontal workspace swipe is registered by dms/binds.lua (identical).

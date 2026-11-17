@@ -6,6 +6,8 @@
 -- there is no nix/shell.lua: Hyprland's require raises "module not found",
 -- which pcall catches, and the waybar stack below starts as before.
 local shell_ok, shell = pcall(require, "nix.shell")
+-- Set to false to fall back to the waybar stack on Arch (git tag pre-dms has the old setup).
+local use_dms = true
 local start_shell = shell_ok and type(shell) == "table" and shell.start or nil
 
 hl.on("hyprland.start", function()
@@ -23,6 +25,9 @@ hl.on("hyprland.start", function()
 
 	if start_shell then
 		start_shell()
+	elseif use_dms then
+		-- DankMaterialShell: bar, notifications, launcher, lock, idle, wallpaper, clipboard, polkit
+		hl.exec_cmd("dms run")
 	else
 		-- Polkit agent
 		hl.exec_cmd("systemctl --user start hyprpolkitagent")
@@ -32,8 +37,10 @@ hl.on("hyprland.start", function()
 		hl.exec_cmd("systemctl --user start hypridle hyprpaper swaync waybar")
 	end
 
-	-- Clipboard history
-	hl.exec_cmd("systemctl --user start cliphist")
+	-- Clipboard history (DMS has its own; cliphist only for the waybar fallback)
+	if not use_dms then
+		hl.exec_cmd("systemctl --user start cliphist")
+	end
 
 	-- Applications (staggered to avoid startup thundering herd)
 	hl.exec_cmd("amazingmarvin --enable-wayland-ime")

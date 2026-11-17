@@ -17,32 +17,25 @@ hl.bind(mainMod .. " + return", hl.dsp.exec_cmd(terminal),        D("Terminal"))
 hl.bind(mainMod .. " + Q",      hl.dsp.window.close(),            D("Close window"))
 hl.bind(mainMod .. " + F",      hl.dsp.window.fullscreen({ mode = 1 }), D("Fullscreen"))
 hl.bind(mainMod .. " + E",      hl.dsp.exec_cmd(file_mgr),        D("File manager"))
-hl.bind(mainMod .. " + V",      hl.dsp.window.float({ action = "toggle" }), D("Toggle float"))
-hl.bind(mainMod .. " + SPACE",  hl.dsp.exec_cmd(menu),            D("App launcher"))
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }), D("Toggle float"))
 hl.bind(mainMod .. " + b",      hl.dsp.exec_cmd(browser),         D("Browser"))
 hl.bind(mainMod .. " + o",      hl.dsp.layout("togglesplit"),     D("Toggle split"))
 
--- Clipboard history (image entries render as thumbnails, not a text placeholder)
-hl.bind("ALT + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/cliphist-picker.py"), D("Clipboard history"))
 
 -- Lock screen
-hl.bind(mainMod .. " + ALT + l", hl.dsp.exec_cmd("hyprlock"),     D("Lock screen"))
 
 -- Screenshots (hyprshot)
 hl.bind(mainMod .. " + P",      hl.dsp.exec_cmd("hyprshot -m window --clipboard-only"), D("Screenshot window"))
 hl.bind(mainMod .. " + CTRL + P", hl.dsp.exec_cmd("hyprshot -m region --clipboard-only"), D("Screenshot region"))
 
--- Toggle waybar
-hl.bind(mainMod .. " + CTRL + b", hl.dsp.exec_cmd("pkill -SIGUSR1 waybar"), D("Toggle waybar"))
 
--- Notification center (swaync)
-hl.bind(mainMod .. " + SHIFT + n", hl.dsp.exec_cmd("swaync-client -t -sw"), D("Notifications"))
 
 -- Rofi window switcher
 hl.bind(mainMod .. " + ALT + Tab", hl.dsp.exec_cmd("rofi -show window"), D("Window switcher"))
 
 -- Help overlay
-hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("~/.config/hypr/scripts/keybind-help.sh"), D("Show keybinds"))
+hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("dms ipc call keybinds toggle hyprland"), D("Show keybinds (DMS)"))
+hl.bind(mainMod .. " + ALT + slash", hl.dsp.exec_cmd("~/.config/hypr/scripts/keybind-help.sh"), D("Show keybinds (rofi fallback)"))
 
 -- Dictation (Voxtype)
 hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("voxtype record toggle"), D("Toggle dictation"))
@@ -108,7 +101,6 @@ hl.bind(mainMod .. " + CTRL + l", hl.dsp.exec_cmd("~/.config/hypr/scripts/cycle-
 ---------------------------------------------------------------------------
 -- Cycle windows
 ---------------------------------------------------------------------------
-hl.bind(mainMod .. " + Tab", hl.dsp.window.cycle_next(), D("Cycle windows"))
 
 ---------------------------------------------------------------------------
 -- Workspaces
@@ -155,7 +147,7 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind(mainMod .. " + ESCAPE", hl.dsp.submap(submap_session))
 
 hl.define_submap(submap_session, function()
-    hl.bind("l", hl.dsp.exec_cmd("hyprlock"))
+    hl.bind("l", hl.dsp.exec_cmd("dms ipc call lock lock"))
     hl.bind("e", hl.dsp.exit())
     hl.bind("s", hl.dsp.exec_cmd("systemctl suspend"))
     hl.bind("r", hl.dsp.exec_cmd("systemctl reboot"))
@@ -164,24 +156,4 @@ hl.define_submap(submap_session, function()
     hl.bind("catchall", hl.dsp.submap("reset"))
 end)
 
----------------------------------------------------------------------------
--- Multimedia keys
----------------------------------------------------------------------------
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
-    { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
-    { locked = true, repeating = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),
-    { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),
-    { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl s 10%+"),
-    { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"),
-    { locked = true, repeating = true })
-
--- Media player controls
-hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
+-- Volume, brightness and media keys are provided by dms/binds.lua (OSD-backed).
