@@ -132,3 +132,7 @@ worktree-status() {
 # ============================================================================
 
 OPENCODE_EXPERIMENTAL=true
+eval "$(direnv hook zsh)"
+
+# Pi
+export PATH="/home/ashfaqf/.pi/agent/bin:$PATH"
