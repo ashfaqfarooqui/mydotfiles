@@ -25,3 +25,6 @@ herdr/.config/herdr/session-history.json
 herdr/.config/herdr/release-notes.json
 herdr/.config/herdr/sessions/
 __pycache__/
+opencode/.config/opencode/service.json
+hypr/.config/hypr/.dms-backups/
+ghostty/.config/ghostty/config.backup.*
