@@ -25,6 +25,13 @@ bash scripts/install/setup.sh
 stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit gpg opencode aerc mbsync herdr-app voxtype
 ```
 
+Stow `claude` alone, with `--no-folding`, after `git-crypt unlock` (see the `claude/` row below):
+
+```sh
+git-crypt unlock
+stow --no-folding claude
+```
+
 ## Configs managed
 
 | Directory | Description |
@@ -34,6 +41,7 @@ stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit
 | `atuin/` | [atuin](https://github.com/atuinsh/atuin) shell history |
 | `bat/` | [bat](https://github.com/sharkdp/bat) cat replacement |
 | `btop/` | [btop](https://github.com/aristocratsoftware/btop) resource monitor |
+| `claude/` | [Claude Code](https://code.claude.com/docs) configuration: `settings.json`, `CLAUDE.md`, the status line script, `hooks/`, `commands/` and the user skills. `git-crypt` encrypts all files in this package. On a new machine, import the GPG key `7A804BCB51DE2D88` and run `git-crypt unlock` before you run `stow --no-folding claude`. If you do not unlock first, the links point to encrypted data and Claude Code shows a Settings Error. Use `--no-folding`, because Claude Code writes its data (`projects/`, `plans/`) into `~/.claude`. |
 | `chromimum/` | Chromium browser config |
 | `doom/` | [Doom Emacs](https://github.com/doomemacs/doomemacs) config |
 | `electron/` | Electron app flags (Wayland) |
