@@ -26,6 +26,7 @@ marker="MARKER-7f3c9e1b-do-not-leak"
 proj="$CLAUDE_DIR/projects/-home-u-proj"
 old=11111111-1111-1111-1111-111111111111
 new=22222222-2222-2222-2222-222222222222
+gone=33333333-3333-3333-3333-333333333333
 
 mkdir -p "$proj/$old/subagents" "$proj/$old/tool-results" "$proj/memory" \
   "$CLAUDE_DIR/plans/camp/target-x"
@@ -33,6 +34,7 @@ printf '{"msg":"%s"}\n' "$marker" >"$proj/$old.jsonl"
 printf '{"sub":"%s"}\n' "$marker" >"$proj/$old/subagents/agent-a.jsonl"
 printf 'tool output %s\n' "$marker" >"$proj/$old/tool-results/r1.txt"
 printf '{"msg":"active %s"}\n' "$marker" >"$proj/$new.jsonl"
+printf '{"msg":"gone %s"}\n' "$marker" >"$proj/$gone.jsonl"
 printf '# memory %s\n' "$marker" >"$proj/memory/MEMORY.md"
 printf '{"display":"%s"}\n' "$marker" >"$CLAUDE_DIR/history.jsonl"
 printf '# master %s\n' "$marker" >"$CLAUDE_DIR/plans/camp/MASTER.md"
@@ -98,21 +100,41 @@ n=$(commits)
 [[ "$(commits)" == "$n" ]] || fail "run with no change made a commit"
 pass "second run with no change makes no commit"
 
-# --- run 3: source removed, history shortened, memory emptied ------------
-archived() { sha256sum "$a/$old.jsonl.zst.age" "$ARCHIVE_DIR/history.jsonl.zst.age" "$a/memory/MEMORY.md.zst.age"; }
+# --- run 3: transcript removed, transcript and history shortened, ---------
+# --- memory and plan emptied ---------------------------------------------
+plan="$CLAUDE_DIR/plans/camp/MASTER.md"
+archived() {
+  sha256sum "$a/$gone.jsonl.zst.age" "$a/$old.jsonl.zst.age" "$ARCHIVE_DIR/history.jsonl.zst.age" \
+    "$a/memory/MEMORY.md.zst.age" "$ARCHIVE_DIR/plans/camp/MASTER.md.zst.age"
+}
 before=$(archived)
-rm -r "${proj:?}/$old.jsonl" "${proj:?}/$old"
+rm "${proj:?}/$gone.jsonl"
+printf 'x\n' >"$proj/$old.jsonl"
+touch -d '50 hours ago' "$proj/$old.jsonl"
 printf 'x\n' >"$CLAUDE_DIR/history.jsonl"
 : >"$proj/memory/MEMORY.md"
+: >"$plan"
 "$script" || fail "run 3 exit $?"
-[[ "$(archived)" == "$before" ]] || fail "removed, shorter or empty source changed the archive"
-git -C "$ARCHIVE_DIR" ls-files --error-unmatch "projects/-home-u-proj/$old.jsonl.zst.age" \
+[[ "$(archived)" == "$before" ]] || fail "removed, shorter append-only or empty source changed the archive"
+git -C "$ARCHIVE_DIR" ls-files --error-unmatch "projects/-home-u-proj/$gone.jsonl.zst.age" \
   "history.jsonl.zst.age" "projects/-home-u-proj/memory/MEMORY.md.zst.age" >/dev/null ||
   fail "archive file removed from git"
-[[ "$(commits)" == "$n" ]] || fail "removed, shorter or empty source made a commit"
-pass "removed, shorter and empty sources leave the archive unchanged"
+[[ "$(commits)" == "$n" ]] || fail "removed, shorter append-only or empty source made a commit"
+pass "removed source, shorter transcript, shorter history, empty memory and empty plan leave the archive unchanged"
+
+# --- run 3b: shorter plan and shorter memory are archived -----------------
+# Both are shorter than the archive copy (the manifest keeps the old size).
+printf 'p\n' >"$plan"
+printf 'm\n' >"$proj/memory/MEMORY.md"
+touch -d '1 minute ago' "$plan" "$proj/memory/MEMORY.md"
+"$script" || fail "run 3b exit $?"
+cmp "$plan" <(decrypt "$ARCHIVE_DIR/plans/camp/MASTER.md.zst.age") || fail "shorter plan not archived"
+cmp "$proj/memory/MEMORY.md" <(decrypt "$a/memory/MEMORY.md.zst.age") || fail "shorter memory not archived"
+[[ "$(commits)" == $((n + 1)) ]] || fail "shorter plan and memory did not make one commit"
+pass "shorter plan and shorter memory archived in one commit"
 
 # --- run 4: changed plan is archived again --------------------------------
+n=$(commits)
 printf 'more\n' >>"$CLAUDE_DIR/plans/camp/MASTER.md"
 "$script" || fail "run 4 exit $?"
 cmp "$CLAUDE_DIR/plans/camp/MASTER.md" <(decrypt "$ARCHIVE_DIR/plans/camp/MASTER.md.zst.age") ||

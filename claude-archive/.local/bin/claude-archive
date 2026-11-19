@@ -39,10 +39,12 @@ if [[ -f $manifest ]]; then
 fi
 written=0
 
-# should_write REL MTIME SIZE: true if the archive copy is missing or older.
-# Never replaces an archive copy with an empty or shorter source.
+# should_write REL MTIME SIZE [APPEND_ONLY]: true if the archive copy is
+# missing or older. Never replaces an archive copy with an empty source. With
+# APPEND_ONLY=1 (transcripts, history.jsonl), never with a shorter source
+# either. Plans and memory shrink after an edit; git history keeps the old copy.
 should_write() {
-  local rel=$1 m=$2 s=$3 old_m old_s
+  local rel=$1 m=$2 s=$3 append_only=${4:-0} old_m old_s
   if [[ $rel == *$'\n'* || $rel == *$'\t'* ]]; then
     warn "skip, name has a tab or newline: $rel"
     return 1
@@ -50,7 +52,7 @@ should_write() {
   if [[ -n ${seen[$rel]+set} ]]; then
     read -r old_m old_s <<<"${seen[$rel]}"
     (( m > old_m )) || return 1
-    if (( s < old_s )); then
+    if (( append_only && s < old_s )); then
       warn "skip $rel: source ($s bytes) is shorter than the archive copy ($old_s bytes)"
       return 1
     fi
@@ -93,7 +95,7 @@ while IFS= read -r -d '' jsonl; do
   read -r m s < <(newest_and_total "${members[@]/#/$pdir/}")
   (( m < cutoff )) || continue
   rel="projects/${pdir##*/}/$sess.jsonl"
-  should_write "$rel" "$m" "$s" || continue
+  should_write "$rel" "$m" "$s" 1 || continue
   encrypt "$rel" "$m" "$s" tar -C "$pdir" --sort=name -cf - -- "${members[@]}"
 done < <(find "$CLAUDE_DIR/projects" -mindepth 2 -maxdepth 2 -type f -name '*.jsonl' -print0)
 
@@ -122,7 +124,7 @@ archive_files "$CLAUDE_DIR/projects" projects/ '^[^/]+/memory/' -mindepth 3 -typ
 # 4. Prompt history.
 if [[ -f $CLAUDE_DIR/history.jsonl ]]; then
   read -r m s < <(newest_and_total "$CLAUDE_DIR/history.jsonl")
-  if should_write history.jsonl "$m" "$s"; then
+  if should_write history.jsonl "$m" "$s" 1; then
     encrypt history.jsonl "$m" "$s" cat -- "$CLAUDE_DIR/history.jsonl"
   fi
 fi
