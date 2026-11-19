@@ -1,0 +1,6 @@
+[Unit]
+Description=Archive Claude Code transcripts and plans (zstd, age) to git
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/claude-archive

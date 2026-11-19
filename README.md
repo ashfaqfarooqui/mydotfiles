@@ -32,6 +32,12 @@ git-crypt unlock
 stow --no-folding claude
 ```
 
+Stow `claude-archive` with `--no-folding`, because apps also write into `~/.local` and `~/.config/systemd/user`:
+
+```sh
+stow --no-folding claude-archive
+```
+
 ## Configs managed
 
 | Directory | Description |
@@ -42,6 +48,7 @@ stow --no-folding claude
 | `bat/` | [bat](https://github.com/sharkdp/bat) cat replacement |
 | `btop/` | [btop](https://github.com/aristocratsoftware/btop) resource monitor |
 | `claude/` | [Claude Code](https://code.claude.com/docs) configuration: `settings.json`, `CLAUDE.md`, the status line script, `hooks/`, `commands/` and the user skills. `git-crypt` encrypts all files in this package. On a new machine, import the GPG key `7A804BCB51DE2D88` and run `git-crypt unlock` before you run `stow --no-folding claude`. If you do not unlock first, the links point to encrypted data and Claude Code shows a Settings Error. Use `--no-folding`, because Claude Code writes its data (`projects/`, `plans/`) into `~/.claude`. |
+| `claude-archive/` | Daily job that keeps a copy of the Claude Code data off the machine: the script `claude-archive` and a systemd user timer. It compresses (`zstd`) and encrypts (`age`, public key only) the idle transcripts, the plans, the auto memory and `history.jsonl` into the git repo `~/claude-archive`, then pushes. It never deletes from the archive. After a good push it writes the time to `~/.local/state/claude-archive/last-push`. Test: `bash claude-archive/test/run-test.sh`. |
 | `chromimum/` | Chromium browser config |
 | `doom/` | [Doom Emacs](https://github.com/doomemacs/doomemacs) config |
 | `electron/` | Electron app flags (Wayland) |

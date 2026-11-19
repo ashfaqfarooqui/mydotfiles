@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+# Compress (zstd), encrypt (age, public recipient only) and commit Claude Code
+# transcripts, plans, memory and prompt history into a git repo, then push.
+# Never deletes from the archive. Writes $STATE_DIR/last-push only after a
+# good push.
+set -euo pipefail
+
+CLAUDE_DIR=${CLAUDE_DIR:-$HOME/.claude}
+ARCHIVE_DIR=${ARCHIVE_DIR:-$HOME/claude-archive}
+AGE_RECIPIENT_FILE=${AGE_RECIPIENT_FILE:-$HOME/.config/claude-archive/recipient.txt}
+STATE_DIR=${STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/claude-archive}
+IDLE_DAYS=${IDLE_DAYS:-2}
+
+die() { echo "claude-archive: error: $*" >&2; exit 1; }
+warn() { echo "claude-archive: warning: $*" >&2; }
+
+for cmd in age zstd tar git find; do
+  command -v "$cmd" >/dev/null || die "$cmd not found"
+done
+[[ $IDLE_DAYS =~ ^[0-9]+$ ]] || die "IDLE_DAYS must be a whole number: $IDLE_DAYS"
+[[ -s $AGE_RECIPIENT_FILE ]] || die "no recipient file: $AGE_RECIPIENT_FILE"
+[[ -d $CLAUDE_DIR/projects ]] || die "no projects folder: $CLAUDE_DIR/projects"
+git_dir=$(git -C "$ARCHIVE_DIR" rev-parse --absolute-git-dir 2>/dev/null) ||
+  die "not a git repo: $ARCHIVE_DIR"
+
+mkdir -p "$STATE_DIR"
+manifest="$STATE_DIR/manifest"
+# Temporary files live inside .git: same file system as the archive (atomic
+# mv), and git add -A never sees them.
+tmpfile="$git_dir/claude-archive.partial"
+trap 'rm -f -- "$tmpfile"' EXIT
+
+# Manifest: <mtime> TAB <size> TAB <archive path without .zst.age>, one per line.
+declare -A seen=()
+if [[ -f $manifest ]]; then
+  while IFS=$'\t' read -r m s rel; do
+    seen[$rel]="$m $s"
+  done <"$manifest"
+fi
+written=0
+
+# should_write REL MTIME SIZE: true if the archive copy is missing or older.
+# Never replaces an archive copy with an empty or shorter source.
+should_write() {
+  local rel=$1 m=$2 s=$3 old_m old_s
+  if [[ $rel == *$'\n'* || $rel == *$'\t'* ]]; then
+    warn "skip, name has a tab or newline: $rel"
+    return 1
+  fi
+  if [[ -n ${seen[$rel]+set} ]]; then
+    read -r old_m old_s <<<"${seen[$rel]}"
+    (( m > old_m )) || return 1
+    if (( s < old_s )); then
+      warn "skip $rel: source ($s bytes) is shorter than the archive copy ($old_s bytes)"
+      return 1
+    fi
+  fi
+  if (( s == 0 )); then
+    [[ ! -e $ARCHIVE_DIR/$rel.zst.age ]] || warn "skip $rel: source is empty"
+    return 1
+  fi
+  return 0
+}
+
+# encrypt REL MTIME SIZE CMD...: CMD writes the plain data to stdout.
+encrypt() {
+  local rel=$1 m=$2 s=$3 dest="$ARCHIVE_DIR/$1.zst.age"
+  shift 3
+  mkdir -p -- "${dest%/*}"
+  if ! "$@" | zstd -q | age -R "$AGE_RECIPIENT_FILE" -o "$tmpfile"; then
+    die "encryption failed: $rel"
+  fi
+  [[ -s $tmpfile ]] || die "empty output: $rel"
+  mv -f -- "$tmpfile" "$dest"
+  seen[$rel]="$m $s"
+  written=$((written + 1))
+}
+
+# newest_and_total PATH...: prints "<newest mtime> <total size>" of the files.
+newest_and_total() {
+  find "$@" -type f -printf '%T@ %s\n' |
+    awk '{ t = int($1); if (t > m) m = t; s += $2 } END { print m + 0, s + 0 }'
+}
+
+# 1. Transcripts idle for IDLE_DAYS, with their session folder, as one tar.
+cutoff=$(( $(date +%s) - IDLE_DAYS * 86400 ))
+while IFS= read -r -d '' jsonl; do
+  pdir=${jsonl%/*}
+  sess=${jsonl##*/}
+  sess=${sess%.jsonl}
+  members=("$sess.jsonl")
+  [[ -d $pdir/$sess ]] && members+=("$sess")
+  read -r m s < <(newest_and_total "${members[@]/#/$pdir/}")
+  (( m < cutoff )) || continue
+  rel="projects/${pdir##*/}/$sess.jsonl"
+  should_write "$rel" "$m" "$s" || continue
+  encrypt "$rel" "$m" "$s" tar -C "$pdir" --sort=name -cf - -- "${members[@]}"
+done < <(find "$CLAUDE_DIR/projects" -mindepth 2 -maxdepth 2 -type f -name '*.jsonl' -print0)
+
+# archive_files BASE PREFIX FILTER FIND-ARGS...: each file under BASE that
+# matches FIND-ARGS and the regex FILTER goes to PREFIX/<path>.zst.age.
+archive_files() {
+  local base=$1 prefix=$2 filter=$3 m s p
+  shift 3
+  [[ -d $base ]] || return 0
+  while IFS=$'\t' read -r -d '' m s p; do
+    [[ $p =~ $filter ]] || continue
+    m=${m%.*}
+    should_write "$prefix$p" "$m" "$s" || continue
+    encrypt "$prefix$p" "$m" "$s" cat -- "$base/$p"
+  done < <(find "$base" "$@" -printf '%T@\t%s\t%P\0')
+}
+
+# 2. Plans, without build output.
+archive_files "$CLAUDE_DIR/plans" plans/ '' \
+  \( -type d -name 'target*' -prune \) -o -type f \
+  ! -name '*.rlib' ! -name '*.rmeta' ! -name '*.rcgu.o' ! -name '*.d'
+
+# 3. Auto memory: projects/<project>/memory/**.
+archive_files "$CLAUDE_DIR/projects" projects/ '^[^/]+/memory/' -mindepth 3 -type f
+
+# 4. Prompt history.
+if [[ -f $CLAUDE_DIR/history.jsonl ]]; then
+  read -r m s < <(newest_and_total "$CLAUDE_DIR/history.jsonl")
+  if should_write history.jsonl "$m" "$s"; then
+    encrypt history.jsonl "$m" "$s" cat -- "$CLAUDE_DIR/history.jsonl"
+  fi
+fi
+
+for rel in "${!seen[@]}"; do
+  printf '%s\t%s\t%s\n' "${seen[$rel]% *}" "${seen[$rel]#* }" "$rel"
+done >"$manifest.new"
+mv -f -- "$manifest.new" "$manifest"
+
+# 5. Commit and push.
+cd "$ARCHIVE_DIR"
+git add -A
+deleted=$(git diff --cached --no-renames --name-only --diff-filter=D)
+[[ -z $deleted ]] || die "refusing to commit deletions:"$'\n'"$deleted"
+plain=$(git diff --cached --no-renames --name-only --diff-filter=d |
+  grep -v -e '\.age$' -e '^README\.md$' -e '^\.gitignore$' || true)
+[[ -z $plain ]] || die "refusing to commit files that are not .age:"$'\n'"$plain"
+if ! git diff --cached --quiet; then
+  git commit -q -m "archive: $(date +%F), $written files written"
+fi
+git push -q origin HEAD || die "git push failed"
+
+date +%s >"$STATE_DIR/last-push.new"
+mv -f -- "$STATE_DIR/last-push.new" "$STATE_DIR/last-push"
