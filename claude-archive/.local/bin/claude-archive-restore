@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Decrypt each file of the claude-archive repo into CLAUDE_DIR. Sets each
+# file's mtime from manifest.tsv, so the next claude-archive run does not
+# write the files again. Never writes into the archive repo, and never
+# replaces a file that exists in CLAUDE_DIR.
+# Usage: claude-archive-restore KEY_FILE
+set -euo pipefail
+
+CLAUDE_DIR=${CLAUDE_DIR:-$HOME/.claude}
+ARCHIVE_DIR=${ARCHIVE_DIR:-$HOME/claude-archive}
+
+die() { echo "claude-archive-restore: error: $*" >&2; exit 1; }
+warn() { echo "claude-archive-restore: warning: $*" >&2; }
+
+(( $# == 1 )) || die "usage: claude-archive-restore KEY_FILE"
+key=$1
+[[ -s $key ]] || die "no key file: $key"
+for cmd in age zstd tar git touch; do
+  command -v "$cmd" >/dev/null || die "$cmd not found"
+done
+git -C "$ARCHIVE_DIR" rev-parse --git-dir >/dev/null 2>&1 || die "not a git repo: $ARCHIVE_DIR"
+
+# manifest.tsv: <mtime> TAB <size> TAB <archive path without .zst.age>.
+declare -A mtime=()
+if [[ -f $ARCHIVE_DIR/manifest.tsv ]]; then
+  while IFS=$'\t' read -r m _ rel; do
+    mtime[$rel]=$m
+  done <"$ARCHIVE_DIR/manifest.tsv"
+else
+  warn "no manifest.tsv: the next claude-archive run writes all files again"
+fi
+
+restored=0
+skipped=0
+while IFS= read -r -d '' f; do
+  rel=${f%.zst.age}
+  if [[ $rel == projects/*.jsonl && $rel != projects/*/*/* ]]; then
+    # A session: a tar of <session>.jsonl and <session>/. tar sets the mtime
+    # of each member; the newest one is the mtime in the manifest.
+    dir="$CLAUDE_DIR/${rel%/*}"
+    if [[ -e $dir/${rel##*/} ]]; then
+      warn "skip, exists: $dir/${rel##*/}"
+      skipped=$((skipped + 1))
+      continue
+    fi
+    mkdir -p -- "$dir"
+    if ! age -d -i "$key" "$ARCHIVE_DIR/$f" | zstd -dq | tar -x -C "$dir"; then
+      die "restore failed: $f"
+    fi
+  else
+    out="$CLAUDE_DIR/$rel"
+    if [[ -e $out ]]; then
+      warn "skip, exists: $out"
+      skipped=$((skipped + 1))
+      continue
+    fi
+    mkdir -p -- "${out%/*}"
+    if ! age -d -i "$key" "$ARCHIVE_DIR/$f" | zstd -dq >"$out.partial"; then
+      rm -f -- "$out.partial"
+      die "restore failed: $f"
+    fi
+    mv -f -- "$out.partial" "$out"
+    if [[ -n ${mtime[$rel]+set} ]]; then
+      touch -d "@${mtime[$rel]}" -- "$out"
+    fi
+  fi
+  restored=$((restored + 1))
+done < <(git -C "$ARCHIVE_DIR" ls-files -z -- '*.zst.age')
+
+echo "claude-archive-restore: $restored files restored, $skipped skipped (exist)"

@@ -5,6 +5,7 @@ set -euo pipefail
 
 here=$(cd "$(dirname "$0")" && pwd)
 script="$here/../.local/bin/claude-archive"
+restore="$here/../.local/bin/claude-archive-restore"
 
 tmp=$(mktemp -d /tmp/claude-archive-test.XXXXXX)
 trap 'rm -rf "$tmp"' EXIT
@@ -100,9 +101,41 @@ n=$(commits)
 [[ "$(commits)" == "$n" ]] || fail "run with no change made a commit"
 pass "second run with no change makes no commit"
 
-# --- run 3: transcript removed, transcript and history shortened, ---------
-# --- memory and plan emptied ---------------------------------------------
+# --- run 2b: local manifest lost, no change -------------------------------
+rm "$STATE_DIR/manifest"
+"$script" || fail "run 2b exit $?"
+[[ "$(commits)" == "$n" ]] || fail "run without the local manifest made a commit"
+pass "run without the local manifest and with no change makes no commit"
+
+# --- new machine: clone, restore into an empty folder, run ----------------
+clone="$tmp/clone"
+git clone -q -b main "$tmp/origin.git" "$clone"
+git -C "$clone" config user.name test
+git -C "$clone" config user.email test@example.invalid
+git -C "$clone" config commit.gpgsign false
+restored="$tmp/claude-restored"
+mkdir "$restored"
+[[ -x "$restore" ]] || fail "script missing: $restore"
+CLAUDE_DIR=$restored ARCHIVE_DIR=$clone "$restore" "$key" || fail "restore exit $?"
+[[ -z "$(git -C "$clone" status --porcelain --ignored)" ]] || fail "restore wrote into the archive repo"
+# All sources except the active transcript and the build output.
+expected=$(cd "$CLAUDE_DIR" && find . -type f ! -path "./projects/-home-u-proj/$new.jsonl" \
+  ! -path './plans/camp/target-x/*' | LC_ALL=C sort)
+[[ "$(cd "$restored" && find . -type f | LC_ALL=C sort)" == "$expected" ]] ||
+  fail "restored file list differs"
+while IFS= read -r f; do
+  cmp "$CLAUDE_DIR/$f" "$restored/$f" || fail "restored $f differs"
+done <<<"$expected"
+CLAUDE_DIR=$restored ARCHIVE_DIR=$clone STATE_DIR="$tmp/state-new" "$script" ||
+  fail "run after restore exit $?"
+[[ "$(git -C "$clone" rev-list --count HEAD)" == "$n" ]] || fail "run after restore made a commit"
+pass "restore from a clone gives identical files, and the next run makes no commit"
+
+# --- run 3: local manifest lost, transcript removed, transcript and -------
+# --- history shortened, memory and plan emptied ---------------------------
+# Without the local manifest, so the old sizes come from manifest.tsv.
 plan="$CLAUDE_DIR/plans/camp/MASTER.md"
+rm "$STATE_DIR/manifest"
 archived() {
   sha256sum "$a/$gone.jsonl.zst.age" "$a/$old.jsonl.zst.age" "$ARCHIVE_DIR/history.jsonl.zst.age" \
     "$a/memory/MEMORY.md.zst.age" "$ARCHIVE_DIR/plans/camp/MASTER.md.zst.age"

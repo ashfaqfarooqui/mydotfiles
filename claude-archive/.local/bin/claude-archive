@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Compress (zstd), encrypt (age, public recipient only) and commit Claude Code
 # transcripts, plans, memory and prompt history into a git repo, then push.
-# Never deletes from the archive. Writes $STATE_DIR/last-push only after a
-# good push.
+# Never deletes from the archive. Commits the manifest as manifest.tsv, so a
+# new machine does not write all files again. Writes $STATE_DIR/last-push
+# only after a good push.
 set -euo pipefail
 
 CLAUDE_DIR=${CLAUDE_DIR:-$HOME/.claude}
@@ -25,17 +26,21 @@ git_dir=$(git -C "$ARCHIVE_DIR" rev-parse --absolute-git-dir 2>/dev/null) ||
 
 mkdir -p "$STATE_DIR"
 manifest="$STATE_DIR/manifest"
+repo_manifest="$ARCHIVE_DIR/manifest.tsv"
 # Temporary files live inside .git: same file system as the archive (atomic
 # mv), and git add -A never sees them.
 tmpfile="$git_dir/claude-archive.partial"
 trap 'rm -f -- "$tmpfile"' EXIT
 
 # Manifest: <mtime> TAB <size> TAB <archive path without .zst.age>, one per line.
+# Without the local copy (new machine, lost disk), read the committed copy.
 declare -A seen=()
-if [[ -f $manifest ]]; then
+load=$manifest
+[[ -f $load ]] || load=$repo_manifest
+if [[ -f $load ]]; then
   while IFS=$'\t' read -r m s rel; do
     seen[$rel]="$m $s"
-  done <"$manifest"
+  done <"$load"
 fi
 written=0
 
@@ -129,9 +134,12 @@ if [[ -f $CLAUDE_DIR/history.jsonl ]]; then
   fi
 fi
 
+# Sorted by path, so the committed copy changes only when an entry changes.
 for rel in "${!seen[@]}"; do
   printf '%s\t%s\t%s\n' "${seen[$rel]% *}" "${seen[$rel]#* }" "$rel"
-done >"$manifest.new"
+done | LC_ALL=C sort -t $'\t' -k3,3 >"$manifest.new"
+cp -- "$manifest.new" "$tmpfile"
+mv -f -- "$tmpfile" "$repo_manifest"
 mv -f -- "$manifest.new" "$manifest"
 
 # 5. Commit and push.
@@ -140,7 +148,7 @@ git add -A
 deleted=$(git diff --cached --no-renames --name-only --diff-filter=D)
 [[ -z $deleted ]] || die "refusing to commit deletions:"$'\n'"$deleted"
 plain=$(git diff --cached --no-renames --name-only --diff-filter=d |
-  grep -v -e '\.age$' -e '^README\.md$' -e '^\.gitignore$' || true)
+  grep -v -e '\.age$' -e '^README\.md$' -e '^\.gitignore$' -e '^manifest\.tsv$' || true)
 [[ -z $plain ]] || die "refusing to commit files that are not .age:"$'\n'"$plain"
 if ! git diff --cached --quiet; then
   git commit -q -m "archive: $(date +%F), $written files written"
