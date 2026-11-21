@@ -1,18 +1,3 @@
-[submodule "emacsConf/.emacs.d/vendor/lsp-latex"]
-	path = emacsConf/.emacs.d/vendor/lsp-latex
-	url = git@github.com:ROCKTAKEY/lsp-latex.git
-[submodule "emacsConf/.emacs.d/vendor/maple-minibuffer"]
-	path = emacsConf/.emacs.d/vendor/maple-minibuffer
-	url = https://github.com/honmaple/emacs-maple-minibuffer
 [submodule "doom/.doom.d/lisp/promela-mode"]
 	path = doom/.doom.d/lisp/promela-mode
 	url = https://github.com/ashfaqfarooqui/promela-mode
-[submodule "emacsConf/.emacs.d/vendor/youtube-dl-emacs"]
-	path = emacsConf/.emacs.d/vendor/youtube-dl-emacs
-	url = git@github.com:skeeto/youtube-dl-emacs.git
-[submodule "doomEmacs/.doom.d/lisp/lexic"]
-	path = doomEmacs/.doom.d/lisp/lexic
-	url = git@github.com:tecosaur/lexic.git
-[submodule "hypr/.config/hypr/catppuccinTheme"]
-	path = hypr/.config/hypr/catppuccinTheme
-	url = https://github.com/catppuccin/hyprland.git

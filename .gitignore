@@ -1,29 +1,16 @@
-abbrev_defs
-ashfaq.html
-.smex-items
+# Editor backups
 *.el~
 *.org~
-emacsConf/.emacs.d/.cache
-emacsConf/.emacs.d/backups
-emacsConf/.emacs.d/emacs-backups/
 #*#
-emacsConf/.emacs.d/.mc-lists.el
-emacsConf/.emacs.d/.org-id-locations
-emacsConf/.emacs.d/.python-environments/
-emacsConf/.emacs.d/bookmarks
 *.log
-demo.org
-/xmonad/.xmonad/xmonad-x86_64-linux
-/xmonad/.xmonad/xmonad.errors
-/xmonad/.xmonad/xmonad.hi
-/xmonad/.xmonad/xmonad.o
-/doomEmacs/.doom.d/config.el
-*.log
+
+# herdr CLI runtime data (~/.config/herdr links here; package is not tracked)
 herdr/.config/herdr/*.sock
 herdr/.config/herdr/session.json
 herdr/.config/herdr/session-history.json
 herdr/.config/herdr/release-notes.json
 herdr/.config/herdr/sessions/
+
 __pycache__/
 opencode/.config/opencode/service.json
 hypr/.config/hypr/.dms-backups/

@@ -22,7 +22,14 @@ bash scripts/install/setup.sh
 ### Stow configs
 
 ```sh
-stow zsh git nvim hypr waybar swaync rofi tmux starship bat btop ghostty lazygit gpg opencode aerc mbsync herdr-app voxtype
+stow zsh git nvim hypr waybar swaync rofi wlogout tmux starship bat btop ghostty kitty lazygit gpg opencode aerc mbsync herdr-app voxtype \
+     atuin chromium doom electron fastfetch gtk qt6ct sshs vscode zed
+```
+
+The `networkmanager`, `pacman` and `systemd` packages hold files for `/etc`. Stow them as root with the target `/`:
+
+```sh
+sudo stow -t / networkmanager pacman systemd
 ```
 
 Stow `claude` alone, with `--no-folding`, after `git-crypt unlock` (see the `claude/` row below):
@@ -43,13 +50,12 @@ stow --no-folding claude-archive
 | Directory | Description |
 |-----------|-------------|
 | `aerc/` | [aerc](https://aerc-mail.org/) TUI email client |
-| `ashell/` | [ashell](https://github.com/MalpenZibo/ashell) status bar |
 | `atuin/` | [atuin](https://github.com/atuinsh/atuin) shell history |
 | `bat/` | [bat](https://github.com/sharkdp/bat) cat replacement |
 | `btop/` | [btop](https://github.com/aristocratsoftware/btop) resource monitor |
 | `claude/` | [Claude Code](https://code.claude.com/docs) configuration: `settings.json`, `CLAUDE.md`, the status line script, `hooks/`, `commands/` and the user skills. `git-crypt` encrypts all files in this package. On a new machine, import the GPG key `7A804BCB51DE2D88` and run `git-crypt unlock` before you run `stow --no-folding claude`. If you do not unlock first, the links point to encrypted data and Claude Code shows a Settings Error. Use `--no-folding`, because Claude Code writes its data (`projects/`, `plans/`) into `~/.claude`. |
 | `claude-archive/` | Daily job that keeps a copy of the Claude Code data off the machine: the script `claude-archive` and a systemd user timer. It compresses (`zstd`) and encrypts (`age`, public key only) the idle transcripts, the plans, the auto memory and `history.jsonl` into the git repo `~/claude-archive`, then pushes. It never deletes from the archive. After a good push it writes the time to `~/.local/state/claude-archive/last-push`. Test: `bash claude-archive/test/run-test.sh`. |
-| `chromimum/` | Chromium browser config |
+| `chromium/` | Chromium browser flags |
 | `doom/` | [Doom Emacs](https://github.com/doomemacs/doomemacs) config |
 | `electron/` | Electron app flags (Wayland) |
 | `fastfetch/` | [fastfetch](https://github.com/fastfetch-cli/fastfetch) system info |
@@ -58,55 +64,37 @@ stow --no-folding claude-archive
 | `herdr-app/` | [Herdr](https://herdr.dev) app: keys, settings and the Catppuccin Mocha theme (the rest of `~/.config/herdr-app` is written by the app) |
 | `gpg/` | GPG agent config |
 | `gtk/` | GTK theme config |
-| `hypr/` | [Hyprland](https://hyprland.org/) compositor, hypridle, hyprlock |
+| `hypr/` | [Hyprland](https://hyprland.org/) compositor (Lua config), hypridle, hyprlock. The desktop shell is DankMaterialShell (`dms/`, `conf/dms.lua`); set `use_dms = false` in `conf/autostart.lua` to fall back to the waybar stack. The git tag `pre-dms` has the old `hyprland.conf` setup |
 | `kitty/` | [Kitty](https://sw.kovidgoyal.net/kitty/) terminal config |
 | `lazygit/` | [lazygit](https://github.com/jesseduffield/lazygit) TUI |
 | `mbsync/` | [mbsync/isync](https://isync.sourceforge.io/) email sync |
-| `mechabar/` | Waybar theme |
+| `networkmanager/` | `/etc` drop-in: Wi-Fi power saving off |
 | `nvim/` | [Neovim](https://neovim.io/) config |
 | `opencode/` | [opencode](https://opencode.ai/) AI coding assistant |
-| `pacman/` | pacman config (parallel downloads etc.) |
+| `pacman/` | `/etc/pacman.conf` (parallel downloads etc.) |
+| `qt6ct/` | Qt 6 theme config |
 | `rofi/` | [rofi](https://github.com/davatorium/rofi) launcher |
 | `scripts/` | Install scripts and utilities |
 | `sshs/` | [sshs](https://github.com/quantumsheep/sshs) SSH host manager |
 | `starship/` | [Starship](https://starship.rs/) shell prompt |
 | `swaync/` | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) notifications |
-| `theme/` | Not stowed — [Whiskers](https://github.com/catppuccin/whiskers)-based generator for hypr/waybar/ghostty/rofi/hyprlock/swaync/btop/lazygit/fzf/starship theming (+ matching wallpaper). Native: `mocha`/`latte`/`frappe`/`macchiato`. Custom (repainted via `--color-overrides`, see `theme/palettes/`): `nord`/`gruvbox`/`dracula`/`tokyonight`/`rosepine`. Run `just -f theme/justfile apply <name>`, or `SUPER+CTRL+SHIFT+SPACE` for a rofi picker with color-swatch previews (`theme/swatches/`, rebuild via `just -f theme/justfile swatches`) and a marker on the active theme |
+| `systemd/` | `/etc` logind drop-in: lid and charger behaviour |
 | `tmux/` | [tmux](https://github.com/tmux/tmux) terminal multiplexer |
 | `voxtype/` | [Voxtype](https://github.com/peteonrails/voxtype) offline push-to-talk dictation |
 | `vscode/` | VS Code / Cursor settings |
-| `walker/` | [walker](https://github.com/abenz1267/walker) launcher |
-| `waybar/` | [Waybar](https://github.com/Alexays/Waybar) status bar |
+| `Wallpapers/` | Not stowed. Wallpaper images; `hyprpaper.conf` and `hyprlock.conf` point here |
+| `waybar/` | [Waybar](https://github.com/Alexays/Waybar) status bar (fallback when DMS is off) |
 | `wlogout/` | [wlogout](https://github.com/ArtsyMacaw/wlogout) logout menu |
-| `zsh/` | Zsh config with oh-my-zsh |
+| `zed/` | [Zed](https://zed.dev/) editor settings and keymap |
+| `zsh/` | Zsh config: plain zsh, Starship prompt, self-managed plugins (`conf/plugins.zsh`) |
 
 ## Zsh setup
 
-Install [oh-my-zsh](https://ohmyz.sh/):
-
 ```sh
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+bash zsh/setup.sh
 ```
 
-Install plugins:
-
-```sh
-# Auto-suggestions
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-# Syntax highlighting
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-# bat integration
-git clone https://github.com/fdellwing/zsh-bat.git $ZSH_CUSTOM/plugins/zsh-bat
-
-# powerlevel10k theme
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
-```
-
-Then stow: `stow zsh`
-
-Update the username in [zsh/.zshrc](zsh/.zshrc) if needed.
+The script checks the required tools, creates the XDG directories, stows `zsh` and sets zsh as the login shell. `conf/plugins.zsh` clones the plugins on the first shell start.
 
 ## fzf
 
@@ -131,22 +119,6 @@ curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 
 ```sh
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
-
-## gopass (password manager)
-
-Dependencies:
-
-```sh
-pacman -S gnupg2 git
-```
-
-Zsh completions:
-
-```sh
-gopass completion zsh > ~/_gopass
-sudo mv ~/_gopass /usr/share/zsh/site-functions/_gopass
-rm -i ${ZDOTDIR:-${HOME:?No ZDOTDIR or HOME}}/.zcompdump && compinit
 ```
 
 ## GTK theme
@@ -177,7 +149,6 @@ See [scripts/install/setup-fingerprint.sh](scripts/install/setup-fingerprint.sh)
 
 ## Other notes
 
-- `cups/` and `system/etc/krb5.conf` handle Chalmers printer setup.
 - Ensure `~/.authinfo` exists with credentials for Emacs/mail tools.
 - Scala: use [Coursier](https://www.scala-lang.org/2020/06/29/one-click-install.html) for Scala toolchain management.
-- Package review: see [scripts/install/installs-review.md](scripts/install/installs-review.md) for a categorized list of historically installed packages to audit.
+- Retired configs (i3, xmonad, GNOME install scripts, etc.) are in the git tag `old-configs`.
