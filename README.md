@@ -26,6 +26,12 @@ stow zsh git nvim hypr waybar swaync rofi wlogout tmux starship bat btop ghostty
      atuin chromium doom electron fastfetch gtk qt6ct sshs vscode zed
 ```
 
+Stow the packages for apps that also write into their config folder with `--no-folding`:
+
+```sh
+stow --no-folding dms xdg nix direnv himalaya
+```
+
 The `networkmanager`, `pacman` and `systemd` packages hold files for `/etc`. Stow them as root with the target `/`:
 
 ```sh
@@ -56,19 +62,23 @@ stow --no-folding claude-archive
 | `claude/` | [Claude Code](https://code.claude.com/docs) configuration: `settings.json`, `CLAUDE.md`, the status line script, `hooks/`, `commands/` and the user skills. `git-crypt` encrypts all files in this package. On a new machine, import the GPG key `7A804BCB51DE2D88` and run `git-crypt unlock` before you run `stow --no-folding claude`. If you do not unlock first, the links point to encrypted data and Claude Code shows a Settings Error. Use `--no-folding`, because Claude Code writes its data (`projects/`, `plans/`) into `~/.claude`. |
 | `claude-archive/` | Daily job that keeps a copy of the Claude Code data off the machine: the script `claude-archive` and a systemd user timer. It compresses (`zstd`) and encrypts (`age`, public key only) the idle transcripts, the plans, the auto memory and `history.jsonl` into the git repo `~/claude-archive`, then pushes. It never deletes from the archive. After a good push it writes the time to `~/.local/state/claude-archive/last-push`. Test: `bash claude-archive/test/run-test.sh`. |
 | `chromium/` | Chromium browser flags |
+| `direnv/` | [direnv](https://direnv.net/) `direnvrc`: loads nix-direnv |
+| `dms/` | [DankMaterialShell](https://danklinux.com/) settings and plugin lock. Targets `~/.config/dms` (`~/.config/DankMaterialShell` is a link to it). Installed plugins are not tracked |
 | `doom/` | [Doom Emacs](https://github.com/doomemacs/doomemacs) config |
 | `electron/` | Electron app flags (Wayland) |
 | `fastfetch/` | [fastfetch](https://github.com/fastfetch-cli/fastfetch) system info |
 | `ghostty/` | [Ghostty](https://ghostty.org/) terminal emulator |
-| `git/` | Git config and aliases |
+| `git/` | Git config and aliases, global ignore file (`~/.config/git/ignore`) |
 | `herdr-app/` | [Herdr](https://herdr.dev) app: keys, settings and the Catppuccin Mocha theme (the rest of `~/.config/herdr-app` is written by the app) |
 | `gpg/` | GPG agent config |
 | `gtk/` | GTK theme config |
 | `hypr/` | [Hyprland](https://hyprland.org/) compositor (Lua config), hypridle, hyprlock. The desktop shell is DankMaterialShell (`dms/`, `conf/dms.lua`); set `use_dms = false` in `conf/autostart.lua` to fall back to the waybar stack. The git tag `pre-dms` has the old `hyprland.conf` setup |
+| `himalaya/` | [himalaya](https://github.com/pimalaya/himalaya) CLI email client (password from `secret-tool`) |
 | `kitty/` | [Kitty](https://sw.kovidgoyal.net/kitty/) terminal config |
 | `lazygit/` | [lazygit](https://github.com/jesseduffield/lazygit) TUI |
 | `mbsync/` | [mbsync/isync](https://isync.sourceforge.io/) email sync |
 | `networkmanager/` | `/etc` drop-in: Wi-Fi power saving off |
+| `nix/` | `nix.conf`: flakes and `nix-command` |
 | `nvim/` | [Neovim](https://neovim.io/) config |
 | `opencode/` | [opencode](https://opencode.ai/) AI coding assistant |
 | `pacman/` | `/etc/pacman.conf` (parallel downloads etc.) |
@@ -85,6 +95,7 @@ stow --no-folding claude-archive
 | `Wallpapers/` | Not stowed. Wallpaper images; `hyprpaper.conf` and `hyprlock.conf` point here |
 | `waybar/` | [Waybar](https://github.com/Alexays/Waybar) status bar (fallback when DMS is off) |
 | `wlogout/` | [wlogout](https://github.com/ArtsyMacaw/wlogout) logout menu |
+| `xdg/` | `mimeapps.list`: default applications |
 | `zed/` | [Zed](https://zed.dev/) editor settings and keymap |
 | `zsh/` | Zsh config: plain zsh, Starship prompt, self-managed plugins (`conf/plugins.zsh`) |
 

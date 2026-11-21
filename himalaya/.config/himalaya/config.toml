@@ -1,0 +1,22 @@
+[accounts.mailbox]
+default = true
+email = "ashfaq@ashfaqfarooqui.me"
+display-name = "Ashfaq Farooqui"
+
+# IMAP backend
+backend.type = "imap"
+backend.host = "imap.mailbox.org"
+backend.port = 993
+backend.encryption.type = "tls"
+backend.login = "ashfaq.farooqui@mailbox.org"
+backend.auth.type = "password"
+backend.auth.cmd = "secret-tool lookup service mailbox.org username ashfaq.farooqui@mailbox.org"
+
+# SMTP sender
+message.send.backend.type = "smtp"
+message.send.backend.host = "smtp.mailbox.org"
+message.send.backend.port = 587
+message.send.backend.encryption.type = "start-tls"
+message.send.backend.login = "ashfaq.farooqui@mailbox.org"
+message.send.backend.auth.type = "password"
+message.send.backend.auth.cmd = "secret-tool lookup service mailbox.org username ashfaq.farooqui@mailbox.org"

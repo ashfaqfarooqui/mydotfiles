@@ -1,0 +1,9 @@
+{
+  "lockfileVersion": 1,
+  "plugins": {
+    "amdGpuMonitor": {
+      "repo": "https://github.com/navidagz/dms-amd-gpu-monitor",
+      "commit": "d0f87efb534b86dc07107288c5f86cfeb7ad9cd2"
+    }
+  }
+}
