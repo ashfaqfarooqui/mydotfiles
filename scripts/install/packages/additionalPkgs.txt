@@ -1,8 +1,0 @@
-tp_smpi-dkms
-zotero
-davmail
-mbsync
-zotero
-amdvlk
-dsnote
-coqui-tts
