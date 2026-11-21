@@ -177,3 +177,9 @@ yay -S --no-confirm catppuccin-whiskers-bin
 yay -S --no-confirm voxtype-bin
 yay -S --no-confirm cliamp-bin
 yay -S --no-confirm nwg-displays
+
+# Claude Code config and history archive (campaign claude-history-retention)
+yay -S age --needed        # encrypts the transcript/plan archive
+yay -S zstd --needed       # compresses before encryption
+yay -S git-crypt --needed  # encrypts the claude/ stow package in this repo
+yay -S shellcheck --needed # lints the archive script
